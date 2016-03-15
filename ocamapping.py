@@ -110,16 +110,16 @@ def run_recursive_scan(options, queue, results_q):
             queue.put(os.path.join(dirpath, name))
 
     for i in range(0, MAX_PROCESSES):
-        t = Process(target=fscat, name=("thread-%d" % i),
+        p = Process(target=fscat, name=("thread-%d" % i),
                     args=(options, queue, results_q, ("process -%d" % i)))
-        process_pool.append(t)
+        process_pool.append(p)
+
+    for p in process_pool:
+        print "thread %s started" % p.name
+        p.start()
 
     for t in process_pool:
-        print "thread %s started" % t.getName()
-        t.start()
-
-    for t in process_pool:
-        t.join()
+        p.join()
 
     while not results_q.empty():
         q = results_q.get()
@@ -134,8 +134,8 @@ def run_single_folder_scan(options, queue, results_q):
         queue.put(os.path.join(options.path, name))
 
     for i in range(0, MAX_PROCESSES):
-        t = Process(target=fscat, name=("process-%d" % i), args=(options, queue, results_q, ("process-%d" % i)))
-        process_pool.append(t)
+        p = Process(target=fscat, name=("process-%d" % i), args=(options, queue, results_q, ("process-%d" % i)))
+        process_pool.append(p)
 
     for p in process_pool:
         print "thread %s started" % p.getName()
