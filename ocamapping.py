@@ -3,16 +3,16 @@ import os
 import subprocess
 import os.path
 import sys
-import threading
-import Queue
+from multiprocessing import Process, Queue
 from optparse import OptionParser
 import hanging_threads
 
-MAX_THREADS = 16
+MAX_PROCESSES = 16
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
     problematic_ranges = []
+    problem = None
     while not queue.empty():
         try:
             file = queue.get()
@@ -103,21 +103,22 @@ def fscat(options, queue, results_q, name, is_multithread=True):
 
 
 def run_recursive_scan(options, queue, results_q):
-    thread_pool = []
+    process_pool = []
 
     for dirpath, dirnames, filenames in os.walk(options.path):
         for name in filenames:
             queue.put(os.path.join(dirpath, name))
 
-    for i in range(0, MAX_THREADS):
-        t = threading.Thread(target=fscat, name=("thread-%d" % i), args=(options, queue, results_q, ("thread-%d" % i)))
-        thread_pool.append(t)
+    for i in range(0, MAX_PROCESSES):
+        t = Process(target=fscat, name=("thread-%d" % i),
+                    args=(options, queue, results_q, ("process -%d" % i)))
+        process_pool.append(t)
 
-    for t in thread_pool:
+    for t in process_pool:
         print "thread %s started" % t.getName()
         t.start()
 
-    for t in thread_pool:
+    for t in process_pool:
         t.join()
 
     while not results_q.empty():
@@ -127,21 +128,21 @@ def run_recursive_scan(options, queue, results_q):
 
 
 def run_single_folder_scan(options, queue, results_q):
-    thread_pool = []
+    process_pool = []
 
     for name in os.listdir(options.path):
         queue.put(os.path.join(options.path, name))
 
-    for i in range(0, MAX_THREADS):
-        t = threading.Thread(target=fscat, name=("thread-%d" % i), args=(options, queue, results_q, ("thread-%d" % i)))
-        thread_pool.append(t)
+    for i in range(0, MAX_PROCESSES):
+        t = Process(target=fscat, name=("process-%d" % i), args=(options, queue, results_q, ("process-%d" % i)))
+        process_pool.append(t)
 
-    for t in thread_pool:
-        print "thread %s started" % t.getName()
-        t.start()
+    for p in process_pool:
+        print "thread %s started" % p.getName()
+        p.start()
 
-    for t in thread_pool:
-        t.join()
+    for p in process_pool:
+        p.join()
 
     while not results_q.empty():
         q = results_q.get()
@@ -152,11 +153,11 @@ def run_single_folder_scan(options, queue, results_q):
 def run_single_file_scan(options, queue, results_q):
     queue.put(options.path)
 
-    t = threading.Thread(target=fscat, name="thread-1", args=(options, queue, results_q, "thread-1", False))
+    p = Process(target=fscat, name="process-1", args=(options, queue, results_q, "process-1", False))
 
-    print "thread %s started" % t.getName()
-    t.start()
-    t.join()
+    print "thread %s started" % p.name
+    p.start()
+    p.join()
 
     q = results_q.get()
     if q is True:
@@ -171,8 +172,8 @@ def main():
     2 - bad argument passed
     """
 
-    queue = Queue.Queue()
-    results_q = Queue.Queue()
+    queue = Queue()
+    results_q = Queue()
 
     parser = OptionParser()
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose")
