@@ -228,9 +228,9 @@ def main():
     if options.path[0] != "/":
         options.path = os.path.abspath(options.path)
         print "Using path: " + options.path
-    if options.path[:9] != "/mnt/mgmt":
-        print "Path should start with /mnt/mgmt"
-        sys.exit(2)
+    # if options.path[:9] != "/mnt/mgmt":
+    #     print "Path should start with /mnt/mgmt"
+    #     sys.exit(2)
 
     if os.path.isfile(options.path):
         print "scanning single file..."
