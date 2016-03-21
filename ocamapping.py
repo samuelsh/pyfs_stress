@@ -106,7 +106,7 @@ def fscat(options, queue, results_q, name, is_multithread=True):
 
 def explore_path(pid, path):
     directories = []
-    print "process-" + pid + " -- Exploring path " + path
+    #print "process-" + pid + " -- Exploring path " + path
     for filename in os.listdir(path):
         fullname = os.path.join(path, filename)
         if os.path.isdir(fullname):
