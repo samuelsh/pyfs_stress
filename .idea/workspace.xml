@@ -37,8 +37,8 @@
       <file leaf-file-name="ocamapping.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ocamapping.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.20733428">
-              <caret line="108" column="4" selection-start-line="108" selection-start-column="4" selection-end-line="108" selection-end-column="4" />
+            <state vertical-scroll-proportion="0.1777151">
+              <caret line="107" column="16" selection-start-line="107" selection-start-column="16" selection-end-line="107" selection-end-column="16" />
               <folding>
                 <element signature="e#18#27#0" expanded="true" />
               </folding>
@@ -407,7 +407,13 @@
       <option name="project" value="LOCAL" />
       <updated>1458563926693</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="multiprocessing folder scan&#10;">
+      <created>1458563972552</created>
+      <option name="number" value="00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1458563972552</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TodoView">
@@ -561,8 +567,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ocamapping.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20733428">
-          <caret line="108" column="4" selection-start-line="108" selection-start-column="4" selection-end-line="108" selection-end-column="4" />
+        <state vertical-scroll-proportion="0.1777151">
+          <caret line="107" column="16" selection-start-line="107" selection-start-column="16" selection-end-line="107" selection-end-column="16" />
           <folding>
             <element signature="e#18#27#0" expanded="true" />
           </folding>
