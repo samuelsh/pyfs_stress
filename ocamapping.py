@@ -117,7 +117,7 @@ def explore_path(pid, path):
 def dir_scan_worker(pid):
     while True:
         path = unsearched.get()
-        dirs = explore_path(id, path)
+        dirs = explore_path(pid, path)
         for newdir in dirs:
             unsearched.put(newdir)
         unsearched.task_done()
