@@ -3,11 +3,13 @@ import os
 import subprocess
 import os.path
 import sys
-from multiprocessing import Process, Queue
+from multiprocessing import Process, JoinableQueue as Queue, Pool
 from optparse import OptionParser
-import hanging_threads
+
+# import hanging_threads
 
 MAX_PROCESSES = 16
+unsearched = Queue()
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
@@ -102,23 +104,61 @@ def fscat(options, queue, results_q, name, is_multithread=True):
     print name + ": finished"
 
 
+def explore_path(path):
+    directories = []
+    nondirectories = []
+    for filename in os.listdir(path):
+        fullname = os.path.join(path, filename)
+        if os.path.isdir(fullname):
+            directories.append(fullname)
+        else:
+            nondirectories.append(filename)
+    outputfile = path.replace(os.sep, '_') + '.txt'
+    with open(outputfile, 'w') as f:
+        for filename in nondirectories:
+            print >> f, filename
+    return directories
+
+
+def dir_scan_worker():
+    while True:
+        path = unsearched.get()
+        dirs = explore_path(path)
+        for newdir in dirs:
+            unsearched.put(newdir)
+        unsearched.task_done()
+
+
+def fscat_stub(options, queue, results_q, name, is_multithread=True):
+    print name + ": running fscat_stub"
+
+
 def run_recursive_scan(options, queue, results_q):
     process_pool = []
+    first_level_dirs = next(os.walk(options.path))[1]
 
-    for dirpath, dirnames, filenames in os.walk(options.path):
-        for name in filenames:
-            queue.put(os.path.join(dirpath, name))
+    folders_scan_pool = Pool(MAX_PROCESSES)
+    for path in first_level_dirs:
+        unsearched.put(path)
+
+    for i in range(MAX_PROCESSES):
+        folders_scan_pool.apply_async(dir_scan_worker)
+
+    # for dirpath, dirnames, filenames in os.walk(options.path):
+    #     for name in filenames:
+    #         print "Putting in queue: " + dirpath + "/" + name
+    #         queue.put(os.path.join(dirpath, name))
 
     for i in range(0, MAX_PROCESSES):
-        p = Process(target=fscat, name=("thread-%d" % i),
-                    args=(options, queue, results_q, ("process -%d" % i)))
+        p = Process(target=fscat, name=("process-%d" % i),
+                    args=(options, queue, results_q, ("process-%d" % i)))
         process_pool.append(p)
 
     for p in process_pool:
-        print "thread %s started" % p.name
+        print "process %s started" % p.name
         p.start()
 
-    for t in process_pool:
+    for p in process_pool:
         p.join()
 
     while not results_q.empty():
@@ -138,7 +178,7 @@ def run_single_folder_scan(options, queue, results_q):
         process_pool.append(p)
 
     for p in process_pool:
-        print "thread %s started" % p.getName()
+        print "thread %s started" % p.name
         p.start()
 
     for p in process_pool:
