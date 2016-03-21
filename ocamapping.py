@@ -124,7 +124,7 @@ def dir_scan_worker():
 
 
 def fscat_stub(options, queue, results_q, name, is_multithread=True):
-    print name + ": running fscat_stub on path"
+    print name + ": running fscat_stub on path " + queue.get(block=False)
 
 
 def run_recursive_scan(options, queue, results_q):
