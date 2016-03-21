@@ -106,7 +106,7 @@ def fscat(options, queue, results_q, name, is_multithread=True):
 
 def explore_path(pid, path):
     directories = []
-    print "process-" + pid + " -- Exploring path " + path
+    #print "process-" + pid + " -- Exploring path " + path
     for filename in os.listdir(path):
         fullname = os.path.join(path, filename)
         if os.path.isdir(fullname):
@@ -136,7 +136,7 @@ def run_recursive_scan(options, queue, results_q):
         unsearched.put(path)
 
     for i in range(MAX_PROCESSES):
-        folders_scan_pool.apply_async(dir_scan_worker)
+        folders_scan_pool.apply_async(dir_scan_worker, args=i)
 
     # for dirpath, dirnames, filenames in os.walk(options.path):
     #     for name in filenames:
