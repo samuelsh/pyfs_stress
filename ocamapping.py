@@ -104,9 +104,9 @@ def fscat(options, queue, results_q, name, is_multithread=True):
     print name + ": finished"
 
 
-def explore_path(path):
+def explore_path(id, path):
     directories = []
-    print "Exploring path " + path
+    print "process-" + id + " -- Exploring path " + path
     for filename in os.listdir(path):
         fullname = os.path.join(path, filename)
         if os.path.isdir(fullname):
@@ -114,17 +114,17 @@ def explore_path(path):
     return directories
 
 
-def dir_scan_worker():
+def dir_scan_worker(id):
     while True:
         path = unsearched.get()
-        dirs = explore_path(path)
+        dirs = explore_path(id, path)
         for newdir in dirs:
             unsearched.put(newdir)
         unsearched.task_done()
 
 
 def fscat_stub(options, queue, results_q, name, is_multithread=True):
-    print name + ": running fscat_stub"
+    print name + ": running fscat_stub on path: " + queue.get()
 
 
 def run_recursive_scan(options, queue, results_q):
@@ -136,7 +136,7 @@ def run_recursive_scan(options, queue, results_q):
         unsearched.put(path)
 
     for i in range(MAX_PROCESSES):
-        folders_scan_pool.apply_async(dir_scan_worker)
+        folders_scan_pool.apply_async(dir_scan_worker, args=i)
 
     # for dirpath, dirnames, filenames in os.walk(options.path):
     #     for name in filenames:
