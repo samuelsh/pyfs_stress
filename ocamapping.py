@@ -104,9 +104,9 @@ def fscat(options, queue, results_q, name, is_multithread=True):
     print name + ": finished"
 
 
-def explore_path(id, path):
+def explore_path(pid, path):
     directories = []
-    print "process-" + id + " -- Exploring path " + path
+    print "process-" + pid + " -- Exploring path " + path
     for filename in os.listdir(path):
         fullname = os.path.join(path, filename)
         if os.path.isdir(fullname):
@@ -114,7 +114,7 @@ def explore_path(id, path):
     return directories
 
 
-def dir_scan_worker(id):
+def dir_scan_worker(pid):
     while True:
         path = unsearched.get()
         dirs = explore_path(id, path)
