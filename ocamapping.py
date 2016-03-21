@@ -3,6 +3,7 @@ import os
 import subprocess
 import os.path
 import sys
+from Queue import Empty
 from multiprocessing import Process, JoinableQueue as Queue, Pool
 from optparse import OptionParser
 
@@ -126,7 +127,7 @@ def dir_scan_worker():
 def fscat_stub(options, queue, results_q, name, is_multithread=True):
         try:
             print name + ": running fscat_stub on path " + queue.get_nowait()
-        except Queue.Empty:
+        except Empty:
             pass
 
 
