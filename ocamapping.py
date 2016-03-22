@@ -119,10 +119,10 @@ def dir_scan_worker(pid):
     while True:
         path = unsearched.get()
         dirs = explore_path(path)
+        print "process-" + pid + " - Explored: " + path
         for newdir in dirs:
             unsearched.put(newdir)
         unsearched.task_done()
-        print "process-" + pid + " - Explored: " + path
 
 
 def fscat_stub(options, queue, results_q, name, is_multithread=True):
