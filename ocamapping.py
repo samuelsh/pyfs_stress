@@ -143,7 +143,7 @@ def run_recursive_scan(options, queue, results_q):
     process_pool = []
     first_level_dirs = next(os.walk(options.path))[1]
 
-    folders_scan_pool = Pool(MAX_PROCESSES)
+    folders_scan_pool = Pool(processes=MAX_PROCESSES)
     for path in first_level_dirs:
         unsearched.put(options.path + '/' + path)
 
