@@ -40,7 +40,7 @@ pool = Pool(5)
 for i in range(5):
     result = pool.apply_async(parallel_worker)
 
-    while not result.empty():
-        print result.get()
+    print result.get()
+
 
 print 'Done'

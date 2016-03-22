@@ -49,8 +49,8 @@
       <file leaf-file-name="dir_walker.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dir_walker.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8744395">
-              <caret line="43" column="24" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.93721974">
+              <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -82,7 +82,7 @@
         <entry file="file://C:/Python27/Lib/multiprocessing/pool.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="287" column="8" selection-start-line="287" selection-start-column="8" selection-end-line="287" selection-end-column="8" />
+              <caret line="298" column="28" selection-start-line="298" selection-start-column="28" selection-end-line="298" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -401,12 +401,6 @@
       <option name="number" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00026" summary="multiprocessing folder scan&#10;">
-      <created>1458565286522</created>
-      <option name="number" value="00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1458565286522</updated>
-    </task>
     <task id="LOCAL-00027" summary="multiprocessing folder scan&#10;">
       <created>1458565371291</created>
       <option name="number" value="00027" />
@@ -695,7 +689,13 @@
       <option name="project" value="LOCAL" />
       <updated>1458643119709</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="multiprocessing folder scan&#10;">
+      <created>1458643274617</created>
+      <option name="number" value="00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1458643274617</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TodoView">
@@ -815,14 +815,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/multiprocessing/pool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="287" column="8" selection-start-line="287" selection-start-column="8" selection-end-line="287" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hanging_threads.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -883,10 +875,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/Python27/Lib/multiprocessing/pool.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="298" column="28" selection-start-line="298" selection-start-column="28" selection-end-line="298" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/dir_walker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8744395">
-          <caret line="43" column="24" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+        <state vertical-scroll-proportion="0.93721974">
+          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
