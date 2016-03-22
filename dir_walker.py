@@ -8,6 +8,7 @@ from optparse import OptionParser
 def explore_path(path):
     directories = []
     nondirectories = []
+    print "Explored path: " + path
     for filename in os.listdir(path):
         fullname = os.path.join(path, filename)
         if os.path.isdir(fullname):
