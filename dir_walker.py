@@ -17,7 +17,8 @@ def explore_path(path):
 
 
 def parallel_worker():
-    while not unsearched.empty():
+    #while not unsearched.empty():
+    while True:
         path = unsearched.get()
         dirs = explore_path(path)
         for newdir in dirs:
