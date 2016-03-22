@@ -149,6 +149,7 @@ def run_recursive_scan(options, queue, results_q):
 
     for i in range(MAX_PROCESSES):
         folders_scan_pool.apply_async(dir_scan_worker, args=(i,))
+    unsearched.join()
 
     # for dirpath, dirnames, filenames in os.walk(options.path):
     #     for name in filenames:
