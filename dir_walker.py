@@ -40,4 +40,6 @@ pool = Pool(16)
 for i in range(16):
     pool.apply_async(parallel_worker, args=(i,))
 
+unsearched.join()
+
 print 'Done'
