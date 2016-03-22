@@ -115,21 +115,21 @@ def explore_path(path):
     return directories
 
 
-def dir_scan_worker(pid):
+def dir_scan_worker(process_id):
     while True:
         path = unsearched.get()
         dirs = explore_path(path)
-        print "process - Explored: " + path
+        print "process " + process_id + "- Explored: " + path
         for newdir in dirs:
             unsearched.put(newdir)
         unsearched.task_done()
 
 
 def fscat_stub(options, queue, results_q, name, is_multithread=True):
-        try:
-            print name + ": running fscat_stub on path " + queue.get_nowait()
-        except Empty:
-            print name + " reaching empty query"
+    try:
+        print name + ": running fscat_stub on path " + queue.get_nowait()
+    except Empty:
+        print name + " reaching empty query"
 
 
 def run_recursive_scan(options, queue, results_q):
