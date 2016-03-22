@@ -17,8 +17,7 @@ def explore_path(path):
 
 
 def parallel_worker():
-    #while not unsearched.empty():
-    while True:
+    while not unsearched.empty():
         path = unsearched.get()
         dirs = explore_path(path)
         for newdir in dirs:
@@ -41,5 +40,5 @@ pool = Pool(5)
 for i in range(5):
     pool.apply_async(parallel_worker)
 
-unsearched.join()
+#unsearched.join()
 print 'Done'
