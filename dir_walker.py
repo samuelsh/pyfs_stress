@@ -9,7 +9,7 @@ unsearched = Manager().Queue()
 def explore_path(task_num, dirpath):
     directories = []
     nondirectories = []
-    print str(task_num) + ">>> Explored path: " + dirpath
+    print str(task_num) + " >>> Explored path: " + dirpath
     for filename in os.listdir(dirpath):
         fullname = os.path.join(dirpath, filename)
         if os.path.isdir(fullname):
@@ -40,7 +40,7 @@ pool = Pool(5)
 for i in range(5):
     result = pool.apply_async(parallel_worker, args=(i,))
 
-    print result.get()
+    #print result.get()
 
 
 print 'Done'
