@@ -40,5 +40,5 @@ pool = Pool(5)
 for i in range(5):
     pool.apply_async(parallel_worker)
 
-#unsearched.join()
+pool.join()
 print 'Done'
