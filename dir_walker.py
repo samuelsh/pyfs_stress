@@ -6,21 +6,21 @@ import os
 unsearched = Manager().Queue()
 
 
-def explore_path(path):
+def explore_path(task_num, dirpath):
     directories = []
     nondirectories = []
-    print "Explored path: " + path
-    for filename in os.listdir(path):
-        fullname = os.path.join(path, filename)
+    print str(task_num) + ">>> Explored path: " + dirpath
+    for filename in os.listdir(dirpath):
+        fullname = os.path.join(dirpath, filename)
         if os.path.isdir(fullname):
             directories.append(fullname)
     return directories
 
 
-def parallel_worker():
+def parallel_worker(task_num):
     while not unsearched.empty():
         dirpath = unsearched.get_nowait()
-        dirs = explore_path(dirpath)
+        dirs = explore_path(task_num, dirpath)
         for newdir in dirs:
             unsearched.put_nowait(newdir)
         unsearched.task_done()
@@ -38,7 +38,7 @@ for path in first_level_dirs:
 
 pool = Pool(5)
 for i in range(5):
-    result = pool.apply_async(parallel_worker)
+    result = pool.apply_async(parallel_worker, args=(i,))
 
     print result.get()
 
