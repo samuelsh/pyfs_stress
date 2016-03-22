@@ -34,7 +34,7 @@ args = parser.parse_args()
 first_level_dirs = next(os.walk(args.path))[1]
 
 for path in first_level_dirs:
-    unsearched.put(path)
+    unsearched.put(args.path + "/" + path)
 
 pool = Pool(5)
 for i in range(5):
