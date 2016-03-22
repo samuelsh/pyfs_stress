@@ -12,12 +12,6 @@ def explore_path(path):
         fullname = os.path.join(path, filename)
         if os.path.isdir(fullname):
             directories.append(fullname)
-        else:
-            nondirectories.append(filename)
-    outputfile = path.replace(os.sep, '_') + '.txt'
-    with open(outputfile, 'w') as f:
-        for filename in nondirectories:
-            print >> f, filename
     return directories
 
 
