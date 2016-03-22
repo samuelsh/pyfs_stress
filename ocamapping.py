@@ -119,7 +119,7 @@ def dir_scan_worker(pid):
     while True:
         path = unsearched.get()
         dirs = explore_path(path)
-        print "process-" + pid + " - Explored: " + path
+        print "process - Explored: " + path
         for newdir in dirs:
             unsearched.put(newdir)
         unsearched.task_done()
