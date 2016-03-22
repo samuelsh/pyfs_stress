@@ -30,7 +30,7 @@ def parallel_worker():
 
 
 parser = OptionParser()
-parser.add_option("-p", "--path", help="file/dir path", action="store", dest="path", default=".", requred=True)
+parser.add_option("-p", "--path", help="file/dir path", action="store", dest="path", default=".", required=True)
 (options, args) = parser.parse_args()
 
 # acquire the list of paths

@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dir_walker.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ocamapping.py" afterPath="$PROJECT_DIR$/ocamapping.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dir_walker.py" afterPath="$PROJECT_DIR$/dir_walker.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -51,7 +50,7 @@
         <entry file="file://$PROJECT_DIR$/dir_walker.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.59641254">
-              <caret line="32" column="107" selection-start-line="32" selection-start-column="107" selection-end-line="32" selection-end-column="107" />
+              <caret line="32" column="99" selection-start-line="32" selection-start-column="99" selection-end-line="32" selection-end-column="99" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -382,12 +381,6 @@
       <option name="number" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00008" summary="Replacing threads by multiprocessing">
-      <created>1458562872077</created>
-      <option name="number" value="00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1458562872077</updated>
-    </task>
     <task id="LOCAL-00009" summary="multiprocessing folder scan&#10;">
       <created>1458563045836</created>
       <option name="number" value="00009" />
@@ -676,7 +669,13 @@
       <option name="project" value="LOCAL" />
       <updated>1458639598508</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="multiprocessing folder scan&#10;">
+      <created>1458640317136</created>
+      <option name="number" value="00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1458640317146</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TodoView">
@@ -859,7 +858,7 @@
     <entry file="file://$PROJECT_DIR$/dir_walker.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.59641254">
-          <caret line="32" column="107" selection-start-line="32" selection-start-column="107" selection-end-line="32" selection-end-column="107" />
+          <caret line="32" column="99" selection-start-line="32" selection-start-column="99" selection-end-line="32" selection-end-column="99" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
