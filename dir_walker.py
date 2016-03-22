@@ -38,9 +38,6 @@ for path in first_level_dirs:
 
 pool = Pool(16)
 for i in range(16):
-    result = pool.apply_async(parallel_worker, args=(i,))
-
-print result.get()
-
+    pool.apply_async(parallel_worker, args=(i,))
 
 print 'Done'
