@@ -18,7 +18,8 @@ def explore_path(task_num, dirpath):
 
 
 def parallel_worker(task_num):
-    while not unsearched.empty():
+    #while not unsearched.empty():
+    while True:
         dirpath = unsearched.get_nowait()
         dirs = explore_path(task_num, dirpath)
         for newdir in dirs:
