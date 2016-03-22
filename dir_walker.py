@@ -1,9 +1,9 @@
 import argparse
 from multiprocessing.pool import Pool
-from multiprocessing import JoinableQueue as Queue
+from multiprocessing import Manager
 import os
 
-unsearched = Queue()
+unsearched = Manager().Queue()
 
 
 def explore_path(path):
