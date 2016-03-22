@@ -5,6 +5,8 @@ import os
 from optparse import OptionParser
 
 
+unsearched = Queue()
+
 def explore_path(path):
     directories = []
     nondirectories = []
@@ -32,7 +34,6 @@ args = parser.parse_args()
 # acquire the list of paths
 first_level_dirs = next(os.walk(args.path))[1]
 
-unsearched = Queue()
 for path in first_level_dirs:
     unsearched.put(path)
 
@@ -40,5 +41,5 @@ pool = Pool(5)
 for i in range(5):
     pool.apply_async(parallel_worker)
 
-pool.join()
+unsearched.join()
 print 'Done'
