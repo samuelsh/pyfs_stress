@@ -36,11 +36,11 @@ first_level_dirs = next(os.walk(args.path))[1]
 for path in first_level_dirs:
     unsearched.put(args.path + "/" + path)
 
-pool = Pool(5)
-for i in range(5):
+pool = Pool(16)
+for i in range(16):
     result = pool.apply_async(parallel_worker, args=(i,))
 
-    #print result.get()
+print result.get()
 
 
 print 'Done'
