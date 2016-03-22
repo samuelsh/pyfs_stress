@@ -119,7 +119,7 @@ def dir_scan_worker(process_id):
     while not unsearched.empty():
         path = unsearched.get()
         dirs = explore_path(path)
-        print "process " + str(process_id) + "- Explored: " + path
+        print "process " + str(process_id) + " - Explored: " + path
         for newdir in dirs:
             unsearched.put(newdir)
         unsearched.task_done()
@@ -141,7 +141,7 @@ def run_recursive_scan(options, queue, results_q):
         unsearched.put(options.path + '/' + path)
 
     for i in range(MAX_PROCESSES):
-        folders_scan_pool.apply_async(dir_scan_worker, args=(i,))
+        folders_scan_pool.apply(dir_scan_worker, args=(i,))
 
     # for dirpath, dirnames, filenames in os.walk(options.path):
     #     for name in filenames:
