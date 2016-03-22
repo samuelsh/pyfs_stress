@@ -2,7 +2,7 @@ import argparse
 from multiprocessing.pool import Pool
 from multiprocessing import JoinableQueue as Queue
 import os
-from optparse import OptionParser
+import hanging_threads
 
 unsearched = Queue()
 
