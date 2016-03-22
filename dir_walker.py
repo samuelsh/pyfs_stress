@@ -20,7 +20,7 @@ def explore_path(path):
 
 def parallel_worker():
     while not unsearched.empty():
-        path = unsearched.get()
+        path = unsearched.get_nowait()
         dirs = explore_path(path)
         for newdir in dirs:
             unsearched.put(newdir)
