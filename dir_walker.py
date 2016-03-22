@@ -9,7 +9,7 @@ unsearched = Manager().Queue()
 def explore_path(task_num, dirpath):
     directories = []
     nondirectories = []
-    print str(task_num) + " >>> Explored path: " + dirpath
+    print "Task: " + str(task_num) + " >>> Explored path: " + dirpath
     for filename in os.listdir(dirpath):
         fullname = os.path.join(dirpath, filename)
         if os.path.isdir(fullname):
