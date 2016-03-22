@@ -6,6 +6,7 @@ import sys
 from Queue import Empty
 from multiprocessing import Process, JoinableQueue as Queue, Pool
 from optparse import OptionParser
+import traceback
 
 # import hanging_threads
 
@@ -108,21 +109,27 @@ def fscat(options, queue, results_q, name, is_multithread=True):
 def explore_path(path):
     directories = []
     print "Exploring path " + path
-    for filename in os.listdir(path):
-        fullname = os.path.join(path, filename)
-        if os.path.isdir(fullname):
-            directories.append(fullname)
+    try:
+        for filename in os.listdir(path):
+            fullname = os.path.join(path, filename)
+            if os.path.isdir(fullname):
+                directories.append(fullname)
+    except Exception as e:
+        raise e
     return directories
 
 
 def dir_scan_worker(process_id):
-    while not unsearched.empty():
-        path = unsearched.get()
-        dirs = explore_path(path)
-        print "process " + str(process_id) + " - Explored: " + path
-        for newdir in dirs:
-            unsearched.put(newdir)
-        unsearched.task_done()
+    try:
+        while not unsearched.empty():
+            path = unsearched.get()
+            dirs = explore_path(path)
+            print "process " + str(process_id) + " - Explored: " + path
+            for newdir in dirs:
+                unsearched.put(newdir)
+            unsearched.task_done()
+    except Exception as e:
+        raise e
 
 
 def fscat_stub(options, queue, results_q, name, is_multithread=True):
@@ -251,4 +258,5 @@ if __name__ == '__main__':
         main()
         print "#### The End ####"
     except Exception as e:
-        print e
+        traceback.print_exc()
+        sys.exit(1)
