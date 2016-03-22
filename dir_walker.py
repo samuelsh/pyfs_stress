@@ -4,8 +4,8 @@ from multiprocessing import JoinableQueue as Queue
 import os
 from optparse import OptionParser
 
-
 unsearched = Queue()
+
 
 def explore_path(path):
     directories = []
@@ -20,10 +20,10 @@ def explore_path(path):
 
 def parallel_worker():
     while not unsearched.empty():
-        path = unsearched.get_nowait()
-        dirs = explore_path(path)
+        dirpath = unsearched.get_nowait()
+        dirs = explore_path(dirpath)
         for newdir in dirs:
-            unsearched.put(newdir)
+            unsearched.put_nowait(newdir)
         unsearched.task_done()
 
 
