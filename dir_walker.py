@@ -10,7 +10,7 @@ class TreeCrawler(object):
         self.base_path = base_path
         self.unsearched = Manager().Queue()
         self.cpu_count = multiprocessing.cpu_count()
-        self.pool = Pool(16)
+        self.pool = Pool(self.cpu_count)
         self.callback = callback
         # acquire the list of all paths inside base path
         self.first_level_dirs = next(os.walk(self.base_path))[1]
@@ -19,7 +19,7 @@ class TreeCrawler(object):
             self.unsearched.put(self.base_path + "/" + path)
 
     def run_crawler(self):
-        self.pool.map_async(self.parallel_worker, range(16))
+        self.pool.map_async(self.parallel_worker, range(self.cpu_count))
         self.pool.close()
         self.unsearched.join()
 
