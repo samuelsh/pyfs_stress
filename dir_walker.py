@@ -16,7 +16,7 @@ class TreeCrawler(object):
         self.first_level_dirs = next(os.walk(self.base_path))[1]
 
         for path in self.first_level_dirs:
-            self.unsearched.put(args.path + "/" + path)
+            self.unsearched.put(self.base_path + "/" + path)
 
     def __parallel_worker(self, task_num):
         while True:
