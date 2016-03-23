@@ -18,7 +18,7 @@ class TreeCrawler(object):
         for path in self.first_level_dirs:
             self.unsearched.put(self.base_path + "/" + path)
 
-    def __parallel_worker(self, task_num):
+    def parallel_worker(self, task_num):
         while True:
             dirpath = self.unsearched.get()
             dirs = self.callback(task_num, dirpath)
@@ -27,7 +27,7 @@ class TreeCrawler(object):
             self.unsearched.task_done()
 
     def run_crawler(self):
-        self.pool.map_async(self.__parallel_worker, range(self.cpu_count))
+        self.pool.map_async(self.parallel_worker, range(self.cpu_count))
         self.pool.close()
         self.unsearched.join()
 
