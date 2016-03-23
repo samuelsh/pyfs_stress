@@ -49,9 +49,11 @@
       <file leaf-file-name="dir_walker.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dir_walker.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="2" column="37" selection-start-line="2" selection-start-column="37" selection-end-line="2" selection-end-column="37" />
-              <folding />
+            <state vertical-scroll-proportion="0.57910013">
+              <caret line="21" column="57" selection-start-line="21" selection-start-column="57" selection-end-line="21" selection-end-column="57" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -425,12 +427,6 @@
       <option name="number" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00054" summary="multiprocessing folder scan&#10;">
-      <created>1458639453067</created>
-      <option name="number" value="00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1458639453067</updated>
-    </task>
     <task id="LOCAL-00055" summary="multiprocessing folder scan&#10;">
       <created>1458639539583</created>
       <option name="number" value="00055" />
@@ -719,7 +715,13 @@
       <option name="project" value="LOCAL" />
       <updated>1458734571759</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="multiprocessing folder scan&#10;">
+      <created>1458734642187</created>
+      <option name="number" value="00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1458734642187</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="TodoView">
@@ -801,7 +803,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -969,9 +973,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dir_walker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="37" selection-start-line="2" selection-start-column="37" selection-end-line="2" selection-end-column="37" />
-          <folding />
+        <state vertical-scroll-proportion="0.57910013">
+          <caret line="21" column="57" selection-start-line="21" selection-start-column="57" selection-end-line="21" selection-end-column="57" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
