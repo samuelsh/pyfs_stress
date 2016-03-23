@@ -50,7 +50,7 @@
         <entry file="file://$PROJECT_DIR$/dir_walker.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.15239477">
-              <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+              <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -407,12 +407,6 @@
       <option name="number" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00042" summary="multiprocessing folder scan&#10;">
-      <created>1458634471678</created>
-      <option name="number" value="00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1458634471679</updated>
-    </task>
     <task id="LOCAL-00043" summary="multiprocessing folder scan&#10;">
       <created>1458637238255</created>
       <option name="number" value="00043" />
@@ -701,7 +695,13 @@
       <option name="project" value="LOCAL" />
       <updated>1458728649997</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="multiprocessing folder scan&#10;">
+      <created>1458728731946</created>
+      <option name="number" value="00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1458728731946</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="TodoView">
@@ -953,7 +953,7 @@
     <entry file="file://$PROJECT_DIR$/dir_walker.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.15239477">
-          <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
