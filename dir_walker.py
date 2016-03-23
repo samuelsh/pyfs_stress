@@ -3,7 +3,7 @@ from multiprocessing.pool import Pool
 from multiprocessing import Manager
 import os
 
-MAX_POOL_SIZE = 2
+MAX_POOL_SIZE = 16
 
 unsearched = Manager().Queue()
 
