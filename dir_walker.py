@@ -3,6 +3,8 @@ from multiprocessing.pool import Pool
 from multiprocessing import Manager
 import os
 
+MAX_POOL_SIZE = 2
+
 unsearched = Manager().Queue()
 
 
@@ -36,9 +38,8 @@ first_level_dirs = next(os.walk(args.path))[1]
 for path in first_level_dirs:
     unsearched.put(args.path + "/" + path)
 
-pool = Pool(16)
-#for i in range(16):
-pool.map_async(parallel_worker, range(16))
+pool = Pool(MAX_POOL_SIZE)
+pool.map_async(parallel_worker, range(MAX_POOL_SIZE))
 pool.close()
 unsearched.join()
 
