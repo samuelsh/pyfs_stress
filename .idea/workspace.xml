@@ -49,8 +49,8 @@
       <file leaf-file-name="dir_walker.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dir_walker.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.75336325">
-              <caret line="24" column="25" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
+            <state vertical-scroll-proportion="0.2780269">
+              <caret line="28" column="33" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="33" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -391,12 +391,6 @@
       <option name="number" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00037" summary="multiprocessing folder scan&#10;">
-      <created>1458566915757</created>
-      <option name="number" value="00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1458566915757</updated>
-    </task>
     <task id="LOCAL-00038" summary="multiprocessing folder scan&#10;">
       <created>1458632758926</created>
       <option name="number" value="00038" />
@@ -685,7 +679,13 @@
       <option name="project" value="LOCAL" />
       <updated>1458648214424</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="multiprocessing folder scan&#10;">
+      <created>1458648536954</created>
+      <option name="number" value="00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1458648536954</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="TodoView">
@@ -875,8 +875,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dir_walker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75336325">
-          <caret line="24" column="25" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
+        <state vertical-scroll-proportion="0.2780269">
+          <caret line="28" column="33" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="33" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>

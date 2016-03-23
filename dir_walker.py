@@ -37,8 +37,8 @@ for path in first_level_dirs:
     unsearched.put(args.path + "/" + path)
 
 pool = Pool(16)
-for i in range(16):
-    pool.apply_async(parallel_worker, args=(i,))
+#for i in range(16):
+pool.map_async(parallel_worker, range(16))
 
 unsearched.join()
 
