@@ -35,7 +35,7 @@ class TreeCrawler(object):
 def explore_path(task_num, dirpath):
     directories = []
     print "Task: " + str(task_num) + " >>> Explored path: " + dirpath
-    for filename in os.walk('.').next()[1]:  #os.listdir(dirpath):
+    for filename in os.walk(dirpath).next()[1]:  #os.listdir(dirpath):
         fullname = os.path.join(dirpath, filename)
         directories.append(fullname)
     return directories
