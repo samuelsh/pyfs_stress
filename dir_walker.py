@@ -24,7 +24,7 @@ class TreeCrawler(object):
         self.unsearched.join()
 
     @property
-    def unsearched(self):
+    def get_unsearched(self):
         return self.unsearched
 
 
