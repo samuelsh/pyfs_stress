@@ -1,6 +1,6 @@
 import argparse
 import multiprocessing
-from multiprocessing.pool import Pool
+from multiprocessing.dummy import Pool
 from multiprocessing import Manager
 import os
 
@@ -19,22 +19,17 @@ class TreeCrawler(object):
             self.unsearched.put(self.base_path + "/" + path)
 
     def run_crawler(self):
-        self.pool.map_async(parallel_worker, range(self.cpu_count))
+        self.pool.map_async(self.parallel_worker, range(self.cpu_count))
         self.pool.close()
         self.unsearched.join()
 
-    @property
-    def get_unsearched(self):
-        return self.unsearched
-
-
-def parallel_worker(task_num):
-    while True:
-        dirpath = unsearched.get()
-        dirs = explore_path(task_num, dirpath)
-        for newdir in dirs:
-            unsearched.put(newdir)
-        unsearched.task_done()
+    def parallel_worker(self, task_num):
+        while True:
+            dirpath = self.unsearched.get()
+            dirs = explore_path(task_num, dirpath)
+            for newdir in dirs:
+                self.unsearched.put(newdir)
+            self.unsearched.task_done()
 
 
 def explore_path(task_num, dirpath):
@@ -52,7 +47,6 @@ parser.add_argument("-p", "--path", help="file/dir path", action="store", dest="
 args = parser.parse_args()
 
 crawler = TreeCrawler(args.path, explore_path)
-unsearched = crawler.unsearched
 crawler.run_crawler()
 
 print 'Done'
