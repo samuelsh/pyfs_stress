@@ -47,5 +47,6 @@ parser.add_argument("-p", "--path", help="file/dir path", action="store", dest="
 args = parser.parse_args()
 
 crawler = TreeCrawler(args.path, explore_path)
+crawler.run_crawler()
 
 print 'Done'
