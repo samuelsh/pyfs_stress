@@ -6,13 +6,13 @@ import os
 
 
 class TreeCrawler(object):
-    def __init__(self, base_path):
+    def __init__(self, base_path, callback=None):
         self.base_path = base_path
         self.unsearched = Manager().Queue()
         self.cpu_count = multiprocessing.cpu_count()
         self.pool = Pool(self.cpu_count)
         self.__dirpath = ""
-        self.callback = None
+        self.callback = callback
         # acquire the list of all paths inside base path
         self.first_level_dirs = next(os.walk(self.base_path))[1]
 
