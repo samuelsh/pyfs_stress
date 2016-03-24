@@ -21,6 +21,7 @@ class TreeCrawler(object):
 
     def __explore_path(self):
         directories = []
+        print "Exploring: " + self.__dirpath
         for filename in os.walk(self.__dirpath).next()[1]:
             fullname = os.path.join(self.__dirpath, filename)
             directories.append(fullname)
