@@ -7,6 +7,12 @@ import os
 
 class TreeCrawler(object):
     def __init__(self, base_path, callback=None):
+
+        try:
+            os.path.isdir(base_path)
+        except IOError:
+            raise IOError("Base path: " + base_path)
+
         self.base_path = base_path
         self.unsearched = Manager().Queue()
         self.dirpath_queue = Queue()
