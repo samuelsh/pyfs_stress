@@ -1,6 +1,6 @@
 import argparse
 import multiprocessing
-from multiprocessing.dummy import Pool
+from multiprocessing.dummy import Pool, Queue
 from multiprocessing import Manager
 import os
 
@@ -9,14 +9,15 @@ class TreeCrawler(object):
     def __init__(self, base_path, callback=None):
         self.base_path = base_path
         self.unsearched = Manager().Queue()
+        self.dirpath_queue = Queue()
         self.cpu_count = multiprocessing.cpu_count()
         self.pool = Pool(self.cpu_count)
-        self.__dirpath = ""
         self.first_level_dirs = ""
         self.callback = callback
 
-    def __explore_path(self, dirpath):
+    def __explore_path(self):
         directories = []
+        dirpath = self.dirpath_queue.get()
         print "Exploring: " + dirpath
         for filename in os.walk(dirpath).next()[1]:
             fullname = os.path.join(dirpath, filename)
@@ -36,7 +37,8 @@ class TreeCrawler(object):
         while True:
             dirpath = self.unsearched.get()
             print "Task: " + str(task_num) + " >>> Explored path: " + dirpath
-            dirs = self.__explore_path(dirpath)
+            self.dirpath_queue.put(dirpath)
+            dirs = self.__explore_path()
             for newdir in dirs:
                 self.unsearched.put(newdir)
             self.unsearched.task_done()
