@@ -26,7 +26,7 @@ class TreeCrawler(object):
     def parallel_worker(self, task_num):
         while True:
             dirpath = self.unsearched.get()
-            dirs = explore_path(task_num, dirpath)
+            dirs = self.callback(task_num, dirpath)
             for newdir in dirs:
                 self.unsearched.put(newdir)
             self.unsearched.task_done()
@@ -35,7 +35,7 @@ class TreeCrawler(object):
 def explore_path(task_num, dirpath):
     directories = []
     print "Task: " + str(task_num) + " >>> Explored path: " + dirpath
-    for filename in os.walk(dirpath).next()[1]:  #os.listdir(dirpath):
+    for filename in os.walk(dirpath).next()[1]:
         fullname = os.path.join(dirpath, filename)
         directories.append(fullname)
     return directories
