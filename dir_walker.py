@@ -9,7 +9,7 @@ class TreeCrawler(object):
     def __init__(self, base_path, callback=None):
 
         if not os.path.isdir(base_path):
-            raise IOError("Base path: " + base_path)
+            raise IOError("Base path not found: " + base_path)
 
         self.base_path = base_path
         self.unsearched = Manager().Queue()
