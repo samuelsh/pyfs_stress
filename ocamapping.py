@@ -152,7 +152,7 @@ def fscat_stub(options, queue, results_q, name, is_multithread=True):
     while True:
         try:
             print name + ": running fscat_stub on path "
-            print files_queue.get()
+            print files_queue.get_nowait()
         except Empty:
             print name + " reaching empty query"
 
