@@ -148,7 +148,7 @@ def run_crawler(base_path):
 
 #
 
-def fscat_stub(options, results_q, name, is_multithread=True):
+def fscat_stub(options, queue, results_q, name, is_multithread=True):
     try:
         print name + ": running fscat_stub on path "
         print files_queue.get()
