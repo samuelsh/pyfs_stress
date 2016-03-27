@@ -5,15 +5,15 @@ import subprocess
 import os.path
 import sys
 from Queue import Empty
-from multiprocessing import Process, JoinableQueue as Queue, Pool
+from multiprocessing import Process, Pool
 from optparse import OptionParser
 import traceback
 
 # import hanging_threads
 
 MAX_PROCESSES = 16
-unsearched = Queue()
-files_queue = Queue()
+unsearched = multiprocessing.Manager().Queue()
+files_queue = multiprocessing.Queue()
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
@@ -228,8 +228,8 @@ def main():
     2 - bad argument passed
     """
 
-    queue = Queue()
-    results_q = Queue()
+    queue = multiprocessing.Queue()
+    results_q = multiprocessing.Queue()
 
     parser = OptionParser()
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose")
