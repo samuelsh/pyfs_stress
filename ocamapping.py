@@ -149,11 +149,12 @@ def run_crawler(base_path):
 #
 
 def fscat_stub(options, queue, results_q, name, is_multithread=True):
-    try:
-        print name + ": running fscat_stub on path "
-        print files_queue.get()
-    except Empty:
-        print name + " reaching empty query"
+    while True:
+        try:
+            print name + ": running fscat_stub on path "
+            print files_queue.get()
+        except Empty:
+            print name + " reaching empty query"
 
 
 def run_recursive_scan(options, queue, results_q):
