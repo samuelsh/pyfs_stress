@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import multiprocessing
 import os
 import subprocess
 import os.path
@@ -12,6 +13,7 @@ import traceback
 
 MAX_PROCESSES = 16
 unsearched = Queue()
+files_queue = Queue()
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
@@ -106,49 +108,57 @@ def fscat(options, queue, results_q, name, is_multithread=True):
     print name + ": finished"
 
 
+# Driectory tree crawler functions
 def explore_path(path):
     directories = []
-    print "Exploring path " + path
-    try:
-        for filename in os.listdir(path):
-            fullname = os.path.join(path, filename)
-            if os.path.isdir(fullname):
-                directories.append(fullname)
-    except Exception as e:
-        raise e
+    for filename in os.listdir(path):
+        fullname = os.path.join(path, filename)
+        if os.path.isdir(fullname):
+            directories.append(fullname)
+        else:
+            files_queue.put(fullname)
     return directories
 
 
-def dir_scan_worker(process_id):
-    try:
-        while not unsearched.empty():
-            path = unsearched.get()
-            dirs = explore_path(path)
-            print "process " + str(process_id) + " - Explored: " + path
-            for newdir in dirs:
-                unsearched.put(newdir)
-            unsearched.task_done()
-    except Exception as e:
-        raise e
+def dir_scan_worker(task_num):
+    while True:
+        path = unsearched.get()
+        dirs = explore_path(path)
+        print "Task: " + str(task_num) + " >>> Explored path: " + path
+        for newdir in dirs:
+            unsearched.put(newdir)
+        unsearched.task_done()
 
 
-def fscat_stub(options, queue, results_q, name, is_multithread=True):
+def run_crawler(base_path):
+    if not os.path.isdir(base_path):
+        raise IOError("Base path not found: " + base_path)
+
+    cpu_count = multiprocessing.cpu_count()
+    pool = Pool(cpu_count)
+
+    # acquire the list of all paths inside base path
+    first_level_dirs = next(os.walk(base_path))[1]
+    for path in first_level_dirs:
+        unsearched.put(base_path + "/" + path)
+    pool.map_async(dir_scan_worker, range(cpu_count))
+    pool.close()
+    unsearched.join()
+
+
+#
+
+def fscat_stub(options, results_q, name, is_multithread=True):
     try:
-        print name + ": running fscat_stub on path " + queue.get_nowait()
+        print name + ": running fscat_stub on path " + files_queue.get()
     except Empty:
         print name + " reaching empty query"
 
 
 def run_recursive_scan(options, queue, results_q):
     process_pool = []
-    first_level_dirs = next(os.walk(options.path))[1]
 
-    folders_scan_pool = Pool(processes=MAX_PROCESSES)
-    for path in first_level_dirs:
-        unsearched.put(options.path + '/' + path)
-
-    for i in range(MAX_PROCESSES):
-        folders_scan_pool.apply_async(dir_scan_worker, args=(i,))
+    run_crawler(options.path)
 
     # for dirpath, dirnames, filenames in os.walk(options.path):
     #     for name in filenames:

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dir_walker_multiprocess.py" />
+    <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="multiprocessing folder scan&#10;">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ocamapping.py" afterPath="$PROJECT_DIR$/ocamapping.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,68 +34,26 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ocamapping.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ocamapping.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ocamapping.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="32" column="32" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.57910013">
+              <caret line="160" column="27" selection-start-line="160" selection-start-column="27" selection-end-line="160" selection-end-column="27" />
               <folding>
-                <element signature="e#18#27#0" expanded="true" />
+                <element signature="e#18#40#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dir_walker.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dir_walker.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dir_walker_multiprocess.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dir_walker_multiprocess.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dir_walker_multiprocess.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.76197386">
-              <caret line="47" column="20" selection-start-line="47" selection-start-column="20" selection-end-line="47" selection-end-column="20" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="nt.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.PyCharm50/system/python_stubs/-762174762/nt.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="498" column="7" selection-start-line="498" selection-start-column="7" selection-end-line="498" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="queues.py" pinned="false" current-in-tab="false">
-        <entry file="file://C:/Python27/Lib/multiprocessing/queues.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="305" column="8" selection-start-line="305" selection-start-column="8" selection-end-line="305" selection-end-column="8" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pool.py" pinned="false" current-in-tab="false">
-        <entry file="file://C:/Python27/Lib/multiprocessing/pool.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="298" column="28" selection-start-line="298" selection-start-column="28" selection-end-line="298" selection-end-column="28" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -104,10 +62,20 @@
         <entry file="file://$PROJECT_DIR$/md5_benchmark_python.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="34" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
+              <caret line="35" column="49" selection-start-line="35" selection-start-column="49" selection-end-line="35" selection-end-column="49" />
               <folding>
                 <element signature="e#72#87#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pool.py" pinned="false" current-in-tab="false">
+        <entry file="file://C:/Python27/Lib/multiprocessing/pool.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="307" column="8" selection-start-line="307" selection-start-column="8" selection-end-line="307" selection-end-column="8" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -140,9 +108,9 @@
         <option value="$PROJECT_DIR$/hanging_threads.py" />
         <option value="$PROJECT_DIR$/md5_benchmark_python.py" />
         <option value="C:/Python27/Lib/multiprocessing/__init__.py" />
-        <option value="$PROJECT_DIR$/ocamapping.py" />
-        <option value="$PROJECT_DIR$/dir_walker.py" />
         <option value="$PROJECT_DIR$/dir_walker_multiprocess.py" />
+        <option value="$PROJECT_DIR$/dir_walker.py" />
+        <option value="$PROJECT_DIR$/ocamapping.py" />
       </list>
     </option>
   </component>
@@ -440,12 +408,6 @@
       <option name="number" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00078" summary="multiprocessing folder scan&#10;">
-      <created>1458643737589</created>
-      <option name="number" value="00078" />
-      <option name="project" value="LOCAL" />
-      <updated>1458643737589</updated>
-    </task>
     <task id="LOCAL-00079" summary="multiprocessing folder scan&#10;">
       <created>1458644688947</created>
       <option name="number" value="00079" />
@@ -734,7 +696,13 @@
       <option name="project" value="LOCAL" />
       <updated>1458822529502</updated>
     </task>
-    <option name="localTasksCounter" value="127" />
+    <task id="LOCAL-00127" summary="multiprocessing folder scan&#10;">
+      <created>1458823540180</created>
+      <option name="number" value="00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1458823540180</updated>
+    </task>
+    <option name="localTasksCounter" value="128" />
     <servers />
   </component>
   <component name="TodoView">
@@ -807,7 +775,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="32" column="32" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
           <folding>
-            <element signature="e#18#27#0" expanded="true" />
+            <element signature="e#18#40#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -869,7 +837,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#18#27#0" expanded="true" />
+            <element signature="e#18#40#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -897,7 +865,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#18#27#0" expanded="true" />
+            <element signature="e#18#40#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -924,24 +892,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/md5_readahead.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="325" column="31" selection-start-line="325" selection-start-column="31" selection-end-line="325" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/md5_benchmark_python.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="34" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
-          <folding>
-            <element signature="e#72#87#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python27/Lib/multiprocessing/queues.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -958,29 +908,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/multiprocessing/pool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="298" column="28" selection-start-line="298" selection-start-column="28" selection-end-line="298" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python27/Lib/multiprocessing/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="125" column="4" selection-start-line="125" selection-start-column="4" selection-end-line="125" selection-end-column="4" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ocamapping.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="32" column="32" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
-          <folding>
-            <element signature="e#18#27#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -992,10 +924,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/md5_readahead.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="325" column="31" selection-start-line="325" selection-start-column="31" selection-end-line="325" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/md5_benchmark_python.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="35" column="49" selection-start-line="35" selection-start-column="49" selection-end-line="35" selection-end-column="49" />
+          <folding>
+            <element signature="e#72#87#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/dir_walker.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
@@ -1004,10 +954,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dir_walker_multiprocess.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.76197386">
-          <caret line="47" column="20" selection-start-line="47" selection-start-column="20" selection-end-line="47" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/multiprocessing/pool.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="307" column="8" selection-start-line="307" selection-start-column="8" selection-end-line="307" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ocamapping.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.57910013">
+          <caret line="160" column="27" selection-start-line="160" selection-start-column="27" selection-end-line="160" selection-end-column="27" />
+          <folding>
+            <element signature="e#18#40#0" expanded="true" />
           </folding>
         </state>
       </provider>
