@@ -148,7 +148,7 @@ def run_crawler(base_path):
 
 #
 
-def fscat_stub(options, queue, results_q, name, is_multithread=True):
+def fscat_stub(options, results_q, name, is_multithread=True):
     while not files_queue.empty():
         try:
             print name + ": running fscat_stub on path " + files_queue.get()
@@ -156,7 +156,7 @@ def fscat_stub(options, queue, results_q, name, is_multithread=True):
             print name + " reaching empty query"
 
 
-def run_recursive_scan(options, queue, results_q):
+def run_recursive_scan(options, results_q):
     process_pool = Pool(MAX_PROCESSES)
 
     run_crawler(options.path)
@@ -167,7 +167,7 @@ def run_recursive_scan(options, queue, results_q):
     #         queue.put(os.path.join(dirpath, name))
 
     for i in range(MAX_PROCESSES):
-        p = process_pool.apply_async(fscat_stub, (options, queue, results_q, ("process-%d" % i)))
+        p = process_pool.apply_async(fscat_stub, (options, results_q, ("process-%d" % i)))
 
     # for p in process_pool:
     #     print "process %s started" % p.name
@@ -256,7 +256,7 @@ def main():
     elif os.path.isdir(options.path):
         if options.recursive:
             print "Scanning directory tree..."
-            if run_recursive_scan(options, queue, results_q) is True:
+            if run_recursive_scan(options, results_q) is True:
                 sys.exit(1)
         else:
             print "Scanning folder for files..."
