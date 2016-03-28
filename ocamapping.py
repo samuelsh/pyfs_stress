@@ -167,7 +167,7 @@ def run_recursive_scan(options, queue, results_q):
     #         queue.put(os.path.join(dirpath, name))
 
     for i in range(MAX_PROCESSES):
-        p = apply(fscat_stub, args=(options, queue, results_q, ("process-%d" % i)))
+        p = apply(fscat_stub, (options, queue, results_q, ("process-%d" % i)))
 
     # for p in process_pool:
     #     print "process %s started" % p.name
