@@ -127,7 +127,7 @@ def dir_scan_worker(task_num):
         print "Task: " + str(task_num) + " >>> Explored path: " + path
         for newdir in dirs:
             unsearched.put(newdir)
-        unsearched.task_done()
+        #unsearched.task_done()
 
 
 def run_crawler(base_path):
@@ -143,7 +143,7 @@ def run_crawler(base_path):
         unsearched.put(base_path + "/" + path)
     pool.map_async(dir_scan_worker, range(cpu_count))
     pool.close()
-    #unsearched.join()
+    unsearched.join()
 
 
 #
@@ -177,7 +177,6 @@ def run_recursive_scan(options, results_q):
     #     p.join()
     process_pool.close()
     process_pool.join()
-    unsearched.join()
 
     while not results_q.empty():
         q = results_q.get()
