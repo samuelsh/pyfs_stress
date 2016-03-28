@@ -175,8 +175,10 @@ def run_recursive_scan(options, queue, results_q):
         print "process %s started" % p.name
         p.start()
 
-    for p in process_pool:
-        p.join()
+    #for p in process_pool:
+    #    p.join()
+
+    files_queue.join()
 
     while not results_q.empty():
         q = results_q.get()
