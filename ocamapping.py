@@ -156,7 +156,7 @@ def run_crawler(base_path):
 def fscat_stub(options, name, is_multithread=True):
 
     while unsearched.empty():
-        pass
+        print "waiting empty queue"
 
     while not stop_event.is_set():
         try:
