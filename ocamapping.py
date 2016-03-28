@@ -229,7 +229,7 @@ def main():
     2 - bad argument passed
     """
 
-    queue = multiprocessing.Queue()
+    queue = multiprocessing.Manager().Queue()
     results_q = multiprocessing.Queue()
 
     parser = OptionParser()
