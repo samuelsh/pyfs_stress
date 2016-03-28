@@ -121,7 +121,7 @@ def explore_path(path):
 
 
 def dir_scan_worker(task_num):
-    while True:
+    while not unsearched.empty():
         try:
             path = unsearched.get()
             dirs = explore_path(path)
