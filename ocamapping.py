@@ -177,6 +177,7 @@ def run_recursive_scan(options, results_q):
     #     p.join()
     process_pool.close()
     process_pool.join()
+    unsearched.join()
 
     while not results_q.empty():
         q = results_q.get()
