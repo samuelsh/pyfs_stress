@@ -123,7 +123,7 @@ def explore_path(path):
 def dir_scan_worker(task_num):
     while not unsearched.empty():
         try:
-            path = unsearched.get()
+            path = unsearched.get_nowait()
             dirs = explore_path(path)
             print "Task: " + str(task_num) + " >>> Explored path: " + path
             for newdir in dirs:
