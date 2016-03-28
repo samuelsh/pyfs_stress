@@ -160,7 +160,7 @@ def fscat_stub(options, name, is_multithread=True):
 
     while not stop_event.is_set():
         try:
-            print name + ": running fscat_stub on path " + files_queue.get_nowait()
+            print name + ": running fscat_stub on path " + files_queue.get()
         except Empty:
             print name + " reaching empty query"
             stop_event.set()
