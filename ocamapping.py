@@ -13,7 +13,7 @@ import traceback
 
 MAX_PROCESSES = 16
 unsearched = multiprocessing.Manager().Queue()
-files_queue = multiprocessing.JoinableQueue()
+files_queue = multiprocessing.Manager().Queue()
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
