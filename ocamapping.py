@@ -123,7 +123,6 @@ def explore_path(path):
 def dir_scan_worker(task_num):
     while not unsearched.empty():
         try:
-            print "getting from unsearched..."
             path = unsearched.get_nowait()
             dirs = explore_path(path)
             print "Task: " + str(task_num) + " >>> Explored path: " + path
@@ -131,7 +130,8 @@ def dir_scan_worker(task_num):
                 unsearched.put(newdir)
         except Empty:
             print "Task: " + str(task_num) + " reached end of the queue"
-        #unsearched.task_done()
+    print "Done dir_scan_worker"
+    unsearched.task_done()
 
 
 def run_crawler(base_path):
