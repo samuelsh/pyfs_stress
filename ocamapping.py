@@ -130,7 +130,7 @@ def dir_scan_worker(task_num):
                 unsearched.put(newdir)
         except Empty:
             print "Task: " + str(task_num) + " reached end of the queue"
-        unsearched.task_done()
+        #unsearched.task_done()
 
 
 def run_crawler(base_path):
