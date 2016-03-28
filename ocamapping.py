@@ -12,7 +12,7 @@ import traceback
 # import hanging_threads
 
 MAX_PROCESSES = 16
-unsearched = multiprocessing.Manager().Queue()
+unsearched = multiprocessing.Queue()
 files_queue = multiprocessing.Manager().Queue()
 stop_event = multiprocessing.Event()
 
