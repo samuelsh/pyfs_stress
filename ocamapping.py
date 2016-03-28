@@ -127,7 +127,7 @@ def dir_scan_worker(task_num):
         print "Task: " + str(task_num) + " >>> Explored path: " + path
         for newdir in dirs:
             unsearched.put(newdir)
-        #unsearched.task_done()
+        unsearched.task_done()
 
 
 def run_crawler(base_path):
