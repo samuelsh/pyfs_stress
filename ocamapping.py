@@ -157,7 +157,7 @@ def fscat_stub(options, queue, results_q, name, is_multithread=True):
 
 
 def run_recursive_scan(options, queue, results_q):
-    process_pool =  Pool(MAX_PROCESSES)
+    process_pool = Pool(MAX_PROCESSES)
 
     run_crawler(options.path)
 
@@ -167,7 +167,7 @@ def run_recursive_scan(options, queue, results_q):
     #         queue.put(os.path.join(dirpath, name))
 
     for i in range(MAX_PROCESSES):
-        p = apply(fscat_stub, (options, queue, results_q, ("process-%d" % i)))
+        p = process_pool.apply_async(fscat_stub, (options, queue, results_q, ("process-%d" % i)))
 
     # for p in process_pool:
     #     print "process %s started" % p.name
