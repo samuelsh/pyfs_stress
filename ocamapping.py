@@ -122,11 +122,14 @@ def explore_path(path):
 
 def dir_scan_worker(task_num):
     while True:
-        path = unsearched.get()
-        dirs = explore_path(path)
-        print "Task: " + str(task_num) + " >>> Explored path: " + path
-        for newdir in dirs:
-            unsearched.put(newdir)
+        try:
+            path = unsearched.get()
+            dirs = explore_path(path)
+            print "Task: " + str(task_num) + " >>> Explored path: " + path
+            for newdir in dirs:
+                unsearched.put(newdir)
+        except Empty:
+            print "Task: " + str(task_num) + " reached end of the queue"
         unsearched.task_done()
 
 
