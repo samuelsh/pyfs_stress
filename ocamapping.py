@@ -161,6 +161,7 @@ def run_crawler(base_path):
 def fscat_stub(options, name, is_multithread=True):
     global stopped_processes_count
     retry_count = 0
+    me_stopped = False
     while not stop_event.is_set():
         try:
             print name + ": running fscat_stub on path " + files_queue.get_nowait()
@@ -171,13 +172,14 @@ def fscat_stub(options, name, is_multithread=True):
                 time.sleep(1)
                 retry_count += 1
             else:
-                if stopped_processes_count == MAX_PROCESSES:
+                if stopped_processes_count < MAX_PROCESSES:
+                    if not me_stopped:
+                        stopped_processes_count += 1
+                    print name + " I'm done, waiting others to complete"
+                    me_stopped = True
+                elif stopped_processes_count == MAX_PROCESSES:
                     print name + " timed out. Sending stop event"
                     stop_event.set()
-                else:
-                    stopped_processes_count += 1
-                    print name + " I'm done, waiting others to complete"
-                    time.sleep(10)
 
 
 def run_recursive_scan(options, results_q):
