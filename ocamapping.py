@@ -171,13 +171,13 @@ def fscat_stub(options, name, is_multithread=True):
                 time.sleep(1)
                 retry_count += 1
             else:
-                stopped_processes_count += 1
                 if stopped_processes_count == MAX_PROCESSES - 1:
                     print name + " timed out. Sending stop event"
                     stop_event.set()
                 else:
+                    stopped_processes_count += 1
                     name + " I'm done, waiting others to complete"
-                    time.sleep(5)
+                    time.sleep(60)
 
 
 def run_recursive_scan(options, results_q):
