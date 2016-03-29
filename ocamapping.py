@@ -143,7 +143,7 @@ def run_crawler(base_path):
         raise IOError("Base path not found: " + base_path)
 
     cpu_count = multiprocessing.cpu_count()
-    # global dir_scanner_pool = Pool(cpu_count)
+    global dir_scanner_pool
 
     # acquire the list of all paths inside base path
     first_level_dirs = next(os.walk(base_path))[1]
