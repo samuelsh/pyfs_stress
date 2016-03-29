@@ -169,6 +169,7 @@ def fscat_stub(options, name, is_multithread=True):
     Returns:
 
     """
+    global stopped_processes_count
     retry_count = 0
     me_stopped = False
     while not stop_event.is_set():
@@ -188,7 +189,7 @@ def fscat_stub(options, name, is_multithread=True):
                         print name + " I'm done, waiting others to complete"
                         me_stopped = True
                     # print " ************** " + name + " is still waiting *************************"
-                    print " ************** " + stopped_processes_count.value + " ***********************"
+                    # print " ************** " + stopped_processes_count.value + " ***********************"
                 else:
                     print name + " timed out. Sending stop event"
                     stop_event.set()
