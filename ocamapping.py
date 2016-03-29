@@ -17,6 +17,7 @@ unsearched = multiprocessing.Manager().Queue()
 files_queue = multiprocessing.Manager().Queue()
 stop_event = multiprocessing.Event()
 dir_scanner_pool = None
+stopped_processes_count = 0
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
@@ -152,12 +153,13 @@ def run_crawler(base_path):
         unsearched.put(base_path + "/" + path)
     dir_scanner_pool.map_async(dir_scan_worker, range(cpu_count))
     dir_scanner_pool.close()
-    #unsearched.join()
+    # unsearched.join()
 
 
 #
 
 def fscat_stub(options, name, is_multithread=True):
+    global stopped_processes_count
     retry_count = 0
     while not stop_event.is_set():
         try:
@@ -169,8 +171,13 @@ def fscat_stub(options, name, is_multithread=True):
                 time.sleep(1)
                 retry_count += 1
             else:
-                print name + " timed out. Sending stop event"
-                stop_event.set()
+                stopped_processes_count += 1
+                if stopped_processes_count == MAX_PROCESSES - 1:
+                    print name + " timed out. Sending stop event"
+                    stop_event.set()
+                else:
+                    name + " I'm done, waiting others to complete"
+                    time.sleep(5)
 
 
 def run_recursive_scan(options, results_q):
