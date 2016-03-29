@@ -156,7 +156,7 @@ def run_crawler(base_path):
 def fscat_stub(options, name, is_multithread=True):
     while not files_queue.empty():
         try:
-            print name + ": running fscat_stub on path " + files_queue.get()
+            print name + ": running fscat_stub on path " + files_queue.get_nowait()
         except Empty:
             print name + " reaching empty query"
 
