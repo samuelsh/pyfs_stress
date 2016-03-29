@@ -171,7 +171,7 @@ def fscat_stub(options, name, is_multithread=True):
                 time.sleep(1)
                 retry_count += 1
             else:
-                if stopped_processes_count == MAX_PROCESSES - 1:
+                if stopped_processes_count == MAX_PROCESSES:
                     print name + " timed out. Sending stop event"
                     stop_event.set()
                 else:
