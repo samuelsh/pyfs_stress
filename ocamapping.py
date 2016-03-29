@@ -16,7 +16,7 @@ MAX_PROCESSES = 16
 unsearched = multiprocessing.Manager().Queue()
 files_queue = multiprocessing.Manager().Queue()
 stop_event = multiprocessing.Event()
-dir_scanner_pool = Pool(multiprocessing.cpu_count())
+#dir_scanner_pool = Pool(multiprocessing.cpu_count())
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
@@ -143,7 +143,7 @@ def run_crawler(base_path):
         raise IOError("Base path not found: " + base_path)
 
     cpu_count = multiprocessing.cpu_count()
-    global dir_scanner_pool
+    dir_scanner_pool = Pool(multiprocessing.cpu_count())
 
     # acquire the list of all paths inside base path
     first_level_dirs = next(os.walk(base_path))[1]
