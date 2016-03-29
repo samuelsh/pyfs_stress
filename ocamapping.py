@@ -10,10 +10,12 @@ from optparse import OptionParser
 import traceback
 
 # import hanging_threads
+import time
 
 MAX_PROCESSES = 16
 unsearched = multiprocessing.Manager().Queue()
 files_queue = multiprocessing.Manager().Queue()
+stop_event = multiprocessing.Event()
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
@@ -148,14 +150,15 @@ def run_crawler(base_path):
         unsearched.put(base_path + "/" + path)
     pool.map_async(dir_scan_worker, range(cpu_count))
     pool.close()
-    unsearched.join()
+    #unsearched.join()
 
 
 #
 
 def fscat_stub(options, name, is_multithread=True):
-    # while files_queue.empty():
-    #     print "Watitng file_queue"
+    time.sleep(5)
+    while files_queue.empty():
+         print "Watitng file_queue"
     while not files_queue.empty():
         try:
             print name + ": running fscat_stub on path " + files_queue.get_nowait()
