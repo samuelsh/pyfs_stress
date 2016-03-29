@@ -156,10 +156,7 @@ def run_crawler(base_path):
 #
 
 def fscat_stub(options, name, is_multithread=True):
-    time.sleep(5)
-    while files_queue.empty():
-         print "Watitng file_queue"
-    while not files_queue.empty():
+    while not stop_event.is_set():
         try:
             print name + ": running fscat_stub on path " + files_queue.get_nowait()
         except Empty:
