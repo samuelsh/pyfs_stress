@@ -177,7 +177,7 @@ def fscat_stub(options, name, is_multithread=True):
                 else:
                     stopped_processes_count += 1
                     name + " I'm done, waiting others to complete"
-                    time.sleep(60)
+                    time.sleep(10)
 
 
 def run_recursive_scan(options, results_q):
