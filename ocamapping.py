@@ -209,6 +209,7 @@ def run_recursive_scan(options, results_q):
     stopped_processes_count = multiprocessing.Manager().Value('i', 0)
     for i in range(MAX_PROCESSES):
         p = process_pool.apply_async(fscat_stub, args=(options, ("process-%d" % i)))
+    p.get()
 
     # for p in process_pool:
     #     print "process %s started" % p.name
