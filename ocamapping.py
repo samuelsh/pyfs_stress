@@ -152,7 +152,7 @@ def run_crawler(base_path):
         unsearched.put(base_path + "/" + path)
     dir_scanner_pool.map_async(dir_scan_worker, range(cpu_count))
     dir_scanner_pool.close()
-    unsearched.join()
+    #unsearched.join()
 
 
 #
