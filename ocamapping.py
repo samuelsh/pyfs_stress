@@ -116,6 +116,7 @@ def explore_path(path):
         if os.path.isdir(fullname):
             directories.append(fullname)
         else:
+            print "Putting " + fullname + " to files query"
             files_queue.put(fullname)
     return directories
 
