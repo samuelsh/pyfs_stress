@@ -158,12 +158,19 @@ def run_crawler(base_path):
 #
 
 def fscat_stub(options, name, is_multithread=True):
+    retry_count = 0
     while not stop_event.is_set():
         try:
             print name + ": running fscat_stub on path " + files_queue.get_nowait()
         except Empty:
             print name + " reaching empty query"
-            stop_event.set()
+            if retry_count == 0:
+                print name + " retrying get file"
+                time.sleep(1)
+                retry_count += 1
+            elif retry_count >= 3:
+                print name + " timed out. Sending stop event"
+                stop_event.set()
 
 
 def run_recursive_scan(options, results_q):
