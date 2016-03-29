@@ -148,14 +148,14 @@ def run_crawler(base_path):
         unsearched.put(base_path + "/" + path)
     pool.map_async(dir_scan_worker, range(cpu_count))
     pool.close()
-    #unsearched.join()
+    unsearched.join()
 
 
 #
 
 def fscat_stub(options, name, is_multithread=True):
-    while files_queue.empty():
-        print "Watitng file_queue"
+    # while files_queue.empty():
+    #     print "Watitng file_queue"
     while not files_queue.empty():
         try:
             print name + ": running fscat_stub on path " + files_queue.get_nowait()
