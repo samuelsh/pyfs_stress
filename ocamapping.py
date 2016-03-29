@@ -17,7 +17,7 @@ unsearched = multiprocessing.Manager().Queue()
 files_queue = multiprocessing.Manager().Queue()
 stop_event = multiprocessing.Event()
 dir_scanner_pool = None
-stopped_processes_count = 0
+stopped_processes_count = None
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
@@ -159,9 +159,9 @@ def run_crawler(base_path):
 #
 
 def fscat_stub(options, name, is_multithread=True):
-    global stopped_processes_count
     retry_count = 0
     me_stopped = False
+    global stopped_processes_count
     while not stop_event.is_set():
         try:
             print name + ": running fscat_stub on path " + files_queue.get_nowait()
@@ -172,14 +172,14 @@ def fscat_stub(options, name, is_multithread=True):
                 time.sleep(1)
                 retry_count += 1
             else:
-                if stopped_processes_count < MAX_PROCESSES:
+                if stopped_processes_count.value < MAX_PROCESSES:
                     if not me_stopped:
-                        stopped_processes_count += 1
+                        stopped_processes_count.value += 1
                         print name + " I'm done, waiting others to complete"
                         me_stopped = True
                     #print " ************** " + name + " is still waiting *************************"
-                    print " ************** " + stopped_processes_count + " ***********************"
-                elif stopped_processes_count == MAX_PROCESSES:
+                    print " ************** " + stopped_processes_count.value + " ***********************"
+                elif stopped_processes_count.value == MAX_PROCESSES:
                     print name + " timed out. Sending stop event"
                     stop_event.set()
 
@@ -194,6 +194,8 @@ def run_recursive_scan(options, results_q):
     #         print "Putting in queue: " + dirpath + "/" + name
     #         queue.put(os.path.join(dirpath, name))
 
+    global stopped_processes_count
+    stopped_processes_count = multiprocessing.Manager().Value(0)
     for i in range(MAX_PROCESSES):
         p = process_pool.apply_async(fscat_stub, (options, ("process-%d" % i)))
 
