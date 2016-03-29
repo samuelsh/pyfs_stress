@@ -176,7 +176,7 @@ def fscat_stub(options, name, is_multithread=True):
                     stop_event.set()
                 else:
                     stopped_processes_count += 1
-                    name + " I'm done, waiting others to complete"
+                    print name + " I'm done, waiting others to complete"
                     time.sleep(10)
 
 
