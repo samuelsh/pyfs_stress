@@ -183,7 +183,8 @@ def fscat_stub(options, stopped_processes_count, name, is_multithread=True):
             else:
                 if stopped_processes_count.value < MAX_PROCESSES:
                     if not me_stopped:
-                        stopped_processes_count.value += 1
+                        with stopped_processes_count.get_lock():
+                            stopped_processes_count.value += 1
                         print name + " I'm done, waiting others to complete"
                         me_stopped = True
                     #print " ************** " + name + " is still waiting *************************"
