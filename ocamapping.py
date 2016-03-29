@@ -195,7 +195,7 @@ def run_recursive_scan(options, results_q):
     #         queue.put(os.path.join(dirpath, name))
 
     global stopped_processes_count
-    stopped_processes_count = multiprocessing.Manager().Value(0)
+    stopped_processes_count = multiprocessing.Manager().Value('i', 0)
     for i in range(MAX_PROCESSES):
         p = process_pool.apply_async(fscat_stub, (options, ("process-%d" % i)))
 
