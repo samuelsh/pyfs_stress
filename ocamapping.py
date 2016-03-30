@@ -159,6 +159,7 @@ def run_crawler(base_path):
 #
 
 def fscat_stub(options, name, is_multithread=True):
+    global stopped_processes_count
     retry_count = 0
     me_stopped = False
     while not stop_event.is_set():
