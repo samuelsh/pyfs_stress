@@ -199,7 +199,7 @@ def run_recursive_scan(options, results_q):
         try:
             p.get()
         except Exception:
-            pass
+            print "Fatal!"
 
     # for p in process_pool:
     #     print "process %s started" % p.name
