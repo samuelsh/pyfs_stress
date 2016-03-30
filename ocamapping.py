@@ -158,7 +158,7 @@ def run_crawler(base_path):
 
 #
 
-def fscat_stub(options, stopped_processes_count, name, is_multithread=True):
+def fscat_stub(options, name, is_multithread=True):
     retry_count = 0
     me_stopped = False
     while not stop_event.is_set():
@@ -199,7 +199,7 @@ def run_recursive_scan(options, results_q):
     val = multiprocessing.Manager().Value('i', 0)
     process_pool = Pool(MAX_PROCESSES, initializer=init_scanner_pool, initargs=(val,))
     for i in range(MAX_PROCESSES):
-        p = process_pool.apply_async(fscat_stub, args=(options, stopped_processes_count, ("process-%d" % i)))
+        p = process_pool.apply_async(fscat_stub, args=(options, ("process-%d" % i)))
         p.get()
 
     # for p in process_pool:
