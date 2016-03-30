@@ -166,9 +166,9 @@ def fscat_stub(options, stopped_processes_count, name, is_multithread=True):
             print name + ": running fscat_stub on path " + files_queue.get_nowait()
         except Empty:
             print name + " reaching empty query"
-            if retry_count < 300:
+            if retry_count < 3:
                 print name + " retrying get file"
-                #time.sleep(1)
+                time.sleep(1)
                 retry_count += 1
             else:
                 if stopped_processes_count.value < MAX_PROCESSES:
@@ -183,8 +183,12 @@ def fscat_stub(options, stopped_processes_count, name, is_multithread=True):
                     stop_event.set()
 
 
+def init_scanner_pool(val):
+    global stopped_processes_count
+    stopped_processes_count = val
+
+
 def run_recursive_scan(options, results_q):
-    process_pool = Pool(MAX_PROCESSES)
 
     run_crawler(options.path)
 
@@ -192,8 +196,8 @@ def run_recursive_scan(options, results_q):
     #     for name in filenames:
     #         print "Putting in queue: " + dirpath + "/" + name
     #         queue.put(os.path.join(dirpath, name))
-    global stopped_processes_count
-    stopped_processes_count = multiprocessing.Manager().Value('i', 0)
+    val = multiprocessing.Manager().Value('i', 0)
+    process_pool = Pool(MAX_PROCESSES, initializer=init_scanner_pool(), initargs=(val,))
     for i in range(MAX_PROCESSES):
         p = process_pool.apply_async(fscat_stub, args=(options, stopped_processes_count, ("process-%d" % i)))
         p.get()
