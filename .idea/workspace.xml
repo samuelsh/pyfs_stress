@@ -37,11 +37,21 @@
       <file leaf-file-name="ocamapping.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ocamapping.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7314949">
-              <caret line="198" column="8" selection-start-line="198" selection-start-column="8" selection-end-line="198" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.42670536">
+              <caret line="175" column="24" selection-start-line="175" selection-start-column="24" selection-end-line="175" selection-end-column="24" />
               <folding>
                 <element signature="e#18#40#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sharedctypes.py" pinned="false" current-in-tab="false">
+        <entry file="file://C:/Python27/Lib/multiprocessing/sharedctypes.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="218" column="8" selection-start-line="218" selection-start-column="8" selection-end-line="218" selection-end-column="8" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -418,12 +428,6 @@
       <option name="number" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00177" summary="multiprocessing folder scan&#10;">
-      <created>1459172141711</created>
-      <option name="number" value="00177" />
-      <option name="project" value="LOCAL" />
-      <updated>1459172141711</updated>
-    </task>
     <task id="LOCAL-00178" summary="multiprocessing folder scan&#10;">
       <created>1459172235764</created>
       <option name="number" value="00178" />
@@ -712,7 +716,13 @@
       <option name="project" value="LOCAL" />
       <updated>1459322985233</updated>
     </task>
-    <option name="localTasksCounter" value="226" />
+    <task id="LOCAL-00226" summary="multiprocessing folder scan&#10;">
+      <created>1459323135583</created>
+      <option name="number" value="00226" />
+      <option name="project" value="LOCAL" />
+      <updated>1459323135583</updated>
+    </task>
+    <option name="localTasksCounter" value="227" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1004,10 +1014,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/Python27/Lib/multiprocessing/sharedctypes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="218" column="8" selection-start-line="218" selection-start-column="8" selection-end-line="218" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ocamapping.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7314949">
-          <caret line="198" column="8" selection-start-line="198" selection-start-column="8" selection-end-line="198" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.42670536">
+          <caret line="175" column="24" selection-start-line="175" selection-start-column="24" selection-end-line="175" selection-end-column="24" />
           <folding>
             <element signature="e#18#40#0" expanded="true" />
           </folding>
