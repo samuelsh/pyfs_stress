@@ -177,10 +177,11 @@ def fscat_stub(options, lock, name, is_multithread=True):
                         lock.acquire()
                         stopped_processes_count.value += 1
                         lock.release()
-                        print name + " I'm done, waiting others to complete. counter: " + str(stopped_processes_count.value)
+                        print name + " I'm done, waiting others to complete. counter: " + str(
+                            stopped_processes_count.value)
                         me_stopped = True
-                    print " ************** " + name + " is still waiting *************************"
-                    print " ************** " + str(stopped_processes_count.value) + " ***********************"
+                    print " ************** " + name + " is still waiting. Counter: " + str(
+                        stopped_processes_count.value) + "*************************"
                 elif stopped_processes_count.value == MAX_PROCESSES:
                     print name + " timed out. Sending stop event"
                     stop_event.set()
@@ -192,7 +193,6 @@ def init_scanner_pool(val):
 
 
 def run_recursive_scan(options, results_q):
-
     run_crawler(options.path)
 
     # for dirpath, dirnames, filenames in os.walk(options.path):
