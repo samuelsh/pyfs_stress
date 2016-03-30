@@ -179,7 +179,7 @@ def fscat_stub(options, name, is_multithread=True):
                         me_stopped = True
                     print " ************** " + name + " is still waiting *************************"
                     print " ************** " + str(stopped_processes_count.value) + " ***********************"
-                else:
+                elif stopped_processes_count.value == MAX_PROCESSES:
                     print name + " timed out. Sending stop event"
                     stop_event.set()
 
