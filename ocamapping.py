@@ -166,9 +166,9 @@ def fscat_stub(options, stopped_processes_count, name, is_multithread=True):
             print name + ": running fscat_stub on path " + files_queue.get_nowait()
         except Empty:
             print name + " reaching empty query"
-            if retry_count < 3:
+            if retry_count < 300:
                 print name + " retrying get file"
-                time.sleep(1)
+                #time.sleep(1)
                 retry_count += 1
             else:
                 if stopped_processes_count.value < MAX_PROCESSES:
