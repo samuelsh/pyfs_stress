@@ -17,7 +17,6 @@ unsearched = multiprocessing.Manager().Queue()
 files_queue = multiprocessing.Manager().Queue()
 stop_event = multiprocessing.Event()
 dir_scanner_pool = None
-stopped_processes_count = None
 
 
 def fscat(options, queue, results_q, name, is_multithread=True):
@@ -158,18 +157,7 @@ def run_crawler(base_path):
 
 #
 
-def fscat_stub(options, name, is_multithread=True):
-    """
-
-    Args:
-        options:
-        name:
-        is_multithread:
-
-    Returns:
-
-    """
-    global stopped_processes_count
+def fscat_stub(options, stopped_processes_count, name, is_multithread=True):
     retry_count = 0
     me_stopped = False
     while not stop_event.is_set():
@@ -205,11 +193,13 @@ def run_recursive_scan(options, results_q):
     #         print "Putting in queue: " + dirpath + "/" + name
     #         queue.put(os.path.join(dirpath, name))
 
-    global stopped_processes_count
     stopped_processes_count = multiprocessing.Manager().Value('i', 0)
     for i in range(MAX_PROCESSES):
-        p = process_pool.apply_async(fscat_stub, args=(options, ("process-%d" % i)))
-        p.get()
+        p = process_pool.apply_async(fscat_stub, args=(options, stopped_processes_count, ("process-%d" % i)))
+        try:
+            p.get()
+        except Exception:
+            pass
 
     # for p in process_pool:
     #     print "process %s started" % p.name
