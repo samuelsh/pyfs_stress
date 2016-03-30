@@ -158,7 +158,7 @@ def run_crawler(base_path):
 
 #
 
-def fscat_stub(options, name, is_multithread=True):
+def fscat_stub(options, lock, name, is_multithread=True):
     global stopped_processes_count
     retry_count = 0
     me_stopped = False
@@ -174,7 +174,9 @@ def fscat_stub(options, name, is_multithread=True):
             else:
                 if stopped_processes_count.value < MAX_PROCESSES:
                     if not me_stopped:
+                        lock.aquire()
                         stopped_processes_count.value += 1
+                        lock.release()
                         print name + " I'm done, waiting others to complete. counter: " + str(stopped_processes_count.value)
                         me_stopped = True
                     print " ************** " + name + " is still waiting *************************"
@@ -198,9 +200,10 @@ def run_recursive_scan(options, results_q):
     #         print "Putting in queue: " + dirpath + "/" + name
     #         queue.put(os.path.join(dirpath, name))
     val = multiprocessing.Manager().Value('i', 0)
+    lock = multiprocessing.Manager().Lock()
     process_pool = Pool(MAX_PROCESSES, initializer=init_scanner_pool, initargs=(val,))
     for i in range(MAX_PROCESSES):
-        p = process_pool.apply_async(fscat_stub, args=(options, ("process-%d" % i)))
+        p = process_pool.apply_async(fscat_stub, args=(options, lock, ("process-%d" % i)))
     p.get()
 
     # for p in process_pool:
