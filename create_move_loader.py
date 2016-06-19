@@ -123,8 +123,8 @@ def run_test(args, logger, results_q):
     renamer_pool = multiprocessing.Pool(MAX_PROCESSES)
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
-    for i in range(MAX_PROCESSES):
-        p = renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i), rename_lock))
+    #for i in range(MAX_PROCESSES):
+    #    p = renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i), rename_lock))
 
     logger.info("Test running! Press CTRL + C to stop")
     renamer_pool.close()
