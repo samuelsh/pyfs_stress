@@ -42,7 +42,7 @@ def init_test(args, logger):
     ShellUtils.run_shell_command("mount", "-o nfsvers=3 %s:/%s %s" % (args.cluster, args.export_dir, args.mount_point))
 
     logger.info("Creating test folder on cluster %s" % args.cluster)
-    ShellUtils.run_shell_command('mkdir', '%s/%s' % (args.mount_point, 'test_dir'))
+    ShellUtils.run_shell_command('mkdir', '%s/%s' % (args.mount_point, args.test_dir))
     logger.info("Done Init, starting the test")
 
 
@@ -91,7 +91,7 @@ def renamer_worker(args, logger, lock, i):
 
 def run_test(args, logger, results_q):
     logger.info("Starting file creator workers ...")
-    file_creator("%s/%s" % (args.mount_point, args.test_dir))
+    file_creator("%s/%s" % (args.mount_point, args.test_dir), logger)
     filenum = multiprocessing.Manager().Value('filenum', 0)
     lock = multiprocessing.Manager().Lock()
     process_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_scanner_pool, initargs=(filenum,logger))
