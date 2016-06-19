@@ -49,9 +49,9 @@ def init_test(args, logger):
 
 def file_creator_worker(path, proc_id, lock):
     global total_files
-    while total_files.value > 0:
+    while total_files.value < MAX_FILES:
         lock.acquire()
-        total_files.value -= 1
+        total_files.value += 1
         print("Creating %s/file_created_client_#%d_file_number_total_files_#%d" % (
             path, proc_id, total_files.value))
         ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_total_files_#%d' % (
@@ -66,7 +66,7 @@ def file_creator(args, path, logger):
         raise IOError("Base path not found: " + path)
     lock = multiprocessing.Manager().Lock()
     logger.info("Global lock created %s" % lock)
-    filenum = multiprocessing.Manager().Value('val', args.files)
+    filenum = multiprocessing.Manager().Value('val', 0)
     # Initialising process pool + thread safe "flienum" value
     file_creator_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
 
@@ -82,6 +82,7 @@ def renamer_worker(args, i):
         try:
             # Getting all file in folder
             files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
+            print("Got dirlist at %s/%s" % (args.mount_point, args.test_dir))
             for test_file in files_list:
                 if "create" in test_file:
                     print("renaming %s " % test_file)
