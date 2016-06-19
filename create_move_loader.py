@@ -83,16 +83,14 @@ def renamer_worker(args, proc_name, lock):
     while not stop_event.is_set():
         try:
             # Getting all file in folder
-            lock.acquire()
             files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
-            lock.release()
             print("Process %s -- Got dirlist at %s/%s" % (proc_name, args.mount_point, args.test_dir))
             for test_file in files_list:
                 if "create" in test_file:
                     new_file_name = test_file.replace('created', 'moved')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
-                    lock.acquire(blocking=0)
+                    lock.acquire()
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                     lock.release()
@@ -100,7 +98,7 @@ def renamer_worker(args, proc_name, lock):
                     new_file_name = test_file.replace('moved', 'created')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
-                    lock.acquire(blocking=0)
+                    lock.acquire()
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                     lock.release()
