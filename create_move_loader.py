@@ -50,7 +50,7 @@ def init_test(args, logger):
 def file_creator_worker(path, proc_id, lock):
     global total_files
     while total_files.value < MAX_FILES:
-        lock.acquire()
+        lock.acquire(blocking=0)
         total_files.value += 1
         print("Creating %s/file_created_client_#%d_file_number_#%d" % (
             path, proc_id, total_files.value))
@@ -90,7 +90,7 @@ def renamer_worker(args, proc_name, lock):
                     new_file_name = test_file.replace('created', 'moved')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
-                    lock.acquire()
+                    lock.acquire(blocking=0)
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                     lock.release()
@@ -98,7 +98,7 @@ def renamer_worker(args, proc_name, lock):
                     new_file_name = test_file.replace('moved', 'created')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
-                    lock.acquire()
+                    lock.acquire(blocking=0)
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                     lock.release()
