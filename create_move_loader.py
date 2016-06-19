@@ -49,10 +49,10 @@ def init_test(args, logger):
 
 def file_creator_worker(path, proc_id, lock, logger):
     global total_files
-    while total_files.value > 0:
-        lock.acquire()
-        total_files.value -= 1
-        lock.release()
+    while not stop_event.is_set():#total_files.value > 0:
+        # lock.acquire()
+        # total_files.value -= 1
+        # lock.release()
         logger.info("Creating %s/file_created_client_#%d_file_number_total_files_#%d" % (
             path, proc_id, total_files))
         ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_total_files_#%d' % (
@@ -61,13 +61,14 @@ def file_creator_worker(path, proc_id, lock, logger):
 
 def file_creator(args, path, logger):
     global file_creator_pool
+
+    if not os.path.isdir(path):
+        raise IOError("Base path not found: " + path)
     lock = multiprocessing.Manager().Lock()
     logger.info("Global lock created %s" % lock)
     filenum = multiprocessing.Manager().Value('val', args.files)
     # Initialising process pool + thread safe "flienum" value
     file_creator_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
-    if not os.path.isdir(path):
-        raise IOError("Base path not found: " + path)
 
     # acquire the list of all paths inside base path
     for i in range(MAX_PROCESSES):
