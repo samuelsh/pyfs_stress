@@ -23,7 +23,7 @@ total_files = None
 stopped_processes_count = None
 
 
-def init_scanner_pool(filenum):
+def init_creator_pool(filenum):
     global total_files
     total_files = filenum
 
@@ -99,9 +99,10 @@ def run_test(args, logger, results_q):
     lock = multiprocessing.Manager().Lock()
     logger.info("Global lock created %s" % lock)
     filenum = multiprocessing.Manager().Value('val', MAX_FILES)
+    # Initialising process pool + thread safe "flienum" value
+    process_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
     logger.info("Starting file creator workers ...")
     file_creator("%s/%s" % (args.mount_point, args.test_dir), logger, lock)
-    process_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_scanner_pool, initargs=(filenum,))
     p = None
 
     # Starting rename workers in parallel
