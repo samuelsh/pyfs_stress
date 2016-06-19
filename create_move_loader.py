@@ -121,7 +121,7 @@ def main():
     parser.add_argument("-m", "--mount_point", help="Path to mountpoint", default="/mnt/test", type=str)
     parser.add_argument("-d", "--test_dir", help="Directory under test", default="test_dir", type=str)
     parser.add_argument("-n", "--files", help="Max files number to create", default=10000, type=int)
-    parser.add_argument("--scenario", help="Select desired scenario", choice="", type=str)
+    parser.add_argument("--scenario", help="Select desired scenario", choices="", type=str)
     args = parser.parse_args()
 
     logger = Logger().logger
