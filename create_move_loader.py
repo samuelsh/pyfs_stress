@@ -41,7 +41,7 @@ def init_test(args, logger):
     ShellUtils.run_shell_command("mount", "-o nfsvers=3 %s:/%s %s" % (args.cluster, args.export_dir, args.mount_point))
 
     logger.info("Creating test folder on cluster %s" % args.cluster)
-    ShellUtils.run_shell_command('mkdir' '%s/%s' % (args.mount_point, 'test_dir'))
+    ShellUtils.run_shell_command('mkdir', '%s/%s' % (args.mount_point, 'test_dir'))
     logger.info("Done Init, starting the test")
 
 
