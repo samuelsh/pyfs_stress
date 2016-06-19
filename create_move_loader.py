@@ -29,6 +29,7 @@ def init_scanner_pool(filenum):
 
 
 def init_test(args, logger):
+    global total_files
     logger.info("Setting passwordless SSH connection")
     ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
     logger.info("Getting cluster params...")
@@ -43,19 +44,24 @@ def init_test(args, logger):
 
     logger.info("Creating test folder on cluster %s" % args.cluster)
     ShellUtils.run_shell_command('mkdir', '%s/%s' % (args.mount_point, args.test_dir))
+
+    total_files = args.files
     logger.info("Done Init, starting the test")
 
 
-def file_creator_worker(path, proc_id, logger):
+def file_creator_worker(path, proc_id, lock, logger):
     global total_files
-    while total_files < MAX_FILES:
+    while total_files.val < MAX_FILES:
+        lock.acquire()
+        total_files.val += 1
+        lock.release()
         logger.info("Creating %s/file_created_client_#%d_file_number_total_files_#%d" % (
             path, proc_id, total_files))
         ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_total_files_#%d' % (
             path, proc_id, total_files))
 
 
-def file_creator(path, logger):
+def file_creator(path, logger, lock):
     global dir_scanner_pool
     dir_scanner_pool = multiprocessing.Pool(MAX_PROCESSES)
     if not os.path.isdir(path):
@@ -64,7 +70,7 @@ def file_creator(path, logger):
     # acquire the list of all paths inside base path
     for i in range(MAX_PROCESSES):
         logger.info("Starting file creator process-%d" % i)
-        dir_scanner_pool.apply_async(file_creator_worker, args=(path, i, logger))
+        dir_scanner_pool.apply_async(file_creator_worker, args=(path, i, lock, logger))
     dir_scanner_pool.close()
 
 
@@ -90,11 +96,11 @@ def renamer_worker(args, logger, lock, i):
 
 
 def run_test(args, logger, results_q):
-    logger.info("Starting file creator workers ...")
-    file_creator("%s/%s" % (args.mount_point, args.test_dir), logger)
-    filenum = multiprocessing.Manager().Value('filenum', 0)
     lock = multiprocessing.Manager().Lock()
-    process_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_scanner_pool, initargs=(filenum,logger))
+    logger.info("Starting file creator workers ...")
+    file_creator("%s/%s" % (args.mount_point, args.test_dir), logger, lock)
+    filenum = multiprocessing.Manager().Value('filenum', 0)
+    process_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_scanner_pool, initargs=(filenum, logger))
     p = None
 
     # Starting rename workers in parallel
