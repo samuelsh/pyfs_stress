@@ -44,8 +44,6 @@ def init_test(args, logger):
 
     logger.info("Creating test folder on cluster %s" % args.cluster)
     ShellUtils.run_shell_command('mkdir', '%s/%s' % (args.mount_point, args.test_dir))
-
-    total_files = args.files
     logger.info("Done Init, starting the test")
 
 

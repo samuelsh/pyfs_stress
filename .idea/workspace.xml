@@ -49,8 +49,8 @@
       <file leaf-file-name="create_move_loader.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_move_loader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="63">
-              <caret line="80" column="30" selection-start-line="80" selection-start-column="30" selection-end-line="80" selection-end-column="30" />
+            <state relative-caret-position="336">
+              <caret line="45" column="35" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
               <folding>
                 <element signature="e#25#40#0" expanded="true" />
               </folding>
@@ -468,13 +468,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00211" summary="multiprocessing folder scan&#10;">
-      <created>1459248081447</created>
-      <option name="number" value="00211" />
-      <option name="presentableId" value="LOCAL-00211" />
-      <option name="project" value="LOCAL" />
-      <updated>1459248081447</updated>
-    </task>
     <task id="LOCAL-00212" summary="multiprocessing folder scan&#10;">
       <created>1459248166824</created>
       <option name="number" value="00212" />
@@ -811,7 +804,14 @@
       <option name="project" value="LOCAL" />
       <updated>1466335250171</updated>
     </task>
-    <option name="localTasksCounter" value="260" />
+    <task id="LOCAL-00260" summary="Minor fixes&#10;">
+      <created>1466335759236</created>
+      <option name="number" value="00260" />
+      <option name="presentableId" value="LOCAL-00260" />
+      <option name="project" value="LOCAL" />
+      <updated>1466335759236</updated>
+    </task>
+    <option name="localTasksCounter" value="261" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1301,8 +1301,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/create_move_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="80" column="30" selection-start-line="80" selection-start-column="30" selection-end-line="80" selection-end-column="30" />
+        <state relative-caret-position="336">
+          <caret line="45" column="35" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
           <folding>
             <element signature="e#25#40#0" expanded="true" />
           </folding>
