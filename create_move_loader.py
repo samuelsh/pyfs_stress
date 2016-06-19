@@ -103,7 +103,7 @@ def renamer_worker(args, proc_name, lock):
             lock.release()
 
         except OSError as rename_worker_exception:
-            traceback.print_exc(rename_worker_exception)
+            #traceback.print_exc(rename_worker_exception)
             pass
         else:
             raise RuntimeError()
