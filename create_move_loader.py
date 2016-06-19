@@ -57,6 +57,7 @@ def file_creator_worker(path, proc_id, lock):
         ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_#%d' % (
             path, proc_id, total_files.value))
         lock.release()
+    print("Done Creating files! total: %d" % total_files.value)
 
 
 def file_creator(args, path, logger):
@@ -85,7 +86,7 @@ def renamer_worker(args, i, lock):
             lock.acquire()
             files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
             lock.release()
-            print("Got dirlist at %s/%s" % (args.mount_point, args.test_dir))
+            print("Process %d -- Got dirlist at %s/%s" % (i, args.mount_point, args.test_dir))
             for test_file in files_list:
                 if "create" in test_file:
                     new_file_name = test_file.replace('created', 'moved')
