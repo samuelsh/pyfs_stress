@@ -99,8 +99,8 @@ def run_test(args, logger, results_q):
     lock = multiprocessing.Manager().Lock()
     logger.info("Starting file creator workers ...")
     file_creator("%s/%s" % (args.mount_point, args.test_dir), logger, lock)
-    filenum = multiprocessing.Manager().Value('filenum', 0)
-    process_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_scanner_pool, initargs=(filenum, logger))
+    filenum = multiprocessing.Manager().Value('val', MAX_FILES)
+    process_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_scanner_pool, initargs=(filenum,))
     p = None
 
     # Starting rename workers in parallel
