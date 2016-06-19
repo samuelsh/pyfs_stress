@@ -106,6 +106,7 @@ def renamer_worker(args, i, lock):
 
         except OSError as rename_worker_exception:
             traceback.print_exc(rename_worker_exception)
+            pass
         else:
             raise RuntimeError()
 
