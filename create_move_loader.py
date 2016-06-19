@@ -52,9 +52,9 @@ def file_creator_worker(path, proc_id, lock):
     while total_files.value < MAX_FILES:
         lock.acquire()
         total_files.value += 1
-        print("Creating %s/file_created_client_#%d_file_number_total_files_#%d" % (
+        print("Creating %s/file_created_client_#%d_file_number_#%d" % (
             path, proc_id, total_files.value))
-        ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_total_files_#%d' % (
+        ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_#%d' % (
             path, proc_id, total_files.value))
         lock.release()
 
@@ -86,12 +86,14 @@ def renamer_worker(args, i):
             for test_file in files_list:
                 if "create" in test_file:
                     new_file_name = test_file.replace('created', 'moved')
-                    print("renaming %s to %s " % (test_file, new_file_name))
+                    print(
+                        "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                 elif "moved" in test_file:
                     new_file_name = test_file.replace('moved', 'created')
-                    print("renaming %s to %s " % (test_file, new_file_name))
+                    print(
+                        "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
 
@@ -115,6 +117,9 @@ def run_test(args, logger, results_q):
     logger.info("Test running! Press CTRL + C to stop")
     renamer_pool.close()
     renamer_pool.join()
+
+    while not stop_event.is_set():
+        pass
 
     while not results_q.empty():
         q = results_q.get()
@@ -149,6 +154,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt as stop_test_exception:
         print(" Stopping test....")
         stop_event.set()
-    except Exception as e:
+    else:
         traceback.print_exc()
         sys.exit(1)
