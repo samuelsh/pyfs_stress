@@ -65,7 +65,7 @@ def file_creator(args, path, logger):
     if not os.path.isdir(path):
         raise IOError("Base path not found: " + path)
     lock = multiprocessing.Manager().Lock()
-    logger.info("Global lock created %s" % lock)
+    logger.info("write lock created %s for creating flies" % lock)
     filenum = multiprocessing.Manager().Value('val', 0)
     # Initialising process pool + thread safe "flienum" value
     file_creator_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
@@ -77,7 +77,7 @@ def file_creator(args, path, logger):
     file_creator_pool.close()
 
 
-def renamer_worker(args, i):
+def renamer_worker(args, i, lock):
     while not stop_event.is_set():
         try:
             # Getting all file in folder
@@ -88,14 +88,18 @@ def renamer_worker(args, i):
                     new_file_name = test_file.replace('created', 'moved')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
+                    lock.acquire()
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
+                    lock.release()
                 elif "moved" in test_file:
                     new_file_name = test_file.replace('moved', 'created')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
+                    lock.acquire()
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
+                    lock.release()
 
         except OSError as rename_worker_exception:
             traceback.print_exc(rename_worker_exception)
@@ -107,11 +111,16 @@ def run_test(args, logger, results_q):
     logger.info("Starting file creator workers ...")
     file_creator(args, "%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
+    rename_lock = multiprocessing.Manager().Lock()
+    logger.info("write lock created %s for removing flies" % rename_lock)
+    #filenum = multiprocessing.Manager().Value('val', 0)
+    # Initialising process pool + thread safe "flienum" value
+    #file_creator_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
     renamer_pool = multiprocessing.Pool(MAX_PROCESSES)
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
     for i in range(MAX_PROCESSES):
-        p = renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i)))
+        p = renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i), rename_lock))
     p.get()
 
     logger.info("Test running! Press CTRL + C to stop")
