@@ -85,7 +85,6 @@ def renamer_worker(args, proc_name, lock):
     global stop_event
     while not stop_event.is_set():
         try:
-            lock.acquire(blocking=0)
             # Getting all file in folder
             files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
             print("Process %s -- Got dirlist at %s/%s" % (proc_name, args.mount_point, args.test_dir))
@@ -94,15 +93,18 @@ def renamer_worker(args, proc_name, lock):
                     new_file_name = test_file.replace('created', 'moved')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
+                    lock.acquire(blocking=0)
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
+                    lock.release()
                 elif "moved" in test_file:
                     new_file_name = test_file.replace('moved', 'created')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
+                    lock.acquire(blocking=0)
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
-            lock.release()
+                    lock.release()
 
         except OSError as rename_worker_exception:
             # traceback.print_exc(rename_worker_exception)
@@ -118,9 +120,6 @@ def run_test(args, logger, results_q):
     p = None
     rename_lock = multiprocessing.Manager().Lock()
     logger.info("write lock created %s for removing flies" % rename_lock)
-    # filenum = multiprocessing.Manager().Value('val', 0)
-    # Initialising process pool + thread safe "flienum" value
-    # file_creator_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
     renamer_pool = multiprocessing.Pool(MAX_PROCESSES)
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
