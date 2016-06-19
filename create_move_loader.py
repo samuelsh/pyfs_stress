@@ -85,18 +85,20 @@ def renamer_worker(args, i):
             print("Got dirlist at %s/%s" % (args.mount_point, args.test_dir))
             for test_file in files_list:
                 if "create" in test_file:
-                    print("renaming %s " % test_file)
                     new_file_name = test_file.replace('created', 'moved')
+                    print("renaming %s to %s " % (test_file, new_file_name))
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                 elif "moved" in test_file:
-                    print("renaming %s " % test_file)
                     new_file_name = test_file.replace('moved', 'created')
+                    print("renaming %s to %s " % (test_file, new_file_name))
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
 
-        except Exception as rename_worker_exception:
-            raise rename_worker_exception
+        except IOError as rename_worker_exception:
+            traceback.print_exc(rename_worker_exception)
+        else:
+            raise RuntimeError()
 
 
 def run_test(args, logger, results_q):
