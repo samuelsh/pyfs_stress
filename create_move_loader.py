@@ -18,7 +18,7 @@ MAX_FILES = 10000
 
 files_queue = multiprocessing.Manager().Queue()
 stop_event = multiprocessing.Event()
-dir_scanner_pool = None
+file_creator_pool = None
 total_files = None
 stopped_processes_count = None
 
@@ -61,20 +61,24 @@ def file_creator_worker(path, proc_id, lock, logger):
             path, proc_id, total_files))
 
 
-def file_creator(path, logger, lock):
-    global dir_scanner_pool
-    dir_scanner_pool = multiprocessing.Pool(MAX_PROCESSES)
+def file_creator(path, logger):
+    global file_creator_pool
+    lock = multiprocessing.Manager().Lock()
+    logger.info("Global lock created %s" % lock)
+    filenum = multiprocessing.Manager().Value('val', MAX_FILES)
+    # Initialising process pool + thread safe "flienum" value
+    file_creator_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
     if not os.path.isdir(path):
         raise IOError("Base path not found: " + path)
 
     # acquire the list of all paths inside base path
     for i in range(MAX_PROCESSES):
         logger.info("Starting file creator process-%d" % i)
-        dir_scanner_pool.apply_async(file_creator_worker, args=(path, i, lock, logger))
-    dir_scanner_pool.close()
+        file_creator_pool.apply_async(file_creator_worker, args=(path, i, lock, logger))
+    file_creator_pool.close()
 
 
-def renamer_worker(args, logger, lock, i):
+def renamer_worker(args, logger, i):
     while not stop_event.is_set():
         try:
             # Getting all file in folder
@@ -96,24 +100,19 @@ def renamer_worker(args, logger, lock, i):
 
 
 def run_test(args, logger, results_q):
-    lock = multiprocessing.Manager().Lock()
-    logger.info("Global lock created %s" % lock)
-    filenum = multiprocessing.Manager().Value('val', MAX_FILES)
-    # Initialising process pool + thread safe "flienum" value
-    process_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
     logger.info("Starting file creator workers ...")
-    file_creator("%s/%s" % (args.mount_point, args.test_dir), logger, lock)
+    file_creator("%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
-
+    renamer_pool = multiprocessing.Pool(multiprocessing.cpu_count())
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
     for i in range(MAX_PROCESSES):
-        p = process_pool.apply_async(renamer_worker, args=(args, logger, lock, ("process-%d" % i)))
+        p = renamer_pool.apply_async(renamer_worker, args=(args, logger, ("process-%d" % i)))
     p.get()
 
     logger.info("Test running! Press CTRL + C to stop")
-    process_pool.close()
-    process_pool.join()
+    renamer_pool.close()
+    renamer_pool.join()
 
     while not results_q.empty():
         q = results_q.get()
