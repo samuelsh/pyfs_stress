@@ -59,11 +59,11 @@ def file_creator_worker(path, proc_id, lock, logger):
             path, proc_id, total_files))
 
 
-def file_creator(path, logger):
+def file_creator(args, path, logger):
     global file_creator_pool
     lock = multiprocessing.Manager().Lock()
     logger.info("Global lock created %s" % lock)
-    filenum = multiprocessing.Manager().Value('val', MAX_FILES)
+    filenum = multiprocessing.Manager().Value('val', args.files)
     # Initialising process pool + thread safe "flienum" value
     file_creator_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
     if not os.path.isdir(path):
@@ -99,9 +99,9 @@ def renamer_worker(args, logger, i):
 
 def run_test(args, logger, results_q):
     logger.info("Starting file creator workers ...")
-    file_creator("%s/%s" % (args.mount_point, args.test_dir), logger)
+    file_creator(args, "%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
-    renamer_pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    renamer_pool = multiprocessing.Pool(MAX_PROCESSES)
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
     for i in range(MAX_PROCESSES):
