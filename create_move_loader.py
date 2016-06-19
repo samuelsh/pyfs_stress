@@ -77,19 +77,19 @@ def file_creator(args, path, logger):
     file_creator_pool.close()
 
 
-def renamer_worker(args, logger, i):
+def renamer_worker(args, i):
     while not stop_event.is_set():
         try:
             # Getting all file in folder
             files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
             for test_file in files_list:
                 if "create" in test_file:
-                    logger.info("renaming %s " % test_file)
+                    print("renaming %s " % test_file)
                     new_file_name = test_file.replace('created', 'moved')
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                 elif "moved" in test_file:
-                    logger.info("renaming %s " % test_file)
+                    print("renaming %s " % test_file)
                     new_file_name = test_file.replace('moved', 'created')
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
@@ -106,7 +106,7 @@ def run_test(args, logger, results_q):
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
     for i in range(MAX_PROCESSES):
-        p = renamer_pool.apply_async(renamer_worker, args=(args, logger, ("process-%d" % i)))
+        p = renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i)))
     p.get()
 
     logger.info("Test running! Press CTRL + C to stop")
