@@ -95,7 +95,7 @@ def renamer_worker(args, i):
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
 
-        except IOError as rename_worker_exception:
+        except OSError as rename_worker_exception:
             traceback.print_exc(rename_worker_exception)
         else:
             raise RuntimeError()
