@@ -90,7 +90,7 @@ def renamer_worker(args, logger, lock, i):
 
 
 def run_test(args, logger, results_q):
-    logger("Starting file creator workers ...")
+    logger.info("Starting file creator workers ...")
     file_creator("%s/%s" % (args.mount_point, args.test_dir))
     filenum = multiprocessing.Manager().Value('filenum', 0)
     lock = multiprocessing.Manager().Lock()
@@ -98,7 +98,7 @@ def run_test(args, logger, results_q):
     p = None
 
     # Starting rename workers in parallel
-    logger("Starting renamer workers in parallel ...")
+    logger.info("Starting renamer workers in parallel ...")
     for i in range(MAX_PROCESSES):
         p = process_pool.apply_async(renamer_worker, args=(args, logger, lock, ("process-%d" % i)))
     p.get()
