@@ -64,7 +64,7 @@ def file_creator(args, path, logger):
 
     if not os.path.isdir(path):
         raise IOError("Base path not found: " + path)
-    lock = multiprocessing.Manager().Lock()
+    lock = multiprocessing.Lock()
     logger.info("write lock created %s for creating flies" % lock)
     filenum = multiprocessing.Manager().Value('val', 0)
     # Initialising process pool + thread safe "flienum" value
@@ -113,7 +113,7 @@ def run_test(args, logger, results_q):
     logger.info("Starting file creator workers ...")
     file_creator(args, "%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
-    rename_lock = multiprocessing.Manager().Lock()
+    rename_lock = multiprocessing.Lock()
     logger.info("write lock created %s for removing flies" % rename_lock)
     #filenum = multiprocessing.Manager().Value('val', 0)
     # Initialising process pool + thread safe "flienum" value
