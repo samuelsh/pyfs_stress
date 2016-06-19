@@ -78,6 +78,7 @@ def file_creator(args, path, logger):
 
 
 def renamer_worker(args, i, lock):
+    global stop_event
     while not stop_event.is_set():
         try:
             # Getting all file in folder
@@ -108,6 +109,7 @@ def renamer_worker(args, i, lock):
 
 
 def run_test(args, logger, results_q):
+    global stop_event
     logger.info("Starting file creator workers ...")
     file_creator(args, "%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
