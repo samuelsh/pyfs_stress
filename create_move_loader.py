@@ -64,7 +64,7 @@ def file_creator(args, path, logger):
 
     if not os.path.isdir(path):
         raise IOError("Base path not found: " + path)
-    lock = multiprocessing.Lock()
+    lock = multiprocessing.Manager().Lock()
     logger.info("write lock created %s for creating flies" % lock)
     filenum = multiprocessing.Manager().Value('val', 0)
     # Initialising process pool + thread safe "flienum" value
@@ -89,7 +89,7 @@ def renamer_worker(args, i, lock):
                     new_file_name = test_file.replace('created', 'moved')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
-                    lock.acquire(timeout=1)
+                    lock.acquire(blocking=0)
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                     lock.release()
@@ -97,7 +97,7 @@ def renamer_worker(args, i, lock):
                     new_file_name = test_file.replace('moved', 'created')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
-                    lock.acquire(timeout=1)
+                    lock.acquire(blocking=0)
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                     lock.release()
@@ -113,7 +113,7 @@ def run_test(args, logger, results_q):
     logger.info("Starting file creator workers ...")
     file_creator(args, "%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
-    rename_lock = multiprocessing.Lock()
+    rename_lock = multiprocessing.Manag.Lock()
     logger.info("write lock created %s for removing flies" % rename_lock)
     #filenum = multiprocessing.Manager().Value('val', 0)
     # Initialising process pool + thread safe "flienum" value
