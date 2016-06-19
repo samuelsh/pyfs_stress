@@ -52,11 +52,11 @@ def file_creator_worker(path, proc_id, lock):
     while total_files.value > 0:
         lock.acquire()
         total_files.value -= 1
-        lock.release()
         print("Creating %s/file_created_client_#%d_file_number_total_files_#%d" % (
-            path, proc_id, total_files))
+            path, proc_id, total_files.value))
         ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_total_files_#%d' % (
-            path, proc_id, total_files))
+            path, proc_id, total_files.value))
+        lock.release()
 
 
 def file_creator(args, path, logger):
