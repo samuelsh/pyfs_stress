@@ -78,7 +78,7 @@ def file_creator(args, path, logger):
     file_creator_pool.close()
 
 
-def renamer_worker(args, i, lock):
+def renamer_worker(args, proc_name, lock):
     global stop_event
     while not stop_event.is_set():
         try:
@@ -86,7 +86,7 @@ def renamer_worker(args, i, lock):
             lock.acquire()
             files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
             lock.release()
-            print("Process %d -- Got dirlist at %s/%s" % (int(i), args.mount_point, args.test_dir))
+            print("Process %s -- Got dirlist at %s/%s" % (proc_name, args.mount_point, args.test_dir))
             for test_file in files_list:
                 if "create" in test_file:
                     new_file_name = test_file.replace('created', 'moved')
