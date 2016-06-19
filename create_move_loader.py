@@ -47,13 +47,13 @@ def init_test(args, logger):
     logger.info("Done Init, starting the test")
 
 
-def file_creator_worker(path, proc_id, lock, logger):
+def file_creator_worker(path, proc_id, lock):
     global total_files
-    while not stop_event.is_set():#total_files.value > 0:
-        # lock.acquire()
-        # total_files.value -= 1
-        # lock.release()
-        logger.info("Creating %s/file_created_client_#%d_file_number_total_files_#%d" % (
+    while total_files.value > 0:
+        lock.acquire()
+        total_files.value -= 1
+        lock.release()
+        print("Creating %s/file_created_client_#%d_file_number_total_files_#%d" % (
             path, proc_id, total_files))
         ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_total_files_#%d' % (
             path, proc_id, total_files))
@@ -73,7 +73,7 @@ def file_creator(args, path, logger):
     # acquire the list of all paths inside base path
     for i in range(MAX_PROCESSES):
         logger.info("Starting file creator process-%d" % i)
-        file_creator_pool.apply_async(file_creator_worker, args=(path, i, lock, logger))
+        file_creator_pool.apply_async(file_creator_worker, args=(path, i, lock))
     file_creator_pool.close()
 
 
