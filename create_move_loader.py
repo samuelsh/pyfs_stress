@@ -51,9 +51,9 @@ def init_test(args, logger):
 
 def file_creator_worker(path, proc_id, lock, logger):
     global total_files
-    while total_files.val < MAX_FILES:
+    while total_files.value > 0:
         lock.acquire()
-        total_files.val += 1
+        total_files.value -= 1
         lock.release()
         logger.info("Creating %s/file_created_client_#%d_file_number_total_files_#%d" % (
             path, proc_id, total_files))
@@ -97,9 +97,10 @@ def renamer_worker(args, logger, lock, i):
 
 def run_test(args, logger, results_q):
     lock = multiprocessing.Manager().Lock()
+    logger.info("Global lock created %s" % lock)
+    filenum = multiprocessing.Manager().Value('val', MAX_FILES)
     logger.info("Starting file creator workers ...")
     file_creator("%s/%s" % (args.mount_point, args.test_dir), logger, lock)
-    filenum = multiprocessing.Manager().Value('val', MAX_FILES)
     process_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_scanner_pool, initargs=(filenum,))
     p = None
 
