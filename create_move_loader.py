@@ -57,7 +57,7 @@ def file_creator_worker(path, proc_id, lock):
         ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_#%d' % (
             path, proc_id, total_files.value))
         lock.release()
-    print("Done Creating files! total: %d" % total_files.value)
+    print("Done Creating files! total: %d" % int(total_files.value))
 
 
 def file_creator(args, path, logger):
