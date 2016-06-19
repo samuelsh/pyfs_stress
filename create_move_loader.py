@@ -38,6 +38,7 @@ def init_test(args, logger):
     logger.debug("FSD domains: %s" % domains)
 
     logger.info("Mounting  %s to %s" % (args.mount_point, args.export_dir))
+    ShellUtils.run_shell_command("umount", "-fl %s" % args.mount_point)
     ShellUtils.run_shell_command("mount", "-o nfsvers=3 %s:/%s %s" % (args.cluster, args.export_dir, args.mount_point))
 
     logger.info("Creating test folder on cluster %s" % args.cluster)
