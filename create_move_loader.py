@@ -82,7 +82,9 @@ def renamer_worker(args, i, lock):
     while not stop_event.is_set():
         try:
             # Getting all file in folder
+            lock.acquire()
             files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
+            lock.release()
             print("Got dirlist at %s/%s" % (args.mount_point, args.test_dir))
             for test_file in files_list:
                 if "create" in test_file:
