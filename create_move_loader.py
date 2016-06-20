@@ -184,7 +184,7 @@ def run_test(args, logger, results_q):
     while not stop_event.is_set():
         pass
 
-    p.get()
+    # p.get()
 
     while not results_q.empty():
         q = results_q.get()
