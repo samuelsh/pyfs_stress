@@ -11,6 +11,7 @@ import sys
 import multiprocessing
 
 import signal
+from msvcrt import getch
 
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
@@ -35,7 +36,7 @@ def key_monitor(logger):
 
         while not stop_event.is_set():
             try:
-                key = raw_input()  # waiting for input from user
+                key = getch()  # waiting for input from user
                 if key == 'q':
                     logger.warning('User Exit requested')
                     stop_event.set()
