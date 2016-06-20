@@ -4,6 +4,7 @@ author: samuels
 
 import argparse
 import os
+import threading
 import traceback
 
 import sys
@@ -88,7 +89,7 @@ def init_test(args, logger):
     except OSError:
         logger.exception("")
     logger.info("Starting Key monitor --- Press q <Enter> to exit test")
-    key_monitor_process = multiprocessing.Process(target=key_monitor, args=(logger,))
+    key_monitor_process = threading.Thread(target=key_monitor, args=(logger,))
     key_monitor_process.start()
     logger.info("Done Init, starting the test")
 
