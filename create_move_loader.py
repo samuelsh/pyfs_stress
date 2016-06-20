@@ -11,8 +11,8 @@ import sys
 import multiprocessing
 
 import signal
-from msvcrt import getch
 
+from getch.getch import getch
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
 
