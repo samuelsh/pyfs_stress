@@ -64,7 +64,7 @@ def file_creator_worker(path, proc_id):
     global total_files, file_create_lock
     print("Starting file creator %s" % proc_id)
     try:
-        while total_files.value < MAX_FILES:
+        while total_files.value < MAX_FILES or not stop_event.is_set():
             print("### DEBUG: %s -- going to lock total_files" % proc_id)
             file_create_lock.acquire(blocking=False)
             print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
@@ -125,6 +125,9 @@ def renamer_worker(args, proc_name):
             print("%s -- Can't find file, skipping ..." % proc_name)
         else:
             raise RuntimeError()
+    print("Test stopped!")
+    file_renamer_pool.terminate()
+    file_creator_pool.terminate()
 
 
 def run_test(args, logger, results_q):
@@ -176,9 +179,7 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt as stop_test_exception:
-        print(" Stopping test....")
-        file_creator_pool.terminate()
-        file_renamer_pool.terminate()
+        print(" CTRL+C pressed. Stopping test....")
         stop_event.set()
     else:
         traceback.print_exc()
