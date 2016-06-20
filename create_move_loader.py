@@ -34,7 +34,10 @@ def key_monitor(logger):
         logger.info('Key monitor started')
 
         while not stop_event.is_set():
-            key = raw_input()  # waiting for input from user
+            try:
+                key = raw_input()  # waiting for input from user
+            except EOFError:
+                pass
             if key == 'q':
                 logger.warning('User Exit requested')
                 stop_event.set()
