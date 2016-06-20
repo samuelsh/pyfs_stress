@@ -60,7 +60,7 @@ def file_creator_worker(path, proc_id, lock):
     global total_files
     while total_files.value < MAX_FILES:
         print("### DEBUG: %s -- going to lock total_files" % proc_id)
-        lock.acquire(blocking=0)
+        lock.acquire()
         print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
         filenum = total_files.value
         total_files.value += 1
@@ -80,7 +80,7 @@ def file_creator(args, path, logger):
         raise IOError("Base path not found: " + path)
     lock = multiprocessing.Manager().Lock()
     logger.info("write lock created %s for creating flies" % lock)
-    filenum = multiprocessing.Manager().Value('val', 0)
+    filenum = multiprocessing.Manager().Value('i', 0)
     # Initialising process pool + thread safe "flienum" value
     file_creator_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
 
