@@ -41,7 +41,7 @@ def key_monitor(logger):
                     logger.warning('User Exit requested')
                     stop_event.set()
             except EOFError:
-                logger.warning("EOF error")
+                break
 
     except Exception, e:
         if stop_event.is_set():
