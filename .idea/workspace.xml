@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
+    <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="locking issues&#10;">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_move_loader.py" afterPath="$PROJECT_DIR$/create_move_loader.py" />
     </list>
@@ -39,11 +39,21 @@
       <file leaf-file-name="create_move_loader.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_move_loader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="62" column="20" selection-start-line="62" selection-start-column="20" selection-end-line="62" selection-end-column="20" />
+            <state relative-caret-position="378">
+              <caret line="66" column="8" selection-start-line="66" selection-start-column="8" selection-end-line="66" selection-end-column="8" />
               <folding>
                 <element signature="e#25#40#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="managers.py" pinned="false" current-in-tab="false">
+        <entry file="file://C:/Python27/Lib/multiprocessing/managers.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="229">
+              <caret line="985" column="8" selection-start-line="985" selection-start-column="8" selection-end-line="985" selection-end-column="8" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -446,13 +456,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00249" summary="Create/Rename test (initial commit)&#10;">
-      <created>1466330856956</created>
-      <option name="number" value="00249" />
-      <option name="presentableId" value="LOCAL-00249" />
-      <option name="project" value="LOCAL" />
-      <updated>1466330856957</updated>
-    </task>
     <task id="LOCAL-00250" summary="Create/Rename test (initial commit)&#10;">
       <created>1466331015764</created>
       <option name="number" value="00250" />
@@ -789,7 +792,14 @@
       <option name="project" value="LOCAL" />
       <updated>1466394606929</updated>
     </task>
-    <option name="localTasksCounter" value="298" />
+    <task id="LOCAL-00298" summary="locking issues&#10;">
+      <created>1466394820547</created>
+      <option name="number" value="00298" />
+      <option name="presentableId" value="LOCAL-00298" />
+      <option name="project" value="LOCAL" />
+      <updated>1466394820547</updated>
+    </task>
+    <option name="localTasksCounter" value="299" />
     <servers />
   </component>
   <component name="TodoView">
@@ -852,16 +862,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/dir_walker_multiprocess.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/md5_benchmark_python.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="546">
@@ -1277,10 +1277,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/Python27/Lib/multiprocessing/managers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="985" column="8" selection-start-line="985" selection-start-column="8" selection-end-line="985" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/create_move_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="62" column="20" selection-start-line="62" selection-start-column="20" selection-end-line="62" selection-end-column="20" />
+        <state relative-caret-position="378">
+          <caret line="66" column="8" selection-start-line="66" selection-start-column="8" selection-end-line="66" selection-end-column="8" />
           <folding>
             <element signature="e#25#40#0" expanded="true" />
           </folding>
