@@ -138,7 +138,7 @@ def run_test(args, logger, results_q):
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
     for i in range(MAX_PROCESSES):
-       p = file_renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i), rename_lock))
+       p = file_renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i)))
 
     logger.info("Test running! Press CTRL + C to stop")
     file_renamer_pool.close()
