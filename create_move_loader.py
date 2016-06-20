@@ -61,7 +61,7 @@ def init_test(args, logger):
 
 
 def file_creator_worker(path, proc_id):
-    global total_files, file_create_lock
+    global total_files, file_create_lock, stop_event
     print("Starting file creator %s" % proc_id)
     try:
         while total_files.value < MAX_FILES or not stop_event.is_set():
