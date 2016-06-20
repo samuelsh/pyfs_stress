@@ -177,6 +177,8 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt as stop_test_exception:
         print(" Stopping test....")
+        file_creator_pool.terminate()
+        file_renamer_pool.terminate()
         stop_event.set()
     else:
         traceback.print_exc()
