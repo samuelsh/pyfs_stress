@@ -59,14 +59,14 @@ def init_test(args, logger):
 def file_creator_worker(path, proc_id, lock):
     global total_files
     while total_files.value < MAX_FILES:
-        print("### DEBUG: %s -- going to lock total_files", proc_id)
+        print("### DEBUG: %s -- going to lock total_files" % proc_id)
         lock.acquire()
-        print("### DEBUG: %s -- lock aquired on total_files", proc_id)
+        print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
         filenum = total_files.value
         total_files.value += 1
-        print("### DEBUG: %s -- going to release total_files", proc_id)
+        print("### DEBUG: %s -- going to release total_files" % proc_id)
         lock.release()
-        print("### DEBUG: %s -- total_files released", proc_id)
+        print("### DEBUG: %s -- total_files released" % proc_id)
         print("Creating %s/file_created_client_#%d_file_number_#%d" % (
             path, proc_id, filenum))
         touch('%s/file_created_client_#%d_file_number_#%d' % (path, proc_id, filenum))
