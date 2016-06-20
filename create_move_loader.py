@@ -182,8 +182,8 @@ def run_test(args, logger, results_q):
     file_renamer_pool.close()
     file_renamer_pool.join()
 
-    # while not stop_event.is_set():
-    #     pass
+    while not stop_event.is_set():
+        pass
 
     while not results_q.empty():
         q = results_q.get()
@@ -229,6 +229,7 @@ def main():
         if ex.errno == errno.ENOTEMPTY:
             logger.error("directory not empty")
     logger.info("Directory is Empty. Exiting...")
+
 
 if __name__ == '__main__':
     try:
