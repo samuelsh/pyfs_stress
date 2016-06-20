@@ -23,6 +23,11 @@ total_files = None
 stopped_processes_count = None
 
 
+def touch(fname, times=None):
+    with open(fname, 'a'):
+        os.utime(fname, times)
+
+
 def init_creator_pool(filenum):
     global total_files
     total_files = filenum
@@ -39,11 +44,15 @@ def init_test(args, logger):
     logger.debug("FSD domains: %s" % domains)
 
     logger.info("Mounting  %s to %s" % (args.mount_point, args.export_dir))
-    ShellUtils.run_shell_command("umount", "-fl %s" % args.mount_point)
+    if os.path.ismount(args.mount_point):
+        ShellUtils.run_shell_command("umount", "-fl %s" % args.mount_point)
     ShellUtils.run_shell_command("mount", "-o nfsvers=3 %s:/%s %s" % (args.cluster, args.export_dir, args.mount_point))
 
     logger.info("Creating test folder on cluster %s" % args.cluster)
-    ShellUtils.run_shell_command('mkdir', '%s/%s' % (args.mount_point, args.test_dir))
+    try:
+        os.mkdir('%s/%s' % (args.mount_point, args.test_dir))
+    except OSError:
+        logger.exception()
     logger.info("Done Init, starting the test")
 
 
@@ -58,8 +67,7 @@ def file_creator_worker(path, proc_id, lock):
         lock.release()
         print("Creating %s/file_created_client_#%d_file_number_#%d" % (
             path, proc_id, filenum))
-        ShellUtils.run_shell_command('touch', '%s/file_created_client_#%d_file_number_#%d' % (
-            path, proc_id, filenum))
+        touch('%s/file_created_client_#%d_file_number_#%d' % (path, proc_id, filenum))
     print("Done Creating files! total: %d" % int(total_files.value))
 
 
@@ -93,22 +101,17 @@ def renamer_worker(args, proc_name, lock):
                     new_file_name = test_file.replace('created', 'moved')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
-                    lock.acquire(blocking=0)
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
-                    lock.release()
                 elif "moved" in test_file:
                     new_file_name = test_file.replace('moved', 'created')
                     print(
                         "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
-                    lock.acquire(blocking=0)
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
-                    lock.release()
 
         except OSError as rename_worker_exception:
-            # traceback.print_exc(rename_worker_exception)
-            pass
+            print("%s -- Can't find file, skipping ..." % proc_name)
         else:
             raise RuntimeError()
 
@@ -123,7 +126,7 @@ def run_test(args, logger, results_q):
     renamer_pool = multiprocessing.Pool(MAX_PROCESSES)
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
-    #for i in range(MAX_PROCESSES):
+    # for i in range(MAX_PROCESSES):
     #    p = renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i), rename_lock))
 
     logger.info("Test running! Press CTRL + C to stop")
