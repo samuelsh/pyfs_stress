@@ -10,7 +10,6 @@ import sys
 
 import multiprocessing
 
-
 import signal
 
 from logger import Logger
@@ -26,6 +25,25 @@ file_renamer_pool = None
 file_create_lock = None
 total_files = None
 stopped_processes_count = None
+
+
+def key_monitor(logger):
+    global stop_event
+    try:
+
+        logger.info('Key monitor started')
+
+        while not stop_event.is_set():
+            key = raw_input()  # waiting for input from user
+            if key == 'q':
+                logger.warning('User Exit requested')
+                stop_event.set()
+
+    except Exception, e:
+        if stop_event.is_set():
+            return 0
+        logger.exception(e)
+        return -1
 
 
 def signal_handler_main(sig, frame):
@@ -177,6 +195,10 @@ def main():
     logger.debug("Logger Initialised %s" % logger)
 
     init_test(args, logger)
+
+    logger.info("Starting Key monitor --- Press q <Enter> to exit test")
+    key_monitor_process = multiprocessing.Process(target=key_monitor, args=(logger,))
+    key_monitor_process.start()
 
     if run_test(args, logger, results_q) is True:
         sys.exit(1)
