@@ -20,7 +20,8 @@ MAX_FILES = 10000
 
 files_queue = multiprocessing.Manager().Queue()
 stop_event = multiprocessing.Event()
-# file_creator_pool = None
+file_creator_pool = None
+file_create_lock = None
 total_files = None
 stopped_processes_count = None
 
@@ -58,13 +59,13 @@ def init_test(args, logger):
     logger.info("Done Init, starting the test")
 
 
-def file_creator_worker(path, proc_id, lock):
-    global total_files
+def file_creator_worker(path, proc_id):
+    global total_files, file_create_lock
     print("Starting file creator %s" % proc_id)
     try:
         while total_files.value < MAX_FILES:
             print("### DEBUG: %s -- going to lock total_files" % proc_id)
-            lock.acquire(blocking=False)
+            file_create_lock.acquire(blocking=False)
             print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
             filenum = total_files.value
             print("Creating %s/file_created_client_#%d_file_number_#%d" % (
@@ -75,7 +76,7 @@ def file_creator_worker(path, proc_id, lock):
             total_files.value += 1
             time.sleep(1)
             print("### DEBUG: %s -- going to release total_files" % proc_id)
-            lock.release()
+            file_create_lock.release()
             print("### DEBUG: %s -- total_files released" % proc_id)
     except Exception:
         traceback.print_exc()
@@ -83,22 +84,22 @@ def file_creator_worker(path, proc_id, lock):
 
 
 def file_creator(args, path, logger):
-
+    global file_creator_pool, file_create_lock
     if not os.path.isdir(path):
         raise IOError("Base path not found: " + path)
-    lock = multiprocessing.Manager().Lock()
-    logger.info("write lock created %s for creating flies" % lock)
+    file_create_lock = multiprocessing.Manager().Lock()
+    logger.info("write lock created %s for creating flies" % file_create_lock)
     filenum = multiprocessing.Manager().Value('i', 0)
     # Initialising process pool + thread safe "flienum" value
     file_creator_pool = multiprocessing.Pool(MAX_PROCESSES, initializer=init_creator_pool, initargs=(filenum,))
 
     # acquire the list of all paths inside base path
     for i in range(MAX_PROCESSES):
-        file_creator_pool.apply_async(file_creator_worker, args=(path, i, lock))
+        file_creator_pool.apply_async(file_creator_worker, args=(path, i))
     file_creator_pool.close()
 
 
-def renamer_worker(args, proc_name, lock):
+def renamer_worker(args, proc_name):
     global stop_event
     while not stop_event.is_set():
         try:
@@ -126,7 +127,7 @@ def renamer_worker(args, proc_name, lock):
 
 
 def run_test(args, logger, results_q):
-    global stop_event
+    global stop_event, file_creator_pool, renamer_pool
     logger.info("Starting file creator workers ...")
     file_creator(args, "%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
@@ -140,7 +141,7 @@ def run_test(args, logger, results_q):
 
     logger.info("Test running! Press CTRL + C to stop")
     renamer_pool.close()
-    # file_creator_pool.close()
+    file_creator_pool.close()
     renamer_pool.join()
 
     while not stop_event.is_set():
