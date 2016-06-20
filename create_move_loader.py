@@ -12,6 +12,8 @@ import multiprocessing
 
 import signal
 
+import time
+
 from getch.getch import getch
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
@@ -42,6 +44,7 @@ def key_monitor(logger):
                     stop_event.set()
             except EOFError:
                 break
+            time.sleep(1)
 
     except Exception, e:
         if stop_event.is_set():
