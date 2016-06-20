@@ -13,6 +13,8 @@ import multiprocessing
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
 
+import hanging_threads
+
 MAX_PROCESSES = 16
 MAX_FILES = 10000
 
