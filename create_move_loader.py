@@ -182,8 +182,8 @@ def run_test(args, logger, results_q):
     file_renamer_pool.close()
     file_renamer_pool.join()
 
-    while not stop_event.is_set():
-        pass
+    # while not stop_event.is_set():
+    #     pass
 
     while not results_q.empty():
         q = results_q.get()
@@ -211,8 +211,7 @@ def main():
 
     init_test(args, logger)
 
-    if run_test(args, logger, results_q) is True:
-        sys.exit(1)
+    run_test(args, logger, results_q)
 
     logger.info("Test completed, deleting files ....")
     for the_file in os.listdir("%s/%s" % (args.mount_point, args.test_dir)):
