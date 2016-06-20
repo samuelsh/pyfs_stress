@@ -95,7 +95,7 @@ def file_creator(args, path, logger):
     # acquire the list of all paths inside base path
     for i in range(MAX_PROCESSES):
         file_creator_pool.apply_async(file_creator_worker, args=(path, i, lock))
-    #file_creator_pool.close()
+    file_creator_pool.close()
 
 
 def renamer_worker(args, proc_name, lock):
