@@ -15,6 +15,8 @@ import signal
 
 import time
 
+import errno
+
 from getch.getch import getch
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
@@ -89,8 +91,8 @@ def init_test(args, logger):
     except OSError:
         logger.exception("")
     logger.info("Starting Key monitor --- Press q <Enter> to exit test")
-    key_monitor_process = threading.Thread(target=key_monitor, args=(logger,))
-    key_monitor_process.start()
+    key_monitor_thread = threading.Thread(target=key_monitor, args=(logger,))
+    key_monitor_thread.start()
     logger.info("Done Init, starting the test")
 
 
@@ -209,6 +211,22 @@ def main():
     if run_test(args, logger, results_q) is True:
         sys.exit(1)
 
+    logger.info("Test completed, deleting files ....")
+    for the_file in os.listdir("%s/%s" % (args.mount_point, args.test_dir)):
+        file_path = os.path.join("%s/%s" % (args.mount_point, args.test_dir), the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            logger.exception(e)
+
+    logger.info("All files deleted, checking that directory is empty....")
+    try:
+        os.rmdir("%s/%s" % (args.mount_point, args.test_dir))
+    except OSError as ex:
+        if ex.errno == errno.ENOTEMPTY:
+            logger.error("directory not empty")
+    logger.info("Directory is Empty. Exiting...")
 
 if __name__ == '__main__':
     try:
