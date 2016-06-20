@@ -13,8 +13,6 @@ import multiprocessing
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
 
-import hanging_threads
-
 MAX_PROCESSES = 16
 MAX_FILES = 10000
 
@@ -60,6 +58,7 @@ def init_test(args, logger):
 
 def file_creator_worker(path, proc_id, lock):
     global total_files
+    print("Starting file creator %s" % proc_id)
     try:
         while total_files.value < MAX_FILES:
             print("### DEBUG: %s -- going to lock total_files" % proc_id)
@@ -91,7 +90,6 @@ def file_creator(args, path, logger):
 
     # acquire the list of all paths inside base path
     for i in range(MAX_PROCESSES):
-        logger.info("Starting file creator process-%d" % i)
         file_creator_pool.apply_async(file_creator_worker, args=(path, i, lock))
     file_creator_pool.close()
 
