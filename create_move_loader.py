@@ -60,7 +60,7 @@ def file_creator_worker(path, proc_id, lock):
     global total_files
     while total_files.value < MAX_FILES:
         print("### DEBUG: %s -- going to lock total_files" % proc_id)
-        lock.acquire()
+        lock.acquire(blocking=0)
         print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
         filenum = total_files.value
         total_files.value += 1
