@@ -10,7 +10,8 @@ import sys
 
 import multiprocessing
 
-import time
+
+import signal
 
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
@@ -25,6 +26,10 @@ file_renamer_pool = None
 file_create_lock = None
 total_files = None
 stopped_processes_count = None
+
+
+def signal_handler_main(sig, frame):
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
 def touch(fname, times=None):
@@ -140,7 +145,7 @@ def run_test(args, logger, results_q):
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
     for i in range(MAX_PROCESSES):
-       p = file_renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i)))
+        p = file_renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i)))
 
     logger.info("Test running! Press CTRL + C to stop")
     file_renamer_pool.close()
@@ -164,6 +169,9 @@ def main():
     parser.add_argument("-n", "--files", help="Max files number to create", default=10000, type=int)
     parser.add_argument("--scenario", help="Select desired scenario", choices="", type=str)
     args = parser.parse_args()
+
+    # Capturing CTRL+C Event for clean exit
+    signal.signal(signal.SIGINT, signal_handler_main)
 
     logger = Logger().logger
     logger.debug("Logger Initialised %s" % logger)
