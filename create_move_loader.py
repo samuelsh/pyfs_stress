@@ -52,7 +52,7 @@ def init_test(args, logger):
     try:
         os.mkdir('%s/%s' % (args.mount_point, args.test_dir))
     except OSError:
-        logger.exception()
+        logger.exception("")
     logger.info("Done Init, starting the test")
 
 
