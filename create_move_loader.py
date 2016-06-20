@@ -177,13 +177,14 @@ def run_test(args, logger, results_q):
     logger.info("Starting renamer workers in parallel ...")
     for i in range(MAX_PROCESSES):
         p = file_renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i)))
-    p.get()
-    logger.info("Test running! Press CTRL + C to stop")
     file_renamer_pool.close()
+    logger.info("Test running! Press CTRL + C to stop")
     file_renamer_pool.join()
 
     while not stop_event.is_set():
         pass
+
+    p.get()
 
     while not results_q.empty():
         q = results_q.get()

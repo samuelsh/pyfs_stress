@@ -39,8 +39,8 @@
       <file leaf-file-name="create_move_loader.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_move_loader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
-              <caret line="184" column="10" selection-start-line="184" selection-start-column="10" selection-end-line="184" selection-end-column="10" />
+            <state relative-caret-position="542">
+              <caret line="187" column="0" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
               <folding>
                 <element signature="e#25#40#0" expanded="true" />
               </folding>
@@ -469,13 +469,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00287" summary="Minor fixes&#10;">
-      <created>1466342900683</created>
-      <option name="number" value="00287" />
-      <option name="presentableId" value="LOCAL-00287" />
-      <option name="project" value="LOCAL" />
-      <updated>1466342900683</updated>
-    </task>
     <task id="LOCAL-00288" summary="Minor fixes&#10;">
       <created>1466342985969</created>
       <option name="number" value="00288" />
@@ -812,7 +805,14 @@
       <option name="project" value="LOCAL" />
       <updated>1466407171934</updated>
     </task>
-    <option name="localTasksCounter" value="336" />
+    <task id="LOCAL-00336" summary="locking issues&#10;">
+      <created>1466407373138</created>
+      <option name="number" value="00336" />
+      <option name="presentableId" value="LOCAL-00336" />
+      <option name="project" value="LOCAL" />
+      <updated>1466407373139</updated>
+    </task>
+    <option name="localTasksCounter" value="337" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1298,8 +1298,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/create_move_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="184" column="10" selection-start-line="184" selection-start-column="10" selection-end-line="184" selection-end-column="10" />
+        <state relative-caret-position="542">
+          <caret line="187" column="0" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
           <folding>
             <element signature="e#25#40#0" expanded="true" />
           </folding>
