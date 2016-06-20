@@ -180,6 +180,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt as stop_test_exception:
         print(" CTRL+C pressed. Stopping test....")
         stop_event.set()
-    else:
+    except Exception:
         traceback.print_exc()
-        sys.exit(1)
+    sys.exit(0)
