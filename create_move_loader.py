@@ -61,19 +61,19 @@ def file_creator_worker(path, proc_id, lock):
     print("Starting file creator %s" % proc_id)
     try:
         while total_files.value < MAX_FILES:
-            # print("### DEBUG: %s -- going to lock total_files" % proc_id)
-            # lock.acquire()
-            # print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
+            print("### DEBUG: %s -- going to lock total_files" % proc_id)
+            lock.acquire()
+            print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
             filenum = total_files.value
-            # print("Creating %s/file_created_client_#%d_file_number_#%d" % (
-            #     path, proc_id, filenum))
-            # total_files.value += 1
-            # print("### DEBUG: %s -- going to release total_files" % proc_id)
-            # lock.release()
-            # print("### DEBUG: %s -- total_files released" % proc_id)
             print("Creating %s/file_created_client_#%d_file_number_#%d" % (
                 path, proc_id, filenum))
             touch('%s/file_created_client_#%d_file_number_#%d' % (path, proc_id, filenum))
+            print("Creating %s/file_created_client_#%d_file_number_#%d" % (
+                path, proc_id, filenum))
+            total_files.value += 1
+            print("### DEBUG: %s -- going to release total_files" % proc_id)
+            lock.release()
+            print("### DEBUG: %s -- total_files released" % proc_id)
     except Exception:
         traceback.print_exc()
     print("%s -- Done Creating files! total: %d" % (int(total_files.value), proc_id))
@@ -124,7 +124,7 @@ def renamer_worker(args, proc_name, lock):
 
 
 def run_test(args, logger, results_q):
-    global stop_event
+    global stop_event, file_creator_pool
     logger.info("Starting file creator workers ...")
     file_creator(args, "%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
@@ -138,6 +138,7 @@ def run_test(args, logger, results_q):
 
     logger.info("Test running! Press CTRL + C to stop")
     renamer_pool.close()
+    file_creator_pool.close()
     renamer_pool.join()
 
     while not stop_event.is_set():
