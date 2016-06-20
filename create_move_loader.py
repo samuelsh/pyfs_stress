@@ -21,6 +21,7 @@ MAX_FILES = 10000
 files_queue = multiprocessing.Manager().Queue()
 stop_event = multiprocessing.Event()
 file_creator_pool = None
+file_renamer_pool = None
 file_create_lock = None
 total_files = None
 stopped_processes_count = None
@@ -127,22 +128,21 @@ def renamer_worker(args, proc_name):
 
 
 def run_test(args, logger, results_q):
-    global stop_event, file_creator_pool, renamer_pool
+    global stop_event, file_creator_pool, file_renamer_pool
     logger.info("Starting file creator workers ...")
     file_creator(args, "%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
     rename_lock = multiprocessing.Manager().Lock()
     logger.info("write lock created %s for removing flies" % rename_lock)
-    renamer_pool = multiprocessing.Pool(MAX_PROCESSES)
+    file_renamer_pool = multiprocessing.Pool(MAX_PROCESSES)
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
-    # for i in range(MAX_PROCESSES):
-    #    p = renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i), rename_lock))
+    for i in range(MAX_PROCESSES):
+       p = file_renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i), rename_lock))
 
     logger.info("Test running! Press CTRL + C to stop")
-    renamer_pool.close()
-    file_creator_pool.close()
-    renamer_pool.join()
+    file_renamer_pool.close()
+    file_renamer_pool.join()
 
     while not stop_event.is_set():
         pass
