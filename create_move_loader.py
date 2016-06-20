@@ -20,7 +20,7 @@ MAX_FILES = 10000
 
 files_queue = multiprocessing.Manager().Queue()
 stop_event = multiprocessing.Event()
-file_creator_pool = None
+# file_creator_pool = None
 total_files = None
 stopped_processes_count = None
 
@@ -83,7 +83,6 @@ def file_creator_worker(path, proc_id, lock):
 
 
 def file_creator(args, path, logger):
-    global file_creator_pool
 
     if not os.path.isdir(path):
         raise IOError("Base path not found: " + path)
@@ -127,7 +126,7 @@ def renamer_worker(args, proc_name, lock):
 
 
 def run_test(args, logger, results_q):
-    global stop_event, file_creator_pool
+    global stop_event
     logger.info("Starting file creator workers ...")
     file_creator(args, "%s/%s" % (args.mount_point, args.test_dir), logger)
     p = None
@@ -141,7 +140,7 @@ def run_test(args, logger, results_q):
 
     logger.info("Test running! Press CTRL + C to stop")
     renamer_pool.close()
-    file_creator_pool.close()
+    # file_creator_pool.close()
     renamer_pool.join()
 
     while not stop_event.is_set():
