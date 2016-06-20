@@ -143,6 +143,9 @@ def renamer_worker(args, proc_name):
             files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
             print("Process %s -- Got dirlist at %s/%s" % (proc_name, args.mount_point, args.test_dir))
             for test_file in files_list:
+                if stop_event.is_set():
+                    break
+
                 if "create" in test_file:
                     new_file_name = test_file.replace('created', 'moved')
                     print(
