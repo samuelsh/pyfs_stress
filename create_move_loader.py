@@ -10,6 +10,8 @@ import sys
 
 import multiprocessing
 
+import time
+
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
 
@@ -71,6 +73,7 @@ def file_creator_worker(path, proc_id, lock):
             print("Creating %s/file_created_client_#%d_file_number_#%d" % (
                 path, proc_id, filenum))
             total_files.value += 1
+            time.sleep(1)
             print("### DEBUG: %s -- going to release total_files" % proc_id)
             lock.release()
             print("### DEBUG: %s -- total_files released" % proc_id)
