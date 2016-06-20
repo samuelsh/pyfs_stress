@@ -80,6 +80,9 @@ def init_test(args, logger):
         os.mkdir('%s/%s' % (args.mount_point, args.test_dir))
     except OSError:
         logger.exception("")
+    logger.info("Starting Key monitor --- Press q <Enter> to exit test")
+    key_monitor_process = multiprocessing.Process(target=key_monitor, args=(logger,))
+    key_monitor_process.start()
     logger.info("Done Init, starting the test")
 
 
@@ -195,10 +198,6 @@ def main():
     logger.debug("Logger Initialised %s" % logger)
 
     init_test(args, logger)
-
-    logger.info("Starting Key monitor --- Press q <Enter> to exit test")
-    key_monitor_process = multiprocessing.Process(target=key_monitor, args=(logger,))
-    key_monitor_process.start()
 
     if run_test(args, logger, results_q) is True:
         sys.exit(1)
