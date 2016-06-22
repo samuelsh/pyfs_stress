@@ -76,7 +76,7 @@ class ShellUtils:
 
     @staticmethod
     def run_shell_remote_command(remote_host, remote_cmd):
-        p = subprocess.Popen(['gssh', '-nx', remote_host, remote_cmd], stdout=subprocess.PIPE,
+        p = subprocess.Popen(['/zebra/qa/tools/gssh', '-nx', remote_host, remote_cmd], stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
