@@ -76,7 +76,7 @@ class ShellUtils:
 
     @staticmethod
     def run_shell_remote_command(remote_host, remote_cmd):
-        p = subprocess.Popen(['ssh', '-nx', remote_host, remote_cmd], stdout=subprocess.PIPE,
+        p = subprocess.Popen(['gssh', '-nx', remote_host, remote_cmd], stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
@@ -159,8 +159,20 @@ class FSUtils:
             return False
 
     @staticmethod
-    def mkmounts():
-        pass
+    def mount_fsd(cluster, fullpath):
+        """
+        :param cluster: str
+        :param export_dir: str
+        :param no
+        Returns:
+
+        """
+        outp = ShellUtils.run_bash_function(QA_BASHLIB_PATH, "is_rehydrated", "%s %s" % (cluster, fullpath))
+        if outp:
+            return True
+        else:
+            return False
+
 
     @staticmethod
     def get_active_nodes_num(cluster):
