@@ -159,6 +159,10 @@ class FSUtils:
             return False
 
     @staticmethod
+    def mkmounts():
+        pass
+
+    @staticmethod
     def get_active_nodes_num(cluster):
         """
         :param cluster: string

@@ -17,7 +17,6 @@ import time
 
 import errno
 
-from getch.getch import getch
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
 
@@ -202,7 +201,7 @@ def main():
     parser.add_argument("-m", "--mount_point", help="Path to mountpoint", default="/mnt/test", type=str)
     parser.add_argument("-d", "--test_dir", help="Directory under test", default="test_dir", type=str)
     parser.add_argument("-n", "--files", help="Max files number to create", default=10000, type=int)
-    parser.add_argument("--scenario", help="Select desired scenario", choices="", type=str)
+    parser.add_argument("--scenario", help="Select desired scenario", choices=['domains', 'multidir'], type=str)
     args = parser.parse_args()
 
     # Capturing CTRL+C Event for clean exit
@@ -229,7 +228,8 @@ def main():
         os.rmdir("%s/%s" % (args.mount_point, args.test_dir))
     except OSError as ex:
         if ex.errno == errno.ENOTEMPTY:
-            logger.error("directory not empty")
+            logger.error("directory is not empty!")
+            sys.exit(1)
     logger.info("Directory is Empty. Exiting...")
 
 
