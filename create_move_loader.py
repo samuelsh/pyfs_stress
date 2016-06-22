@@ -96,11 +96,11 @@ def init_test(args, logger):
     logger.info("Done Init, starting the test")
 
 
-def file_creator_worker(path, proc_id):
+def file_creator_worker(path, proc_id, max_files):
     global total_files, file_create_lock, stop_event
     print("Starting file creator %s" % proc_id)
     try:
-        while total_files.value < MAX_FILES and not stop_event.is_set():
+        while total_files.value < max_files and not stop_event.is_set():
             print("### DEBUG: %s -- going to lock total_files" % proc_id)
             file_create_lock.acquire(blocking=False)
             print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
@@ -131,7 +131,7 @@ def file_creator(args, path, logger):
 
     # acquire the list of all paths inside base path
     for i in range(MAX_PROCESSES):
-        file_creator_pool.apply_async(file_creator_worker, args=(path, i))
+        file_creator_pool.apply_async(file_creator_worker, args=(path, i, args.files))
     file_creator_pool.close()
 
 
