@@ -2,14 +2,19 @@ import logging
 import os
 import sys
 
+import multiprocessing
+
 __author__ = 'samuels'
 
 
 class Logger:
-    def __init__(self, output_dir=""):
+    def __init__(self, output_dir="", mp=False):
         self.output_dir = output_dir
 
-        self._logger = logging.getLogger()
+        if not mp:
+            self._logger = logging.getLogger()
+        else:
+            self._logger = multiprocessing.get_logger()
         self._logger.setLevel(logging.DEBUG)
 
         # create console handler and set level to info
