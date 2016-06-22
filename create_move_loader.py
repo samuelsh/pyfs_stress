@@ -101,17 +101,17 @@ def file_creator_worker(path, proc_id, max_files):
     print("Starting file creator %s" % proc_id)
     try:
         while total_files.value < max_files and not stop_event.is_set():
+            filenum = total_files.value
+            print("Creating %s/file_created_client_#%d_file_number_#%d" % (
+                path, proc_id, filenum))
+            touch('%s/file_created_client_#%d_file_number_#%d' % (path, proc_id, filenum))
             print("### DEBUG: %s -- going to lock total_files" % proc_id)
             file_create_lock.acquire(blocking=False)
             print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
-            filenum = total_files.value
             total_files.value += 1
             print("### DEBUG: %s -- going to release total_files" % proc_id)
             file_create_lock.release()
             print("### DEBUG: %s -- total_files released" % proc_id)
-            print("Creating %s/file_created_client_#%d_file_number_#%d" % (
-                path, proc_id, filenum))
-            touch('%s/file_created_client_#%d_file_number_#%d' % (path, proc_id, filenum))
     except Exception:
         traceback.print_exc()
     print("%s -- Done Creating files! total: %d" % (int(total_files.value), proc_id))
