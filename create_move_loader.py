@@ -139,9 +139,8 @@ def renamer_worker(args, proc_id):
     while not stop_event.is_set():
         try:
             # Getting all file in folder
-            #files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
             print("Process %s -- Got dirlist at %s/%s" % (proc_name, args.mount_point, args.test_dir))
-            for filenum in xrange(args.files):
+            for _ in xrange(args.files):
                 if stop_event.is_set():
                     break
                 test_file = 'file_%s_client_#%d_file_number_#%d' % (
@@ -180,7 +179,7 @@ def run_test(args, logger, results_q):
     # Starting rename workers in parallel
     logger.info("Starting renamer workers in parallel ...")
     for i in range(MAX_PROCESSES):
-        p = file_renamer_pool.apply_async(renamer_worker, args=(args, ("process-%d" % i)))
+        p = file_renamer_pool.apply_async(renamer_worker, args=(args, i))
     file_renamer_pool.close()
     logger.info("Test running! Press CTRL + C to stop")
     file_renamer_pool.join()
