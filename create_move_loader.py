@@ -139,11 +139,10 @@ def renamer_worker(args, proc_id):
     while not stop_event.is_set():
         try:
             # Getting all file in folder
-            for _ in xrange(args.files):
+            test_files = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
+            for test_file in test_files:
                 if stop_event.is_set():
                     break
-                test_file = 'file_%s_client_#%d_file_number_#%d' % (
-                    choice(['created', 'moved']), randint(0, MAX_PROCESSES), randint(0, args.files))
 
                 if "create" in test_file:
                     new_file_name = test_file.replace('created', 'moved')
