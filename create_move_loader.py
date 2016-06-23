@@ -134,28 +134,29 @@ def file_creator(args, path, logger):
 
 
 def renamer_worker(args, proc_id):
-    global stop_event
+    global stop_event, total_files
     proc_name = 'process-%d' % proc_id
     while not stop_event.is_set():
         try:
             # Getting all file in folder
-            print("Process %s -- Got dirlist at %s/%s" % (proc_name, args.mount_point, args.test_dir))
             for _ in xrange(args.files):
                 if stop_event.is_set():
                     break
                 test_file = 'file_%s_client_#%d_file_number_#%d' % (
-                    choice(['created', 'moved']), randint(0, MAX_PROCESSES), randint(0, args.files))
+                    choice(['created', 'moved']), randint(0, MAX_PROCESSES), randint(0, total_files.value))
 
                 if "create" in test_file:
                     new_file_name = test_file.replace('created', 'moved')
                     print(
-                        "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
+                        "%s -- renaming %s to %s at path %s/%s" % (
+                            proc_name, test_file, new_file_name, args.mount_point, args.test_dir))
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
                 elif "moved" in test_file:
                     new_file_name = test_file.replace('moved', 'created')
                     print(
-                        "renaming %s to %s at path %s/%s" % (test_file, new_file_name, args.mount_point, args.test_dir))
+                        "%s -- renaming %s to %s at path %s/%s" % (
+                            proc_name, test_file, new_file_name, args.mount_point, args.test_dir))
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
 
