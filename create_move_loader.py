@@ -16,6 +16,7 @@ import signal
 import time
 
 import errno
+from random import randint, choice
 
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
@@ -132,16 +133,19 @@ def file_creator(args, path, logger):
     file_creator_pool.close()
 
 
-def renamer_worker(args, proc_name):
+def renamer_worker(args, proc_id):
     global stop_event
+    proc_name = 'process-%d' % proc_id
     while not stop_event.is_set():
         try:
             # Getting all file in folder
-            files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
+            #files_list = os.listdir("%s/%s" % (args.mount_point, args.test_dir))
             print("Process %s -- Got dirlist at %s/%s" % (proc_name, args.mount_point, args.test_dir))
-            for test_file in files_list:
+            for filenum in xrange(args.files):
                 if stop_event.is_set():
                     break
+                test_file = 'file_%s_client_#%d_file_number_#%d' % (
+                    choice(['created', 'moved']), randint(0, MAX_PROCESSES), randint(0, args.files))
 
                 if "create" in test_file:
                     new_file_name = test_file.replace('created', 'moved')
@@ -156,7 +160,7 @@ def renamer_worker(args, proc_name):
                     os.rename("%s/%s/%s" % (args.mount_point, args.test_dir, test_file),
                               "%s/%s/%s" % (args.mount_point, args.test_dir, new_file_name))
 
-        except OSError as rename_worker_exception:
+        except OSError:
             print("%s -- Can't find file, skipping ..." % proc_name)
         else:
             raise RuntimeError()

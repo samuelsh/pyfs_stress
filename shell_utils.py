@@ -8,6 +8,7 @@ __author__ = 'samuels'
 QA_BASHLIB_PATH = "/zebra/qa/qa-bashlib/qa-bashlib.sh"
 PARAMS_FUNCTIONS = "/zebra/qa/qa-functions/6.0-params-functions.sh"
 GLOBAL_SSH_PATH = "/zebra/qa/qa-util-scripts/global_ssh"
+SSH_PATH = "/zebra/qa/tools/gssh"
 
 
 class StringUtils:
@@ -76,7 +77,7 @@ class ShellUtils:
 
     @staticmethod
     def run_shell_remote_command(remote_host, remote_cmd):
-        p = subprocess.Popen(['/zebra/qa/tools/gssh', '-nx', remote_host, remote_cmd], stdout=subprocess.PIPE,
+        p = subprocess.Popen([SSH_PATH, '-nx', remote_host, remote_cmd], stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
@@ -159,20 +160,24 @@ class FSUtils:
             return False
 
     @staticmethod
-    def mount_fsd(cluster, fullpath):
+    def mount_fsd(cluster, export_dir, nof_nodes, domains, mtype, prefix, exaver):
         """
-        :param cluster: str
-        :param export_dir: str
-        :param no
-        Returns:
+        :type cluster: str
+        :type export_dir: str
+        :type nof_nodes: int
+        :type domains: int
+        :type mtype: str
+        :type prefix: str
+        :type exaver: str
+        :rtype: bool
 
         """
-        outp = ShellUtils.run_bash_function(QA_BASHLIB_PATH, "is_rehydrated", "%s %s" % (cluster, fullpath))
-        if outp:
+        outp = ShellUtils.run_bash_function(QA_BASHLIB_PATH, "mount_fsd", "%s %s %s %s %s %s %s %s" % (
+            cluster, export_dir, nof_nodes, domains, mtype, prefix, 0, exaver))
+        if "Exception" in outp:
             return True
         else:
             return False
-
 
     @staticmethod
     def get_active_nodes_num(cluster):
