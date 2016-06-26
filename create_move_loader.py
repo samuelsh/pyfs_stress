@@ -240,6 +240,7 @@ def main():
         logger.info("Directory is Empty. Exiting...")
         args.test_dir = "my_dir%d" % (randint(1, 100000))
         logger.info('Restarting test with new test directory %s ' % args.test_dir)
+        stop_event = multiprocessing.Event()  # resetting stop event
 
 
 if __name__ == '__main__':
