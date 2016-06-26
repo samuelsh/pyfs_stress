@@ -31,10 +31,11 @@ file_renamer_pool = None
 file_create_lock = None
 total_files = None
 stopped_processes_count = None
+user_exit_request = False
 
 
 def key_monitor(logger):
-    global stop_event
+    global stop_event, user_ext_request
     try:
 
         logger.info('Key monitor started')
@@ -44,6 +45,7 @@ def key_monitor(logger):
                 key = raw_input()  # waiting for input from user
                 if key == 'q':
                     logger.warning('User Exit requested')
+                    user_ext_request = True
                     stop_event.set()
             except EOFError:
                 break
@@ -198,7 +200,7 @@ def run_test(args, logger, results_q):
 
 
 def main():
-    global stop_event
+    global stop_event, user_exit_request
     results_q = multiprocessing.Queue()
     parser = argparse.ArgumentParser()
 
@@ -216,7 +218,7 @@ def main():
     logger = Logger().logger
     logger.debug("Logger Initialised %s" % logger)
 
-    while not stop_event.is_set():
+    while not stop_event.is_set() and not user_exit_request:
         init_test(args, logger)
 
         run_test(args, logger, results_q)
