@@ -237,7 +237,7 @@ def main():
                 logger.error("directory is not empty!")
                 sys.exit(1)
         logger.info("Directory is Empty. Exiting...")
-        args.test_dir = "my_dir%d" % (randint(1 - 100000))
+        args.test_dir = "my_dir%d" % (randint(1, 100000))
         logger.info('Restarting test with new test directory %s ' % args.test_dir)
 
 
