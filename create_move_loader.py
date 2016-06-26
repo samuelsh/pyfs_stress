@@ -114,7 +114,8 @@ def file_creator_worker(path, proc_id, max_files):
             print("### DEBUG: %s -- total_files released" % proc_id)
     except Exception:
         traceback.print_exc()
-    print("%s -- Done Creating files! total: %d" % (int(total_files.value), proc_id))
+    print("%s -- Done Creating files! total: %d. Stop moving ..." % (int(total_files.value), proc_id))
+    stop_event.set()
 
 
 def file_creator(args, path, logger):
