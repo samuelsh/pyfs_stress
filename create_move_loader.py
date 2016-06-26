@@ -218,7 +218,7 @@ def main():
     logger = Logger().logger
     logger.debug("Logger Initialised %s" % logger)
 
-    while not stop_event.is_set() and not user_exit_request:
+    while not user_exit_request:
         init_test(args, logger)
 
         run_test(args, logger, results_q)
