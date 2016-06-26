@@ -418,13 +418,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00302" summary="locking issues&#10;">
-      <created>1466395773387</created>
-      <option name="number" value="00302" />
-      <option name="presentableId" value="LOCAL-00302" />
-      <option name="project" value="LOCAL" />
-      <updated>1466395773388</updated>
-    </task>
     <task id="LOCAL-00303" summary="locking issues&#10;">
       <created>1466396210369</created>
       <option name="number" value="00303" />
@@ -761,7 +754,14 @@
       <option name="project" value="LOCAL" />
       <updated>1466946421468</updated>
     </task>
-    <option name="localTasksCounter" value="351" />
+    <task id="LOCAL-00351" summary="adding gssh util&#10;">
+      <created>1466946688579</created>
+      <option name="number" value="00351" />
+      <option name="presentableId" value="LOCAL-00351" />
+      <option name="project" value="LOCAL" />
+      <updated>1466946688579</updated>
+    </task>
+    <option name="localTasksCounter" value="352" />
     <servers />
   </component>
   <component name="TodoView">
