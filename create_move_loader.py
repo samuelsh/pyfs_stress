@@ -197,6 +197,7 @@ def run_test(args, logger, results_q):
 
 
 def main():
+    global stop_event
     results_q = multiprocessing.Queue()
     parser = argparse.ArgumentParser()
 
@@ -214,27 +215,30 @@ def main():
     logger = Logger().logger
     logger.debug("Logger Initialised %s" % logger)
 
-    init_test(args, logger)
+    while not stop_event.is_set():
+        init_test(args, logger)
 
-    run_test(args, logger, results_q)
+        run_test(args, logger, results_q)
 
-    logger.info("Test completed, deleting files ....")
-    for the_file in os.listdir("%s/%s" % (args.mount_point, args.test_dir)):
-        file_path = os.path.join("%s/%s" % (args.mount_point, args.test_dir), the_file)
+        logger.info("Test completed, deleting files ....")
+        for the_file in os.listdir("%s/%s" % (args.mount_point, args.test_dir)):
+            file_path = os.path.join("%s/%s" % (args.mount_point, args.test_dir), the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception as e:
+                logger.exception(e)
+
+        logger.info("All files deleted, checking that directory is empty....")
         try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-        except Exception as e:
-            logger.exception(e)
-
-    logger.info("All files deleted, checking that directory is empty....")
-    try:
-        os.rmdir("%s/%s" % (args.mount_point, args.test_dir))
-    except OSError as ex:
-        if ex.errno == errno.ENOTEMPTY:
-            logger.error("directory is not empty!")
-            sys.exit(1)
-    logger.info("Directory is Empty. Exiting...")
+            os.rmdir("%s/%s" % (args.mount_point, args.test_dir))
+        except OSError as ex:
+            if ex.errno == errno.ENOTEMPTY:
+                logger.error("directory is not empty!")
+                sys.exit(1)
+        logger.info("Directory is Empty. Exiting...")
+        args.test_dir = "my_dir%d" % (randint(1 - 100000))
+        logger.info('Restarting test with new test directory %s ' % args.test_dir)
 
 
 if __name__ == '__main__':

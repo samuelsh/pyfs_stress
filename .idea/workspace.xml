@@ -39,8 +39,8 @@
       <file leaf-file-name="create_move_loader.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_move_loader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="218" column="4" selection-start-line="218" selection-start-column="4" selection-end-line="218" selection-end-column="4" />
+            <state relative-caret-position="399">
+              <caret line="234" column="28" selection-start-line="234" selection-start-column="28" selection-end-line="234" selection-end-column="28" />
               <folding>
                 <element signature="e#25#40#0" expanded="true" />
               </folding>
@@ -418,13 +418,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00298" summary="locking issues&#10;">
-      <created>1466394820547</created>
-      <option name="number" value="00298" />
-      <option name="presentableId" value="LOCAL-00298" />
-      <option name="project" value="LOCAL" />
-      <updated>1466394820547</updated>
-    </task>
     <task id="LOCAL-00299" summary="locking issues&#10;">
       <created>1466395046811</created>
       <option name="number" value="00299" />
@@ -761,7 +754,14 @@
       <option name="project" value="LOCAL" />
       <updated>1466675120933</updated>
     </task>
-    <option name="localTasksCounter" value="347" />
+    <task id="LOCAL-00347" summary="adding gssh util&#10;">
+      <created>1466945625751</created>
+      <option name="number" value="00347" />
+      <option name="presentableId" value="LOCAL-00347" />
+      <option name="project" value="LOCAL" />
+      <updated>1466945625751</updated>
+    </task>
+    <option name="localTasksCounter" value="348" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1124,6 +1124,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="458">
           <caret line="226" column="4" selection-start-line="226" selection-start-column="4" selection-end-line="226" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1206,8 +1207,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/create_move_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="218" column="4" selection-start-line="218" selection-start-column="4" selection-end-line="218" selection-end-column="4" />
+        <state relative-caret-position="399">
+          <caret line="234" column="28" selection-start-line="234" selection-start-column="28" selection-end-line="234" selection-end-column="28" />
           <folding>
             <element signature="e#25#40#0" expanded="true" />
           </folding>
