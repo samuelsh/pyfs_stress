@@ -106,7 +106,7 @@ def file_creator_worker(path, proc_id, max_files):
                 path, proc_id, filenum))
             touch('%s/file_created_client_#%d_file_number_#%d' % (path, proc_id, filenum))
             print("### DEBUG: %s -- going to lock total_files" % proc_id)
-            file_create_lock.acquire(blocking=False)
+            file_create_lock.acquire()
             print("### DEBUG: %s -- lock aquired on total_files" % proc_id)
             total_files.value += 1
             print("### DEBUG: %s -- going to release total_files" % proc_id)
@@ -114,8 +114,9 @@ def file_creator_worker(path, proc_id, max_files):
             print("### DEBUG: %s -- total_files released" % proc_id)
     except Exception:
         traceback.print_exc()
-    print("%s -- Done Creating files! total: %d. Stop moving ..." % (int(total_files.value), proc_id))
-    stop_event.set()
+    if stop_event.is_set():
+        print("%s -- Done Creating files! total: %d. Stop moving ..." % (int(total_files.value), proc_id))
+        stop_event.set()
 
 
 def file_creator(args, path, logger):
