@@ -244,6 +244,8 @@ def main():
         logger.info('Restarting test with new test directory %s ' % args.test_dir)
         stop_event = multiprocessing.Event()  # resetting stop event
 
+    stop_event.is_set()
+
 
 if __name__ == '__main__':
     try:
