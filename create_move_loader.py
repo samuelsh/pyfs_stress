@@ -46,7 +46,7 @@ def key_monitor(logger):
                 if key == 'q':
                     logger.warning('User Exit requested')
                     user_exit_request = True
-                    stop_event.set()
+                    #stop_event.set()
             except EOFError:
                 break
             time.sleep(1)
@@ -195,9 +195,6 @@ def run_test(args, logger, results_q):
     file_renamer_pool.close()
     logger.info("Test running! Press CTRL + C to stop")
     file_renamer_pool.join()
-
-    # while not stop_event.is_set():
-    #     pass
 
     # p.get()
 
