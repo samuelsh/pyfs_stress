@@ -196,8 +196,8 @@ def run_test(args, logger, results_q):
     logger.info("Test running! Press CTRL + C to stop")
     file_renamer_pool.join()
 
-    while not stop_event.is_set():
-        pass
+    # while not stop_event.is_set():
+    #     pass
 
     # p.get()
 
