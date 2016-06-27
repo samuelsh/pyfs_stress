@@ -123,7 +123,6 @@ def init_test(args, logger):
         logger.info("Starting Key monitor --- Press q <Enter> to exit test")
         key_monitor_thread = threading.Thread(target=key_monitor, args=(logger,))
         key_monitor_thread.start()
-        logger.info("Done Init, starting the test")
 
     logger.info("Mounting  %s to %s" % (args.mount_point, args.export_dir))
     if os.path.ismount(args.mount_point):
@@ -142,6 +141,7 @@ def init_test(args, logger):
             logger.exception("")
             args.test_dir = get_random_unicode(64)
 
+    logger.info("Done Init, starting the test")
 
 
 def file_creator_worker(path, proc_id, max_files):
