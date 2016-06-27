@@ -35,6 +35,36 @@ stopped_processes_count = None
 user_exit_request = False
 
 
+def get_random_unicode(length):
+    try:
+        get_char = unichr
+    except NameError:
+        get_char = chr
+
+    # Update this to include code point ranges to be sampled
+    include_ranges = [
+        (0x0021, 0x0021),
+        (0x0023, 0x0026),
+        (0x0028, 0x007E),
+        (0x00A1, 0x00AC),
+        (0x00AE, 0x00FF),
+        (0x0100, 0x017F),
+        (0x0180, 0x024F),
+        (0x2C60, 0x2C7F),
+        (0x16A0, 0x16F0),
+        (0x0370, 0x0377),
+        (0x037A, 0x037E),
+        (0x0384, 0x038A),
+        (0x038C, 0x038C),
+    ]
+
+    alphabet = [
+        get_char(code_point) for current_range in include_ranges
+        for code_point in range(current_range[0], current_range[1] + 1)
+        ]
+    return ''.join(choice(alphabet) for i in range(length))
+
+
 def key_monitor(logger):
     global stop_event, user_exit_request
     try:
@@ -246,7 +276,8 @@ def main():
                 logger.error("directory is not empty!")
                 sys.exit(1)
         logger.info("Directory is Empty. Exiting...")
-        args.test_dir = ''.join(choice(string.ascii_lowercase + string.digits) for _ in range(64))
+        # args.test_dir = ''.join(choice(string.ascii_lowercase + string.digits) for _ in range(64))
+        args.test_dir = get_random_unicode(64)
         logger.info('Restarting test with new test directory %s ' % args.test_dir)
         if not user_exit_request:
             stop_event = multiprocessing.Event()  # resetting stop event
