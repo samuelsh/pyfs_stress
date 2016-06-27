@@ -4,6 +4,7 @@ author: samuels
 
 import argparse
 import os
+import string
 import threading
 import traceback
 
@@ -16,7 +17,7 @@ import signal
 import time
 
 import errno
-from random import randint, choice
+from random import randint, choice, random
 
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
@@ -46,7 +47,7 @@ def key_monitor(logger):
                 if key == 'q':
                     logger.warning('User Exit requested')
                     user_exit_request = True
-                    #stop_event.set()
+                    stop_event.set()
             except EOFError:
                 break
             time.sleep(1)
@@ -245,9 +246,10 @@ def main():
                 logger.error("directory is not empty!")
                 sys.exit(1)
         logger.info("Directory is Empty. Exiting...")
-        args.test_dir = "my_dir%d" % (randint(1, 100000))
+        args.test_dir = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(64))
         logger.info('Restarting test with new test directory %s ' % args.test_dir)
-        stop_event = multiprocessing.Event()  # resetting stop event
+        if not user_exit_request:
+            stop_event = multiprocessing.Event()  # resetting stop event
 
     stop_event.is_set()
 
