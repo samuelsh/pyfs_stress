@@ -17,7 +17,7 @@ import signal
 import time
 
 import errno
-from random import randint, choice, random
+from random import randint, choice
 
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
@@ -246,7 +246,7 @@ def main():
                 logger.error("directory is not empty!")
                 sys.exit(1)
         logger.info("Directory is Empty. Exiting...")
-        args.test_dir = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(64))
+        args.test_dir = ''.join(choice(string.ascii_lowercase + string.digits) for _ in range(64))
         logger.info('Restarting test with new test directory %s ' % args.test_dir)
         if not user_exit_request:
             stop_event = multiprocessing.Event()  # resetting stop event
