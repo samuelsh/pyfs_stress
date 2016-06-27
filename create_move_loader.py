@@ -127,10 +127,15 @@ def init_test(args, logger):
     ShellUtils.run_shell_command("mount", "-o nfsvers=3 %s:/%s %s" % (args.cluster, args.export_dir, args.mount_point))
 
     logger.info("Creating test folder on cluster %s" % args.cluster)
-    try:
-        os.mkdir('%s/%s' % (args.mount_point, args.test_dir))
-    except OSError:
-        logger.exception("")
+    mkdir_success = False
+    while not mkdir_success:
+        try:
+            os.mkdir('%s/%s' % (args.mount_point, args.test_dir))
+            mkdir_success = True
+        except OSError:
+            logger.exception("")
+            args.test_dir = get_random_unicode(64)
+
     logger.info("Starting Key monitor --- Press q <Enter> to exit test")
     key_monitor_thread = threading.Thread(target=key_monitor, args=(logger,))
     key_monitor_thread.start()
