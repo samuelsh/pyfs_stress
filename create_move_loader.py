@@ -126,11 +126,12 @@ def init_test(args, logger):
         key_monitor_thread.start()
 
     logger.info("Mounting  %s to %s" % (args.mount_point, args.export_dir))
-    if os.path.ismount(args.mount_point):
-        ShellUtils.run_shell_command("umount", "-fl %s" % args.mount_point)
-    elif not os.path.isdir(args.mount_point):
-        os.mkdir(args.mount_point)
-    ShellUtils.run_shell_command("mount", "-o nfsvers=3 %s:/%s %s" % (args.cluster, args.export_dir, args.mount_point))
+    if not args.noremount:
+        if os.path.ismount(args.mount_point):
+            ShellUtils.run_shell_command("umount", "-fl %s" % args.mount_point)
+        elif not os.path.isdir(args.mount_point):
+            os.mkdir(args.mount_point)
+        ShellUtils.run_shell_command("mount", "-o nfsvers=3 %s:/%s %s" % (args.cluster, args.export_dir, args.mount_point))
 
     logger.info("Creating test folder on cluster %s" % args.cluster)
     mkdir_success = False
@@ -253,6 +254,7 @@ def main():
     parser.add_argument("-m", "--mount_point", help="Path to mountpoint", default="/mnt/test", type=str)
     parser.add_argument("-d", "--test_dir", help="Directory under test", default="test_dir", type=str)
     parser.add_argument("-n", "--files", help="Max files number to create", default=10000, type=int)
+    parser.add_argument('--noremount', action='store_true')
     parser.add_argument("--scenario", help="Select desired scenario", choices=['domains', 'multidir'], type=str)
     args = parser.parse_args()
 

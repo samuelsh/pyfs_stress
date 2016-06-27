@@ -160,7 +160,7 @@ class FSUtils:
             return False
 
     @staticmethod
-    def mount_fsd(cluster, export_dir, nof_nodes, domains, mtype, prefix, exaver):
+    def mount_fsd(cluster, export_dir, nof_nodes, domains, mtype, prefix, exaver=6):
         """
         :type cluster: str
         :type export_dir: str
@@ -173,7 +173,7 @@ class FSUtils:
 
         """
         outp = ShellUtils.run_bash_function(QA_BASHLIB_PATH, "mount_fsd", "%s %s %s %s %s %s %s %s" % (
-            cluster, export_dir, nof_nodes, domains, mtype, prefix, 0, exaver))
+            export_dir, cluster, nof_nodes, domains, mtype, prefix, 0, exaver))
         if "Exception" in outp:
             return True
         else:
