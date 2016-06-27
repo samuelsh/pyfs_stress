@@ -106,7 +106,8 @@ def init_creator_pool(filenum):
 def init_test(args, logger):
     global total_files
     try:
-        init_test.first_run = False
+        if init_test.first_run is True:
+            init_test.first_run = False
     except AttributeError:
         init_test.first_run = True
 
