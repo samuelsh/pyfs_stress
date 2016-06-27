@@ -83,10 +83,10 @@ def init_test(args, logger):
     logger.debug("FSD domains: %s" % domains)
 
     logger.info("Mounting  %s to %s" % (args.mount_point, args.export_dir))
-    if not os.path.isfile(args.mount_point):
-        os.mkdir(args.mount_point)
     if os.path.ismount(args.mount_point):
         ShellUtils.run_shell_command("umount", "-fl %s" % args.mount_point)
+    elif not os.path.isdir(args.mount_point):
+        os.mkdir(args.mount_point)
     ShellUtils.run_shell_command("mount", "-o nfsvers=3 %s:/%s %s" % (args.cluster, args.export_dir, args.mount_point))
 
     logger.info("Creating test folder on cluster %s" % args.cluster)
