@@ -74,13 +74,19 @@ def init_creator_pool(filenum):
 
 def init_test(args, logger):
     global total_files
-    logger.info("Setting passwordless SSH connection")
-    ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
-    logger.info("Getting cluster params...")
-    active_nodes = FSUtils.get_active_nodes_num(args.cluster)
-    logger.debug("Active Nodes: %s" % active_nodes)
-    domains = FSUtils.get_domains_num(args.cluster)
-    logger.debug("FSD domains: %s" % domains)
+    try:
+        init_test.first_run = False
+    except AttributeError:
+        init_test.first_run = True
+
+    if init_test.first_run:
+        logger.info("Setting passwordless SSH connection")
+        ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
+        logger.info("Getting cluster params...")
+        active_nodes = FSUtils.get_active_nodes_num(args.cluster)
+        logger.debug("Active Nodes: %s" % active_nodes)
+        domains = FSUtils.get_domains_num(args.cluster)
+        logger.debug("FSD domains: %s" % domains)
 
     logger.info("Mounting  %s to %s" % (args.mount_point, args.export_dir))
     if os.path.ismount(args.mount_point):
