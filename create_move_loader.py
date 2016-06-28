@@ -121,6 +121,12 @@ def init_test(args, logger):
 
         if args.scenario == 'domains':
             FSUtils.mount_fsd(args.cluster, args.export_dir, active_nodes, domains, 'nfs3', 'MOVER', '5')
+        #/mnt/MOVER-node0.g8-5
+            for i in range(active_nodes):
+                for j in randint(domains):
+                    if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('MOVER', i, args.cluster, j)):
+                        logger.error('mount_fsd failed!')
+                        raise RuntimeError
 
         # Starting key_monitor thread --- should be only one instance
         logger.info("Starting Key monitor --- Press q <Enter> to exit test")
