@@ -21,7 +21,7 @@ from random import randint, choice
 from logger import Logger
 from shell_utils import ShellUtils, FSUtils
 
-MAX_PROCESSES = 16
+MAX_PROCESSES = 160
 MAX_FILES = 10000
 
 files_queue = multiprocessing.Manager().Queue()
