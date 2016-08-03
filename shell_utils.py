@@ -25,6 +25,13 @@ class ShellUtils:
         pass
 
     @staticmethod
+    def pipe_grep(source_process, grep_pattern):
+        p2 = subprocess.Popen(["grep", grep_pattern], stdin=source_process.stdout, stdout=subprocess.PIPE)
+        source_process.stdout.close()  # Allow source_process to receive a SIGPIPE if p2 exits.
+        output = p2.communicate()[0]
+        return output.strip()
+
+    @staticmethod
     def run_bash_function(library_path, function_name, params):
         cmdline = ['bash', '-c', '. %s; %s %s' % (library_path, function_name, params)]
         p = subprocess.Popen(cmdline,
@@ -74,6 +81,15 @@ class ShellUtils:
             raise RuntimeError("%r failed, status code %s stdout %r stderr %r" % (
                 cmd, p.returncode, stdout, stderr))
         return stdout.strip()  # This is the stdout from the shell command
+
+    @staticmethod
+    def get_shell_remote_command(remote_host, remote_cmd):
+        """
+        :rtype: subprocess.Popen
+        """
+        p = subprocess.Popen([SSH_PATH, '-nx', remote_host, remote_cmd], stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        return p
 
     @staticmethod
     def run_shell_remote_command(remote_host, remote_cmd):
