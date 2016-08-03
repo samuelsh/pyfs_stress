@@ -31,8 +31,9 @@ def main():
     for node in range(active_nodes):
         for domain in range(domains):
             logger.info("node{0} - domain {1}".format(node, domain))
-            outp = ShellUtils.run_shell_remote_command("node{0}.{1}".format(node, args.cluster),
+            p = ShellUtils.get_shell_remote_command("node{0}.{1}".format(node, args.cluster),
                                                        'fsfind -m {0} {1}'.format(domain, '/mnt/mgmt/' + args.volume))
+            outp = ShellUtils.pipe_grep(p, "found")
             print outp
 
 
