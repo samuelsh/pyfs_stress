@@ -29,7 +29,8 @@ def main():
 
     for node in range(active_nodes):
         for domain in range(domains):
-            outp = ShellUtils.get_shell_remote_command("node{0}.{1}".format(node, args.cluster),
+            logger.info("node{0} - domain {1}".format(node, domain))
+            outp = ShellUtils.run_shell_remote_command("node{0}.{1}".format(node, args.cluster),
                                                        'fsfind -m {0}'.format(domain))
             print outp
 
