@@ -15,7 +15,7 @@ from logger import Logger
 from server.controller import Controller
 from shell_utils import ShellUtils
 
-SET_SSH_PATH = "/zebra/qa/qa-util-scripts/set-ssh"
+SET_SSH_PATH = "/zebra/qa/qa-util-scripts/set-ssh-client"
 
 
 def get_args():
