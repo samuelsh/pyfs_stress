@@ -15,7 +15,7 @@ from logger import Logger
 from server.controller import Controller
 from shell_utils import ShellUtils
 
-SET_SSH_PATH = "/zebra/qa/AutoWizard/set_ssh.py"
+SET_SSH_PATH = "/zebra/qa/qa-util-scripts/set-ssh"
 
 
 def get_args():
@@ -41,7 +41,7 @@ def deploy_clients(clients):
 
     """
     for client in clients:
-        ShellUtils.run_shell_script(SET_SSH_PATH, '-U {0} -P {1} {2}'.format('root', 'manager11', client))
+        ShellUtils.run_shell_script(SET_SSH_PATH, client)
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '/qa'))
 
 
