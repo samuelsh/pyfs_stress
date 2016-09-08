@@ -27,7 +27,7 @@ def get_args():
     parser = argparse.ArgumentParser(
         description='Test Runner script')
     parser.add_argument('-c', '--cluster', type=str, required=True, help='Cluster name')
-    parser.add_argument('--clients', type=str, nargs='+', help="Space separated list of clients")
+    parser.add_argument('--clients', type=str, nargs='+', required=True, help="Space separated list of clients")
     parser.add_argument('-m', '--mtype', type=str, default="nfs3", help='Mount type')
     args = parser.parse_args()
     return args
@@ -68,7 +68,7 @@ def main():
     logger = Logger().logger
     stop_event = Event()
     logger.debug("Logger initialised {0}".format(logger))
-    clients_list = args.clients.split(' ')
+    clients_list = args.clients
     logger.info("Starting controller")
     controller_process = Process(Controller(logger, stop_event))
     controller_process.start()
