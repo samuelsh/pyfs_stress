@@ -11,7 +11,6 @@ from multiprocessing import Process
 
 import time
 
-from client.dynamo import Dynamo
 from logger import Logger
 from server.controller import Controller
 from shell_utils import ShellUtils
@@ -77,7 +76,7 @@ def main():
     controller_process = Process(target=run_controller, args=(logger, stop_event,))
     controller_process.start()
     logger.info("Controller started")
-    clients = [Dynamo(logger, stop_event) for _ in clients_list]
+    #clients = [Dynamo(logger, stop_event) for _ in clients_list]
     deploy_clients(clients_list)
 
     try:
