@@ -1,7 +1,7 @@
 import os
 import random
 import subprocess
-from string import printable
+from string import printable, digits, letters
 
 __author__ = 'samuels'
 
@@ -17,7 +17,11 @@ class StringUtils:
 
     @staticmethod
     def get_random_string(length):
-        return ''.join(random.choice(printable) for i in range(length))
+        return ''.join(random.choice(printable) for _ in range(length))
+
+    @staticmethod
+    def get_random_string_nospec(length):
+        return ''.join(random.choice(digits + letters) for _ in range(length))
 
 
 class ShellUtils:
@@ -224,20 +228,3 @@ class FSUtils:
         for i in range(nodes):
             for j in range(fsds):
                 ShellUtils.run_shell_remote_command("node%d.%s" % (i, cluster), "fsadmin %d %s" % (j, cmd))
-
-
-class RpcUtils:
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def deploy_rpyc_server(cluster_node):
-        ShellUtils.run_shell_remote_command(cluster_node, "yes | easy_install rpyc")
-
-    @staticmethod
-    def start_rpyc_server(cluster_node):
-        ShellUtils.run_shell_remote_command_background(cluster_node, "rpyc_classic.py &")
-
-    @staticmethod
-    def stop_rpyc_server(cluster_node):
-        ShellUtils.run_shell_remote_command(cluster_node, "pkill -f rpyc_classic.py")
