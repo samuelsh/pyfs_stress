@@ -59,6 +59,10 @@ def run_clients(clients):
         ShellUtils.run_shell_remote_command_background(client, '/qa{0}'.format('/client/dynamo_starter.py &'))
 
 
+def run_controller(logger, event):
+    Controller(logger, event).run()
+
+
 def init_test(args):
     pass
 
@@ -70,11 +74,11 @@ def main():
     logger.debug("Logger initialised {0}".format(logger))
     clients_list = args.clients
     logger.info("Starting controller")
-    controller_process = Process(Controller(logger, stop_event))
+    controller_process = Process(target=run_controller, args=(logger, stop_event,))
     controller_process.start()
     logger.info("Controller started")
     clients = [Dynamo(logger, stop_event) for _ in clients_list]
-    deploy_clients(clients)
+    deploy_clients(clients_list)
 
     try:
         while not stop_event.is_set():
