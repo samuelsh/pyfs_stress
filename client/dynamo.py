@@ -23,8 +23,10 @@ class Dynamo(object):
         # all for us.
         self._socket.identity = uuid.uuid4().hex[:4].encode('utf8')
         self._socket.bind("tcp://*:{0}".format(CTRL_MSG_PORT))
+        logger.info("Dynamo {0} init done".format(self._socket.identity))
 
     def run(self):
+        self.logger.info("Dynamo {0} started".format(self._socket.identity))
         try:
             # Send a connect message
             self._socket.send_json({'message': 'connect'})

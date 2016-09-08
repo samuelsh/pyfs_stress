@@ -33,7 +33,7 @@ def run():
             time.sleep(1)
     except KeyboardInterrupt:
         stop_event.set()
-    print('waiting for processes to die...')
+    logger.info('waiting for processes to die...')
     for p in processes:
         p.join()
     print('all done')
