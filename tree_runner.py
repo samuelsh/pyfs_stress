@@ -78,6 +78,9 @@ def main():
     logger.info("Controller started")
     #clients = [Dynamo(logger, stop_event) for _ in clients_list]
     deploy_clients(clients_list)
+    logger.info("Done deploying clients: {0}".format(clients_list))
+    run_clients(clients_list)
+    logger.ifno("Dynamo started on all clients ....")
 
     try:
         while not stop_event.is_set():
