@@ -41,7 +41,7 @@ def deploy_clients(clients):
 
     """
     for client in clients:
-        ShellUtils.run_shell_script(SET_SSH_PATH, '{0} {1} {3}'.format('-u root', '-p manager11', client))
+        ShellUtils.run_shell_script(SET_SSH_PATH, '{0} {1} {2}'.format('-u root', '-p manager11', client))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '/qa'))
 
 
