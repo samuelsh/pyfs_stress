@@ -55,7 +55,7 @@ def run_clients(clients):
 
     """
     for client in clients:
-        ShellUtils.run_shell_remote_command_background(client, '/qa{0}'.format('/client/dynamo_starter.py &'))
+        ShellUtils.run_shell_remote_command_background(client, 'python /qa{0}'.format('/client/dynamo_starter.py &'))
 
 
 def run_controller(logger, event):
