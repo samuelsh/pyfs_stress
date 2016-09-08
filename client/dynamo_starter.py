@@ -7,7 +7,7 @@ import time
 
 import sys
 
-from client.dynamo import Dynamo
+from dynamo import Dynamo
 from logger import Logger
 
 

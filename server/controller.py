@@ -4,13 +4,13 @@ Server logic is here
 """
 import hashlib
 import json
+import time
 import uuid
 
-import time
-import zmq
 import treelib
+import zmq
 
-from config import CLIENT_MSG_PORT, CTRL_MSG_PORT
+from config import CTRL_MSG_PORT
 from shell_utils import StringUtils
 
 MAX_FILES_PER_DIR = 1000
