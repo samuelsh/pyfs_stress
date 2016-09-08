@@ -8,7 +8,7 @@ import uuid
 
 import zmq
 import sys
-
+sys.path.append('../conifg')
 from config import CTRL_MSG_PORT
 
 
