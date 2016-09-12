@@ -24,7 +24,7 @@ class Dynamo(object):
         # We don't need to store the id anymore, the socket will handle it
         # all for us.
         self._socket.identity = uuid.uuid4().hex[:4].encode('utf8')
-        self._socket.bind("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
+        self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
         logger.info("Dynamo {0} init done".format(self._socket.identity))
 
     def run(self):
