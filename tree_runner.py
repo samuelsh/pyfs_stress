@@ -43,9 +43,9 @@ def deploy_clients(clients):
     for client in clients:
         ShellUtils.run_shell_script(SET_SSH_PATH, client)
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p /qa/dynamo')
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '/qa'))
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '/qa'))
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('logger', client, '/qa'))
+        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '/qa/dynamo'))
+        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '/qa/dynamo'))
+        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('logger', client, '/qa/dynamo'))
 
 
 def run_clients(clients):
@@ -58,7 +58,8 @@ def run_clients(clients):
 
     """
     for client in clients:
-        ShellUtils.run_shell_remote_command_background(client, 'python /qa{0}'.format('/client/dynamo_starter.py &'))
+        ShellUtils.run_shell_remote_command_background(client,
+                                                       'python /qa{0}'.format('/dynamo/client/dynamo_starter.py &'))
 
 
 def run_controller(logger, event):
@@ -79,7 +80,7 @@ def main():
     controller_process = Process(target=run_controller, args=(logger, stop_event,))
     controller_process.start()
     logger.info("Controller started")
-    #clients = [Dynamo(logger, stop_event) for _ in clients_list]
+    # clients = [Dynamo(logger, stop_event) for _ in clients_list]
     deploy_clients(clients_list)
     logger.info("Done deploying clients: {0}".format(clients_list))
     run_clients(clients_list)
