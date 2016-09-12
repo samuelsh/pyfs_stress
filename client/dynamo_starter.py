@@ -35,7 +35,7 @@ def run():
     processes = []
     args = get_args()
     # Start a few worker processes
-    for i in range(10):
+    for i in range(1):
         processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller,)))
     for p in processes:
         p.start()
