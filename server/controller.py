@@ -13,49 +13,6 @@ import zmq
 from config import CTRL_MSG_PORT
 from shell_utils import StringUtils
 
-MAX_FILES_PER_DIR = 1000
-
-
-def build_recursive_tree(tree, base, depth, width):
-    """
-    Args:
-        tree: Tree
-        base: Node
-        depth: int
-        width: int
-    """
-    if depth >= 0:
-        depth -= 1
-        for i in xrange(width):
-            directory = Directory()
-            tree.create_node("{0}".format(directory.name), "{0}".format(hashlib.md5(directory.name)),
-                             parent=base.identifier, data=directory)
-        dirs_nodes = tree.children(base.identifier)
-        for dir_node in dirs_nodes:
-            newbase = tree.get_node(dir_node.identifier)
-            build_recursive_tree(tree, newbase, depth, width)
-    else:
-        return
-
-
-class Directory(object):
-    def __init__(self):
-        self._name = StringUtils.get_random_string_nospec(64)
-        self.files = [File() for _ in xrange(MAX_FILES_PER_DIR)]  # Each directory contains 1000 files
-
-    @property
-    def name(self):
-        return self._name
-
-
-class File(object):
-    def __init__(self):
-        self._name = StringUtils.get_random_string_nospec(64)
-
-    @property
-    def name(self):
-        return self._name
-
 
 class Job(object):
     def __init__(self, work):
@@ -77,11 +34,6 @@ class Controller(object):
         # When/if a client disconnects we'll put any unfinished work in here,
         # work_iterator() will return work from here as well.
         self._work_to_requeue = []
-
-        logger.info("Building Directory Tree data structure, can tike a while...")
-        self._base = self.dir_tree.create_node('Root', 'root')
-        build_recursive_tree(self.dir_tree, self._base, 1, 10)
-        logger.info("Building Directory Tree data structure is initialised, proceeding ....")
 
         # Socket to send messages on from Manager
         self._socket = self._context.socket(zmq.ROUTER)
