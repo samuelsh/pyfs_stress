@@ -12,11 +12,10 @@ from multiprocessing import Process
 
 import time
 
+import config
 from logger import Logger
 from server.controller import Controller
 from shell_utils import ShellUtils
-
-SET_SSH_PATH = "/zebra/qa/qa-util-scripts/set-ssh-client"
 
 
 def get_args():
@@ -42,11 +41,11 @@ def deploy_clients(clients):
 
     """
     for client in clients:
-        ShellUtils.run_shell_script(SET_SSH_PATH, client)
-        ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p /qa/dynamo')
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '/qa/dynamo'))
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '/qa/dynamo'))
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('logger', client, '/qa/dynamo'))
+        ShellUtils.run_shell_script(config.SET_SSH_PATH, client)
+        ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {0}'.format(config.DYNAMO_PATH))
+        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '{0}'.format(config.DYNAMO_PATH)))
+        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '{0}'.format(config.DYNAMO_PATH)))
+        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('logger', client, '{0}'.format(config.DYNAMO_PATH)))
 
 
 def run_clients(clients):
@@ -61,17 +60,12 @@ def run_clients(clients):
     controller = socket.gethostname()
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client,
-                                                       'python /qa{0}'.format(
-                                                           '/dynamo/client/dynamo_starter.py --controller {0} &'.format(
-                                                               controller)))
+                                                       'python {0} --controller {1} &'.format(config.DYNAMO_BIN_PATH,
+                                                                                              controller))
 
 
 def run_controller(logger, event):
     Controller(logger, event).run()
-
-
-def init_test(args):
-    pass
 
 
 def main():
@@ -84,7 +78,6 @@ def main():
     controller_process = Process(target=run_controller, args=(logger, stop_event,))
     controller_process.start()
     logger.info("Controller started")
-    # clients = [Dynamo(logger, stop_event) for _ in clients_list]
     deploy_clients(clients_list)
     logger.info("Done deploying clients: {0}".format(clients_list))
     run_clients(clients_list)

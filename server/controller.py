@@ -78,6 +78,11 @@ class Controller(object):
         # work_iterator() will return work from here as well.
         self._work_to_requeue = []
 
+        logger.info("Building Directory Tree data structure, can tike a while...")
+        self._base = self.dir_tree.create_node('Root', 'root')
+        build_recursive_tree(self.dir_tree, self._base, 2, 10)
+        logger.info("Building Directory Tree data structure is initialised, proceeding ....")
+
         # Socket to send messages on from Manager
         self._socket = self._context.socket(zmq.ROUTER)
         self._socket.bind("tcp://*:{0}".format(port))
