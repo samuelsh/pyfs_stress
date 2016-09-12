@@ -27,7 +27,7 @@ def get_args():
     parser = argparse.ArgumentParser(
         description='Test Runner script')
     parser.add_argument('-c', '--controller', type=str, required=True, help='Controller host name')
-    parser.add_argument('-m', '--mtype', type=str, required=True, help='Mount Type', default='nfs3')
+    parser.add_argument('-m', '--mtype', type=str, help='Mount Type', default='nfs3')
     args = parser.parse_args()
     return args
 
