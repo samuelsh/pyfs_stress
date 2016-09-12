@@ -80,7 +80,7 @@ class Controller(object):
 
         logger.info("Building Directory Tree data structure, can tike a while...")
         self._base = self.dir_tree.create_node('Root', 'root')
-        build_recursive_tree(self.dir_tree, self._base, 2, 10)
+        build_recursive_tree(self.dir_tree, self._base, 1, 10)
         logger.info("Building Directory Tree data structure is initialised, proceeding ....")
 
         # Socket to send messages on from Manager
