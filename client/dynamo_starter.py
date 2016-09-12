@@ -31,11 +31,11 @@ def get_args():
 
 def run():
     stop_event = Event()
-    logger = Logger(mp=True).logger
+    logger = Logger(output_dir='/qa/dynamo', mp=True).logger
     processes = []
     args = get_args()
     # Start a few worker processes
-    for i in range(1):
+    for i in range(10):
         processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller,)))
     for p in processes:
         p.start()
