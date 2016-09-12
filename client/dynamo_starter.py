@@ -11,9 +11,11 @@ import sys
 from dynamo import Dynamo
 from logger import Logger
 
+DYNAMO_PATH = '/qa/dynamo'
 
-def run_worker(logger, event, controller):
-    worker = Dynamo(logger, event, controller)
+
+def run_worker(logger, event, controller, proc_id):
+    worker = Dynamo(logger, event, controller, proc_id)
     worker.run()
 
 
@@ -31,12 +33,12 @@ def get_args():
 
 def run():
     stop_event = Event()
-    logger = Logger(output_dir='/qa/dynamo', mp=True).logger
+    logger = Logger(output_dir=DYNAMO_PATH, mp=True).logger
     processes = []
     args = get_args()
     # Start a few worker processes
     for i in range(10):
-        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller,)))
+        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, i, )))
     for p in processes:
         p.start()
     try:

@@ -14,7 +14,7 @@ from config import CTRL_MSG_PORT
 
 
 class Dynamo(object):
-    def __init__(self, logger, stop_event, controller):
+    def __init__(self, logger, stop_event, controller, proc_id=None):
         self.stop_event = stop_event
         self.logger = logger
         self._context = zmq.Context()
@@ -23,7 +23,9 @@ class Dynamo(object):
         self._socket = self._context.socket(zmq.DEALER)
         # We don't need to store the id anymore, the socket will handle it
         # all for us.
-        self._socket.identity = uuid.uuid4().hex[:4].encode('utf8')
+        #self._socket.identity = uuid.uuid4().hex[:4].encode('utf8')
+
+        self._socket.identity = "{0}:{1}".format(controller, proc_id)
         self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
         logger.info("Dynamo {0} init done".format(self._socket.identity))
 
