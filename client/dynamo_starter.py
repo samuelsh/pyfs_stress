@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import traceback
 from multiprocessing import Event
 from multiprocessing import Process
@@ -11,18 +12,31 @@ from dynamo import Dynamo
 from logger import Logger
 
 
-def run_worker(logger, event):
-    worker = Dynamo(logger, event)
+def run_worker(logger, event, controller):
+    worker = Dynamo(logger, event, controller)
     worker.run()
+
+
+def get_args():
+    """
+    Supports the command-line arguments listed below.
+    """
+
+    parser = argparse.ArgumentParser(
+        description='Test Runner script')
+    parser.add_argument('-c', '--controller', type=str, required=True, help='Controller host name')
+    args = parser.parse_args()
+    return args
 
 
 def run():
     stop_event = Event()
     logger = Logger(mp=True).logger
     processes = []
+    args = get_args()
     # Start a few worker processes
     for i in range(10):
-        processes.append(Process(target=run_worker, args=(logger, stop_event,)))
+        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller,)))
     for p in processes:
         p.start()
     try:

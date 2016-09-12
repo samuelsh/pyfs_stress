@@ -13,16 +13,17 @@ from config import CTRL_MSG_PORT
 
 
 class Dynamo(object):
-    def __init__(self, logger, stop_event):
+    def __init__(self, logger, stop_event, controller):
         self.stop_event = stop_event
         self.logger = logger
         self._context = zmq.Context()
+        self._controller_host = controller
         # Socket to send messages on by client
         self._socket = self._context.socket(zmq.DEALER)
         # We don't need to store the id anymore, the socket will handle it
         # all for us.
         self._socket.identity = uuid.uuid4().hex[:4].encode('utf8')
-        self._socket.bind("tcp://*:{0}".format(CTRL_MSG_PORT))
+        self._socket.bind("tcp://{0}:{1}".format(self._controller_host, CTRL_MSG_PORT))
         logger.info("Dynamo {0} init done".format(self._socket.identity))
 
     def run(self):

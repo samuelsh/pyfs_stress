@@ -3,6 +3,7 @@ Directory Tree integrity test runner
 2016 samuelsh (c)
 """
 import argparse
+import socket
 import traceback
 import sys
 
@@ -57,9 +58,12 @@ def run_clients(clients):
     Returns:
 
     """
+    controller = socket.gethostname()
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client,
-                                                       'python /qa{0}'.format('/dynamo/client/dynamo_starter.py &'))
+                                                       'python /qa{0}'.format(
+                                                           '/dynamo/client/dynamo_starter.py --controller {0} &'.format(
+                                                               controller)))
 
 
 def run_controller(logger, event):
