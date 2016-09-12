@@ -25,7 +25,7 @@ class Dynamo(object):
         # all for us.
         #self._socket.identity = uuid.uuid4().hex[:4].encode('utf8')
 
-        self._socket.identity = "{0}:{1}".format(controller, proc_id)
+        self._socket.identity = "{0}:0x{1:x}".format(controller, proc_id)
         self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
         logger.info("Dynamo {0} init done".format(self._socket.identity))
 
