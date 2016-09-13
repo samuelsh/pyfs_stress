@@ -59,7 +59,7 @@ class Dynamo(object):
         self._socket.send_json({'message': 'disconnect'})
 
     def _do_work(self, work):
-        result = work['number'] ** 2
+        result = "{0} on {1}".format(work['action'], work['target'])
         time.sleep(random.randint(1, 10))
         return result
 

@@ -2,16 +2,14 @@
 Server logic is here
 2016 samuels (c)
 """
-import hashlib
 import json
+import random
 import time
 import uuid
 
-import treelib
 import zmq
 
 from config import CTRL_MSG_PORT
-from shell_utils import StringUtils
 
 
 class Job(object):
@@ -21,11 +19,18 @@ class Job(object):
 
 
 class Controller(object):
-    def __init__(self, logger, stop_event, port=CTRL_MSG_PORT):
+    def __init__(self, logger, stop_event, dir_tree, port=CTRL_MSG_PORT):
+        """
+        Args:
+            logger: Logger
+            stop_event: Event
+            dir_tree: DirTree
+            port: int
+        """
         super(Controller, self).__init__()
         self.stop_event = stop_event
         self.logger = logger
-        self.dir_tree = treelib.Tree()
+        self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
         self._context = zmq.Context()
         self.workers = {}
         # We won't assign more than 50 jobs to a worker at a time; this ensures
@@ -49,6 +54,14 @@ class Controller(object):
             else:
                 num = next(iterator)
                 yield Job({'number': num})
+
+    def get_job(self):
+        actions = ['mkdir', 'list', 'delete', 'touch']
+
+        while True:
+            action = random.choice(actions)
+            target = self._dir_tree.get_last_node_tag()
+            yield Job({'action': action, 'target': target})
 
     def _get_next_worker_id(self):
         """Return the id of the next worker available to process work. Note
@@ -95,7 +108,8 @@ class Controller(object):
                          worker_id, job.id, result)
 
     def run(self):
-        for job in self.work_iterator():
+        # for job in self.work_iterator():
+        for job in self.get_job():
             next_worker_id = None
             while next_worker_id is None:
                 # First check if there are any worker messages to process. We

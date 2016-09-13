@@ -19,47 +19,7 @@ import config
 from logger import Logger
 from server.controller import Controller
 from shell_utils import ShellUtils, StringUtils
-
-
-def build_recursive_tree(tree, base, depth, width):
-    """
-    Args:
-        tree: Tree
-        base: Node
-        depth: int
-        width: int
-    """
-    if depth >= 0:
-        depth -= 1
-        for i in xrange(width):
-            directory = Directory()
-            tree.create_node("{0}".format(directory.name), "{0}".format(hashlib.md5(directory.name)),
-                             parent=base.identifier, data=directory)
-        dirs_nodes = tree.children(base.identifier)
-        for dir_node in dirs_nodes:
-            newbase = tree.get_node(dir_node.identifier)
-            build_recursive_tree(tree, newbase, depth, width)
-    else:
-        return
-
-
-class Directory(object):
-    def __init__(self):
-        self._name = StringUtils.get_random_string_nospec(64)
-        self.files = [File() for _ in xrange(config.MAX_FILES_PER_DIR)]  # Each directory contains 1000 files
-
-    @property
-    def name(self):
-        return self._name
-
-
-class File(object):
-    def __init__(self):
-        self._name = StringUtils.get_random_string_nospec(64)
-
-    @property
-    def name(self):
-        return self._name
+from tree import dirtree
 
 
 def get_args():
@@ -108,23 +68,19 @@ def run_clients(clients):
                                                                                               controller))
 
 
-def run_controller(logger, event):
-    Controller(logger, event).run()
+def run_controller(logger, event, dir_tree):
+    Controller(logger, event, dir_tree).run()
 
 
 def main():
     args = get_args()
     logger = Logger().logger
     stop_event = Event()
-    dir_tree = treelib.Tree()
+    dir_tree = dirtree.DirTree()
     logger.debug("Logger initialised {0}".format(logger))
     clients_list = args.clients
-    logger.info("Building Directory Tree data structure, can tike a while...")
-    tree_base = dir_tree.create_node('Root', 'root')
-    build_recursive_tree(dir_tree, tree_base, 1, 10)
-    logger.info("Building Directory Tree data structure is initialised, proceeding ....")
     logger.info("Starting controller")
-    controller_process = Process(target=run_controller, args=(logger, stop_event,))
+    controller_process = Process(target=run_controller, args=(logger, stop_event, dir_tree,))
     controller_process.start()
     logger.info("Controller started")
     deploy_clients(clients_list)
