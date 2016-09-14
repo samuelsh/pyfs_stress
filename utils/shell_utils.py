@@ -79,6 +79,7 @@ class ShellUtils:
     def run_shell_command(cmd, params, sep=' ', stdout=subprocess.PIPE):
         cmdline = [cmd]
         cmdline = cmdline + params.split(sep)
+        print cmdline
         p = subprocess.Popen(cmdline, stdout=stdout, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
