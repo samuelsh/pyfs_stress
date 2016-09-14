@@ -43,6 +43,8 @@ def run():
     logger.info("Making {0}".format(CLIENT_MOUNT_POINT))
     if not os.path.exists(CLIENT_MOUNT_POINT):
         os.mkdir(CLIENT_MOUNT_POINT)
+    else:  # if folder already created, umounting just in case ....
+        shell_utils.umount(CLIENT_MOUNT_POINT)
     logger.info("Mounting work path...")
     if not shell_utils.mount(args.server, args.export, CLIENT_MOUNT_POINT, args.mtype):
         logger.error("Mount failed. Exiting...")

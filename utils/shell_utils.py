@@ -79,7 +79,6 @@ class ShellUtils:
     def run_shell_command(cmd, params, sep=' ', stdout=subprocess.PIPE):
         cmdline = [cmd]
         cmdline = cmdline + params.split(sep)
-        print cmdline
         p = subprocess.Popen(cmdline, stdout=stdout, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
@@ -235,7 +234,14 @@ def mount(server, export, mount_point, mtype):
     try:
         ShellUtils.run_shell_command("mount", "-o,nfsvers={0},{1}:/{2},{3}".format(mtype, server, export, mount_point),
                                      sep=',')
-    except Exception as e:
-        print e
+    except OSError:
+        return False
+    return True
+
+
+def umount(mount_point):
+    try:
+        ShellUtils.run_shell_command("umount", "-fl {0}".format(mount_point))
+    except OSError:
         return False
     return True
