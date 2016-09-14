@@ -48,8 +48,8 @@
       <file leaf-file-name="dirtree.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="58" column="10" selection-start-line="58" selection-start-column="10" selection-end-line="58" selection-end-column="10" />
+            <state relative-caret-position="221">
+              <caret line="82" column="27" selection-start-line="82" selection-start-column="27" selection-end-line="82" selection-end-column="27" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -60,7 +60,7 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
+            <state relative-caret-position="459">
               <caret line="135" column="43" selection-start-line="135" selection-start-column="43" selection-end-line="135" selection-end-column="43" />
               <folding>
                 <element signature="e#46#57#0" expanded="true" />
@@ -541,13 +541,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00411" summary="- Moving paths to config &#10;- Added treelib&#10;&#10;">
-      <created>1473685515841</created>
-      <option name="number" value="00411" />
-      <option name="presentableId" value="LOCAL-00411" />
-      <option name="project" value="LOCAL" />
-      <updated>1473685515841</updated>
-    </task>
     <task id="LOCAL-00412" summary="- Some paths fixing&#10;&#10;">
       <created>1473685808735</created>
       <option name="number" value="00412" />
@@ -884,7 +877,14 @@
       <option name="project" value="LOCAL" />
       <updated>1473858867935</updated>
     </task>
-    <option name="localTasksCounter" value="460" />
+    <task id="LOCAL-00460" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
+      <created>1473858996323</created>
+      <option name="number" value="00460" />
+      <option name="presentableId" value="LOCAL-00460" />
+      <option name="project" value="LOCAL" />
+      <updated>1473858996323</updated>
+    </task>
+    <option name="localTasksCounter" value="461" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1182,14 +1182,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="248" column="0" selection-start-line="248" selection-start-column="0" selection-end-line="248" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tree_runner.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -1200,9 +1192,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="248" column="0" selection-start-line="248" selection-start-column="0" selection-end-line="248" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
+        <state relative-caret-position="459">
           <caret line="135" column="43" selection-start-line="135" selection-start-column="43" selection-end-line="135" selection-end-column="43" />
           <folding>
             <element signature="e#46#57#0" expanded="true" />
@@ -1212,8 +1212,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="58" column="10" selection-start-line="58" selection-start-column="10" selection-end-line="58" selection-end-column="10" />
+        <state relative-caret-position="221">
+          <caret line="82" column="27" selection-start-line="82" selection-start-column="27" selection-end-line="82" selection-end-column="27" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>

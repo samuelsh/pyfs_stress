@@ -77,7 +77,7 @@ class DirTree(object):
         Returns: str
 
         """
-        rand_dir = self.get_random_dir_synced()
+        rand_dir = self.get_random_dir()
         num_files = len(rand_dir.data.files)
         if num_files == 0:
             return "nofiles"
