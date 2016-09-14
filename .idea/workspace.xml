@@ -72,8 +72,8 @@
       <file leaf-file-name="dynamo_starter.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="438">
-              <caret line="44" column="17" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
+            <state relative-caret-position="374">
+              <caret line="46" column="4" selection-start-line="46" selection-start-column="4" selection-end-line="46" selection-end-column="4" />
               <folding>
                 <element signature="e#22#37#0" expanded="true" />
               </folding>
@@ -541,13 +541,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00383" summary="Inital commit of distributed data generator suite based on ZeroMQ&#10;&#10;">
-      <created>1473332367917</created>
-      <option name="number" value="00383" />
-      <option name="presentableId" value="LOCAL-00383" />
-      <option name="project" value="LOCAL" />
-      <updated>1473332367917</updated>
-    </task>
     <task id="LOCAL-00384" summary="Inital commit of distributed data generator suite based on ZeroMQ&#10;&#10;">
       <created>1473333642030</created>
       <option name="number" value="00384" />
@@ -884,7 +877,14 @@
       <option name="project" value="LOCAL" />
       <updated>1473841786852</updated>
     </task>
-    <option name="localTasksCounter" value="432" />
+    <task id="LOCAL-00432" summary=" - Fixing client mount issues&#10;">
+      <created>1473843144440</created>
+      <option name="number" value="00432" />
+      <option name="presentableId" value="LOCAL-00432" />
+      <option name="project" value="LOCAL" />
+      <updated>1473843144440</updated>
+    </task>
+    <option name="localTasksCounter" value="433" />
     <servers />
   </component>
   <component name="TodoView">
@@ -949,7 +949,8 @@
     <MESSAGE value="- Some paths fixing&#10;&#10;" />
     <MESSAGE value="- Added DirTree data structure based on treelib&#10;- Added Infinite job generator &#10;" />
     <MESSAGE value=" - Added some real jobs to jobs generator&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value=" - Added some real jobs to jobs generator&#10;" />
+    <MESSAGE value=" - Fixing client mount issues&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value=" - Fixing client mount issues&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1171,16 +1172,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tree_runner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="41" column="25" selection-start-line="41" selection-start-column="25" selection-end-line="41" selection-end-column="25" />
-          <folding>
-            <element signature="e#63#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -1207,10 +1198,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tree_runner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="41" column="25" selection-start-line="41" selection-start-column="25" selection-end-line="41" selection-end-column="25" />
+          <folding>
+            <element signature="e#63#78#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="44" column="17" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
+        <state relative-caret-position="374">
+          <caret line="46" column="4" selection-start-line="46" selection-start-column="4" selection-end-line="46" selection-end-column="4" />
           <folding>
             <element signature="e#22#37#0" expanded="true" />
           </folding>

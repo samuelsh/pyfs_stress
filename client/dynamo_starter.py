@@ -29,7 +29,7 @@ def get_args():
         description='Test Runner script')
     parser.add_argument('-c', '--controller', type=str, required=True, help='Controller host name')
     parser.add_argument('-s', '--server', type=str, required=True, help='Cluster Server hostname')
-    parser.add_argument('-s', '--export', type=str, help='NFS Export Name', default="vol0")
+    parser.add_argument('-e', '--export', type=str, help='NFS Export Name', default="vol0")
     parser.add_argument('-m', '--mtype', type=int, help='Mount Type', default=3)
     args = parser.parse_args()
     return args
@@ -38,7 +38,6 @@ def get_args():
 def run():
     stop_event = Event()
     logger = Logger(output_dir=DYNAMO_PATH, mp=True).logger
-    mp_logger = Logger(output_dir=DYNAMO_PATH, mp=True).logger
     processes = []
     args = get_args()
     logger.info("Making {0}".format(CLIENT_MOUNT_POINT))
@@ -49,7 +48,7 @@ def run():
         return
     # Start a few worker processes
     for i in range(MAX_WORKERS_PER_CLIENT):
-        processes.append(Process(target=run_worker, args=(mp_logger, stop_event, args.controller, args.server, i,)))
+        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, args.server, i,)))
     for p in processes:
         p.start()
     try:
