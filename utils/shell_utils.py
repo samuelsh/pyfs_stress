@@ -76,9 +76,9 @@ class ShellUtils:
         return p
 
     @staticmethod
-    def run_shell_command(cmd, params, stdout=subprocess.PIPE):
+    def run_shell_command(cmd, params, sep=' ', stdout=subprocess.PIPE):
         cmdline = [cmd]
-        cmdline = cmdline + params.split(' ')
+        cmdline = cmdline + params.split(sep)
         p = subprocess.Popen(cmdline, stdout=stdout, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
@@ -232,7 +232,8 @@ class FSUtils:
 
 def mount(server, export, mount_point, mtype):
     try:
-        ShellUtils.run_shell_command("mount", " -o nfsvers={0} {1}:/{2} {3}".format(mtype, server, export, mount_point))
+        ShellUtils.run_shell_command("mount", "-o nfsvers={0},{1}:/{2},{3}".format(mtype, server, export, mount_point),
+                                     sep=',')
     except Exception:
         return False
     return True
