@@ -64,9 +64,9 @@ class Dynamo(object):
         action = work['action']
         try:
             if action == 'mkdir':
-                os.mkdir("{0}{1}".format(CLIENT_MOUNT_POINT, work['target']))
+                os.mkdir("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target']))
             elif action == 'touch':
-                shell_utils.touch('{0}{1]'.format(CLIENT_MOUNT_POINT, work['target']))
+                shell_utils.touch('{0}{1}'.format(CLIENT_MOUNT_POINT, work['target']))
             elif action == 'list':
                 os.listdir('{0}{1]'.format(CLIENT_MOUNT_POINT, work['target']))
         except Exception as work_error:
