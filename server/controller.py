@@ -68,7 +68,7 @@ class Controller(object):
                 self._dir_tree.append_node()
                 target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
-                fname = self._dir_tree.get_last_node_data.touch()
+                fname = self._dir_tree.get_last_node_data().touch()
                 target = "{0}/{1}".format(fname, self._dir_tree.get_last_node_tag())
             elif action == list:
                 target = self._dir_tree.get_last_node_tag()
