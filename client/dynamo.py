@@ -8,8 +8,9 @@ import os
 import zmq
 import sys
 import socket
+
 sys.path.append('/qa/dynamo')
-from config import CTRL_MSG_PORT,CLIENT_MOUNT_POINT
+from config import CTRL_MSG_PORT, CLIENT_MOUNT_POINT
 from utils import shell_utils
 
 
@@ -17,7 +18,7 @@ class Dynamo(object):
     def __init__(self, logger, stop_event, controller, server, proc_id=None):
         self.stop_event = stop_event
         self.logger = logger
-        self._server = server # Server Cluster hostname
+        self._server = server  # Server Cluster hostname
         self._context = zmq.Context()
         self._controller_ip = socket.gethostbyname(controller)
         # Socket to send messages on by client
@@ -61,15 +62,15 @@ class Dynamo(object):
 
     def _do_work(self, work):
         action = work['action']
-
-        if action == 'mkdir':
-            os.mkdir("{0}{1}".format(CLIENT_MOUNT_POINT, work['target']))
-        elif action == 'touch':
-            shell_utils.touch('{0}{1]'.format(CLIENT_MOUNT_POINT, work['target']))
-        elif action == 'list':
-            os.listdir('{0}{1]'.format(CLIENT_MOUNT_POINT, work['target']))
+        try:
+            if action == 'mkdir':
+                os.mkdir("{0}{1}".format(CLIENT_MOUNT_POINT, work['target']))
+            elif action == 'touch':
+                shell_utils.touch('{0}{1]'.format(CLIENT_MOUNT_POINT, work['target']))
+            elif action == 'list':
+                os.listdir('{0}{1]'.format(CLIENT_MOUNT_POINT, work['target']))
+        except Exception as work_error:
+            return work_error.message
         result = "{0} on {1}".format(work['action'], work['target'])
         time.sleep(random.randint(1, 10))
         return result
-
-
