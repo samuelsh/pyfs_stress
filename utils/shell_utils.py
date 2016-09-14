@@ -228,3 +228,11 @@ class FSUtils:
         for i in range(nodes):
             for j in range(fsds):
                 ShellUtils.run_shell_remote_command("node%d.%s" % (i, cluster), "fsadmin %d %s" % (j, cmd))
+
+
+def mount(server, export, mount_point, mtype):
+    try:
+        ShellUtils.run_shell_command("mount", " -o nfsvers={0} {1}:/{2} {3}".format(mtype, server, export, mount_point))
+    except Exception:
+        return False
+    return True

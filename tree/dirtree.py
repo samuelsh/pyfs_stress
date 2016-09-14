@@ -56,7 +56,7 @@ class DirTree(object):
         """
         return self._dir_tree.get_node(random.choice(self.nids)).tag
 
-    def get_random_dir_file(self):
+    def get_random_dir_files(self):
         """
 
         Returns: str

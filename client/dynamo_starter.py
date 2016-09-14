@@ -10,7 +10,8 @@ import sys
 
 from dynamo import Dynamo
 from logger import Logger
-from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT
+from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT, CLIENT_MOUNT_POINT
+from utils import shell_utils
 
 
 def run_worker(logger, event, controller, server, proc_id):
@@ -27,7 +28,8 @@ def get_args():
         description='Test Runner script')
     parser.add_argument('-c', '--controller', type=str, required=True, help='Controller host name')
     parser.add_argument('-s', '--server', type=str, required=True, help='Cluster Server hostname')
-    parser.add_argument('-m', '--mtype', type=str, help='Mount Type', default='nfs3')
+    parser.add_argument('-s', '--export', type=str, help='NFS Export Name', default="vol0")
+    parser.add_argument('-m', '--mtype', type=int, help='Mount Type', default=3)
     args = parser.parse_args()
     return args
 
@@ -37,9 +39,13 @@ def run():
     logger = Logger(output_dir=DYNAMO_PATH, mp=True).logger
     processes = []
     args = get_args()
+    logger.info("Mounting work path...")
+    if not shell_utils.mount(args.server, args.export, CLIENT_MOUNT_POINT, args.mtype):
+        logger.error("Mount failed. Exiting...")
+        return
     # Start a few worker processes
     for i in range(MAX_WORKERS_PER_CLIENT):
-        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, args.server, i, )))
+        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, args.server, i,)))
     for p in processes:
         p.start()
     try:
