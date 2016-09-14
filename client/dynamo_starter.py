@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import os
 import traceback
 from multiprocessing import Event
 from multiprocessing import Process
@@ -37,15 +38,18 @@ def get_args():
 def run():
     stop_event = Event()
     logger = Logger(output_dir=DYNAMO_PATH, mp=True).logger
+    mp_logger = Logger(output_dir=DYNAMO_PATH, mp=True).logger
     processes = []
     args = get_args()
+    logger.info("Making {0}".format(CLIENT_MOUNT_POINT))
+    os.mkdir(CLIENT_MOUNT_POINT)
     logger.info("Mounting work path...")
     if not shell_utils.mount(args.server, args.export, CLIENT_MOUNT_POINT, args.mtype):
         logger.error("Mount failed. Exiting...")
         return
     # Start a few worker processes
     for i in range(MAX_WORKERS_PER_CLIENT):
-        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, args.server, i,)))
+        processes.append(Process(target=run_worker, args=(mp_logger, stop_event, args.controller, args.server, i,)))
     for p in processes:
         p.start()
     try:
