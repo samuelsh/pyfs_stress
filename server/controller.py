@@ -70,7 +70,7 @@ class Controller(object):
                 target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
                 rdir = self._dir_tree.get_random_dir()
-                fname = rdir.touch()
+                fname = rdir.data.touch()
                 target = "/{0}/{1}".format(rdir.tag, fname)
             elif action == "list":
                 target = self._dir_tree.get_random_dir_name()
