@@ -58,7 +58,7 @@ class DirTree(object):
 
         """
         dir_node = self.get_random_dir()
-        while not dir_node.ondisk:
+        while not dir_node.data.ondisk:
             dir_node = self.get_random_dir()
 
         return dir_node
