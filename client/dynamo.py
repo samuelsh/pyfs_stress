@@ -70,7 +70,7 @@ class Dynamo(object):
             elif action == 'list':
                 os.listdir('{0}/{1}'.format(CLIENT_MOUNT_POINT, work['target']))
         except Exception as work_error:
-            return "{0}".format(work_error)
+            return "{0}: {1}".format(action, work_error)
         result = "{0} on {1}".format(work['action'], work['target'])
         time.sleep(random.randint(1, 10))
         return result
