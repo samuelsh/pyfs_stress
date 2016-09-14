@@ -56,7 +56,7 @@ class Controller(object):
                 yield Job({'number': num})
 
     def get_next_job(self):
-        actions = ['mkdir', 'list', 'delete', 'touch']
+        actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch', 'touch']
 
         while True:
             action = random.choice(actions)
