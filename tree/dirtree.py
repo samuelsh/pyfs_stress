@@ -17,7 +17,7 @@ class DirTree(object):
     def append_node(self):
         directory = Directory()
         name = directory.name
-        nid = hashlib.md5(name)
+        nid = hashlib.md5(name).hexdigest()
         self._nids.append(nid)
         new_node = self._dir_tree.create_node(name, nid, parent=self._tree_base.identifier, data=directory)
         self._last_node = new_node
