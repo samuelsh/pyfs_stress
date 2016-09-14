@@ -51,6 +51,18 @@ class DirTree(object):
         """
         return self._dir_tree.get_node(random.choice(self.nids))
 
+    def get_random_dir_synced(self):
+        """
+
+        Returns: Node
+
+        """
+        dir_node = self.get_random_dir()
+        while not dir_node.ondisk:
+            dir_node = self.get_random_dir()
+
+        return dir_node
+
     def get_random_dir_name(self):
         """
 
