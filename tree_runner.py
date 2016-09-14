@@ -26,6 +26,7 @@ def get_args():
         description='Test Runner script')
     parser.add_argument('-c', '--cluster', type=str, required=True, help='Cluster name')
     parser.add_argument('--clients', type=str, nargs='+', required=True, help="Space separated list of clients")
+    parser.add_argument('-e', '--export', type=str, default="vol0", help="Space separated list of clients")
     parser.add_argument('-m', '--mtype', type=str, default="nfs3", help='Mount type')
     args = parser.parse_args()
     return args
@@ -48,7 +49,7 @@ def deploy_clients(clients):
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('utils', client, '{0}'.format(config.DYNAMO_PATH)))
 
 
-def run_clients(cluster, clients):
+def run_clients(cluster, clients, export):
     """
 
     Args:
@@ -61,8 +62,8 @@ def run_clients(cluster, clients):
     controller = socket.gethostname()
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client,
-                                                       'python {0} --controller {1} --server {2} &'.format(
-                                                           config.DYNAMO_BIN_PATH, controller, cluster))
+                                                       'python {0} --controller {1} --server {2} --export {3} &'.format(
+                                                           config.DYNAMO_BIN_PATH, controller, cluster, export))
 
 
 def run_controller(logger, event, dir_tree):
@@ -82,7 +83,7 @@ def main():
     logger.info("Controller started")
     deploy_clients(clients_list)
     logger.info("Done deploying clients: {0}".format(clients_list))
-    run_clients(args.cluster, clients_list)
+    run_clients(args.cluster, clients_list, args.export)
     logger.info("Dynamo started on all clients ....")
 
     try:
