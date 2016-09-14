@@ -73,7 +73,7 @@ class Dynamo(object):
                 for path in work['target'].split(','):
                     os.remove('{0}'.format(path))
         except Exception as work_error:
-            return "{0}: {1}".format(action, work_error)
-        result = "{0} on {1}".format(work['action'], work['target'])
+            return "failed:{0}:{1}".format(action, work_error)
+        result = "success:{0}:{1}".format(work['action'], work['target'])
         time.sleep(random.randint(1, 10))
         return result

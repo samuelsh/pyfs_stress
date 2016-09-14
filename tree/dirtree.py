@@ -32,6 +32,9 @@ class DirTree(object):
     def get_last_node_tag(self):
         return self._last_node.tag
 
+    def get_dir_by_name(self, name):
+        return self._dir_tree.get_node(hashlib.md5(name).hexdigest())
+
     def get_last_node_data(self):
         """
 
@@ -73,7 +76,8 @@ class DirTree(object):
         files = rand_dir.data.get_random_files(max_files)
         filepaths = ""
         for f in files:
-            filepaths += "/{0}/{1},".format(rand_dir.tag, f.name)
+            if f.ondisk:
+                filepaths += "/{0}/{1},".format(rand_dir.tag, f.name)
         return filepaths
 
 
@@ -102,6 +106,7 @@ def build_recursive_tree(tree, base, depth, width):
 class Directory(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
+        self.ondisk = False
         self.files = []
 
     @property
@@ -149,6 +154,7 @@ class Directory(object):
 class File(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
+        self.ondisk = False
 
     @property
     def name(self):

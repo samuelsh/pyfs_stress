@@ -56,7 +56,8 @@ class Controller(object):
                 yield Job({'number': num})
 
     def get_next_job(self):
-        actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch', 'touch']
+        actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
+                   'touch']
 
         while True:
             action = random.choice(actions)
@@ -68,8 +69,9 @@ class Controller(object):
                 self._dir_tree.append_node()
                 target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
-                fname = self._dir_tree.get_last_node_data().touch()
-                target = "/{0}/{1}".format(self._dir_tree.get_random_dir_name(), fname)
+                rdir = self._dir_tree.get_random_dir()
+                fname = rdir.touch()
+                target = "/{0}/{1}".format(rdir.tag, fname)
             elif action == "list":
                 target = self._dir_tree.get_random_dir_name()
             elif action == 'delete':
@@ -117,8 +119,26 @@ class Controller(object):
             raise Exception('unknown message: %s' % message['message'])
 
     def _process_results(self, worker_id, job, result):
+        """
+        Result message format:
+        {'result':'action':'target'}
+        """
         self.logger.info('[%s]: finished %s, result: %s',
                          worker_id, job.id, result)
+        result = result.split(':')
+        if result[0] == 'success':
+            if result[1] == 'mkdir':  # mkdir successful which means is synced with storage
+                syncdir = self._dir_tree.get_dir_by_name(result[2])
+                syncdir.data.ondisk = True
+                self.logger.info('{0} is synced'.format(syncdir.data.name))
+            if result[1] == 'touch':
+                path = result[2].split('/')  # folder:file
+                syncdir = self._dir_tree.get_dir_by_name(path[0]).data
+                if syncdir.ondisk:
+                    for f in syncdir.files:
+                        if f.name == path[1]:
+                            f.ondisk = True
+                            break
 
     def run(self):
         # for job in self.work_iterator():
