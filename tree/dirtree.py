@@ -71,7 +71,11 @@ class DirTree(object):
             max_files = 1
         else:
             max_files = random.randint(1, len(rand_dir.data.files))
-        return "/{0}/{1}".format(rand_dir.tag, rand_dir.data.get_random_files(max_files))
+        files = rand_dir.data.get_random_files(max_files)
+        filepaths = ""
+        for f in files:
+            filepaths.join("/{0}/{1},".format(rand_dir.tag, f.name))
+        return filepaths
 
 
 def build_recursive_tree(tree, base, depth, width):
