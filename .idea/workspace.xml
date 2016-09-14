@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo.py" afterPath="$PROJECT_DIR$/client/dynamo.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,8 +59,8 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="75" column="59" selection-start-line="75" selection-start-column="59" selection-end-line="75" selection-end-column="59" />
+            <state relative-caret-position="289">
+              <caret line="67" column="43" selection-start-line="67" selection-start-column="43" selection-end-line="67" selection-end-column="43" />
               <folding>
                 <element signature="e#46#57#0" expanded="true" />
               </folding>
@@ -84,8 +83,8 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="472">
-              <caret line="70" column="30" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
+            <state relative-caret-position="404">
+              <caret line="66" column="30" selection-start-line="66" selection-start-column="30" selection-end-line="66" selection-end-column="30" />
               <folding>
                 <element signature="e#47#60#0" expanded="true" />
               </folding>
@@ -541,13 +540,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00397" summary="Inital commit of distributed data generator suite based on ZeroMQ&#10;&#10;">
-      <created>1473339999772</created>
-      <option name="number" value="00397" />
-      <option name="presentableId" value="LOCAL-00397" />
-      <option name="project" value="LOCAL" />
-      <updated>1473339999772</updated>
-    </task>
     <task id="LOCAL-00398" summary="Inital commit of distributed data generator suite based on ZeroMQ&#10;&#10;">
       <created>1473340515096</created>
       <option name="number" value="00398" />
@@ -884,7 +876,14 @@
       <option name="project" value="LOCAL" />
       <updated>1473847537333</updated>
     </task>
-    <option name="localTasksCounter" value="446" />
+    <task id="LOCAL-00446" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
+      <created>1473847651897</created>
+      <option name="number" value="00446" />
+      <option name="presentableId" value="LOCAL-00446" />
+      <option name="project" value="LOCAL" />
+      <updated>1473847651897</updated>
+    </task>
+    <option name="localTasksCounter" value="447" />
     <servers />
   </component>
   <component name="TodoView">
@@ -950,9 +949,9 @@
     <MESSAGE value="- Added DirTree data structure based on treelib&#10;- Added Infinite job generator &#10;" />
     <MESSAGE value=" - Added some real jobs to jobs generator&#10;" />
     <MESSAGE value=" - Fixing client mount issues&#10;" />
-    <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;" />
     <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;- Added export argument to main app" />
-    <option name="LAST_COMMIT_MESSAGE" value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;- Added export argument to main app" />
+    <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1190,16 +1189,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/controller.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="75" column="59" selection-start-line="75" selection-start-column="59" selection-end-line="75" selection-end-column="59" />
-          <folding>
-            <element signature="e#46#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -1210,10 +1199,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/server/controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="67" column="43" selection-start-line="67" selection-start-column="43" selection-end-line="67" selection-end-column="43" />
+          <folding>
+            <element signature="e#46#57#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="472">
-          <caret line="70" column="30" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
+        <state relative-caret-position="404">
+          <caret line="66" column="30" selection-start-line="66" selection-start-column="30" selection-end-line="66" selection-end-column="30" />
           <folding>
             <element signature="e#47#60#0" expanded="true" />
           </folding>
