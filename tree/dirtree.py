@@ -12,16 +12,15 @@ class DirTree(object):
         self._dir_tree = treelib.Tree()
         self._tree_base = self._dir_tree.create_node('Root', 'root')
         self._last_node = self._tree_base
-        self._nids = []  # Nodes IDs pool to easy random sampling
+        self._nids = []  # Nodes IDs pool for easy random sampling
 
     def append_node(self):
         directory = Directory()
         name = directory.name
         nid = hashlib.md5(name)
-        new_node = self._dir_tree.create_node("{0}".format(name), "{0}".format(nid),
-                                              parent=self._tree_base.identifier, data=directory)
-        self._last_node = new_node
         self._nids.append(nid)
+        new_node = self._dir_tree.create_node(name, nid, parent=self._tree_base.identifier, data=directory)
+        self._last_node = new_node
 
     @property
     def last_node(self):
@@ -43,6 +42,11 @@ class DirTree(object):
         return self._last_node.data
 
     def get_random_dir(self):
+        """
+
+        Returns: Node
+
+        """
         return self._dir_tree.get_node(random.choice(self.nids))
 
     def get_random_dir_name(self):
@@ -54,6 +58,11 @@ class DirTree(object):
         return self._dir_tree.get_node(random.choice(self.nids)).tag
 
     def get_random_dir_file(self):
+        """
+
+        Returns: str
+
+        """
         rand_dir = self.get_random_dir()
         return "/{0}/{1}".format(rand_dir.tag, rand_dir.data.get_random_files())
 
