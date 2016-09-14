@@ -73,7 +73,7 @@ class Controller(object):
             elif action == "list":
                 target = self._dir_tree.get_random_dir_name()
             elif action == 'delete':
-                target = self._dir_tree.get_last_node_tag()
+                target = self._dir_tree.get_random_dir_file()
             yield Job({'action': action, 'target': target})
 
     def _get_next_worker_id(self):
