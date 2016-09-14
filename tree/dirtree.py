@@ -81,7 +81,7 @@ class Directory(object):
 
         """
         self.files.append(File())
-        return self.files[-1]
+        return self.files[-1].name
 
     def get_random_file(self):
         """

@@ -69,8 +69,10 @@ class Controller(object):
                 target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
                 fname = self._dir_tree.get_last_node_data().touch()
-                target = "{0}/{1}".format(fname, self._dir_tree.get_last_node_tag())
-            elif action == list:
+                target = "/{0}/{1}".format(fname, self._dir_tree.get_last_node_tag())
+            elif action == "list":
+                target = self._dir_tree.get_last_node_tag()
+            elif action == 'delete':
                 target = self._dir_tree.get_last_node_tag()
             yield Job({'action': action, 'target': target})
 
