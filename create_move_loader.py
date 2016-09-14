@@ -3,23 +3,18 @@ author: samuels
 """
 
 import argparse
-import os
-import threading
-import traceback
-
-import sys
-
-import multiprocessing
-
-import signal
-
-import time
-
 import errno
+import multiprocessing
+import os
+import signal
+import sys
+import threading
+import time
+import traceback
 from random import randint, choice
 
 from logger import Logger
-from shell_utils import ShellUtils, FSUtils
+from utils.shell_utils import ShellUtils, FSUtils
 
 MAX_PROCESSES = 160
 MAX_FILES = 10000

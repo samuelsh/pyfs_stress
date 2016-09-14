@@ -10,8 +10,7 @@ import sys
 
 from dynamo import Dynamo
 from logger import Logger
-
-DYNAMO_PATH = '/qa/dynamo'
+from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT
 
 
 def run_worker(logger, event, controller, server, proc_id):
@@ -39,7 +38,7 @@ def run():
     processes = []
     args = get_args()
     # Start a few worker processes
-    for i in range(10):
+    for i in range(MAX_WORKERS_PER_CLIENT):
         processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, args.server, i, )))
     for p in processes:
         p.start()

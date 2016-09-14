@@ -3,8 +3,7 @@ import random
 
 import treelib
 
-import config
-from shell_utils import StringUtils
+from utils.shell_utils import StringUtils
 
 
 class DirTree(object):

@@ -1,7 +1,7 @@
 """
 RPC helper functions
 """
-from shell_utils import ShellUtils
+from utils.shell_utils import ShellUtils
 
 
 def deploy_rpyc_server(cluster_node):

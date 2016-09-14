@@ -3,23 +3,18 @@ Directory Tree integrity test runner
 2016 samuelsh (c)
 """
 import argparse
-import hashlib
 import socket
-import traceback
 import sys
-
+import time
+import traceback
 from multiprocessing import Event
 from multiprocessing import Process
-
-import time
-
-import treelib
 
 import config
 from logger import Logger
 from server.controller import Controller
-from shell_utils import ShellUtils, StringUtils
 from tree import dirtree
+from utils.shell_utils import ShellUtils
 
 
 def get_args():
@@ -50,6 +45,7 @@ def deploy_clients(clients):
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '{0}'.format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '{0}'.format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('logger', client, '{0}'.format(config.DYNAMO_PATH)))
+        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('utils', client, '{0}'.format(config.DYNAMO_PATH)))
 
 
 def run_clients(cluster, clients):

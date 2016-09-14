@@ -11,6 +11,7 @@ import sys
 import socket
 sys.path.append('/qa/dynamo')
 from config import CTRL_MSG_PORT
+from utils import shell_utils
 
 
 class Dynamo(object):

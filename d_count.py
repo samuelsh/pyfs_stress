@@ -2,12 +2,11 @@
 author samuels
 """
 import argparse
+import sys
 import traceback
 
-import sys
-
 from logger import Logger
-from shell_utils import ShellUtils, FSUtils
+from utils.shell_utils import ShellUtils, FSUtils
 
 
 def main():
