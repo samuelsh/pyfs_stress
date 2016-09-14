@@ -233,7 +233,7 @@ class FSUtils:
 
 def mount(server, export, mount_point, mtype):
     try:
-        ShellUtils.run_shell_command("mount", "-o nfsvers={0},{1}:/{2},{3}".format(mtype, server, export, mount_point),
+        ShellUtils.run_shell_command("mount", "-o,nfsvers={0},{1}:/{2},{3}".format(mtype, server, export, mount_point),
                                      sep=',')
     except Exception as e:
         print e
