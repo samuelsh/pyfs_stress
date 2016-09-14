@@ -245,3 +245,8 @@ def umount(mount_point):
     except OSError:
         return False
     return True
+
+
+def touch(fname, times=None):
+    with open(fname, 'a'):
+        os.utime(fname, times)

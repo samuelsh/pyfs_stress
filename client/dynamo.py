@@ -4,13 +4,12 @@ Client load generator
 """
 import random
 import time
-import uuid
-
+import os
 import zmq
 import sys
 import socket
 sys.path.append('/qa/dynamo')
-from config import CTRL_MSG_PORT
+from config import CTRL_MSG_PORT,CLIENT_MOUNT_POINT
 from utils import shell_utils
 
 
@@ -61,6 +60,14 @@ class Dynamo(object):
         self._socket.send_json({'message': 'disconnect'})
 
     def _do_work(self, work):
+        action = work['action']
+
+        if action == 'mkdir':
+            os.mkdir("{0}{1}".format(CLIENT_MOUNT_POINT, work['target']))
+        elif action == 'touch':
+            shell_utils.touch('{0}{1]'.format(CLIENT_MOUNT_POINT, work['target']))
+        elif action == 'list':
+            os.listdir('{0}{1]'.format(CLIENT_MOUNT_POINT, work['target']))
         result = "{0} on {1}".format(work['action'], work['target'])
         time.sleep(random.randint(1, 10))
         return result
