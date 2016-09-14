@@ -64,7 +64,10 @@ class DirTree(object):
 
         """
         rand_dir = self.get_random_dir()
-        if len(rand_dir.data.files) == 1:
+        num_files = len(rand_dir.data.files)
+        if num_files == 0:
+            return "nofiles"
+        if num_files == 1:
             max_files = 1
         else:
             max_files = random.randint(1, len(rand_dir.data.files))
