@@ -55,12 +55,20 @@ class Controller(object):
                 num = next(iterator)
                 yield Job({'number': num})
 
-    def get_job(self):
+    def get_next_job(self):
         actions = ['mkdir', 'list', 'delete', 'touch']
 
         while True:
             action = random.choice(actions)
-            target = self._dir_tree.get_last_node_tag()
+            target = None
+            if action == "mkdir":
+                self._dir_tree.append_node()
+                target = self._dir_tree.get_last_node_tag()
+            elif action == "touch":
+                fname = self._dir_tree.get_last_node_data.touch()
+                target = "{0}/{1}".format(fname, self._dir_tree.get_last_node_tag())
+            elif action == list:
+                target = self._dir_tree.get_last_node_tag()
             yield Job({'action': action, 'target': target})
 
     def _get_next_worker_id(self):
@@ -109,8 +117,9 @@ class Controller(object):
 
     def run(self):
         # for job in self.work_iterator():
-        for job in self.get_job():
+        for job in self.get_next_job():
             next_worker_id = None
+
             while next_worker_id is None:
                 # First check if there are any worker messages to process. We
                 # do this while checking for the next available worker so that
@@ -141,9 +150,3 @@ class Controller(object):
             if self.stop_event.is_set():
                 break
         self.stop_event.set()
-
-    def request_operation(self):
-        pass
-
-    def get_verify_result(self):
-        pass

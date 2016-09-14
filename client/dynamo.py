@@ -14,9 +14,10 @@ from config import CTRL_MSG_PORT
 
 
 class Dynamo(object):
-    def __init__(self, logger, stop_event, controller, proc_id=None):
+    def __init__(self, logger, stop_event, controller, server, proc_id=None):
         self.stop_event = stop_event
         self.logger = logger
+        self._server = server # Server Cluster hostname
         self._context = zmq.Context()
         self._controller_ip = socket.gethostbyname(controller)
         # Socket to send messages on by client

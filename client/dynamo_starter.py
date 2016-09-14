@@ -14,8 +14,8 @@ from logger import Logger
 DYNAMO_PATH = '/qa/dynamo'
 
 
-def run_worker(logger, event, controller, proc_id):
-    worker = Dynamo(logger, event, controller, proc_id)
+def run_worker(logger, event, controller, server, proc_id):
+    worker = Dynamo(logger, event, controller, server, proc_id)
     worker.run()
 
 
@@ -27,6 +27,7 @@ def get_args():
     parser = argparse.ArgumentParser(
         description='Test Runner script')
     parser.add_argument('-c', '--controller', type=str, required=True, help='Controller host name')
+    parser.add_argument('-s', '--server', type=str, required=True, help='Cluster Server hostname')
     parser.add_argument('-m', '--mtype', type=str, help='Mount Type', default='nfs3')
     args = parser.parse_args()
     return args
@@ -39,7 +40,7 @@ def run():
     args = get_args()
     # Start a few worker processes
     for i in range(10):
-        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, i, )))
+        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, args.server, i, )))
     for p in processes:
         p.start()
     try:

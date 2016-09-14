@@ -1,4 +1,5 @@
 import hashlib
+import random
 
 import treelib
 
@@ -33,6 +34,14 @@ class DirTree(object):
         """
         return self._last_node.data
 
+    def get_random_dir_name(self):
+        """
+
+        Returns: list
+
+        """
+        return random.choice(self._dir_tree.to_dict()['Root']['children'])
+
 
 def build_recursive_tree(tree, base, depth, width):
     """
@@ -59,11 +68,48 @@ def build_recursive_tree(tree, base, depth, width):
 class Directory(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
-        self.files = [File() for _ in xrange(config.MAX_FILES_PER_DIR)]  # Each directory contains 1000 files
+        self.files = []
 
     @property
     def name(self):
         return self._name
+
+    def touch(self):
+        """
+
+        Returns: list
+
+        """
+        self.files.append(File())
+        return self.files[-1]
+
+    def get_random_file(self):
+        """
+
+        Returns: list
+
+        """
+        return random.choice(self.files)
+
+    def get_random_files(self, f_number=10):
+        """
+
+        Args:
+            f_number: int
+
+        Returns: list
+
+        """
+        return random.sample(set(self.files), f_number)
+
+    def delete_random_file(self):
+        index = self.files.index(random.choice(self.files))
+        del self.files[index]
+
+    def delete_random_files(self, f_number):
+        for f in random.sample(set(self.files), f_number):
+            index = self.files.index(f)
+            del self.files[index]
 
 
 class File(object):

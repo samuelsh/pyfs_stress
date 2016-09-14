@@ -52,10 +52,11 @@ def deploy_clients(clients):
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('logger', client, '{0}'.format(config.DYNAMO_PATH)))
 
 
-def run_clients(clients):
+def run_clients(cluster, clients):
     """
 
     Args:
+        cluster: str
         clients: list
 
     Returns:
@@ -64,8 +65,8 @@ def run_clients(clients):
     controller = socket.gethostname()
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client,
-                                                       'python {0} --controller {1} &'.format(config.DYNAMO_BIN_PATH,
-                                                                                              controller))
+                                                       'python {0} --controller {1} --server {2} &'.format(
+                                                           config.DYNAMO_BIN_PATH, controller, cluster))
 
 
 def run_controller(logger, event, dir_tree):
@@ -85,7 +86,7 @@ def main():
     logger.info("Controller started")
     deploy_clients(clients_list)
     logger.info("Done deploying clients: {0}".format(clients_list))
-    run_clients(clients_list)
+    run_clients(args.cluster, clients_list)
     logger.info("Dynamo started on all clients ....")
 
     try:
