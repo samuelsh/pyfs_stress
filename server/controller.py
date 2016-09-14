@@ -61,6 +61,9 @@ class Controller(object):
         while True:
             action = random.choice(actions)
             target = None
+            # The very first event must be mkdir
+            if self._dir_tree.get_last_node_tag == 'Root':
+                action = "mkdir"
             if action == "mkdir":
                 self._dir_tree.append_node()
                 target = self._dir_tree.get_last_node_tag()
