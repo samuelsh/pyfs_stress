@@ -133,6 +133,7 @@ class Controller(object):
                 self.logger.info('Directory {0} is synced'.format(syncdir.data.name))
             if result[1] == 'touch':
                 path = result[2].split('/')  # folder:file
+                print "[DEBUG] " + result[2]
                 syncdir = self._dir_tree.get_dir_by_name(path[0]).data
                 if syncdir.ondisk:
                     for f in syncdir.files:
