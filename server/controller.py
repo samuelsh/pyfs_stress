@@ -130,7 +130,7 @@ class Controller(object):
             if result[1] == 'mkdir':  # mkdir successful which means is synced with storage
                 syncdir = self._dir_tree.get_dir_by_name(result[2])
                 syncdir.data.ondisk = True
-                self.logger.info('{0} is synced'.format(syncdir.data.name))
+                self.logger.info('Directory {0} is synced'.format(syncdir.data.name))
             if result[1] == 'touch':
                 path = result[2].split('/')  # folder:file
                 syncdir = self._dir_tree.get_dir_by_name(path[0]).data
@@ -138,6 +138,7 @@ class Controller(object):
                     for f in syncdir.files:
                         if f.name == path[1]:
                             f.ondisk = True
+                            self.logger.info('File {0} is synced'.format(path))
                             break
 
     def run(self):
