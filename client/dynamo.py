@@ -68,7 +68,7 @@ class Dynamo(object):
             elif action == 'touch':
                 shell_utils.touch('{0}{1}'.format(CLIENT_MOUNT_POINT, work['target']))
             elif action == 'list':
-                os.listdir('{0}{1}'.format(CLIENT_MOUNT_POINT, work['target']))
+                os.listdir('{0}/{1}'.format(CLIENT_MOUNT_POINT, work['target']))
         except Exception as work_error:
             return "{0}".format(work_error)
         result = "{0} on {1}".format(work['action'], work['target'])
