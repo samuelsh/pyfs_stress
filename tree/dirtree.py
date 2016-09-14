@@ -70,11 +70,11 @@ class DirTree(object):
         if num_files == 1:
             max_files = 1
         else:
-            max_files = random.randint(1, len(rand_dir.data.files))
+            max_files = random.randint(1, num_files)
         files = rand_dir.data.get_random_files(max_files)
         filepaths = ""
         for f in files:
-            filepaths.join("/{0}/{1},".format(rand_dir.tag, f.name))
+            filepaths += "/{0}/{1},".format(rand_dir.tag, f.name)
         return filepaths
 
 
