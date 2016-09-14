@@ -69,7 +69,7 @@ class Controller(object):
                 target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
                 fname = self._dir_tree.get_last_node_data().touch()
-                target = "/{0}/{1}".format(fname, self._dir_tree.get_last_node_tag())
+                target = "/{0}/{1}".format(self._dir_tree.get_last_node_tag(), fname)
             elif action == "list":
                 target = self._dir_tree.get_random_dir_name()
             elif action == 'delete':
