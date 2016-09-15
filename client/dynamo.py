@@ -78,11 +78,12 @@ class Dynamo(object):
                 os.listdir('{0}/{1}'.format(CLIENT_MOUNT_POINT, work['target']))
             elif action == 'delete':
                 dirpath = work['target'].split('/')[1]
+                fname = work['target'].split('/')[2]
                 if os.path.exists('{0}{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath)):
                     return "failed:{0}:{1}".format(action, CLIENT_MOUNT_POINT + dirpath + ": Directory is locked!")
                 shell_utils.touch('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 self.logger.debug("dir " + dirpath + " is locked")
-                os.remove('{0}{1}'.format(CLIENT_MOUNT_POINT, dirpath))
+                os.remove('{0}{1}/{2}'.format(CLIENT_MOUNT_POINT, dirpath, fname))
                 os.remove('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 self.logger.debug("dir " + dirpath + " is unlocked")
         except Exception as work_error:
