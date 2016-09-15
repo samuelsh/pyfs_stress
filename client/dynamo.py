@@ -71,9 +71,9 @@ class Dynamo(object):
                 data = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'])).st_size
             elif action == 'touch':
                 shell_utils.touch('{0}{1}'.format(CLIENT_MOUNT_POINT, work['target']))
-                data = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'].split('/')[1])).st_size
+                data = os.stat("{0}{1}".format(CLIENT_MOUNT_POINT, work['target'])).st_size
             elif action == 'stat':
-                os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'].split('/')[1]))
+                os.stat("{0}{1}".format(CLIENT_MOUNT_POINT, work['target']))
             elif action == 'list':
                 os.listdir('{0}/{1}'.format(CLIENT_MOUNT_POINT, work['target']))
             elif action == 'delete':
