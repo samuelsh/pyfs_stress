@@ -139,7 +139,7 @@ class Controller(object):
                     for f in syncdir.files:
                         if f.name == path[1]:
                             f.ondisk = True
-                            self.logger.info('File {0} is synced'.format("".join(path.split('/')[1])))
+                            self.logger.info('File {0}/{1} is synced'.format(path[0], path[1]))
                             break
 
     def run(self):
