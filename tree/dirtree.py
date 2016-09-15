@@ -90,6 +90,8 @@ class DirTree(object):
         for f in files:
             if f.ondisk:
                 filepaths += "/{0}/{1},".format(rand_dir.tag, f.name)
+        if not filepaths:
+            filepaths = "nofiles"
         return filepaths
 
 
