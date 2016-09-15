@@ -143,7 +143,10 @@ class Directory(object):
         Returns: list
 
         """
-        return random.choice(self.files)
+        try:
+            return random.choice(self.files)
+        except IndexError:
+            return None
 
     def get_random_files(self, f_number=10):
         """
