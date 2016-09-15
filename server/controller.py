@@ -58,7 +58,7 @@ class Controller(object):
 
     def get_next_job(self):
         actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
-                   'touch']
+                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat']
 
         while True:
             action = random.choice(actions)
@@ -77,6 +77,10 @@ class Controller(object):
                     target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
                 rdir = self._dir_tree.get_random_dir()
+                fname = rdir.data.touch()
+                target = "/{0}/{1}".format(rdir.tag, fname)
+            elif action == 'stat':
+                rdir = self._dir_tree.get_random_dir_synced()
                 fname = rdir.data.touch()
                 target = "/{0}/{1}".format(rdir.tag, fname)
             elif action == "list":
