@@ -80,7 +80,7 @@ class DirTree(object):
         rand_dir = self.get_random_dir()
         num_files = len(rand_dir.data.files)
         if num_files == 0:
-            return "nofiles"
+            return "/nofiles"
         if num_files == 1:
             max_files = 1
         else:
@@ -91,7 +91,7 @@ class DirTree(object):
             if f.ondisk:
                 filepaths += "/{0}/{1},".format(rand_dir.tag, f.name)
         if not filepaths:
-            filepaths = "nofiles"
+            filepaths = "/nofiles"
         return filepaths
 
 
