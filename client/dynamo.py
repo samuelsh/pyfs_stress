@@ -74,6 +74,6 @@ class Dynamo(object):
                     os.remove('{0}{1}'.format(CLIENT_MOUNT_POINT, path))
         except Exception as work_error:
             return "failed:{0}:{1}".format(action, work_error)
-        result = "success:{0}:{1}".format(work['action'], work['target'])
-        time.sleep(random.randint(1, 10))
+        result = "success:{0}:{1}".format(action, work['target'])
+        # time.sleep(random.randint(1, 10))
         return result
