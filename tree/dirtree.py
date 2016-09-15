@@ -154,7 +154,10 @@ class Directory(object):
         Returns: list
 
         """
-        return random.sample(set(self.files), f_number)
+        try:
+            return random.sample(set(self.files), f_number)
+        except IndexError:
+            return None
 
     def delete_random_file(self):
         index = self.files.index(random.choice(self.files))
