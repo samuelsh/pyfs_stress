@@ -147,7 +147,7 @@ class Controller(object):
                 if syncdir.ondisk:
                     for f in syncdir.files:
                         if f.name == path[1]:
-                            syncdir.data.size = int(result[3])
+                            syncdir.size = int(result[3])
                             f.ondisk = True
                             self.logger.info(
                                 'File {0}/{1} is synced. Dir size updated to {2}'.format(path[0], path[1],
