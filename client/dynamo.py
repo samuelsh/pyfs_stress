@@ -73,6 +73,7 @@ class Dynamo(object):
                 for path in work['target'].split(','):
                     if os.path.exists('{0}{1}/dir.lock'.format(CLIENT_MOUNT_POINT, path)):
                         return "failed:{0}:{1}".format(action, CLIENT_MOUNT_POINT + path + ": Directory is locked!")
+                    shell_utils.touch('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, path.split('/')[0]))
                     os.remove('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, path.split('/')[0]))
                     os.remove('{0}{1}'.format(CLIENT_MOUNT_POINT, path))
         except Exception as work_error:
