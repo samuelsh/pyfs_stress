@@ -73,6 +73,10 @@ class Controller(object):
                 if self._dir_tree.get_last_node_data().size >= (64 * 1024):
                     self._dir_tree.append_node()
                     target = self._dir_tree.get_last_node_tag()
+                else:
+                    while self.get_next_job() == "mkdir":
+                        pass
+
             elif action == "touch":
                 rdir = self._dir_tree.get_random_dir()
                 fname = rdir.data.touch()
