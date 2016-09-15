@@ -12,6 +12,7 @@ class DirTree(object):
         self._tree_base = self._dir_tree.create_node('Root', 'root')
         self._last_node = self._tree_base
         self._nids = []  # Nodes IDs pool for easy random sampling
+        self.synced_nodes = []
 
     def append_node(self):
         directory = Directory()
@@ -125,6 +126,7 @@ class Directory(object):
         self._name = StringUtils.get_random_string_nospec(64)
         self.ondisk = False
         self.files = []
+        self.size = None
 
     @property
     def name(self):

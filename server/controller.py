@@ -2,6 +2,7 @@
 Server logic is here
 2016 samuels (c)
 """
+import hashlib
 import json
 import random
 import time
@@ -129,8 +130,11 @@ class Controller(object):
         if result[0] == 'success':
             if result[1] == 'mkdir':  # mkdir successful which means is synced with storage
                 syncdir = self._dir_tree.get_dir_by_name(result[2])
+                syncdir.data.size = int(result[3])
                 syncdir.data.ondisk = True
-                self.logger.info('Directory {0} is synced'.format(syncdir.data.name))
+                self._dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name).hexdigest())
+                self.logger.info(
+                    'Directory {0} is synced. Size updated to {1}'.format(syncdir.data.name, int(result[3])))
             if result[1] == 'touch':
                 path = result[2].split('/')[1:]  # folder:file
                 syncdir = self._dir_tree.get_dir_by_name(path[0]).data
