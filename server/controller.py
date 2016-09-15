@@ -66,6 +66,8 @@ class Controller(object):
             # The very first event must be mkdir
             if self._dir_tree.get_last_node_tag() == 'Root':
                 action = "mkdir"
+                self._dir_tree.append_node()
+                target = self._dir_tree.get_last_node_tag()
                 yield Job({'action': action, 'target': target})
             if action == "mkdir":
                 if self._dir_tree.get_last_node_data().size >= (64 * 1024):
