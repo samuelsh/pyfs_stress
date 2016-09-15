@@ -80,8 +80,8 @@ class Controller(object):
                 fname = rdir.data.touch()
                 target = "/{0}/{1}".format(rdir.tag, fname)
             elif action == 'stat':
-                rdir = self._dir_tree.get_random_dir_synced()
-                fname = rdir.data.touch()
+                rdir = self._dir_tree.get_random_dir()
+                fname = rdir.data.get_random_flie().name
                 target = "/{0}/{1}".format(rdir.tag, fname)
             elif action == "list":
                 target = self._dir_tree.get_random_dir_name()
