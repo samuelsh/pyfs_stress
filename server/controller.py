@@ -97,7 +97,7 @@ class Controller(object):
                 if not rdir:
                     target = 'None'
                 else:
-                    fname = rdir.data.get_random_file()
+                    fname = rdir.data.get_random_file().name
                     target = "/{0}/{1}".format(rdir.tag, fname)
                     # target = self._dir_tree.get_random_dir_files()
             yield Job({'action': action, 'target': target})
