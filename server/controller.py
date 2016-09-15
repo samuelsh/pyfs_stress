@@ -76,17 +76,20 @@ class Controller(object):
                 else:
                     target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
-                rdir = self._dir_tree.get_random_dir()
-                fname = rdir.data.touch()
-                target = "/{0}/{1}".format(rdir.tag, fname)
+                rdir = self._dir_tree.get_random_dir_synced()
+                if not rdir:
+                    target = None
+                else:
+                    fname = rdir.data.touch()
+                    target = "/{0}/{1}".format(rdir.tag, fname)
             elif action == 'stat':
                 rdir = self._dir_tree.get_random_dir()
                 rfile = rdir.data.get_random_file()
                 if not rfile:
-                    fname = ""
+                    target = None
                 else:
                     fname = rfile.name
-                target = "/{0}/{1}".format(rdir.tag, fname)
+                    target = "/{0}/{1}".format(rdir.tag, fname)
             elif action == "list":
                 target = self._dir_tree.get_random_dir_name()
             elif action == 'delete':
