@@ -80,7 +80,7 @@ class Dynamo(object):
                 os.remove('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 print "[DEBUG:] dir " + dirpath + " is unlocked"
         except Exception as work_error:
-            return "failed:{0}:{1}".format(action, work_error)
+            return "failed:{0}:{1}:{2}".format(action, work_error, sys.exc_info()[-1].tb_lineno)
         result = "success:{0}:{1}".format(action, work['target'])
         # time.sleep(random.randint(1, 10))
         return result
