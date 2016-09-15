@@ -29,6 +29,9 @@ class DirTree(object):
     def nids(self):
         return self._nids
 
+    def get_size(self):
+        return self._dir_tree.size()
+
     def get_last_node_tag(self):
         return self._last_node.tag
 
