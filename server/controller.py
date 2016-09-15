@@ -140,15 +140,18 @@ class Controller(object):
                 syncdir.data.ondisk = True
                 self._dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name).hexdigest())
                 self.logger.info(
-                    'Directory {0} is synced. Size updated to {1}'.format(syncdir.data.name, int(result[3])))
+                    'Directory {0} is synced. Size is {1}'.format(syncdir.data.name, int(result[3])))
             if result[1] == 'touch':
                 path = result[2].split('/')[1:]  # folder:file
                 syncdir = self._dir_tree.get_dir_by_name(path[0]).data
                 if syncdir.ondisk:
                     for f in syncdir.files:
                         if f.name == path[1]:
+                            syncdir.data.size = int(result[3])
                             f.ondisk = True
-                            self.logger.info('File {0}/{1} is synced'.format(path[0], path[1]))
+                            self.logger.info(
+                                'File {0}/{1} is synced. Dir size updated to {2}'.format(path[0], path[1],
+                                                                                         int(result[3])))
                             break
 
     def run(self):
