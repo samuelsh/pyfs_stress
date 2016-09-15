@@ -71,7 +71,7 @@ class Dynamo(object):
                 os.listdir('{0}/{1}'.format(CLIENT_MOUNT_POINT, work['target']))
             elif action == 'delete':
                 for path in work['target'].split(','):
-                    os.remove('{0}'.format(path))
+                    os.remove('{0}{1}'.format(CLIENT_MOUNT_POINT, path))
         except Exception as work_error:
             return "failed:{0}:{1}".format(action, work_error)
         result = "success:{0}:{1}".format(work['action'], work['target'])
