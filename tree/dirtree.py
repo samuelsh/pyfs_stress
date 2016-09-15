@@ -85,6 +85,8 @@ class DirTree(object):
             max_files = 1
         else:
             max_files = random.randint(1, num_files)
+            if max_files > 10:
+                max_files = 10
         files = rand_dir.data.get_random_files(max_files)
         filepaths = ""
         for f in files:
