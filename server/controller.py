@@ -78,7 +78,7 @@ class Controller(object):
             elif action == "touch":
                 rdir = self._dir_tree.get_random_dir_synced()
                 if not rdir:
-                    target = None
+                    target = 'None'
                 else:
                     fname = rdir.data.touch()
                     target = "/{0}/{1}".format(rdir.tag, fname)
@@ -86,7 +86,7 @@ class Controller(object):
                 rdir = self._dir_tree.get_random_dir()
                 rfile = rdir.data.get_random_file()
                 if not rfile:
-                    target = None
+                    target = 'None'
                 else:
                     fname = rfile.name
                     target = "/{0}/{1}".format(rdir.tag, fname)
