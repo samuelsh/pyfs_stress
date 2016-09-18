@@ -182,10 +182,15 @@ class Controller(object):
 
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 rfile = rdir.data.get_file_by_name(rfile_name)
-
-                if rfile.ondisk:
-                    self.logger.error("Operation {0} failed on file {1} which is on disk".format(result[1], rdir_name +
-                                                                                                 "/" + rfile_name))
+                if not rdir:
+                    self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+                elif not rfile:
+                    self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                else:
+                    if rfile.ondisk:
+                        self.logger.error(
+                            "Operation {0} failed on file {1} which is on disk".format(result[1], rdir_name +
+                                                                                       "/" + rfile_name))
 
     def run(self):
         # for job in self.work_iterator():

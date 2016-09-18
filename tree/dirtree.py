@@ -143,7 +143,10 @@ class Directory(object):
         return self.files[-1].name
 
     def get_file_by_name(self, name):
-        return self.files.index(name)
+        try:
+            return self.files.index(name)
+        except ValueError:
+            return None
 
     def get_random_file(self):
         """
