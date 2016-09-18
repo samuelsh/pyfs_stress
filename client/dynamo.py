@@ -70,7 +70,7 @@ class Dynamo(object):
     def _do_work(self, work):
         """
         Success message format: {'result', 'action', 'target', 'data'}
-        Failure message format: {'result', 'action', 'error message', 'linenumber', 'target'}
+        Failure message format: {'result', 'action', 'error message: target', 'linenumber'}
         Args:
             work: dict
 
@@ -89,7 +89,7 @@ class Dynamo(object):
                 dirpath = work['target'].split('/')[1]
                 dirsize = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'].split('/')[1])).st_size
                 if dirsize >= MAX_DIR_SIZE:  # if Directory entry size > 64K, we'll stop writing new files
-                    raise DynamoIOException("Dir Entry reached {0} size limit".format(MAX_DIR_SIZE))
+                    raise DynamoIOException("Directory Entry reached {0} size limit".format(MAX_DIR_SIZE))
                 if os.path.exists('{0}{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath)):
                     raise DynamoIOException("{0}".format(CLIENT_MOUNT_POINT + dirpath + " - Directory is locked!"))
                 shell_utils.touch('{0}{1}'.format(CLIENT_MOUNT_POINT, work['target']))
@@ -109,7 +109,7 @@ class Dynamo(object):
                 os.remove('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 self.logger.debug("dir " + dirpath + " is unlocked")
         except Exception as work_error:
-            return "failed:{0}:{1}:{2}:{3}".format(action, work_error, sys.exc_info()[-1].tb_lineno, work['target'])
+            return "failed:{0}:{1}:{2}".format(action, work_error, sys.exc_info()[-1].tb_lineno)
         result = "success:{0}:{1}:{2}".format(action, work['target'], data)
         # time.sleep(random.randint(1, 10))
         return result
