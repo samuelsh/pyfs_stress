@@ -79,9 +79,9 @@ class Dynamo(object):
         """
         action = work['action']
         data = None
-        if work['target'] == 'None':
-            raise DynamoIOException("{0}".format("Target not specified"))
         try:
+            if work['target'] == 'None':
+                raise DynamoIOException("{0}".format("Target not specified"))
             if action == 'mkdir':
                 os.mkdir("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target']))
                 data = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'])).st_size
