@@ -72,8 +72,8 @@
       <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/logger/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="27" column="86" selection-start-line="27" selection-start-column="86" selection-end-line="27" selection-end-column="86" />
+            <state relative-caret-position="319">
+              <caret line="25" column="37" selection-start-line="25" selection-start-column="37" selection-end-line="25" selection-end-column="37" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -553,13 +553,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00466" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
-      <created>1473915092486</created>
-      <option name="number" value="00466" />
-      <option name="presentableId" value="LOCAL-00466" />
-      <option name="project" value="LOCAL" />
-      <updated>1473915092486</updated>
-    </task>
     <task id="LOCAL-00467" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
       <created>1473920668208</created>
       <option name="number" value="00467" />
@@ -896,7 +889,14 @@
       <option name="project" value="LOCAL" />
       <updated>1474194037834</updated>
     </task>
-    <option name="localTasksCounter" value="515" />
+    <task id="LOCAL-00515" summary=" - Adding rotation handler to logger&#10;">
+      <created>1474202151192</created>
+      <option name="number" value="00515" />
+      <option name="presentableId" value="LOCAL-00515" />
+      <option name="project" value="LOCAL" />
+      <updated>1474202151192</updated>
+    </task>
+    <option name="localTasksCounter" value="516" />
     <servers />
   </component>
   <component name="TodoView">
@@ -965,7 +965,8 @@
     <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;- Added export argument to main app" />
     <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;" />
     <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete, stat]&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value=" - Implementing dynamo actions [mkdir, list, touch, delete, stat]&#10;" />
+    <MESSAGE value=" - Adding rotation handler to logger&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value=" - Adding rotation handler to logger&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1240,16 +1241,16 @@
     </entry>
     <entry file="file://C:/Python27/Lib/logging/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="1314" column="28" selection-start-line="1314" selection-start-column="28" selection-end-line="1314" selection-end-column="28" />
+        <state relative-caret-position="225">
+          <caret line="125" column="0" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/logger/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="86" selection-start-line="27" selection-start-column="86" selection-end-line="27" selection-end-column="86" />
+        <state relative-caret-position="319">
+          <caret line="25" column="37" selection-start-line="25" selection-start-column="37" selection-end-line="25" selection-end-column="37" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
