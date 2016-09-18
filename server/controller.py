@@ -150,7 +150,7 @@ class Controller(object):
         """
         Result message format:
         Success message format: {'result', 'action', 'target', 'data'}
-        Failure message format: {'result', 'action', 'error message', 'linenumber', 'target'}
+        Failure message format: {'result', 'action', 'error_message', 'path', 'linenumber'}
         """
         self.logger.info('[%s]: finished %s, result: %s',
                          worker_id, job.id, result)
@@ -172,13 +172,13 @@ class Controller(object):
                             syncdir.size = int(result[3])
                             f.ondisk = True
                             self.logger.info(
-                                'File {0}/{1} is synced. Dir size updated to {2}'.format(path[0], path[1],
-                                                                                         int(result[3])))
+                                'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
+                                                                                               int(result[3])))
                             break
         else:  # failure analysis
             if (result[1] == "stat" or result[1] == "delete") and result[2] != "Target not specified":
-                rdir_name = result[4].split('/')[1]
-                rfile_name = result[4].split('/')[2]
+                rdir_name = result[3].split('/')[3]  # get target folder name from path
+                rfile_name = result[3].split('/')[4]  # get target file name from path
 
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 rfile = rdir.data.get_file_by_name(rfile_name)
