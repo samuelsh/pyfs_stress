@@ -61,12 +61,22 @@ class Dynamo(object):
             self._disconnect()
 
     def _disconnect(self):
-        """Send the Controller a disconnect message and end the run loop.
+        """
+        Send the Controller a disconnect message and end the run loop
         """
         self.stop_event.set()
         self._socket.send_json({'message': 'disconnect'})
 
     def _do_work(self, work):
+        """
+        Success message format: {'result', 'action', 'target', 'data'}
+        Failure message format: {'result', 'action', 'error message', 'linenumber', 'target'}
+        Args:
+            work: dict
+
+        Returns: str
+
+        """
         action = work['action']
         data = None
         if work['target'] == 'None':
@@ -99,7 +109,7 @@ class Dynamo(object):
                 os.remove('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 self.logger.debug("dir " + dirpath + " is unlocked")
         except Exception as work_error:
-            return "failed:{0}:{1}:{2}".format(action, work_error, sys.exc_info()[-1].tb_lineno)
+            return "failed:{0}:{1}:{2}:{3}".format(action, work_error, sys.exc_info()[-1].tb_lineno, work['target'])
         result = "success:{0}:{1}:{2}".format(action, work['target'], data)
         # time.sleep(random.randint(1, 10))
         return result

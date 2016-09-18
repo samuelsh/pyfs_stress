@@ -142,6 +142,9 @@ class Directory(object):
         self.files.append(File())
         return self.files[-1].name
 
+    def get_file_by_name(self, name):
+        return self.files.index(name)
+
     def get_random_file(self):
         """
 

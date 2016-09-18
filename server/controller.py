@@ -103,7 +103,7 @@ class Controller(object):
                     else:
                         fname = file_to_delete.name
                         target = "/{0}/{1}".format(rdir.tag, fname)
-                    # target = self._dir_tree.get_random_dir_files()
+                        # target = self._dir_tree.get_random_dir_files()
             yield Job({'action': action, 'target': target})
 
     def _get_next_worker_id(self):
@@ -149,7 +149,8 @@ class Controller(object):
     def _process_results(self, worker_id, job, result):
         """
         Result message format:
-        {'result':'action':'target'}
+        Success message format: {'result', 'action', 'target', 'data'}
+        Failure message format: {'result', 'action', 'error message', 'linenumber', 'target'}
         """
         self.logger.info('[%s]: finished %s, result: %s',
                          worker_id, job.id, result)
@@ -174,6 +175,17 @@ class Controller(object):
                                 'File {0}/{1} is synced. Dir size updated to {2}'.format(path[0], path[1],
                                                                                          int(result[3])))
                             break
+        else:  # failure analysis
+            if result[1] == "stat" or result[1] == "delete":
+                rdir_name = result[4].split('/')[1]
+                rfile_name = result[4].split('/')[2]
+
+                rdir = self._dir_tree.get_dir_by_name(rdir_name)
+                rfile = rdir.data.get_file_by_name(rfile_name)
+
+                if rfile.ondisk:
+                    self.logger.error("Operation {0} failed on file {1} which is on disk".format(result[1], rdir_name +
+                                                                                                 "/" + rfile_name))
 
     def run(self):
         # for job in self.work_iterator():
