@@ -95,7 +95,7 @@ class Dynamo(object):
                     raise DynamoIOException("{0}".format(CLIENT_MOUNT_POINT + dirpath + " - Directory is locked!"))
                 shell_utils.touch('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 self.logger.debug("dir " + dirpath + " is locked")
-                os.remove('{0}{1}/{2}'.format(CLIENT_MOUNT_POINT, dirpath, fname))
+                os.remove('{0}/{1}/{2}'.format(CLIENT_MOUNT_POINT, dirpath, fname))
                 os.remove('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 self.logger.debug("dir " + dirpath + " is unlocked")
         except Exception as work_error:
