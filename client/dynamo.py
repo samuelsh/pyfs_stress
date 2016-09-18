@@ -79,7 +79,7 @@ class Dynamo(object):
                 dirpath = work['target'].split('/')[1]
                 dirsize = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'].split('/')[1])).st_size
                 if dirsize >= MAX_DIR_SIZE:  # if Directory entry size > 64K, we'll stop writing new files
-                    raise DynamoIOException("Dir Entry reached 64KB size limit")
+                    raise DynamoIOException("Dir Entry reached {0} size limit".format(MAX_DIR_SIZE))
                 if os.path.exists('{0}{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath)):
                     raise DynamoIOException("{0}".format(CLIENT_MOUNT_POINT + dirpath + " - Directory is locked!"))
                 shell_utils.touch('{0}{1}'.format(CLIENT_MOUNT_POINT, work['target']))
