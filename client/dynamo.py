@@ -13,7 +13,7 @@ sys.path.append('/qa/dynamo')
 from config import CTRL_MSG_PORT, CLIENT_MOUNT_POINT
 from utils import shell_utils
 
-MAX_DIR_SIZE = 64 * 1024
+MAX_DIR_SIZE = 128 * 1024
 
 
 class DynamoIOException(Exception):

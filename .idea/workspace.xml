@@ -84,8 +84,8 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="97" column="30" selection-start-line="97" selection-start-column="30" selection-end-line="97" selection-end-column="30" />
+            <state relative-caret-position="238">
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding>
                 <element signature="e#47#60#0" expanded="true" />
               </folding>
@@ -551,13 +551,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00455" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
-      <created>1473857757713</created>
-      <option name="number" value="00455" />
-      <option name="presentableId" value="LOCAL-00455" />
-      <option name="project" value="LOCAL" />
-      <updated>1473857757713</updated>
-    </task>
     <task id="LOCAL-00456" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
       <created>1473857810145</created>
       <option name="number" value="00456" />
@@ -894,7 +887,14 @@
       <option name="project" value="LOCAL" />
       <updated>1474178426660</updated>
     </task>
-    <option name="localTasksCounter" value="504" />
+    <task id="LOCAL-00504" summary=" - Implementing dynamo actions [mkdir, list, touch, delete, stat]&#10;">
+      <created>1474178781058</created>
+      <option name="number" value="00504" />
+      <option name="presentableId" value="LOCAL-00504" />
+      <option name="project" value="LOCAL" />
+      <updated>1474178781058</updated>
+    </task>
+    <option name="localTasksCounter" value="505" />
     <servers />
   </component>
   <component name="TodoView">
@@ -962,7 +962,8 @@
     <MESSAGE value=" - Fixing client mount issues&#10;" />
     <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;- Added export argument to main app" />
     <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;" />
+    <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete, stat]&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value=" - Implementing dynamo actions [mkdir, list, touch, delete, stat]&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1236,8 +1237,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="97" column="30" selection-start-line="97" selection-start-column="30" selection-end-line="97" selection-end-column="30" />
+        <state relative-caret-position="238">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding>
             <element signature="e#47#60#0" expanded="true" />
           </folding>
