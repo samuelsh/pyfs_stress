@@ -189,8 +189,8 @@ class Controller(object):
                 else:
                     if rfile.ondisk:
                         self.logger.error(
-                            "Operation {0} failed on file {1} which is on disk".format(result[1], rdir_name +
-                                                                                       "/" + rfile_name))
+                            "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(result[1],
+                                                                                        rdir_name + "/" + rfile_name))
 
     def run(self):
         # for job in self.work_iterator():
