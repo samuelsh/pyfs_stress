@@ -176,7 +176,7 @@ class Controller(object):
                                                                                          int(result[3])))
                             break
         else:  # failure analysis
-            if result[1] == "stat" or result[1] == "delete":
+            if (result[1] == "stat" or result[1] == "delete") and result[2] != "Target not specified":
                 rdir_name = result[4].split('/')[1]
                 rfile_name = result[4].split('/')[2]
 

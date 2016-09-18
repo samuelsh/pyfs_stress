@@ -80,7 +80,7 @@ class Dynamo(object):
         action = work['action']
         data = None
         if work['target'] == 'None':
-            return "failed:{0}:{1}".format(action, "Target not specified")
+            raise DynamoIOException("{0}".format(action, "Target not specified"))
         try:
             if action == 'mkdir':
                 os.mkdir("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target']))
