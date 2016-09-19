@@ -57,7 +57,7 @@ class Controller(object):
                 yield Job({'number': num})
 
     def get_next_job(self):
-        actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
+        actions = ['mkdir', 'list', 'list', 'list', 'list', 'stat', 'touch', 'touch', 'touch', 'touch', 'touch',
                    'touch', 'stat', 'stat', 'stat', 'stat', 'stat']
 
         while True:
