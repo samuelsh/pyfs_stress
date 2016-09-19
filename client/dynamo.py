@@ -8,6 +8,9 @@ import os
 import zmq
 import sys
 import socket
+import time
+import timeit
+timer = timeit.default_timer
 
 sys.path.append('/qa/dynamo')
 from config import CTRL_MSG_PORT, CLIENT_MOUNT_POINT
@@ -18,6 +21,14 @@ MAX_DIR_SIZE = 128 * 1024
 
 class DynamoIOException(Exception):
     pass
+
+
+def timestamp(now=None):
+    if now is None:
+        now = timer()
+    timestamp = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(now))
+    millisecs = "%.3f" % (now % 1.0,)
+    return timestamp + millisecs[1:]
 
 
 class Dynamo(object):
@@ -109,9 +120,9 @@ class Dynamo(object):
                 os.remove('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 self.logger.debug("dir " + dirpath + " is unlocked")
         except Exception as work_error:
-            result = "failed:{0}:{1}:{2}".format(action, work_error, sys.exc_info()[-1].tb_lineno)
+            result = "failed:{0}:{1}:{2}:{3}".format(action, work_error, sys.exc_info()[-1].tb_lineno, timestamp())
             self.logger.info("Sending back result {0}".format(result))
             return result
-        result = "success:{0}:{1}:{2}".format(action, work['target'], data)
+        result = "success:{0}:{1}:{2}:{3}".format(action, work['target'], data, timestamp())
         self.logger.info("Sending back result {0}".format(result))
         return result
