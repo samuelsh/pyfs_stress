@@ -186,8 +186,8 @@ class Controller(object):
                             break
         else:  # failure analysis
             if (result[1] == "stat" or result[1] == "delete") and result[2] != "Target not specified":
-                rdir_name = result[3].split('/')[3]  # get target folder name from path
-                rfile_name = result[3].split('/')[4]  # get target file name from path
+                rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
+                rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
 
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 rfile = rdir.data.get_file_by_name(rfile_name)
