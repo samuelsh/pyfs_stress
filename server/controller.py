@@ -185,7 +185,9 @@ class Controller(object):
                             self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
                             break
         else:  # failure analysis
-            if (result[1] == "stat" or result[1] == "delete") and result[2] != "Target not specified":
+            if result[2] == "Target not specified" or "Directory is locked!" in result[2]:
+                return
+            if result[1] == "stat" or result[1] == "delete":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
 
