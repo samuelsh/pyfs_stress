@@ -109,7 +109,9 @@ class Dynamo(object):
                 os.remove('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 self.logger.debug("dir " + dirpath + " is unlocked")
         except Exception as work_error:
-            return "failed:{0}:{1}:{2}".format(action, work_error, sys.exc_info()[-1].tb_lineno)
+            result = "failed:{0}:{1}:{2}".format(action, work_error, sys.exc_info()[-1].tb_lineno)
+            self.logger.info("Sending back result {0}".format(result))
+            return result
         result = "success:{0}:{1}:{2}".format(action, work['target'], data)
         self.logger.info("Sending back result {0}".format(result))
         return result
