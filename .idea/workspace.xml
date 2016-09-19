@@ -97,7 +97,7 @@
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="370">
-              <caret line="113" column="51" selection-start-line="113" selection-start-column="51" selection-end-line="113" selection-end-column="51" />
+              <caret line="113" column="31" selection-start-line="113" selection-start-column="31" selection-end-line="113" selection-end-column="31" />
               <folding>
                 <element signature="e#47#60#0" expanded="true" />
               </folding>
@@ -575,13 +575,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00477" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
-      <created>1473935374106</created>
-      <option name="number" value="00477" />
-      <option name="presentableId" value="LOCAL-00477" />
-      <option name="project" value="LOCAL" />
-      <updated>1473935374106</updated>
-    </task>
     <task id="LOCAL-00478" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
       <created>1473935782804</created>
       <option name="number" value="00478" />
@@ -918,7 +911,14 @@
       <option name="project" value="LOCAL" />
       <updated>1474301050612</updated>
     </task>
-    <option name="localTasksCounter" value="526" />
+    <task id="LOCAL-00526" summary=" - Adding timestamp to messages from client&#10;">
+      <created>1474302501910</created>
+      <option name="number" value="00526" />
+      <option name="presentableId" value="LOCAL-00526" />
+      <option name="project" value="LOCAL" />
+      <updated>1474302501910</updated>
+    </task>
+    <option name="localTasksCounter" value="527" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1289,7 +1289,7 @@
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="370">
-          <caret line="113" column="51" selection-start-line="113" selection-start-column="51" selection-end-line="113" selection-end-column="51" />
+          <caret line="113" column="31" selection-start-line="113" selection-start-column="31" selection-end-line="113" selection-end-column="31" />
           <folding>
             <element signature="e#47#60#0" expanded="true" />
           </folding>

@@ -101,7 +101,7 @@ class Dynamo(object):
                 dirsize = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'].split('/')[1])).st_size
                 if dirsize >= MAX_DIR_SIZE:  # if Directory entry size > 64K, we'll stop writing new files
                     raise DynamoIOException("Directory Entry reached {0} size limit".format(MAX_DIR_SIZE))
-                if os.path.exists('{0}{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath)):
+                if os.path.exists('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath)):
                     raise DynamoIOException("{0}".format(CLIENT_MOUNT_POINT + dirpath + " - Directory is locked!"))
                 shell_utils.touch('{0}{1}'.format(CLIENT_MOUNT_POINT, work['target']))
                 data = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'].split('/')[1])).st_size
@@ -112,7 +112,7 @@ class Dynamo(object):
             elif action == 'delete':
                 dirpath = work['target'].split('/')[1]
                 fname = work['target'].split('/')[2]
-                if os.path.exists('{0}{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath)):
+                if os.path.exists('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath)):
                     raise DynamoIOException("{0}".format(CLIENT_MOUNT_POINT + dirpath + " - Directory is locked!"))
                 shell_utils.touch('{0}/{1}/dir.lock'.format(CLIENT_MOUNT_POINT, dirpath))
                 self.logger.debug("dir " + dirpath + " is locked for deleting")
