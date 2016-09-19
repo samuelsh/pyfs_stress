@@ -111,4 +111,5 @@ class Dynamo(object):
         except Exception as work_error:
             return "failed:{0}:{1}:{2}".format(action, work_error, sys.exc_info()[-1].tb_lineno)
         result = "success:{0}:{1}:{2}".format(action, work['target'], data)
+        self.logger.info("Sending back result {0}".format(result))
         return result
