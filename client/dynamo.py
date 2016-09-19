@@ -111,5 +111,4 @@ class Dynamo(object):
         except Exception as work_error:
             return "failed:{0}:{1}:{2}".format(action, work_error, sys.exc_info()[-1].tb_lineno)
         result = "success:{0}:{1}:{2}".format(action, work['target'], data)
-        # time.sleep(random.randint(1, 10))
         return result

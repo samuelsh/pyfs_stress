@@ -175,6 +175,18 @@ class Controller(object):
                                 'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
                                                                                                int(result[3])))
                             break
+            if result[1] == 'delete':
+                path = result[2].split('/')[1:]  # folder:file
+                deldir = self._dir_tree.get_dir_by_name(path[0]).data
+                if deldir.ondisk:
+                    for f in deldir.files:
+                        if f.name == path[1]:
+                            deldir.size = int(result[3])
+                            f.ondisk = False
+                            self.logger.info(
+                                'File {0}/{1} is removed. Directory size updated to {2}'.format(path[0], path[1],
+                                                                                                int(result[3])))
+                            break
         else:  # failure analysis
             if (result[1] == "stat" or result[1] == "delete") and result[2] != "Target not specified":
                 rdir_name = result[3].split('/')[3]  # get target folder name from path
@@ -190,7 +202,7 @@ class Controller(object):
                     if rfile.ondisk:
                         self.logger.error(
                             "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(result[1],
-                                                                                        rdir_name + "/" + rfile_name))
+                                                                                                             rdir_name + "/" + rfile_name))
 
     def run(self):
         # for job in self.work_iterator():

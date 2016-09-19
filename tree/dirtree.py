@@ -144,7 +144,7 @@ class Directory(object):
 
     def get_file_by_name(self, name):
         try:
-            return self.files.index(name)
+            return next((thefile for thefile in self.files if thefile.name == name), None)
         except ValueError:
             return None
 
