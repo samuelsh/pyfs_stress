@@ -10,7 +10,7 @@ import time
 import sys
 
 from dynamo import Dynamo
-from logger import Logger
+from logger import client_logger
 from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT, CLIENT_MOUNT_POINT
 from utils import shell_utils
 
@@ -37,7 +37,7 @@ def get_args():
 
 def run():
     stop_event = Event()
-    logger = Logger(output_dir=DYNAMO_PATH, mp=True).logger
+    logger = client_logger.Logger(output_dir=DYNAMO_PATH, mp=True).logger
     processes = []
     args = get_args()
     logger.info("Making {0}".format(CLIENT_MOUNT_POINT))

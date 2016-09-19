@@ -11,7 +11,7 @@ from multiprocessing import Event
 from multiprocessing import Process
 
 import config
-from logger import Logger
+from logger import server_logger
 from server.controller import Controller
 from tree import dirtree
 from utils.shell_utils import ShellUtils
@@ -53,6 +53,7 @@ def run_clients(cluster, clients, export):
     """
 
     Args:
+        export: str
         cluster: str
         clients: list
 
@@ -72,7 +73,7 @@ def run_controller(logger, event, dir_tree):
 
 def main():
     args = get_args()
-    logger = Logger().logger
+    logger = server_logger.Logger().logger
     stop_event = Event()
     dir_tree = dirtree.DirTree()
     logger.debug("Logger initialised {0}".format(logger))
