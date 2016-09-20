@@ -203,7 +203,7 @@ class Controller(object):
                     self.logger.info(
                         "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
                 except Exception as e:
-                    self.logger.excception()
+                    self.logger.exception()
                     raise
             elif result[1] == "stat" or result[1] == "delete":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
