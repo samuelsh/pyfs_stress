@@ -216,11 +216,10 @@ class Controller(object):
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 if rdir:
                     rfile = rdir.data.get_file_by_name(rfile_name)
-                    if rfile:
-                        if rfile.ondisk:
-                            self.logger.error(
-                                "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
-                                    result[1], rdir_name + "/" + rfile_name))
+                    if rfile and rfile.ondisk:
+                        self.logger.error(
+                            "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
+                                result[1], rdir_name + "/" + rfile_name))
                     else:
                         self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
                 else:
