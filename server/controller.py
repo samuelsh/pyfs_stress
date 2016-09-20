@@ -94,7 +94,11 @@ class Controller(object):
                 else:
                     target = 'None'
             elif action == "list":
-                target = self._dir_tree.get_random_dir_synced().name
+                rdir = self._dir_tree.get_random_dir_synced()
+                if not rdir:
+                    target = 'None'
+                else:
+                    target = rdir.name
             elif action == 'delete':
                 rdir = self._dir_tree.get_random_dir_synced()
                 if not rdir:

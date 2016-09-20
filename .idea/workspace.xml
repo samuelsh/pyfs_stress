@@ -50,8 +50,8 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="353">
-              <caret line="198" column="106" selection-start-line="198" selection-start-column="106" selection-end-line="198" selection-end-column="106" />
+            <state relative-caret-position="306">
+              <caret line="94" column="34" selection-start-line="94" selection-start-column="34" selection-end-line="94" selection-end-column="34" />
               <folding>
                 <element signature="e#46#60#0" expanded="true" />
               </folding>
@@ -565,13 +565,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00486" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
-      <created>1473939462622</created>
-      <option name="number" value="00486" />
-      <option name="presentableId" value="LOCAL-00486" />
-      <option name="project" value="LOCAL" />
-      <updated>1473939462622</updated>
-    </task>
     <task id="LOCAL-00487" summary=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;">
       <created>1473941505093</created>
       <option name="number" value="00487" />
@@ -908,7 +901,14 @@
       <option name="project" value="LOCAL" />
       <updated>1474359118815</updated>
     </task>
-    <option name="localTasksCounter" value="535" />
+    <task id="LOCAL-00535" summary=" - If directory entry reach its size limit it will be removed from list of active dirs&#10;">
+      <created>1474359854242</created>
+      <option name="number" value="00535" />
+      <option name="presentableId" value="LOCAL-00535" />
+      <option name="project" value="LOCAL" />
+      <updated>1474359854242</updated>
+    </task>
+    <option name="localTasksCounter" value="536" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1286,8 +1286,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="198" column="106" selection-start-line="198" selection-start-column="106" selection-end-line="198" selection-end-column="106" />
+        <state relative-caret-position="306">
+          <caret line="94" column="34" selection-start-line="94" selection-start-column="34" selection-end-line="94" selection-end-column="34" />
           <folding>
             <element signature="e#46#60#0" expanded="true" />
           </folding>
