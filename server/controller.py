@@ -178,9 +178,9 @@ class Controller(object):
                     self.logger.warning(
                         "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
                 elif syncdir.data.ondisk:
-                    for f in syncdir.files:
+                    for f in syncdir.data.files:
                         if f.name == path[1]:
-                            syncdir.size = int(result[3])
+                            syncdir.data.size = int(result[3])
                             f.ondisk = True
                             self.logger.info(
                                 'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
