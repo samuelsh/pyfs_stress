@@ -12,7 +12,7 @@ class DirTree(object):
         self._tree_base = self._dir_tree.create_node('Root', 'root')
         self._last_node = self._tree_base
         self._nids = []  # Nodes IDs pool for easy random sampling
-        self.synced_nodes = []
+        self.synced_nodes = []  # Node IDs Synced with storage
 
     def append_node(self):
         directory = Directory()
@@ -38,6 +38,13 @@ class DirTree(object):
 
     def get_dir_by_name(self, name):
         return self._dir_tree.get_node(hashlib.md5(name).hexdigest())
+
+    def remove_dir_by_name(self, name):
+        try:
+            self._dir_tree.remove_node(hashlib.md5(name).hexdigest())
+        except Exception:
+            raise
+        return True
 
     def get_last_node_data(self):
         """
@@ -186,6 +193,7 @@ class Directory(object):
 class File(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
+        self.atime = None
         self.ondisk = False
 
     @property

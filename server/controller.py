@@ -83,7 +83,7 @@ class Controller(object):
                     fname = rdir.data.touch()
                     target = "/{0}/{1}".format(rdir.tag, fname)
             elif action == 'stat':
-                rdir = self._dir_tree.get_random_dir()
+                rdir = self._dir_tree.get_random_dir_synced()
                 rfile = rdir.data.get_random_file()
                 if not rfile:
                     target = 'None'
@@ -185,9 +185,15 @@ class Controller(object):
                             self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
                             break
         else:  # failure analysis
-            if result[2] == "Target not specified" or "Directory is locked!" in result[2]:
+            if result[2] == "Target not specified":
                 return
-            if result[1] == "stat" or result[1] == "delete":
+            if result[1] == "touch" and "size limit" in result[2]:
+                rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
+                self._dir_tree.remove_dir_by_name(rdir_name)
+                node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name))
+                del self._dir_tree.synced_nodes[node_index]
+                self.logger.info("Directory {0} is reached its size limit and removed from active dirs list")
+            elif result[1] == "stat" or result[1] == "delete":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
 
