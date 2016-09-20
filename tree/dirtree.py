@@ -41,10 +41,10 @@ class DirTree(object):
 
     def remove_dir_by_name(self, name):
         try:
-            self._dir_tree.remove_node(hashlib.md5(name).hexdigest())
+            cnt = self._dir_tree.remove_node(hashlib.md5(name).hexdigest())
         except Exception:
             raise
-        return True
+        return cnt
 
     def get_last_node_data(self):
         """

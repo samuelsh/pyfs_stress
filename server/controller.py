@@ -9,6 +9,7 @@ import time
 import uuid
 
 import zmq
+from treelib.tree import NodeIDAbsentError
 
 from config import CTRL_MSG_PORT
 
@@ -197,14 +198,15 @@ class Controller(object):
             if result[1] == "touch" and "size limit" in result[2]:
                 try:
                     rdir_name = result[5].split('/')[1]  # get target folder name from path
-                    self.logger.info("Dir {0} going to be removed from dir tree".format(rdir_name))
+                    self.logger.info("Directory {0} going to be removed from dir tree".format(rdir_name))
                     self._dir_tree.remove_dir_by_name(rdir_name)
                     node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name).hexdigest())
                     del self._dir_tree.synced_nodes[node_index]
                     self.logger.info(
                         "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
-                except Exception as e:
-                    self.logger.exception(e)
+                except NodeIDAbsentError:
+                    self.logger.warning("Directory {0} already removed from active dirs list, skipping....")
+                else:
                     raise
             elif result[1] == "stat" or result[1] == "delete":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
