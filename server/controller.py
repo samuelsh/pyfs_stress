@@ -223,37 +223,41 @@ class Controller(object):
                                                                                                              rdir_name + "/" + rfile_name))
 
     def run(self):
-        # for job in self.work_iterator():
-        for job in self.get_next_job():
-            next_worker_id = None
+        try:
+            # for job in self.work_iterator():
+            for job in self.get_next_job():
+                next_worker_id = None
 
-            while next_worker_id is None:
-                # First check if there are any worker messages to process. We
-                # do this while checking for the next available worker so that
-                # if it takes a while to find one we're still processing
-                # incoming messages.
-                while self._socket.poll(0):
-                    # Note that we're using recv_multipart() here, this is a
-                    # special method on the ROUTER socket that includes the
-                    # id of the sender. It doesn't handle the json decoding
-                    # automatically though so we have to do that ourselves.
-                    worker_id, message = self._socket.recv_multipart()
-                    message = json.loads(message.decode('utf8'))
-                    self._handle_worker_message(worker_id, message)
-                # If there are no available workers (they all have 50 or
-                # more jobs already) sleep for half a second.
-                next_worker_id = self._get_next_worker_id()
-                if next_worker_id is None:
-                    time.sleep(0.5)
-            # We've got a Job and an available worker_id, all we need to do
-            # is send it. Note that we're now using send_multipart(), the
-            # counterpart to recv_multipart(), to tell the ROUTER where our
-            # message goes.
-            self.logger.info('sending job %s to worker %s', job.id,
-                             next_worker_id)
-            self.workers[next_worker_id][job.id] = job
-            self._socket.send_multipart(
-                [next_worker_id, json.dumps((job.id, job.work)).encode('utf8')])
-            if self.stop_event.is_set():
-                break
+                while next_worker_id is None:
+                    # First check if there are any worker messages to process. We
+                    # do this while checking for the next available worker so that
+                    # if it takes a while to find one we're still processing
+                    # incoming messages.
+                    while self._socket.poll(0):
+                        # Note that we're using recv_multipart() here, this is a
+                        # special method on the ROUTER socket that includes the
+                        # id of the sender. It doesn't handle the json decoding
+                        # automatically though so we have to do that ourselves.
+                        worker_id, message = self._socket.recv_multipart()
+                        message = json.loads(message.decode('utf8'))
+                        self._handle_worker_message(worker_id, message)
+                    # If there are no available workers (they all have 50 or
+                    # more jobs already) sleep for half a second.
+                    next_worker_id = self._get_next_worker_id()
+                    if next_worker_id is None:
+                        time.sleep(0.5)
+                # We've got a Job and an available worker_id, all we need to do
+                # is send it. Note that we're now using send_multipart(), the
+                # counterpart to recv_multipart(), to tell the ROUTER where our
+                # message goes.
+                self.logger.info('sending job %s to worker %s', job.id,
+                                 next_worker_id)
+                self.workers[next_worker_id][job.id] = job
+                self._socket.send_multipart(
+                    [next_worker_id, json.dumps((job.id, job.work)).encode('utf8')])
+                if self.stop_event.is_set():
+                    break
+        except Exception as generic_error:
+            self.logger.exception(generic_error)
+            raise
         self.stop_event.set()
