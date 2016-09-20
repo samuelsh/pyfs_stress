@@ -195,12 +195,16 @@ class Controller(object):
             if result[2] == "Target not specified":
                 return
             if result[1] == "touch" and "size limit" in result[2]:
-                rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
-                self._dir_tree.remove_dir_by_name(rdir_name)
-                node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name))
-                del self._dir_tree.synced_nodes[node_index]
-                self.logger.info(
-                    "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
+                try:
+                    rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
+                    self._dir_tree.remove_dir_by_name(rdir_name)
+                    node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name))
+                    del self._dir_tree.synced_nodes[node_index]
+                    self.logger.info(
+                        "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
+                except Exception as e:
+                    self.logger.error(e)
+                    raise
             elif result[1] == "stat" or result[1] == "delete":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
