@@ -188,9 +188,12 @@ class Controller(object):
                             break
             if result[1] == 'delete':
                 path = result[2].split('/')[1:]  # folder:file
-                deldir = self._dir_tree.get_dir_by_name(path[0]).data
-                if deldir.ondisk:
-                    for f in deldir.files:
+                deldir = self._dir_tree.get_dir_by_name(path[0])
+                if not deldir:
+                    self.logger.warning(
+                        "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+                elif deldir.ondisk:
+                    for f in deldir.data.files:
                         if f.name == path[1]:
                             f.ondisk = False
                             self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
