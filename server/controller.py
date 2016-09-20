@@ -173,8 +173,11 @@ class Controller(object):
                     'Directory {0} is synced. Size is {1}'.format(syncdir.data.name, int(result[3])))
             if result[1] == 'touch':
                 path = result[2].split('/')[1:]  # folder:file
-                syncdir = self._dir_tree.get_dir_by_name(path[0]).data
-                if syncdir.ondisk:
+                syncdir = self._dir_tree.get_dir_by_name(path[0])
+                if not syncdir:
+                    self.logger.warning(
+                        "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+                elif syncdir.data.ondisk:
                     for f in syncdir.files:
                         if f.name == path[1]:
                             syncdir.size = int(result[3])
