@@ -84,12 +84,15 @@ class Controller(object):
                     target = "/{0}/{1}".format(rdir.tag, fname)
             elif action == 'stat':
                 rdir = self._dir_tree.get_random_dir_synced()
-                rfile = rdir.data.get_random_file()
-                if not rfile:
-                    target = 'None'
+                if rdir:
+                    rfile = rdir.data.get_random_file()
+                    if not rfile:
+                        target = 'None'
+                    else:
+                        fname = rfile.name
+                        target = "/{0}/{1}".format(rdir.tag, fname)
                 else:
-                    fname = rfile.name
-                    target = "/{0}/{1}".format(rdir.tag, fname)
+                    target = 'None'
             elif action == "list":
                 target = self._dir_tree.get_random_dir_name()
             elif action == 'delete':
