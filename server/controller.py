@@ -196,7 +196,7 @@ class Controller(object):
                 return
             if result[1] == "touch" and "size limit" in result[2]:
                 try:
-                    rdir_name = result[4].split('/')[1]  # get target folder name from path
+                    rdir_name = result[5].split('/')[1]  # get target folder name from path
                     self.logger.info("Dir {0} going to be removed from dir tree".format(rdir_name))
                     self._dir_tree.remove_dir_by_name(rdir_name)
                     node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name))
