@@ -94,7 +94,7 @@ class Controller(object):
                 else:
                     target = 'None'
             elif action == "list":
-                target = self._dir_tree.get_random_dir_name()
+                target = self._dir_tree.get_random_dir_synced().name
             elif action == 'delete':
                 rdir = self._dir_tree.get_random_dir_synced()
                 if not rdir:
@@ -195,7 +195,8 @@ class Controller(object):
                 self._dir_tree.remove_dir_by_name(rdir_name)
                 node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name))
                 del self._dir_tree.synced_nodes[node_index]
-                self.logger.info("Directory {0} is reached its size limit and removed from active dirs list")
+                self.logger.info(
+                    "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
             elif result[1] == "stat" or result[1] == "delete":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
