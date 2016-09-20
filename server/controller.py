@@ -207,7 +207,7 @@ class Controller(object):
                 except NodeIDAbsentError:
                     self.logger.warning("Directory {0} already removed from active dirs list, skipping....")
                 else:
-                    raise
+                    raise Exception
             elif result[1] == "stat" or result[1] == "delete":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
