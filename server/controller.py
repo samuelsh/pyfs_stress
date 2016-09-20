@@ -199,7 +199,7 @@ class Controller(object):
                     rdir_name = result[5].split('/')[1]  # get target folder name from path
                     self.logger.info("Dir {0} going to be removed from dir tree".format(rdir_name))
                     self._dir_tree.remove_dir_by_name(rdir_name)
-                    node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name))
+                    node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name).hexdigest())
                     del self._dir_tree.synced_nodes[node_index]
                     self.logger.info(
                         "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
