@@ -114,7 +114,7 @@ class Dynamo(object):
                 os.remove('{0}/{1}/{2}'.format(CLIENT_MOUNT_POINT, dirpath, fname))
         except Exception as work_error:
             result = "failed:{0}:{1}:{2}:{3}:{4}".format(action, work_error, sys.exc_info()[-1].tb_lineno, timestamp(),
-                                                        data)
+                                                         data)
             self.logger.info("Sending back result {0}".format(result))
             return result
         result = "success:{0}:{1}:{2}:{3}".format(action, work['target'], data, timestamp())
