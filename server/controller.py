@@ -192,7 +192,7 @@ class Controller(object):
                 if not deldir:
                     self.logger.warning(
                         "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
-                elif deldir.ondisk:
+                elif deldir.data.ondisk:
                     for f in deldir.data.files:
                         if f.name == path[1]:
                             f.ondisk = False
