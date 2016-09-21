@@ -53,13 +53,17 @@ def run():
     #     logger.error("Mount failed. Exiting...")
     #     return
     # multidomain nfs  mount
-    logger.info("Setting passwordless SSH connection")
-    shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
-    logger.info("Getting cluster params...")
-    active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.server)
-    logger.debug("Active Nodes: %s" % active_nodes)
-    domains = shell_utils.FSUtils.get_domains_num(args.server)
-    logger.debug("FSD domains: %s" % domains)
+    try:
+        logger.info("Setting passwordless SSH connection")
+        shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
+        logger.info("Getting cluster params...")
+        active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.server)
+        logger.debug("Active Nodes: %s" % active_nodes)
+        domains = shell_utils.FSUtils.get_domains_num(args.server)
+        logger.debug("FSD domains: %s" % domains)
+    except Exception as error_on_init:
+        logger.error(error_on_init)
+        raise
     logger.info("Mounting work path...")
     if args.scenario == 'domains':
         shell_utils.FSUtils.mount_fsd(args.cluster, args.export_dir, active_nodes, domains, 'nfs3', 'DIRSPLIT', '6')
