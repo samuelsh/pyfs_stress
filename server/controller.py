@@ -206,6 +206,7 @@ class Controller(object):
         else:  # failure analysis
             if result[2] == "Target not specified":
                 return
+            # in case that touch op failed due to size limit
             if result[1] == "touch" and "size limit" in result[2]:
                 rdir_name = result[5].split('/')[1]  # get target folder name from path
                 try:
@@ -218,6 +219,7 @@ class Controller(object):
                 except NodeIDAbsentError:
                     self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
+            # in case stat or delete ops failed for some reason
             elif result[1] == "stat" or result[1] == "delete":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
@@ -235,6 +237,14 @@ class Controller(object):
                         self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
                 else:
                     self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            # in case if touch op failed and it's not dir size limit error
+            elif result[1] == "touch":
+                rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
+                rdir = self._dir_tree.get_dir_by_name(rdir_name)
+                if rdir and rdir.ondisk:
+                    self.logger.error(
+                        "Result Verify FAILED: Operation {0} failed on directory {1} which is on disk".format(
+                            result[1], rdir_name))
 
     def run(self):
         try:

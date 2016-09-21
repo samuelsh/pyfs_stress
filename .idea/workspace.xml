@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo.py" afterPath="$PROJECT_DIR$/client/dynamo.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controller.py" afterPath="$PROJECT_DIR$/server/controller.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree/dirtree.py" afterPath="$PROJECT_DIR$/tree/dirtree.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -52,8 +50,8 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="223" column="0" selection-start-line="223" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
+            <state relative-caret-position="697">
+              <caret line="239" column="44" selection-start-line="239" selection-start-column="44" selection-end-line="239" selection-end-column="44" />
               <folding>
                 <element signature="e#46#60#0" expanded="true" />
               </folding>
@@ -567,13 +565,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00510" summary=" - Implementing dynamo actions [mkdir, list, touch, delete, stat]&#10;">
-      <created>1474192654111</created>
-      <option name="number" value="00510" />
-      <option name="presentableId" value="LOCAL-00510" />
-      <option name="project" value="LOCAL" />
-      <updated>1474192654111</updated>
-    </task>
     <task id="LOCAL-00511" summary=" - Implementing dynamo actions [mkdir, list, touch, delete, stat]&#10;">
       <created>1474193129141</created>
       <option name="number" value="00511" />
@@ -910,7 +901,14 @@
       <option name="project" value="LOCAL" />
       <updated>1474370169168</updated>
     </task>
-    <option name="localTasksCounter" value="559" />
+    <task id="LOCAL-00559" summary=" - Added verify timestamps on failed stat and delete&#10;">
+      <created>1474435180534</created>
+      <option name="number" value="00559" />
+      <option name="presentableId" value="LOCAL-00559" />
+      <option name="project" value="LOCAL" />
+      <updated>1474435180534</updated>
+    </task>
+    <option name="localTasksCounter" value="560" />
     <servers />
   </component>
   <component name="TodoView">
@@ -958,7 +956,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Replacing threads by multiprocessing" />
     <MESSAGE value="multiprocessing folder scan&#10;" />
     <MESSAGE value="Create/Rename test (initial commit)&#10;" />
     <MESSAGE value="Minor fixes&#10;" />
@@ -983,7 +980,8 @@
     <MESSAGE value=" - Adding timestamp to messages from client&#10;" />
     <MESSAGE value=" - Getting rid of locking mechanism (not really needed)&#10;" />
     <MESSAGE value=" - If directory entry reach its size limit it will be removed from list of active dirs&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value=" - If directory entry reach its size limit it will be removed from list of active dirs&#10;" />
+    <MESSAGE value=" - Added verify timestamps on failed stat and delete&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value=" - Added verify timestamps on failed stat and delete&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1288,8 +1286,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="223" column="0" selection-start-line="223" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
+        <state relative-caret-position="697">
+          <caret line="239" column="44" selection-start-line="239" selection-start-column="44" selection-end-line="239" selection-end-column="44" />
           <folding>
             <element signature="e#46#60#0" expanded="true" />
           </folding>
