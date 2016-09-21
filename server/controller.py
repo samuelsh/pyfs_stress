@@ -200,12 +200,16 @@ class Controller(object):
                 if not deldir:
                     self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
-                elif deldir.data.ondisk:
-                    rfile = deldir.data.get_file_by_name(path[1])
-                    if rfile and rfile.ondisk:
-                        self.logger.debug('File {0}/{1} is found, removing'.format(path[0], path[1]))
-                        rfile.ondisk = False
-                        self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
+                else:
+                    self.logger.debug('Directory exists {0}, going to delete {1}'.format(deldir.data.name, path[1]))
+                    if deldir.data.ondisk:
+                        rfile = deldir.data.get_file_by_name(path[1])
+                        if rfile and rfile.ondisk:
+                            self.logger.debug('File {0}/{1} is found, removing'.format(path[0], path[1]))
+                            rfile.ondisk = False
+                            self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
+                    else:
+                        self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
             if result[2] == "Target not specified" or "File exists" in result[2]:
                 return
