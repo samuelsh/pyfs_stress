@@ -207,7 +207,7 @@ class Controller(object):
                         rfile.ondisk = False
                         self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
         else:  # failure analysis
-            if result[2] == "Target not specified":
+            if result[2] == "Target not specified" or "File exists" in result[2]:
                 return
             # in case that touch op failed due to size limit
             if result[1] == "touch" and "size limit" in result[2]:
