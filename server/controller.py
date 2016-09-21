@@ -169,7 +169,10 @@ class Controller(object):
                 syncdir = self._dir_tree.get_dir_by_name(result[2])
                 syncdir.data.size = int(result[3])
                 syncdir.data.ondisk = True
+                syncdir.creation_time = datetime.datetime.strptime(result[4], '%Y/%m/%d %H-%M-%S.%f')
                 self._dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name).hexdigest())
+                self.logger.debug(
+                    "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
                 self.logger.info(
                     'Directory {0} is synced. Size is {1}'.format(syncdir.data.name, int(result[3])))
             if result[1] == 'touch':
@@ -242,9 +245,13 @@ class Controller(object):
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 if rdir and rdir.ondisk:
-                    self.logger.error(
-                        "Result Verify FAILED: Operation {0} failed on directory {1} which is on disk".format(
-                            result[1], rdir_name))
+                    error_time = datetime.datetime.strptime(result[5], '%Y/%m/%d %H-%M-%S.%f')
+                    if error_time > rdir.creation_time:
+                        self.logger.error(
+                            "Result Verify FAILED: Operation {0} failed on directory {1} which is on disk".format(
+                                result[1], rdir_name))
+                else:
+                    self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
 
     def run(self):
         try:

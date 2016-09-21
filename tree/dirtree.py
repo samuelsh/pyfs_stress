@@ -133,8 +133,9 @@ class Directory(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
         self.ondisk = False
-        self.files = []
+        self.creation_time = None
         self.size = None
+        self.files = []
 
     @property
     def name(self):
