@@ -115,7 +115,7 @@ def init_test(args, logger):
         logger.debug("FSD domains: %s" % domains)
 
         if args.scenario == 'domains':
-            FSUtils.mount_fsd(args.cluster, args.export_dir, active_nodes, domains, 'nfs3', 'MOVER', '5')
+            FSUtils.mount_fsd(args.cluster, '/' + args.export_dir, active_nodes, domains, 'nfs3', 'MOVER', '5')
             for i in range(active_nodes):
                 for j in randint(domains):
                     if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('MOVER', i, args.cluster, j)):

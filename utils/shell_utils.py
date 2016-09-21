@@ -194,7 +194,6 @@ class FSUtils:
         """
         outp = ShellUtils.run_bash_function(QA_BASHLIB_PATH, "mount_fsd", "%s %s %s %s %s %s %s %s" % (
             export_dir, cluster, nof_nodes, domains, mtype, prefix, 0, exaver))
-        print outp
         if "Exception" in outp:
             return True
         else:
