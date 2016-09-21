@@ -67,7 +67,7 @@ def run():
         #/mnt/DIRSPLIT-node0.g8-5
         for i in range(active_nodes):
             for j in range(domains):
-                if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('MOVER', i, args.server, j)):
+                if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('DIRSPLIT', i, args.server, j)):
                     logger.error('mount_fsd failed!')
                     raise RuntimeError
     except Exception as error_on_init:
