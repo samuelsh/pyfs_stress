@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo.py" afterPath="$PROJECT_DIR$/client/dynamo.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo_starter.py" afterPath="$PROJECT_DIR$/client/dynamo_starter.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_move_loader.py" afterPath="$PROJECT_DIR$/create_move_loader.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -83,11 +81,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dynamo_starter.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dynamo_starter.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="62" column="33" selection-start-line="62" selection-start-column="33" selection-end-line="62" selection-end-column="33" />
+            <state relative-caret-position="425">
+              <caret line="59" column="4" selection-start-line="59" selection-start-column="4" selection-end-line="59" selection-end-column="4" />
               <folding>
                 <element signature="e#22#37#0" expanded="true" />
               </folding>
@@ -95,12 +93,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="create_move_loader.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="create_move_loader.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_move_loader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
-              <folding />
+            <state relative-caret-position="429">
+              <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
+              <folding>
+                <element signature="e#25#40#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -176,9 +176,9 @@
         <option value="$PROJECT_DIR$/tree_runner.py" />
         <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/server/controller.py" />
-        <option value="$PROJECT_DIR$/client/dynamo_starter.py" />
         <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/create_move_loader.py" />
+        <option value="$PROJECT_DIR$/client/dynamo_starter.py" />
       </list>
     </option>
   </component>
@@ -577,13 +577,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00521" summary=" - Adding error checking on touch/stat&#10;">
-      <created>1474287260445</created>
-      <option name="number" value="00521" />
-      <option name="presentableId" value="LOCAL-00521" />
-      <option name="project" value="LOCAL" />
-      <updated>1474287260445</updated>
-    </task>
     <task id="LOCAL-00522" summary=" - Adding error checking on touch/stat&#10;">
       <created>1474287875359</created>
       <option name="number" value="00522" />
@@ -920,7 +913,14 @@
       <option name="project" value="LOCAL" />
       <updated>1474447710116</updated>
     </task>
-    <option name="localTasksCounter" value="570" />
+    <task id="LOCAL-00570" summary=" - Added multidomain mount on clients&#10;">
+      <created>1474451215519</created>
+      <option name="number" value="00570" />
+      <option name="presentableId" value="LOCAL-00570" />
+      <option name="project" value="LOCAL" />
+      <updated>1474451215519</updated>
+    </task>
+    <option name="localTasksCounter" value="571" />
     <servers />
   </component>
   <component name="TodoView">
@@ -968,7 +968,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Create/Rename test (initial commit)&#10;" />
     <MESSAGE value="Minor fixes&#10;" />
     <MESSAGE value="locking issues&#10;" />
     <MESSAGE value="adding gssh util&#10;" />
@@ -993,7 +992,8 @@
     <MESSAGE value=" - If directory entry reach its size limit it will be removed from list of active dirs&#10;" />
     <MESSAGE value=" - Added verify timestamps on failed stat and delete&#10;" />
     <MESSAGE value=" - Added touch operation verify&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value=" - Added touch operation verify&#10;" />
+    <MESSAGE value=" - Added multidomain mount on clients&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value=" - Added multidomain mount on clients&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1279,16 +1279,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="62" column="33" selection-start-line="62" selection-start-column="33" selection-end-line="62" selection-end-column="33" />
-          <folding>
-            <element signature="e#22#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="918">
@@ -1301,9 +1291,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/create_move_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
-          <folding />
+        <state relative-caret-position="429">
+          <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
+          <folding>
+            <element signature="e#25#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="59" column="4" selection-start-line="59" selection-start-column="4" selection-end-line="59" selection-end-column="4" />
+          <folding>
+            <element signature="e#22#37#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -49,17 +49,18 @@ def run():
             shell_utils.umount(CLIENT_MOUNT_POINT)
         except Exception as syserr:
             logger.error(syserr)
-    logger.info("Mounting work path...")
     # if not shell_utils.mount(args.server, args.export, CLIENT_MOUNT_POINT, args.mtype):
     #     logger.error("Mount failed. Exiting...")
     #     return
     # multidomain nfs  mount
+    logger.info("Setting passwordless SSH connection")
+    shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
     logger.info("Getting cluster params...")
     active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.server)
     logger.debug("Active Nodes: %s" % active_nodes)
     domains = shell_utils.FSUtils.get_domains_num(args.server)
     logger.debug("FSD domains: %s" % domains)
-
+    logger.info("Mounting work path...")
     if args.scenario == 'domains':
         shell_utils.FSUtils.mount_fsd(args.cluster, args.export_dir, active_nodes, domains, 'nfs3', 'DIRSPLIT', '6')
         #/mnt/DIRSPLIT-node0.g8-5
