@@ -63,7 +63,7 @@ def run():
         domains = shell_utils.FSUtils.get_domains_num(args.server)
         logger.debug("FSD domains: %s" % domains)
         logger.info("Mounting work path...")
-        shell_utils.FSUtils.mount_fsd(args.cluster, args.export_dir, active_nodes, domains, 'nfs3', 'DIRSPLIT', '6')
+        shell_utils.FSUtils.mount_fsd(args.server, args.export, active_nodes, domains, 'nfs3', 'DIRSPLIT', '6')
         #/mnt/DIRSPLIT-node0.g8-5
         for i in range(active_nodes):
             for j in randint(domains):
