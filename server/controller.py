@@ -255,7 +255,8 @@ class Controller(object):
             else:
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 self.logger.error(
-                    'Operation {0} FAILED UNEXPECTEDLY: Directory {1} is not on disk'.format(result[1], rdir_name))
+                    'Operation {0} FAILED UNEXPECTEDLY on Directory {1} due to {2}'.format(result[1], rdir_name,
+                                                                                           result[2]))
 
     def run(self):
         try:
