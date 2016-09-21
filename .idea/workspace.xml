@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controller.py" afterPath="$PROJECT_DIR$/server/controller.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -50,8 +49,8 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="256" column="32" selection-start-line="256" selection-start-column="32" selection-end-line="256" selection-end-column="32" />
+            <state relative-caret-position="374">
+              <caret line="254" column="16" selection-start-line="254" selection-start-column="16" selection-end-line="254" selection-end-column="16" />
               <folding>
                 <element signature="e#46#60#0" expanded="true" />
               </folding>
@@ -565,13 +564,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00515" summary=" - Adding rotation handler to logger&#10;">
-      <created>1474202151192</created>
-      <option name="number" value="00515" />
-      <option name="presentableId" value="LOCAL-00515" />
-      <option name="project" value="LOCAL" />
-      <updated>1474202151192</updated>
-    </task>
     <task id="LOCAL-00516" summary=" - Adding rotation handler to logger&#10;">
       <created>1474202306226</created>
       <option name="number" value="00516" />
@@ -908,7 +900,14 @@
       <option name="project" value="LOCAL" />
       <updated>1474442161156</updated>
     </task>
-    <option name="localTasksCounter" value="564" />
+    <task id="LOCAL-00564" summary=" - Added touch operation verify&#10;">
+      <created>1474443803582</created>
+      <option name="number" value="00564" />
+      <option name="presentableId" value="LOCAL-00564" />
+      <option name="project" value="LOCAL" />
+      <updated>1474443803582</updated>
+    </task>
+    <option name="localTasksCounter" value="565" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1286,8 +1285,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="256" column="32" selection-start-line="256" selection-start-column="32" selection-end-line="256" selection-end-column="32" />
+        <state relative-caret-position="374">
+          <caret line="254" column="16" selection-start-line="254" selection-start-column="16" selection-end-line="254" selection-end-column="16" />
           <folding>
             <element signature="e#46#60#0" expanded="true" />
           </folding>
