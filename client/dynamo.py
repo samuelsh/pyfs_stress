@@ -82,7 +82,7 @@ class Dynamo(object):
     def _do_work(self, work):
         """
         Success message format: {'result', 'action', 'target', 'data'}
-        Failure message format: {'result', 'action', 'error message: target', 'linenumber':'timestamp':'data'}
+        Failure message format: {'result', 'action', 'error message: target', 'linenumber', 'timestamp', 'data'}
         Args:
             work: dict
 

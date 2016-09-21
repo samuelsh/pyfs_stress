@@ -8,6 +8,7 @@ import random
 import time
 import uuid
 
+import datetime
 import zmq
 from treelib.tree import NodeIDAbsentError
 
@@ -175,13 +176,17 @@ class Controller(object):
                 path = result[2].split('/')[1:]  # folder:file
                 syncdir = self._dir_tree.get_dir_by_name(path[0])
                 if not syncdir:
-                    self.logger.warning(
+                    self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
                 elif syncdir.data.ondisk:
                     for f in syncdir.data.files:
-                        if f.name == path[1]:
+                        if f.name == path[1]:  # Now, when we got reply from client that file was created,
+                            #  we can mark it as synced
                             syncdir.data.size = int(result[3])
                             f.ondisk = True
+                            f.creation_time = datetime.datetime.strptime(result[4], '%Y/%m/%d %H-%M-%S.%f')
+                            self.logger.debug(
+                                "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
                             self.logger.info(
                                 'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
                                                                                                int(result[3])))
@@ -190,7 +195,7 @@ class Controller(object):
                 path = result[2].split('/')[1:]  # folder:file
                 deldir = self._dir_tree.get_dir_by_name(path[0])
                 if not deldir:
-                    self.logger.warning(
+                    self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
                 elif deldir.data.ondisk:
                     for f in deldir.data.files:
@@ -202,8 +207,8 @@ class Controller(object):
             if result[2] == "Target not specified":
                 return
             if result[1] == "touch" and "size limit" in result[2]:
+                rdir_name = result[5].split('/')[1]  # get target folder name from path
                 try:
-                    rdir_name = result[5].split('/')[1]  # get target folder name from path
                     self.logger.info("Directory {0} going to be removed from dir tree".format(rdir_name))
                     self._dir_tree.remove_dir_by_name(rdir_name)
                     node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name).hexdigest())
@@ -211,7 +216,8 @@ class Controller(object):
                     self.logger.info(
                         "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
                 except NodeIDAbsentError:
-                    self.logger.warning("Directory {0} already removed from active dirs list, skipping....")
+                    self.logger.debug(
+                        "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
             elif result[1] == "stat" or result[1] == "delete":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
@@ -220,9 +226,11 @@ class Controller(object):
                 if rdir:
                     rfile = rdir.data.get_file_by_name(rfile_name)
                     if rfile and rfile.ondisk:
-                        self.logger.error(
-                            "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
-                                result[1], rdir_name + "/" + rfile_name))
+                        error_time = datetime.datetime.strptime(result[5], '%Y/%m/%d %H-%M-%S.%f')
+                        if error_time > rfile.creation_time:
+                            self.logger.error(
+                                "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
+                                    result[1], rdir_name + "/" + rfile_name))
                     else:
                         self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
                 else:

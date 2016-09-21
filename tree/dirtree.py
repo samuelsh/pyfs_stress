@@ -193,7 +193,7 @@ class Directory(object):
 class File(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
-        self.atime = None
+        self.creation_time = None
         self.ondisk = False
 
     @property
