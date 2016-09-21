@@ -55,7 +55,7 @@ def run():
     # multidomain nfs  mount
     try:
         logger.info("Setting passwordless SSH connection")
-        shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
+        shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.server, False)
         logger.info("Getting cluster params...")
         active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.server)
         logger.debug("Active Nodes: %s" % active_nodes)
