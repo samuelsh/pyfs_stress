@@ -8,6 +8,7 @@ from multiprocessing import Process
 import time
 
 import sys
+from random import randint
 
 from dynamo import Dynamo
 from logger import client_logger
@@ -49,9 +50,24 @@ def run():
         except Exception as syserr:
             logger.error(syserr)
     logger.info("Mounting work path...")
-    if not shell_utils.mount(args.server, args.export, CLIENT_MOUNT_POINT, args.mtype):
-        logger.error("Mount failed. Exiting...")
-        return
+    # if not shell_utils.mount(args.server, args.export, CLIENT_MOUNT_POINT, args.mtype):
+    #     logger.error("Mount failed. Exiting...")
+    #     return
+    # multidomain nfs  mount
+    logger.info("Getting cluster params...")
+    active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.server)
+    logger.debug("Active Nodes: %s" % active_nodes)
+    domains = shell_utils.FSUtils.get_domains_num(args.server)
+    logger.debug("FSD domains: %s" % domains)
+
+    if args.scenario == 'domains':
+        shell_utils.FSUtils.mount_fsd(args.cluster, args.export_dir, active_nodes, domains, 'nfs3', 'DIRSPLIT', '6')
+        #/mnt/DIRSPLIT-node0.g8-5
+        for i in range(active_nodes):
+            for j in randint(domains):
+                if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('MOVER', i, args.cluster, j)):
+                    logger.error('mount_fsd failed!')
+                    raise RuntimeError
     # Start a few worker processes
     for i in range(MAX_WORKERS_PER_CLIENT):
         processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, args.server, i,)))

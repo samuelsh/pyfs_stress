@@ -13,7 +13,7 @@ import time
 import traceback
 from random import randint, choice
 
-from logger import Logger
+from logger.server_logger import Logger
 from utils.shell_utils import ShellUtils, FSUtils
 
 MAX_PROCESSES = 160
@@ -116,7 +116,6 @@ def init_test(args, logger):
 
         if args.scenario == 'domains':
             FSUtils.mount_fsd(args.cluster, args.export_dir, active_nodes, domains, 'nfs3', 'MOVER', '5')
-        #/mnt/MOVER-node0.g8-5
             for i in range(active_nodes):
                 for j in randint(domains):
                     if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('MOVER', i, args.cluster, j)):

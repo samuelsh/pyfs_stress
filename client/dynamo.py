@@ -91,27 +91,30 @@ class Dynamo(object):
         """
         action = work['action']
         data = None
+        # /mnt/DIRSPLIT-node0.g8-5
+        mount_point = "".join(
+            "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, 1), self._server, random.randint(0, 7)))
         try:
             if work['target'] == 'None':
                 raise DynamoIOException("{0}".format("Target not specified"))
             if action == 'mkdir':
-                os.mkdir("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target']))
-                data = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'])).st_size
+                os.mkdir("{0}/{1}".format(mount_point, work['target']))
+                data = os.stat("{0}/{1}".format(mount_point, work['target'])).st_size
             elif action == 'touch':
-                dirsize = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'].split('/')[1])).st_size
+                dirsize = os.stat("{0}/{1}".format(mount_point, work['target'].split('/')[1])).st_size
                 if dirsize >= MAX_DIR_SIZE:  # if Directory entry size > 64K, we'll stop writing new files
                     data = work['target']
                     raise DynamoIOException("Directory Entry reached {0} size limit".format(MAX_DIR_SIZE))
-                shell_utils.touch('{0}{1}'.format(CLIENT_MOUNT_POINT, work['target']))
-                data = os.stat("{0}/{1}".format(CLIENT_MOUNT_POINT, work['target'].split('/')[1])).st_size
+                shell_utils.touch('{0}{1}'.format(mount_point, work['target']))
+                data = os.stat("{0}/{1}".format(mount_point, work['target'].split('/')[1])).st_size
             elif action == 'stat':
-                os.stat("{0}{1}".format(CLIENT_MOUNT_POINT, work['target']))
+                os.stat("{0}{1}".format(mount_point, work['target']))
             elif action == 'list':
-                os.listdir('{0}/{1}'.format(CLIENT_MOUNT_POINT, work['target']))
+                os.listdir('{0}/{1}'.format(mount_point, work['target']))
             elif action == 'delete':
                 dirpath = work['target'].split('/')[1]
                 fname = work['target'].split('/')[2]
-                os.remove('{0}/{1}/{2}'.format(CLIENT_MOUNT_POINT, dirpath, fname))
+                os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
         except Exception as work_error:
             result = "failed:{0}:{1}:{2}:{3}:{4}".format(action, work_error, sys.exc_info()[-1].tb_lineno, timestamp(),
                                                          data)
