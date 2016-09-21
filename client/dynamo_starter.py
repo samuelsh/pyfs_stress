@@ -62,7 +62,7 @@ def run():
         domains = shell_utils.FSUtils.get_domains_num(args.server)
         logger.debug("FSD domains: %s" % domains)
     except Exception as error_on_init:
-        logger.error(error_on_init)
+        logger.error("".join(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
         raise
     logger.info("Mounting work path...")
     if args.scenario == 'domains':
