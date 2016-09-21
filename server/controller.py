@@ -203,6 +203,7 @@ class Controller(object):
                 elif deldir.data.ondisk:
                     rfile = deldir.data.get_file_by_name(path[1])
                     if rfile and rfile.ondisk:
+                        self.logger.debug('File {0}/{1} is found, removing'.format(path[0], path[1]))
                         rfile.ondisk = False
                         self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
         else:  # failure analysis
