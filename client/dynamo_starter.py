@@ -54,6 +54,7 @@ def run():
     #     return
     # multidomain nfs  mount
     try:
+        os.chdir('/qa/dynamo/client')
         logger.info("Setting passwordless SSH connection")
         shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.server, False)
         logger.info("Getting cluster params...")
