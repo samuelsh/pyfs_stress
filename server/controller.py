@@ -248,7 +248,7 @@ class Controller(object):
             elif result[1] == "touch":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
-                if rdir and rdir.ondisk:
+                if rdir and rdir.data.ondisk:
                     error_time = datetime.datetime.strptime(result[5], '%Y/%m/%d %H-%M-%S.%f')
                     if error_time > rdir.creation_time:
                         self.logger.error(
