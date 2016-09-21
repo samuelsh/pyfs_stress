@@ -63,14 +63,13 @@ def run():
         domains = shell_utils.FSUtils.get_domains_num(args.server)
         logger.debug("FSD domains: %s" % domains)
         logger.info("Mounting work path...")
-        if args.scenario == 'domains':
-            shell_utils.FSUtils.mount_fsd(args.cluster, args.export_dir, active_nodes, domains, 'nfs3', 'DIRSPLIT', '6')
-            #/mnt/DIRSPLIT-node0.g8-5
-            for i in range(active_nodes):
-                for j in randint(domains):
-                    if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('MOVER', i, args.cluster, j)):
-                        logger.error('mount_fsd failed!')
-                        raise RuntimeError
+        shell_utils.FSUtils.mount_fsd(args.cluster, args.export_dir, active_nodes, domains, 'nfs3', 'DIRSPLIT', '6')
+        #/mnt/DIRSPLIT-node0.g8-5
+        for i in range(active_nodes):
+            for j in randint(domains):
+                if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('MOVER', i, args.cluster, j)):
+                    logger.error('mount_fsd failed!')
+                    raise RuntimeError
     except Exception as error_on_init:
         logger.error("".join(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
         raise
