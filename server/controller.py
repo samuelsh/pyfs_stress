@@ -175,7 +175,7 @@ class Controller(object):
                     "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
                 self.logger.info(
                     'Directory {0} is synced. Size is {1}'.format(syncdir.data.name, int(result[3])))
-            if result[1] == 'touch':
+            elif result[1] == 'touch':
                 path = result[2].split('/')[1:]  # folder:file
                 syncdir = self._dir_tree.get_dir_by_name(path[0])
                 if not syncdir:
@@ -194,18 +194,17 @@ class Controller(object):
                                 'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
                                                                                                int(result[3])))
                             break
-            if result[1] == 'delete':
+            elif result[1] == 'delete':
                 path = result[2].split('/')[1:]  # folder:file
                 deldir = self._dir_tree.get_dir_by_name(path[0])
                 if not deldir:
                     self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
                 elif deldir.data.ondisk:
-                    for f in deldir.data.files:
-                        if f.name == path[1]:
-                            f.ondisk = False
-                            self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
-                            break
+                    rfile = deldir.data.get_file_by_name(path[1])
+                    if rfile and rfile.ondisk:
+                        rfile.ondisk = False
+                        self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
         else:  # failure analysis
             if result[2] == "Target not specified":
                 return
