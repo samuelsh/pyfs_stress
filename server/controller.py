@@ -60,6 +60,7 @@ class Controller(object):
                 num = next(iterator)
                 yield Job({'number': num})
 
+    @property
     def get_next_job(self):
         actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
                    'touch', 'stat', 'stat', 'stat', 'stat', 'stat']
@@ -78,7 +79,8 @@ class Controller(object):
                     self._dir_tree.append_node()
                     target = self._dir_tree.get_last_node_tag()
                     self.logger.debug(
-                        "Controller: current dir {0} size: {1}".format(self._dir_tree.get_last_node_data.size, target))
+                        "Controller: current dir {0} size: {1}".format(self._dir_tree.get_last_node_data().size,
+                                                                       target))
                 else:
                     target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
@@ -273,7 +275,7 @@ class Controller(object):
     def run(self):
         try:
             # for job in self.work_iterator():
-            for job in self.get_next_job():
+            for job in self.get_next_job:
                 next_worker_id = None
 
                 while next_worker_id is None:
