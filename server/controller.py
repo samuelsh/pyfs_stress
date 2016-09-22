@@ -72,11 +72,11 @@ class Controller(object):
                 target = self._dir_tree.get_last_node_tag()
                 yield Job({'action': action, 'target': target})
             if action == "mkdir":
-                if self._dir_tree.get_last_node_data().size >= (64 * 1024):
-                    self._dir_tree.append_node()
-                    target = self._dir_tree.get_last_node_tag()
-                else:
-                    target = self._dir_tree.get_last_node_tag()
+                # if self._dir_tree.get_last_node_data().size >= (64 * 1024):
+                self._dir_tree.append_node()
+                target = self._dir_tree.get_last_node_tag()
+                # else:
+                #     target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
                 rdir = self._dir_tree.get_random_dir_synced()
                 if not rdir:
@@ -180,7 +180,8 @@ class Controller(object):
                 syncdir = self._dir_tree.get_dir_by_name(path[0])
                 if not syncdir:
                     self.logger.debug(
-                        "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+                        "Directory {0} already removed from active dirs list, dropping touch {1}".format(path[0],
+                                                                                                         path[1]))
                 elif syncdir.data.ondisk:
                     for f in syncdir.data.files:
                         if f.name == path[1]:  # Now, when we got reply from client that file was created,
@@ -208,6 +209,8 @@ class Controller(object):
                             self.logger.debug('File {0}/{1} is found, removing'.format(path[0], path[1]))
                             rfile.ondisk = False
                             self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
+                        else:
+                            self.logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
                     else:
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
@@ -247,13 +250,14 @@ class Controller(object):
             # in case if touch op failed and it's not dir size limit error
             elif result[1] == "touch":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
+                rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 if rdir and rdir.data.ondisk:
                     error_time = datetime.datetime.strptime(result[5], '%Y/%m/%d %H-%M-%S.%f')
                     if error_time > rdir.creation_time:
                         self.logger.error(
-                            "Result Verify FAILED: Operation {0} failed on directory {1} which is on disk".format(
-                                result[1], rdir_name))
+                            "Result Verify FAILED: Operation {0} failed on {1}/{2} which is on disk".format(
+                                result[1], rdir_name, rfile_name))
                 else:
                     self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
             else:

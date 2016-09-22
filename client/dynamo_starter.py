@@ -31,6 +31,8 @@ def get_args():
     parser.add_argument('-c', '--controller', type=str, required=True, help='Controller host name')
     parser.add_argument('-s', '--server', type=str, required=True, help='Cluster Server hostname')
     parser.add_argument('-e', '--export', type=str, help='NFS Export Name', default="vol0")
+    parser.add_argument('-n', '--nodes', type=int, help='Number of active nodes', required=True)
+    parser.add_argument('-d', '--domains', type=int, help='Number of fs domains', required=True)
     parser.add_argument('-m', '--mtype', type=int, help='Mount Type', default=3)
     args = parser.parse_args()
     return args
@@ -64,7 +66,7 @@ def run():
         logger.debug("FSD domains: %s" % domains)
         logger.info("Mounting work path...")
         shell_utils.FSUtils.mount_fsd(args.server, '/' + args.export, active_nodes, domains, 'nfs3', 'DIRSPLIT', '6')
-        #/mnt/DIRSPLIT-node0.g8-5
+        # /mnt/DIRSPLIT-node0.g8-5
         for i in range(active_nodes):
             for j in range(domains):
                 if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('DIRSPLIT', i, args.server, j)):
@@ -75,7 +77,8 @@ def run():
         raise
     # Start a few worker processes
     for i in range(MAX_WORKERS_PER_CLIENT):
-        processes.append(Process(target=run_worker, args=(logger, stop_event, args.controller, args.server, i,)))
+        processes.append(Process(target=run_worker,
+                                 args=(logger, stop_event, args.controller, args.server, args.nodes, args.domains, i,)))
     for p in processes:
         p.start()
     try:

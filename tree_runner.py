@@ -14,6 +14,7 @@ import config
 from logger import server_logger
 from server.controller import Controller
 from tree import dirtree
+from utils import shell_utils
 from utils.shell_utils import ShellUtils
 
 
@@ -49,10 +50,12 @@ def deploy_clients(clients):
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('utils', client, '{0}'.format(config.DYNAMO_PATH)))
 
 
-def run_clients(cluster, clients, export):
+def run_clients(cluster, clients, export, active_nodes, domains):
     """
 
     Args:
+        domains: int
+        active_nodes: int
         export: str
         cluster: str
         clients: list
@@ -63,8 +66,10 @@ def run_clients(cluster, clients, export):
     controller = socket.gethostname()
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client,
-                                                       'python {0} --controller {1} --server {2} --export {3} &'.format(
-                                                           config.DYNAMO_BIN_PATH, controller, cluster, export))
+                                                       'python {0} --controller {1} --server {2} --export {3}'
+                                                       ' --nodes {4} --domains {5} &'.format(
+                                                           config.DYNAMO_BIN_PATH, controller, cluster, export,
+                                                           active_nodes, domains))
 
 
 def run_controller(logger, event, dir_tree):
@@ -78,13 +83,20 @@ def main():
     dir_tree = dirtree.DirTree()
     logger.debug("Logger initialised {0}".format(logger))
     clients_list = args.clients
+    logger.info("Setting passwordless SSH connection")
+    shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
+    logger.info("Getting cluster params...")
+    active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.server)
+    logger.debug("Active Nodes: %s" % active_nodes)
+    domains = shell_utils.FSUtils.get_domains_num(args.server)
+    logger.debug("FSD domains: %s" % domains)
     logger.info("Starting controller")
     controller_process = Process(target=run_controller, args=(logger, stop_event, dir_tree,))
     controller_process.start()
     logger.info("Controller started")
     deploy_clients(clients_list)
     logger.info("Done deploying clients: {0}".format(clients_list))
-    run_clients(args.cluster, clients_list, args.export)
+    run_clients(args.cluster, clients_list, args.export, active_nodes, domains)
     logger.info("Dynamo started on all clients ....")
 
     try:

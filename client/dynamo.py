@@ -33,10 +33,12 @@ def timestamp(now=None):
 
 
 class Dynamo(object):
-    def __init__(self, logger, stop_event, controller, server, proc_id=None):
+    def __init__(self, logger, stop_event, controller, server, nodes, domains, proc_id=None):
         self.stop_event = stop_event
         self.logger = logger
         self._server = server  # Server Cluster hostname
+        self.nodes = nodes
+        self.domains = domains
         self._context = zmq.Context()
         self._controller_ip = socket.gethostbyname(controller)
         # Socket to send messages on by client
@@ -93,7 +95,8 @@ class Dynamo(object):
         data = None
         # /mnt/DIRSPLIT-node0.g8-5
         mount_point = "".join(
-            "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, 1), self._server, random.randint(0, 7)))
+            "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes), self._server,
+                                                   random.randint(0, self.domains)))
         try:
             if work['target'] == 'None':
                 raise DynamoIOException("{0}".format("Target not specified"))
