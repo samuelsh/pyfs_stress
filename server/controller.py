@@ -113,6 +113,7 @@ class Controller(object):
                         fname = file_to_delete.name
                         target = "/{0}/{1}".format(rdir.tag, fname)
                         # target = self._dir_tree.get_random_dir_files()
+            self.logger.debug('Next IOP: {0} on {1}'.format(action, target))
             yield Job({'action': action, 'target': target})
 
     def _get_next_worker_id(self):
