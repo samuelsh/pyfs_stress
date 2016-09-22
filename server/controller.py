@@ -77,6 +77,8 @@ class Controller(object):
                 if self._dir_tree.get_last_node_data().size >= MAX_DIR_SIZE:
                     self._dir_tree.append_node()
                     target = self._dir_tree.get_last_node_tag()
+                    self.logger.debug(
+                        "Controller: current dir {0} size: {1}".format(self._dir_tree.get_last_node_data.size, target))
                 else:
                     target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
