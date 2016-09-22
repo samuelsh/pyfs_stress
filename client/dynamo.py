@@ -95,7 +95,7 @@ class Dynamo(object):
         data = None
         # /mnt/DIRSPLIT-node0.g8-5
         mount_point = "".join(
-            "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes), self._server,
+            "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
                                                    random.randint(0, self.domains)))
         self.logger.debug('Incoming target: {0}'.format(work['target']))
         try:
