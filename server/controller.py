@@ -79,10 +79,12 @@ class Controller(object):
                     self._dir_tree.append_node()
                     target = self._dir_tree.get_last_node_tag()
                     self.logger.debug(
-                        "Controller: current dir {0} size: {1}".format(self._dir_tree.get_last_node_data().size,
-                                                                       target))
+                        "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_data().size))
                 else:
                     target = self._dir_tree.get_last_node_tag()
+                    self.logger.debug(
+                        "Controller: Dir {0} current size is {1}".format(self._dir_tree.get_last_node_data().size,
+                                                                         target))
             elif action == "touch":
                 rdir = self._dir_tree.get_random_dir_synced()
                 if not rdir:
