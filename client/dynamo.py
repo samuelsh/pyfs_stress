@@ -97,6 +97,7 @@ class Dynamo(object):
         mount_point = "".join(
             "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes), self._server,
                                                    random.randint(0, self.domains)))
+        self.logger.debug('Incoming target: {0}'.format(work['target']))
         try:
             if work['target'] == 'None':
                 raise DynamoIOException("{0}".format("Target not specified"))
