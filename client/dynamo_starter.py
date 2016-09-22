@@ -16,8 +16,8 @@ from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT, CLIENT_MOUNT_POINT
 from utils import shell_utils
 
 
-def run_worker(logger, event, controller, server, proc_id):
-    worker = Dynamo(logger, event, controller, server, proc_id)
+def run_worker(logger, event, controller, server, nodes, domains, proc_id):
+    worker = Dynamo(logger, event, controller, server, nodes, domains, proc_id)
     worker.run()
 
 
