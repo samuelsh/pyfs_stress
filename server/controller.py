@@ -14,6 +14,8 @@ from treelib.tree import NodeIDAbsentError
 
 from config import CTRL_MSG_PORT
 
+MAX_DIR_SIZE = 128 * 1024
+
 
 class Job(object):
     def __init__(self, work):
@@ -72,11 +74,11 @@ class Controller(object):
                 target = self._dir_tree.get_last_node_tag()
                 yield Job({'action': action, 'target': target})
             if action == "mkdir":
-                # if self._dir_tree.get_last_node_data().size >= (64 * 1024):
-                self._dir_tree.append_node()
-                target = self._dir_tree.get_last_node_tag()
-                # else:
-                #     target = self._dir_tree.get_last_node_tag()
+                if self._dir_tree.get_last_node_data().size >= MAX_DIR_SIZE:
+                    self._dir_tree.append_node()
+                    target = self._dir_tree.get_last_node_tag()
+                else:
+                    target = self._dir_tree.get_last_node_tag()
             elif action == "touch":
                 rdir = self._dir_tree.get_random_dir_synced()
                 if not rdir:
