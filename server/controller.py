@@ -258,7 +258,10 @@ class Controller(object):
             # in case if touch op failed and it's not dir size limit error
             elif result[1] == "touch":
                 rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
-                rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
+                try:  # If there's no filename, that means that stat failed
+                    rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
+                except IndexError:
+                    rfile_name = None
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 if rdir and rdir.data.ondisk:
                     error_time = datetime.datetime.strptime(result[5], '%Y/%m/%d %H-%M-%S.%f')
