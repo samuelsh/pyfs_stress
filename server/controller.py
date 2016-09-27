@@ -9,10 +9,13 @@ import time
 import uuid
 
 import datetime
+from threading import Thread
+
 import zmq
 from treelib.tree import NodeIDAbsentError
 
 from config import CTRL_MSG_PORT
+from messages_queue import priority_queue
 
 MAX_DIR_SIZE = 128 * 1024
 
@@ -44,21 +47,16 @@ class Controller(object):
         # When/if a client disconnects we'll put any unfinished work in here,
         # work_iterator() will return work from here as well.
         self._work_to_requeue = []
-
+        self.__max_rcv_queue_size = 50
+        self.__rcv_message_queue = priority_queue.PriorityQueue()
+        self.__rcv_message_worker_thread = Thread(target=self.rcv_messages_worker)
         # Socket to send messages on from Manager
         self._socket = self._context.socket(zmq.ROUTER)
         self._socket.bind("tcp://*:{0}".format(port))
 
-    def work_iterator(self):
-        """Return an iterator that yields work to be done.
-        """
-        iterator = iter(xrange(0, 10000))
-        while True:
-            if self._work_to_requeue:
-                yield self._work_to_requeue.pop()
-            else:
-                num = next(iterator)
-                yield Job({'number': num})
+    def rcv_messages_worker(self):
+        while 1:
+            pass
 
     @property
     def get_next_job(self):
@@ -68,6 +66,9 @@ class Controller(object):
         while True:
             action = random.choice(actions)
             target = None
+            # if some client disconnected, messages assigned to him won't be lost
+            if self._work_to_requeue:
+                yield self._work_to_requeue.pop()
             # The very first event must be mkdir
             if self._dir_tree.get_last_node_tag() == 'Root':
                 action = "mkdir"
@@ -159,6 +160,9 @@ class Controller(object):
         elif message['message'] == 'job_done':
             result = message['result']
             job = self.workers[worker_id].pop(message['job_id'])
+            #  Under work - Priority Queue
+            self.__rcv_message_queue.put(result)
+            #
             self._process_results(worker_id, job, result)
         else:
             raise Exception('unknown message: %s' % message['message'])
@@ -166,8 +170,8 @@ class Controller(object):
     def _process_results(self, worker_id, job, result):
         """
         Result message format:
-        Success message format: {'result', 'action', 'target', 'data'}
-        Failure message format: {'result', 'action', 'error_message', 'path', 'linenumber'}
+        Success message format: {'result', 'action', 'target', 'data', 'timestamp'}
+        Failure message format: {'result', 'action', 'error_message', 'path', 'linenumber', 'timestamp', 'data'}
         """
         self.logger.info('[%s]: finished %s, result: %s',
                          worker_id, job.id, result)
