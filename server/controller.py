@@ -161,7 +161,7 @@ class Controller(object):
             result = message['result']
             job = self.workers[worker_id].pop(message['job_id'])
             #  Under work - Priority Queue
-            self.__rcv_message_queue.put(result)
+            # self.__rcv_message_queue.put(result)
             #
             self._process_results(worker_id, job, result)
         else:
