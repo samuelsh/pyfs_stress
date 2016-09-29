@@ -43,7 +43,7 @@ class Controller(object):
         self.workers = {}
         # We won't assign more than 50 jobs to a worker at a time; this ensures
         # reasonable memory usage, and less shuffling when a worker dies.
-        self.max_jobs_per_worker = 50
+        self.max_jobs_per_worker = 5000
         # When/if a client disconnects we'll put any unfinished work in here,
         # work_iterator() will return work from here as well.
         self._work_to_requeue = []
