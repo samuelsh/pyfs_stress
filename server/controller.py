@@ -82,7 +82,9 @@ class Controller(object):
                     # target = self._dir_tree.get_last_node_tag()
                     self.logger.debug(
                         "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_data().size))
-                target = self._dir_tree.get_random_dir().data.name
+                target_dir = self._dir_tree.get_random_dir()
+                if target_dir:
+                    target = target_dir.data.name
                 self.logger.debug(
                     "Controller: Dir {0} current size is {1}".format(self._dir_tree.get_last_node_data().size,
                                                                      target))

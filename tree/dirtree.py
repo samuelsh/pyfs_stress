@@ -60,7 +60,10 @@ class DirTree(object):
         Returns: Node
 
         """
-        return self._dir_tree.get_node(random.choice(self.nids))
+        try:
+            return self._dir_tree.get_node(random.choice(self.nids))
+        except IndexError:
+            return None
 
     def get_random_dir_synced(self):
         """
