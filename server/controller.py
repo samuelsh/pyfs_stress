@@ -77,9 +77,9 @@ class Controller(object):
                 yield Job({'action': action, 'target': target})
             if action == "mkdir":
                 if self._dir_tree.get_last_node_data().size >= MAX_DIR_SIZE:
-                    self._dir_tree.append_node()
                     for _ in range(10):
-                        target = self._dir_tree.get_last_node_tag()
+                        self._dir_tree.append_node()
+                    target = self._dir_tree.get_last_node_tag()
                     self.logger.debug(
                         "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_data().size))
                 else:
