@@ -65,7 +65,7 @@ class Controller(object):
 
         while True:
             action = random.choice(actions)
-            target = None
+            target = 'None'
             # if some client disconnected, messages assigned to him won't be lost
             if self._work_to_requeue:
                 yield self._work_to_requeue.pop()

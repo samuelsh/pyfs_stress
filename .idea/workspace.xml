@@ -4,7 +4,6 @@
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controller.py" afterPath="$PROJECT_DIR$/server/controller.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree/dirtree.py" afterPath="$PROJECT_DIR$/tree/dirtree.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -73,8 +72,8 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="77" column="32" selection-start-line="77" selection-start-column="32" selection-end-line="77" selection-end-column="32" />
+            <state relative-caret-position="170">
+              <caret line="67" column="26" selection-start-line="67" selection-start-column="26" selection-end-line="67" selection-end-column="26" />
               <folding>
                 <element signature="e#46#60#0" expanded="true" />
               </folding>
@@ -97,8 +96,8 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="106" column="17" selection-start-line="106" selection-start-column="17" selection-end-line="106" selection-end-column="17" />
+            <state relative-caret-position="289">
+              <caret line="101" column="32" selection-start-line="101" selection-start-column="32" selection-end-line="101" selection-end-column="32" />
               <folding>
                 <element signature="e#47#60#0" expanded="true" />
               </folding>
@@ -578,13 +577,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00566" summary=" - Added touch operation verify&#10;">
-      <created>1474443894804</created>
-      <option name="number" value="00566" />
-      <option name="presentableId" value="LOCAL-00566" />
-      <option name="project" value="LOCAL" />
-      <updated>1474443894804</updated>
-    </task>
     <task id="LOCAL-00567" summary=" - Added touch operation verify&#10;">
       <created>1474444066309</created>
       <option name="number" value="00567" />
@@ -921,7 +913,14 @@
       <option name="project" value="LOCAL" />
       <updated>1475645903767</updated>
     </task>
-    <option name="localTasksCounter" value="615" />
+    <task id="LOCAL-00615" summary="- improving multiclient load balance">
+      <created>1475648548166</created>
+      <option name="number" value="00615" />
+      <option name="presentableId" value="LOCAL-00615" />
+      <option name="project" value="LOCAL" />
+      <updated>1475648548166</updated>
+    </task>
+    <option name="localTasksCounter" value="616" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1327,16 +1326,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/dynamo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="106" column="17" selection-start-line="106" selection-start-column="17" selection-end-line="106" selection-end-column="17" />
-          <folding>
-            <element signature="e#47#60#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -1347,12 +1336,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/messages_queue/priority_queue.py">
+    <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+        <state relative-caret-position="289">
+          <caret line="101" column="32" selection-start-line="101" selection-start-column="32" selection-end-line="101" selection-end-column="32" />
           <folding>
-            <element signature="e#51#63#0" expanded="true" />
+            <element signature="e#47#60#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1367,10 +1356,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/messages_queue/priority_queue.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+          <folding>
+            <element signature="e#51#63#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="77" column="32" selection-start-line="77" selection-start-column="32" selection-end-line="77" selection-end-column="32" />
+        <state relative-caret-position="170">
+          <caret line="67" column="26" selection-start-line="67" selection-start-column="26" selection-end-line="67" selection-end-column="26" />
           <folding>
             <element signature="e#46#60#0" expanded="true" />
           </folding>
