@@ -77,8 +77,7 @@ class Controller(object):
                 yield Job({'action': action, 'target': target})
             if action == "mkdir":
                 if self._dir_tree.get_last_node_data().size >= MAX_DIR_SIZE:
-                    for _ in range(10):
-                        self._dir_tree.append_node()
+                    self._dir_tree.append_node()
                     # target = self._dir_tree.get_last_node_tag()
                     self.logger.debug(
                         "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_data().size))
@@ -240,6 +239,9 @@ class Controller(object):
                     del self._dir_tree.synced_nodes[node_index]
                     self.logger.info(
                         "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
+                    self._dir_tree.append_node()
+                    self.logger.info(
+                        "New Directory node appended to tree {0}".format(self._dir_tree.get_last_node_tag()))
                 except NodeIDAbsentError:
                     self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
