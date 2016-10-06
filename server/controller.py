@@ -237,6 +237,8 @@ class Controller(object):
                     self._dir_tree.remove_dir_by_name(rdir_name)
                     node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name).hexdigest())
                     del self._dir_tree.synced_nodes[node_index]
+                    node_index = self._dir_tree.nids.index(hashlib.md5(rdir_name).hexdigest())
+                    del self._dir_tree.nids[node_index]
                     self.logger.info(
                         "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
                     self._dir_tree.append_node()

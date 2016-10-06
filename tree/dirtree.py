@@ -12,7 +12,7 @@ class DirTree(object):
         self._tree_base = self._dir_tree.create_node('Root', 'root')
         self._last_node = self._tree_base
         self._nids = []  # Nodes IDs pool for easy random sampling
-        self.synced_nodes = []  # Node IDs Synced with storage
+        self.synced_nodes = []  # Nodes IDs list which already Synced with storage
 
     def append_node(self):
         directory = Directory()
@@ -29,6 +29,10 @@ class DirTree(object):
     @property
     def nids(self):
         return self._nids
+
+    @nids.setter
+    def nids(self, value):
+        self._nids = value
 
     def get_size(self):
         return self._dir_tree.size()
