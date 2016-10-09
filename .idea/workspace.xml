@@ -72,8 +72,8 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="79" column="16" selection-start-line="79" selection-start-column="16" selection-end-line="79" selection-end-column="16" />
+            <state relative-caret-position="323">
+              <caret line="78" column="31" selection-start-line="78" selection-start-column="31" selection-end-line="78" selection-end-column="31" />
               <folding>
                 <element signature="e#46#60#0" expanded="true" />
               </folding>
@@ -577,13 +577,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00570" summary=" - Added multidomain mount on clients&#10;">
-      <created>1474451215519</created>
-      <option name="number" value="00570" />
-      <option name="presentableId" value="LOCAL-00570" />
-      <option name="project" value="LOCAL" />
-      <updated>1474451215519</updated>
-    </task>
     <task id="LOCAL-00571" summary=" - Added multidomain mount on clients&#10;">
       <created>1474451438092</created>
       <option name="number" value="00571" />
@@ -920,7 +913,14 @@
       <option name="project" value="LOCAL" />
       <updated>1475734578937</updated>
     </task>
-    <option name="localTasksCounter" value="619" />
+    <task id="LOCAL-00619" summary="- improving multiclient load balance">
+      <created>1476001376851</created>
+      <option name="number" value="00619" />
+      <option name="presentableId" value="LOCAL-00619" />
+      <option name="project" value="LOCAL" />
+      <updated>1476001376851</updated>
+    </task>
+    <option name="localTasksCounter" value="620" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1029,9 +1029,9 @@
     <MESSAGE value=" - Added multidomain mount on clients&#10;- Added gssh" />
     <MESSAGE value=" - Improved logging&#10; - passing domains and nodes number to clients during deploy" />
     <MESSAGE value="- fixing bugs" />
-    <MESSAGE value="- improving multiclient load balance" />
     <MESSAGE value="- improving multiclient load balance&#10;- Adding setter property for dirtree class" />
-    <option name="LAST_COMMIT_MESSAGE" value="- improving multiclient load balance&#10;- Adding setter property for dirtree class" />
+    <MESSAGE value="- improving multiclient load balance" />
+    <option name="LAST_COMMIT_MESSAGE" value="- improving multiclient load balance" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1368,8 +1368,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="79" column="16" selection-start-line="79" selection-start-column="16" selection-end-line="79" selection-end-column="16" />
+        <state relative-caret-position="323">
+          <caret line="78" column="31" selection-start-line="78" selection-start-column="31" selection-end-line="78" selection-end-column="31" />
           <folding>
             <element signature="e#46#60#0" expanded="true" />
           </folding>
