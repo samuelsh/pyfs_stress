@@ -1,6 +1,7 @@
 import hashlib
 import random
 
+import itertools
 import treelib
 
 from utils.shell_utils import StringUtils
@@ -77,6 +78,18 @@ class DirTree(object):
         """
         try:
             return self._dir_tree.get_node(random.choice(self.synced_nodes))
+        except IndexError:
+            return None
+
+    def get_random_dir_not_synced(self):
+        """
+
+        Returns: Node
+
+        """
+        try:
+            not_synced_dirs = [d for d in self._dir_tree.nids if d not in self.synced_nodes]
+            return self._dir_tree.get_node(random.choice(not_synced_dirs))
         except IndexError:
             return None
 

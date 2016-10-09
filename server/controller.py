@@ -81,7 +81,7 @@ class Controller(object):
                     self._dir_tree.append_node()
                 self.logger.debug(
                     "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_data().size))
-                target_dir = self._dir_tree.get_random_dir()
+                target_dir = self._dir_tree.get_random_dir_not_synced()
                 if target_dir:
                     target = target_dir.data.name
                 self.logger.debug(
