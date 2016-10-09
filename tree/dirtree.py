@@ -88,7 +88,7 @@ class DirTree(object):
 
         """
         try:
-            not_synced_dirs = [d for d in self._dir_tree.nids if d not in self.synced_nodes]
+            not_synced_dirs = [d for d in self.nids if d not in self.synced_nodes]
             return self._dir_tree.get_node(random.choice(not_synced_dirs))
         except IndexError:
             return None
