@@ -76,17 +76,15 @@ class Controller(object):
                 target = self._dir_tree.get_last_node_tag()
                 yield Job({'action': action, 'target': target})
             if action == "mkdir":
-                if self._dir_tree.get_last_node_data().size >= MAX_DIR_SIZE:
-                    self._dir_tree.append_node()
-                    # target = self._dir_tree.get_last_node_tag()
-                    self.logger.debug(
-                        "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_data().size))
+                # if self._dir_tree.get_last_node_data().size >= MAX_DIR_SIZE:
+                self._dir_tree.append_node()
+                self.logger.debug(
+                    "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_data().size))
                 target_dir = self._dir_tree.get_random_dir()
                 if target_dir:
                     target = target_dir.data.name
                 self.logger.debug(
-                    "Controller: Dir {0} current size is {1}".format(self._dir_tree.get_last_node_data().size,
-                                                                     target))
+                    "Controller: Dir {0} current size is {1}".format(target, self._dir_tree.get_last_node_data().size))
             elif action == "touch":
                 rdir = self._dir_tree.get_random_dir_synced()
                 if not rdir:
