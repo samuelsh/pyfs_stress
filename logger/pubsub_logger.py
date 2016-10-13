@@ -5,9 +5,18 @@ import zmq
 import sys
 import socket
 from zmq.log.handlers import PUBHandler
+
 import config
 
 __author__ = 'samuels'
+
+formatters = {
+    logging.DEBUG: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
+    logging.INFO: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
+    logging.WARN: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
+    logging.ERROR: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
+    logging.CRITICAL: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s")
+}
 
 
 class PUBLogger:
@@ -19,17 +28,9 @@ class PUBLogger:
         self.pub.connect('tcp://{0}:{1}'.format(ip, port))
         # create console handler and set level to info
         # handler = logging.StreamHandler(sys.stdout)
-        handler = PUBHandler(self.pub)
-        handler.setLevel(logging.DEBUG)
-        formatters = {
-            logging.DEBUG: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
-            logging.INFO: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
-            logging.WARN: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
-            logging.ERROR: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
-            logging.CRITICAL: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s")
-                      }
-        handler.formatter = formatters
-        self._logger.addHandler(handler)
+        self._handler = PUBHandler(self.pub)
+        self._handler.formatters = formatters
+        self._logger.addHandler(self._handler)
 
     @property
     def logger(self):

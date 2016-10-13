@@ -98,8 +98,8 @@
       <file leaf-file-name="pubsub_logger.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/logger/pubsub_logger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="319">
-              <caret line="28" column="72" selection-start-line="28" selection-start-column="72" selection-end-line="28" selection-end-column="72" />
+            <state relative-caret-position="302">
+              <caret line="25" column="31" selection-start-line="25" selection-start-column="31" selection-end-line="25" selection-end-column="31" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -582,13 +582,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00592" summary="- fixing bugs">
-      <created>1474536306720</created>
-      <option name="number" value="00592" />
-      <option name="presentableId" value="LOCAL-00592" />
-      <option name="project" value="LOCAL" />
-      <updated>1474536306720</updated>
-    </task>
     <task id="LOCAL-00593" summary="- fixing bugs">
       <created>1474536393880</created>
       <option name="number" value="00593" />
@@ -925,7 +918,14 @@
       <option name="project" value="LOCAL" />
       <updated>1476356195424</updated>
     </task>
-    <option name="localTasksCounter" value="641" />
+    <task id="LOCAL-00641" summary="- PUBSUB logger -- fixing binding issues">
+      <created>1476356444726</created>
+      <option name="number" value="00641" />
+      <option name="presentableId" value="LOCAL-00641" />
+      <option name="project" value="LOCAL" />
+      <updated>1476356444726</updated>
+    </task>
+    <option name="localTasksCounter" value="642" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1398,8 +1398,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/logger/pubsub_logger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="319">
-          <caret line="28" column="72" selection-start-line="28" selection-start-column="72" selection-end-line="28" selection-end-column="72" />
+        <state relative-caret-position="302">
+          <caret line="25" column="31" selection-start-line="25" selection-start-column="31" selection-end-line="25" selection-end-column="31" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
