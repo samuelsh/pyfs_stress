@@ -3,6 +3,7 @@ from logging import handlers
 import os
 import zmq
 import sys
+import socket
 from zmq.log.handlers import PUBHandler
 import config
 
@@ -10,11 +11,9 @@ __author__ = 'samuels'
 
 
 class PUBLogger:
-    def __init__(self, ip, output_dir="", port=config.PUBSUB_LOGGER_PORT):
-        self.output_dir = output_dir
+    def __init__(self, ip, port=config.PUBSUB_LOGGER_PORT):
         self._logger = logging.getLogger()
         self._logger.setLevel(logging.DEBUG)
-
         self.ctx = zmq.Context()
         self.pub = self.ctx.socket(zmq.PUB)
         self.pub.connect('tcp://{0}:{1}'.format(ip, port))
@@ -22,7 +21,7 @@ class PUBLogger:
         # handler = logging.StreamHandler(sys.stdout)
         handler = PUBHandler(self.pub)
         handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
+        formatter = logging.Formatter("{0}:%(asctime)s;%(levelname)s - %(message)s".format(socket.gethostname()))
         handler.setFormatter(formatter)
         self._logger.addHandler(handler)
 

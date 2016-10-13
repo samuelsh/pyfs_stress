@@ -12,6 +12,8 @@ import socket
 import time
 import timeit
 
+from logger.pubsub_logger import PUBLogger
+
 timer = timeit.default_timer
 
 sys.path.append('/qa/dynamo')
@@ -53,9 +55,9 @@ def build_message(result, action, data, time_stamp, error_message=None, path=Non
 
 
 class Dynamo(object):
-    def __init__(self, logger, stop_event, controller, server, nodes, domains, proc_id=None):
+    def __init__(self, stop_event, controller, server, nodes, domains, proc_id=None):
         self.stop_event = stop_event
-        self.logger = logger
+        self.logger = PUBLogger(controller).logger
         self._server = server  # Server Cluster hostname
         self.nodes = nodes
         self.domains = domains
@@ -68,7 +70,7 @@ class Dynamo(object):
         # We'll use client host name + process ID to identify the socket
         self._socket.identity = "{0}:0x{1:x}".format(socket.gethostname(), proc_id)
         self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
-        logger.info("Dynamo {0} init done".format(self._socket.identity))
+        self.logger.info("Dynamo {0} init done".format(self._socket.identity))
 
     def run(self):
         self.logger.info("Dynamo {0} started".format(self._socket.identity))

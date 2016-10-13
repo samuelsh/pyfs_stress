@@ -42,7 +42,7 @@ def run():
     stop_event = Event()
     processes = []
     args = get_args()
-    logger = pubsub_logger.PUBLogger(args.controller, output_dir=DYNAMO_PATH).logger
+    logger = pubsub_logger.PUBLogger(args.controller).logger
     logger.info("Making {0}".format(CLIENT_MOUNT_POINT))
     if not os.path.exists(CLIENT_MOUNT_POINT):
         os.mkdir(CLIENT_MOUNT_POINT)
