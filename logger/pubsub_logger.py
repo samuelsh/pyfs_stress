@@ -21,7 +21,7 @@ class PUBLogger:
         # handler = logging.StreamHandler(sys.stdout)
         handler = PUBHandler(self.pub)
         handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("{0}:%(asctime)s;%(levelname)s - %(message)s".format(socket.gethostname()))
+        formatter = logging.Formatter("%(asctime)s;%(levelname)s - [%(hostname)s]%(message)s")
         handler.setFormatter(formatter)
         self._logger.addHandler(handler)
 
