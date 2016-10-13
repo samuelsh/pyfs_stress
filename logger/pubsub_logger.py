@@ -12,7 +12,7 @@ __author__ = 'samuels'
 
 class PUBLogger:
     def __init__(self, ip, port=config.PUBSUB_LOGGER_PORT):
-        self._logger = logging.getLogger()
+        self._logger = logging.getLogger(socket.gethostname())
         self._logger.setLevel(logging.DEBUG)
         self.ctx = zmq.Context()
         self.pub = self.ctx.socket(zmq.PUB)
@@ -21,7 +21,7 @@ class PUBLogger:
         # handler = logging.StreamHandler(sys.stdout)
         handler = PUBHandler(self.pub)
         handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(asctime)s;%(levelname)s - [%(hostname)s]%(message)s")
+        formatter = logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s")
         handler.setFormatter(formatter)
         self._logger.addHandler(handler)
 
