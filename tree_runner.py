@@ -8,8 +8,11 @@ import socket
 import sys
 import time
 import traceback
+from errno import EAGAIN
 from multiprocessing import Event
 from multiprocessing import Process
+
+import zmq
 
 import config
 from logger import server_logger
@@ -82,17 +85,20 @@ def run_pubsub_logger(ip, event):
     sub_logger = SUBLogger(ip)
     logger = sub_logger.logger
     while not event.is_set():
-        topic, message = sub_logger.sub.recv_multipart()
-        pos = topic.find('.')
-        level = topic
-        if pos > 0:
-            level = topic[:pos]
-        if message.endswith('\n'):
-            message = message[:-1]
-        log_msg = getattr(logging, level.lower())
-        if pos > 0:
-            message = topic[pos + 1:] + " | " + message
-        log_msg(message)
+        try:
+            topic, message = sub_logger.sub.recv_multipart(flags=zmq.NOBLOCK)
+            pos = topic.find('.')
+            level = topic
+            if pos > 0:
+                level = topic[:pos]
+            if message.endswith('\n'):
+                message = message[:-1]
+            log_msg = getattr(logging, level.lower())
+            if pos > 0:
+                message = topic[pos + 1:] + " | " + message
+            log_msg(message)
+        except zmq.ZMQError.errno == EAGAIN:
+            pass
 
 
 def main():

@@ -21,8 +21,14 @@ class PUBLogger:
         # handler = logging.StreamHandler(sys.stdout)
         handler = PUBHandler(self.pub)
         handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s")
-        handler.setFormatter(formatter)
+        formatters = {
+            logging.DEBUG: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s"),
+            logging.INFO: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s"),
+            logging.WARN: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s"),
+            logging.ERROR: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s"),
+            logging.CRITICAL: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s")
+                      }
+        handler.formatter = formatters
         self._logger.addHandler(handler)
 
     @property
