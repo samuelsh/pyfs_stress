@@ -12,7 +12,7 @@ import socket
 import time
 import timeit
 
-from logger.pubsub_logger import PUBLogger
+from logger import pubsub_logger
 
 timer = timeit.default_timer
 
@@ -57,7 +57,7 @@ def build_message(result, action, data, time_stamp, error_message=None, path=Non
 class Dynamo(object):
     def __init__(self, stop_event, controller, server, nodes, domains, proc_id=None):
         self.stop_event = stop_event
-        self.logger = PUBLogger(socket.gethostbyname(controller)).logger
+        self.logger = pubsub_logger.PUBLogger(socket.gethostbyname(controller)).logger
         self._server = server  # Server Cluster hostname
         self.nodes = nodes
         self.domains = domains

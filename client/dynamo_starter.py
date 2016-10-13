@@ -8,7 +8,6 @@ from multiprocessing import Process
 import time
 
 import sys
-from random import randint
 
 from dynamo import Dynamo
 from logger import pubsub_logger
