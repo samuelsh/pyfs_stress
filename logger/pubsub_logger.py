@@ -32,14 +32,14 @@ class PUBLogger:
 
 
 class SUBLogger:
-    def __init__(self, output_dir="", port=config.PUBSUB_LOGGER_PORT):
+    def __init__(self, ip, output_dir="", port=config.PUBSUB_LOGGER_PORT):
         self.output_dir = output_dir
         self._logger = logging.getLogger()
         self._logger.setLevel(logging.DEBUG)
 
         self.ctx = zmq.Context()
         self._sub = self.ctx.socket(zmq.SUB)
-        self._sub.bind('tcp://127.0.0.1:{0}'.format(port))
+        self._sub.bind('tcp://{0}:{1}'.format(ip, port))
         self._sub.setsockopt(zmq.SUBSCRIBE, "")
         # create console handler and set level to info
         handler = logging.StreamHandler(sys.stdout)

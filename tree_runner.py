@@ -78,9 +78,9 @@ def run_controller(logger, event, dir_tree):
     Controller(logger, event, dir_tree).run()
 
 
-def run_pubsub_logger(event):
-    sub_logger = SUBLogger()
-    logger = SUBLogger().logger
+def run_pubsub_logger(ip, event):
+    sub_logger = SUBLogger(ip)
+    logger = sub_logger.logger
     while not event.is_set():
         topic, message = sub_logger.sub.recv_multipart()
         pos = topic.find('.')
@@ -112,7 +112,7 @@ def main():
     logger.info("Starting controller")
     controller_process = Process(target=run_controller, args=(logger, stop_event, dir_tree,))
     controller_process.start()
-    pubsub_looger_process = Process(target=run_pubsub_logger, args=(stop_event,))
+    pubsub_looger_process = Process(target=run_pubsub_logger, args=(socket.gethostname(), stop_event,))
     pubsub_looger_process.start()
     logger.info("Controller started")
     deploy_clients(clients_list)
