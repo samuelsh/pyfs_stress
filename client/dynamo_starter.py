@@ -16,8 +16,8 @@ from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT, CLIENT_MOUNT_POINT
 from utils import shell_utils
 
 
-def run_worker(logger, event, controller, server, nodes, domains, proc_id):
-    worker = Dynamo(logger, event, controller, server, nodes, domains, proc_id)
+def run_worker(event, controller, server, nodes, domains, proc_id):
+    worker = Dynamo(event, controller, server, nodes, domains, proc_id)
     worker.run()
 
 
@@ -78,7 +78,7 @@ def run():
     # Start a few worker processes
     for i in range(MAX_WORKERS_PER_CLIENT):
         processes.append(Process(target=run_worker,
-                                 args=(logger, stop_event, args.controller, args.server, args.nodes, args.domains, i,)))
+                                 args=(stop_event, args.controller, args.server, args.nodes, args.domains, i,)))
     for p in processes:
         p.start()
     try:
