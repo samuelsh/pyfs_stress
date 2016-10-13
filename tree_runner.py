@@ -12,8 +12,8 @@ from multiprocessing import Event
 from multiprocessing import Process
 
 import config
-from logger import pubsub_logger
 from logger import server_logger
+from logger.pubsub_logger import SUBLogger
 from server.controller import Controller
 from tree import dirtree
 from utils import shell_utils
@@ -79,8 +79,10 @@ def run_controller(logger, event, dir_tree):
 
 
 def run_pubsub_logger(event):
+    sub_logger = SUBLogger()
+    logger = SUBLogger().logger
     while not event.is_set():
-        topic, message = pubsub_logger.SUBLogger.sub.recv_multipart()
+        topic, message = sub_logger.sub.recv_multipart()
         pos = topic.find('.')
         level = topic
         if pos > 0:
