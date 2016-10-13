@@ -57,7 +57,7 @@ def build_message(result, action, data, time_stamp, error_message=None, path=Non
 class Dynamo(object):
     def __init__(self, stop_event, controller, server, nodes, domains, proc_id=None):
         self.stop_event = stop_event
-        self.logger = PUBLogger(controller).logger
+        self.logger = PUBLogger(socket.gethostbyname(controller)).logger
         self._server = server  # Server Cluster hostname
         self.nodes = nodes
         self.domains = domains
