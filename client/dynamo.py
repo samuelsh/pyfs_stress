@@ -12,11 +12,10 @@ import socket
 import time
 import timeit
 
-from logger import pubsub_logger
-
 timer = timeit.default_timer
 
 sys.path.append('/qa/dynamo')
+from logger import pubsub_logger
 from config import CTRL_MSG_PORT, CLIENT_MOUNT_POINT
 from utils import shell_utils
 
