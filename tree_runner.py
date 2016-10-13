@@ -12,7 +12,6 @@ from multiprocessing import Event
 from multiprocessing import Process
 
 import zmq
-from zmq.backend.cython.constants import EAGAIN
 
 import config
 from logger import server_logger
@@ -97,7 +96,7 @@ def run_pubsub_logger(ip, event):
             if pos > 0:
                 message = topic[pos + 1:] + " | " + message
             log_msg(message)
-        except zmq.ZMQError.errno == EAGAIN:
+        except zmq.ZMQError.errno == zmq.EAGAIN:
             pass
 
 
