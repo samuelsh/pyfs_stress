@@ -12,7 +12,7 @@ __author__ = 'samuels'
 
 class PUBLogger:
     def __init__(self, ip, port=config.PUBSUB_LOGGER_PORT):
-        self._logger = logging.getLogger(socket.gethostname())
+        self._logger = logging.getLogger()
         self._logger.setLevel(logging.DEBUG)
         self.ctx = zmq.Context()
         self.pub = self.ctx.socket(zmq.PUB)
@@ -22,11 +22,11 @@ class PUBLogger:
         handler = PUBHandler(self.pub)
         handler.setLevel(logging.DEBUG)
         formatters = {
-            logging.DEBUG: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s"),
-            logging.INFO: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s"),
-            logging.WARN: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s"),
-            logging.ERROR: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s"),
-            logging.CRITICAL: logging.Formatter("%(asctime)s %(name)-12; %(levelname)s - %(message)s")
+            logging.DEBUG: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
+            logging.INFO: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
+            logging.WARN: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
+            logging.ERROR: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s"),
+            logging.CRITICAL: logging.Formatter("%(asctime)s %(hostname)s; %(levelname)s - %(message)s")
                       }
         handler.formatter = formatters
         self._logger.addHandler(handler)

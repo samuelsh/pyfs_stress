@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree_runner.py" afterPath="$PROJECT_DIR$/tree_runner.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logger/pubsub_logger.py" afterPath="$PROJECT_DIR$/logger/pubsub_logger.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="84" column="29" selection-start-line="84" selection-start-column="29" selection-end-line="84" selection-end-column="29" />
+            <state relative-caret-position="102">
+              <caret line="87" column="46" selection-start-line="87" selection-start-column="46" selection-end-line="87" selection-end-column="46" />
               <folding>
                 <element signature="e#63#78#0" expanded="true" />
               </folding>
@@ -95,11 +95,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pubsub_logger.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="pubsub_logger.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/logger/pubsub_logger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="13">
-              <caret line="13" column="45" selection-start-line="13" selection-start-column="45" selection-end-line="13" selection-end-column="45" />
+            <state relative-caret-position="319">
+              <caret line="28" column="72" selection-start-line="28" selection-start-column="72" selection-end-line="28" selection-end-column="72" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -167,8 +167,8 @@
         <option value="$PROJECT_DIR$/config/__init__.py" />
         <option value="$PROJECT_DIR$/client/dynamo_starter.py" />
         <option value="$PROJECT_DIR$/client/dynamo.py" />
-        <option value="$PROJECT_DIR$/logger/pubsub_logger.py" />
         <option value="$PROJECT_DIR$/tree_runner.py" />
+        <option value="$PROJECT_DIR$/logger/pubsub_logger.py" />
       </list>
     </option>
   </component>
@@ -582,13 +582,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00591" summary=" - Improved logging&#10; - passing domains and nodes number to clients during deploy">
-      <created>1474536230304</created>
-      <option name="number" value="00591" />
-      <option name="presentableId" value="LOCAL-00591" />
-      <option name="project" value="LOCAL" />
-      <updated>1474536230304</updated>
-    </task>
     <task id="LOCAL-00592" summary="- fixing bugs">
       <created>1474536306720</created>
       <option name="number" value="00592" />
@@ -925,7 +918,14 @@
       <option name="project" value="LOCAL" />
       <updated>1476356064252</updated>
     </task>
-    <option name="localTasksCounter" value="640" />
+    <task id="LOCAL-00640" summary="- PUBSUB logger -- fixing binding issues">
+      <created>1476356195424</created>
+      <option name="number" value="00640" />
+      <option name="presentableId" value="LOCAL-00640" />
+      <option name="project" value="LOCAL" />
+      <updated>1476356195424</updated>
+    </task>
+    <option name="localTasksCounter" value="641" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1336,16 +1336,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/logger/pubsub_logger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13">
-          <caret line="13" column="45" selection-start-line="13" selection-start-column="45" selection-end-line="13" selection-end-column="45" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -1398,10 +1388,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tree_runner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="84" column="29" selection-start-line="84" selection-start-column="29" selection-end-line="84" selection-end-column="29" />
+        <state relative-caret-position="102">
+          <caret line="87" column="46" selection-start-line="87" selection-start-column="46" selection-end-line="87" selection-end-column="46" />
           <folding>
             <element signature="e#63#78#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/logger/pubsub_logger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="28" column="72" selection-start-line="28" selection-start-column="72" selection-end-line="28" selection-end-column="72" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
