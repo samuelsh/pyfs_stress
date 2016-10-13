@@ -3,6 +3,7 @@ Directory Tree integrity test runner
 2016 samuelsh (c)
 """
 import argparse
+import logging
 import socket
 import sys
 import time
@@ -11,6 +12,7 @@ from multiprocessing import Event
 from multiprocessing import Process
 
 import config
+from logger import pubsub_logger
 from logger import server_logger
 from server.controller import Controller
 from tree import dirtree
@@ -76,6 +78,21 @@ def run_controller(logger, event, dir_tree):
     Controller(logger, event, dir_tree).run()
 
 
+def run_pubsub_logger(event):
+    while not event.is_set():
+        topic, message = pubsub_logger.SUBLogger.sub.recv_multipart()
+        pos = topic.find('.')
+        level = topic
+        if pos > 0:
+            level = topic[:pos]
+        if message.endswith('\n'):
+            message = message[:-1]
+        log_msg = getattr(logging, level.lower())
+        if pos > 0:
+            message = topic[pos + 1:] + " | " + message
+        log_msg(message)
+
+
 def main():
     args = get_args()
     logger = server_logger.Logger().logger
@@ -93,6 +110,8 @@ def main():
     logger.info("Starting controller")
     controller_process = Process(target=run_controller, args=(logger, stop_event, dir_tree,))
     controller_process.start()
+    pubsub_looger_process = Process(target=run_pubsub_logger, args=(stop_event,))
+    pubsub_looger_process.start()
     logger.info("Controller started")
     deploy_clients(clients_list)
     logger.info("Done deploying clients: {0}".format(clients_list))

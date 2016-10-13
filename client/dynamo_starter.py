@@ -11,7 +11,7 @@ import sys
 from random import randint
 
 from dynamo import Dynamo
-from logger import client_logger
+from logger import pubsub_logger
 from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT, CLIENT_MOUNT_POINT
 from utils import shell_utils
 
@@ -40,9 +40,9 @@ def get_args():
 
 def run():
     stop_event = Event()
-    logger = client_logger.Logger(output_dir=DYNAMO_PATH, mp=True).logger
     processes = []
     args = get_args()
+    logger = pubsub_logger.PUBLogger(args.controller, output_dir=DYNAMO_PATH).logger
     logger.info("Making {0}".format(CLIENT_MOUNT_POINT))
     if not os.path.exists(CLIENT_MOUNT_POINT):
         os.mkdir(CLIENT_MOUNT_POINT)

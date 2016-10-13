@@ -1,23 +1,46 @@
 import logging
 from logging import handlers
 import os
+import zmq
 import sys
-
-import multiprocessing
+from zmq.log.handlers import PUBHandler
+import config
 
 __author__ = 'samuels'
 
 
-class Logger:
-    def __init__(self, output_dir="", mp=False):
+class PUBLogger:
+    def __init__(self, ip, output_dir="", port=config.PUBSUB_LOGGER_PORT):
         self.output_dir = output_dir
-
-        if not mp:
-            self._logger = logging.getLogger()
-        else:
-            self._logger = multiprocessing.get_logger()
+        self._logger = logging.getLogger()
         self._logger.setLevel(logging.DEBUG)
 
+        self.ctx = zmq.Context()
+        self.pub = self.ctx.socket(zmq.PUB)
+        self.pub.connect('tcp://{0}:{1}'.format(ip, port))
+        # create console handler and set level to info
+        # handler = logging.StreamHandler(sys.stdout)
+        handler = PUBHandler(self.pub)
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
+        handler.setFormatter(formatter)
+        self._logger.addHandler(handler)
+
+    @property
+    def logger(self):
+        return self._logger
+
+
+class SUBLogger:
+    def __init__(self, output_dir="", port=config.PUBSUB_LOGGER_PORT):
+        self.output_dir = output_dir
+        self._logger = logging.getLogger()
+        self._logger.setLevel(logging.DEBUG)
+
+        self.ctx = zmq.Context()
+        self._sub = self.ctx.socket(zmq.SUB)
+        self._sub.bind('tcp://localhost:{0}'.format(port))
+        self._sub.setsockopt(zmq.SUBSCRIBE, "")
         # create console handler and set level to info
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.INFO)
@@ -38,6 +61,10 @@ class Logger:
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
         self._logger.addHandler(handler)
+
+    @property
+    def sub(self):
+        return self._sub
 
     @property
     def logger(self):
