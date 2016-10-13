@@ -96,8 +96,9 @@ def run_pubsub_logger(ip, event):
             if pos > 0:
                 message = topic[pos + 1:] + " | " + message
             log_msg(message)
-        except zmq.ZMQError.errno == zmq.EAGAIN:
-            pass
+        except zmq.ZMQError as zmq_error:
+            if zmq_error.errno == zmq.EAGAIN:
+                pass
 
 
 def main():

@@ -26,9 +26,11 @@
       <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="51">
+              <caret line="84" column="29" selection-start-line="84" selection-start-column="29" selection-end-line="84" selection-end-column="29" />
+              <folding>
+                <element signature="e#63#78#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -580,13 +582,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00590" summary=" - Improved logging&#10; - passing domains and nodes number to clients during deploy">
-      <created>1474534520128</created>
-      <option name="number" value="00590" />
-      <option name="presentableId" value="LOCAL-00590" />
-      <option name="project" value="LOCAL" />
-      <updated>1474534520128</updated>
-    </task>
     <task id="LOCAL-00591" summary=" - Improved logging&#10; - passing domains and nodes number to clients during deploy">
       <created>1474536230304</created>
       <option name="number" value="00591" />
@@ -923,7 +918,14 @@
       <option name="project" value="LOCAL" />
       <updated>1476355510108</updated>
     </task>
-    <option name="localTasksCounter" value="639" />
+    <task id="LOCAL-00639" summary="- PUBSUB logger -- fixing binding issues">
+      <created>1476356064252</created>
+      <option name="number" value="00639" />
+      <option name="presentableId" value="LOCAL-00639" />
+      <option name="project" value="LOCAL" />
+      <updated>1476356064252</updated>
+    </task>
+    <option name="localTasksCounter" value="640" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1324,36 +1326,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/messages_queue/priority_queue.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding>
-            <element signature="e#51#63#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="154" column="20" selection-start-line="154" selection-start-column="20" selection-end-line="154" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="52" column="25" selection-start-line="52" selection-start-column="25" selection-end-line="52" selection-end-column="25" />
-          <folding>
-            <element signature="e#22#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python27/Lib/site-packages/zmq/log/handlers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="387">
@@ -1384,6 +1356,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/messages_queue/priority_queue.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding>
+            <element signature="e#51#63#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="154" column="20" selection-start-line="154" selection-start-column="20" selection-end-line="154" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="353">
@@ -1394,11 +1386,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="52" column="25" selection-start-line="52" selection-start-column="25" selection-end-line="52" selection-end-column="25" />
+          <folding>
+            <element signature="e#22#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tree_runner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="51">
+          <caret line="84" column="29" selection-start-line="84" selection-start-column="29" selection-end-line="84" selection-end-column="29" />
+          <folding>
+            <element signature="e#63#78#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
