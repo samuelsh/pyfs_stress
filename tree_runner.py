@@ -8,11 +8,11 @@ import socket
 import sys
 import time
 import traceback
-from errno import EAGAIN
 from multiprocessing import Event
 from multiprocessing import Process
 
 import zmq
+from zmq.backend.cython.constants import EAGAIN
 
 import config
 from logger import server_logger
