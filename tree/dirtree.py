@@ -153,6 +153,7 @@ class Directory(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
         self.ondisk = False
+        self.checksum = 0
         self.creation_time = None
         self.size = None
         self.files = []
@@ -214,6 +215,7 @@ class Directory(object):
 class File(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
+        self.cheksum = 0
         self.creation_time = None
         self.ondisk = False
 

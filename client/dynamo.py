@@ -3,8 +3,9 @@ Client load generator
 2016 samules (c)
 """
 import random
-import time
 import os
+
+import datetime
 import zmq
 import sys
 import socket
@@ -30,6 +31,25 @@ def timestamp(now=None):
     timestamp = time.strftime("%Y/%m/%d %H-%M-%S", time.localtime(now))
     millisecs = "%.3f" % (now % 1.0,)
     return timestamp + millisecs[1:]
+
+
+def build_message(result, action, data, time_stamp, error_message=None, path=None, line=None):
+    # result = "failed:{0}:{1}:{2}:{3}:{4}".format(action, work_error, sys.exc_info()[-1].tb_lineno, timestamp(),
+    #                                              data)
+    # result = "success:{0}:{1}:{2}:{3}".format(action, work['target'], data, timestamp())
+    """
+    Result message format:
+    Success message format: {'result', 'action', 'target', 'data:{}', 'timestamp'}
+    Failure message format: {'result', 'action', 'error_message', 'path', 'linenumber', 'timestamp', 'data:{}'}
+    """
+    if result == 'success':
+        return {'result': result, 'action': action, 'target': path.strip('\''),
+                'timestamp': datetime.datetime.strptime(time_stamp, '%Y/%m/%d %H-%M-%S.%f'), 'data': data}
+
+    else:
+        return {'result': result, 'action': action, 'error_message': error_message,
+                'target': path, 'linenum': line,
+                'timestamp': datetime.datetime.strptime(time_stamp, '%Y/%m/%d %H-%M-%S.%f'), 'data': data}
 
 
 class Dynamo(object):

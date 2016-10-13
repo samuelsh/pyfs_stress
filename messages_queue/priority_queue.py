@@ -14,8 +14,8 @@ class PriorityQueue(object):
     def put(self, message):
         """
         Result message format:
-        Success message format: {'result', 'action', 'target', 'data', 'timestamp'}
-        Failure message format: {'result', 'action', 'error_message', 'path', 'linenumber', 'timestamp', 'data'}
+        Success message format: {'result', 'action', 'target', 'data:{}', 'timestamp'}
+        Failure message format: {'result', 'action', 'error_message', 'path', 'linenumber', 'timestamp', 'data:{}'}
         """
         if message[0] == 'success':
             message = {'result': message[0], 'action': message[1], 'target': message[2].strip('\''),

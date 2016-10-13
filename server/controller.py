@@ -61,7 +61,7 @@ class Controller(object):
     @property
     def get_next_job(self):
         actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
-                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat']
+                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read']
 
         while True:
             action = random.choice(actions)
@@ -87,6 +87,13 @@ class Controller(object):
                 self.logger.debug(
                     "Controller: Dir {0} current size is {1}".format(target, self._dir_tree.get_last_node_data().size))
             elif action == "touch":
+                rdir = self._dir_tree.get_random_dir_synced()
+                if not rdir:
+                    target = 'None'
+                else:
+                    fname = rdir.data.touch()
+                    target = "/{0}/{1}".format(rdir.tag, fname)
+            elif action == 'read':
                 rdir = self._dir_tree.get_random_dir_synced()
                 if not rdir:
                     target = 'None'
