@@ -174,28 +174,29 @@ class Controller(object):
         else:
             raise Exception('unknown message: %s' % message['message'])
 
-    def _process_results(self, worker_id, job, result):
+    def _process_results(self, worker_id, job, incoming_message):
         """
         Result message format:
-        Success message format: {'result', 'action', 'target', 'data', 'timestamp'}
-        Failure message format: {'result', 'action', 'error_message', 'path', 'linenumber', 'timestamp', 'data'}
+        Success message format: {'result', 'action', 'target', 'data{}', 'timestamp'}
+        Failure message format: {'result', 'action', 'error_message', 'target', 'linenumber', 'timestamp', 'data{}'}
         """
         self.logger.info('[%s]: finished %s, result: %s',
-                         worker_id, job.id, result)
-        result = result.split(':')
-        if result[0] == 'success':
-            if result[1] == 'mkdir':  # mkdir successful which means is synced with storage
-                syncdir = self._dir_tree.get_dir_by_name(result[2])
-                syncdir.data.size = int(result[3])
+                         worker_id, job.id, incoming_message)
+        if incoming_message['result'] == 'success':
+            if incoming_message['action'] == 'mkdir':  # mkdir successful which means is synced with storage
+                syncdir = self._dir_tree.get_dir_by_name(incoming_message['target'])
+                syncdir.data.size = int(incoming_message['data']['dirszie'])
                 syncdir.data.ondisk = True
-                syncdir.creation_time = datetime.datetime.strptime(result[4], '%Y/%m/%d %H-%M-%S.%f')
+                syncdir.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                                   '%Y/%m/%d %H-%M-%S.%f')
                 self._dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name).hexdigest())
                 self.logger.debug(
                     "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
                 self.logger.info(
-                    'Directory {0} is synced. Size is {1}'.format(syncdir.data.name, int(result[3])))
-            elif result[1] == 'touch':
-                path = result[2].split('/')[1:]  # folder:file
+                    'Directory {0} is synced. Size is {1}'.format(syncdir.data.name,
+                                                                  int(incoming_message['data']['dirsize'])))
+            elif incoming_message['result'] == 'touch':
+                path = incoming_message['target'].split('/')[1:]  # folder:file
                 syncdir = self._dir_tree.get_dir_by_name(path[0])
                 if not syncdir:
                     self.logger.debug(
@@ -205,17 +206,20 @@ class Controller(object):
                     for f in syncdir.data.files:
                         if f.name == path[1]:  # Now, when we got reply from client that file was created,
                             #  we can mark it as synced
-                            syncdir.data.size = int(result[3])
+                            syncdir.data.size = int(incoming_message['data']['dirsize'])
                             f.ondisk = True
-                            f.creation_time = datetime.datetime.strptime(result[4], '%Y/%m/%d %H-%M-%S.%f')
+                            f.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                                         '%Y/%m/%d %H-%M-%S.%f')
                             self.logger.debug(
                                 "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
                             self.logger.info(
                                 'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
-                                                                                               int(result[3])))
+                                                                                               int(incoming_message[
+                                                                                                       'data'][
+                                                                                                       'dirsize'])))
                             break
-            elif result[1] == 'delete':
-                path = result[2].split('/')[1:]  # folder:file
+            elif incoming_message['action'] == 'delete':
+                path = incoming_message['target'].split('/')[1:]  # folder:file
                 deldir = self._dir_tree.get_dir_by_name(path[0])
                 if not deldir:
                     self.logger.debug(
@@ -233,11 +237,12 @@ class Controller(object):
                     else:
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
-            if result[2] == "Target not specified" or "File exists" in result[2]:
+            if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
+                 'error_message']:
                 return
             # in case that touch op failed due to size limit
-            if result[1] == "touch" and "size limit" in result[2]:
-                rdir_name = result[5].split('/')[1]  # get target folder name from path
+            if incoming_message['action'] == "touch" and "size limit" in incoming_message['error_message']:
+                rdir_name = incoming_message['target'].split('/')[1]  # get target folder name from path
                 try:
                     self.logger.info("Directory {0} going to be removed from dir tree".format(rdir_name))
                     self._dir_tree.remove_dir_by_name(rdir_name)
@@ -254,44 +259,46 @@ class Controller(object):
                     self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
             # in case stat or delete ops failed for some reason
-            elif result[1] == "stat" or result[1] == "delete":
-                rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
-                rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
+            elif incoming_message['action'] == "stat" or incoming_message['action'] == "delete":
+                rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
+                rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
 
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 if rdir:
                     rfile = rdir.data.get_file_by_name(rfile_name)
                     if rfile and rfile.ondisk:
-                        error_time = datetime.datetime.strptime(result[5], '%Y/%m/%d %H-%M-%S.%f')
+                        error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H-%M-%S.%f')
                         if error_time > rfile.creation_time:
                             self.logger.error(
                                 "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
-                                    result[1], rdir_name + "/" + rfile_name))
+                                    incoming_message['action'], rdir_name + "/" + rfile_name))
                     else:
                         self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
                 else:
                     self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
             # in case if touch op failed and it's not dir size limit error
-            elif result[1] == "touch":
-                rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
+            elif incoming_message['action'] == "touch":
+                rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
                 try:  # If there's no filename, that means that stat failed
-                    rfile_name = result[3].strip('\'').split('/')[4]  # get target file name from path
+                    rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
                 except IndexError:
                     rfile_name = None
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 if rdir and rdir.data.ondisk:
-                    error_time = datetime.datetime.strptime(result[5], '%Y/%m/%d %H-%M-%S.%f')
+                    error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H-%M-%S.%f')
                     if error_time > rdir.creation_time:
                         self.logger.error(
                             "Result Verify FAILED: Operation {0} failed on {1}/{2} which is on disk".format(
-                                result[1], rdir_name, rfile_name))
+                                incoming_message['action'], rdir_name, rfile_name))
                 else:
                     self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
             else:
-                rdir_name = result[3].strip('\'').split('/')[3]  # get target folder name from path
+                rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
                 self.logger.error(
-                    'Operation {0} FAILED UNEXPECTEDLY on Directory {1} due to {2}'.format(result[1], rdir_name,
-                                                                                           result[2]))
+                    'Operation {0} FAILED UNEXPECTEDLY on Directory {1} due to {2}'.format(incoming_message['action'
+                                                                                           ], rdir_name,
+                                                                                           incoming_message[
+                                                                                               'error_message']))
 
     def run(self):
         try:

@@ -2,6 +2,7 @@
 Client load generator
 2016 samules (c)
 """
+import json
 import random
 import os
 
@@ -22,35 +23,32 @@ from utils import shell_utils
 MAX_DIR_SIZE = 128 * 1024
 
 
-class DynamoIOException(Exception):
+class DynamoException(Exception):
     pass
 
 
 def timestamp(now=None):
     if now is None:
         now = timer()
-    timestamp = time.strftime("%Y/%m/%d %H-%M-%S", time.localtime(now))
+    time_stamp = time.strftime("%Y/%m/%d %H-%M-%S", time.localtime(now))
     millisecs = "%.3f" % (now % 1.0,)
-    return timestamp + millisecs[1:]
+    return time_stamp + millisecs[1:]
 
 
 def build_message(result, action, data, time_stamp, error_message=None, path=None, line=None):
-    # result = "failed:{0}:{1}:{2}:{3}:{4}".format(action, work_error, sys.exc_info()[-1].tb_lineno, timestamp(),
-    #                                              data)
-    # result = "success:{0}:{1}:{2}:{3}".format(action, work['target'], data, timestamp())
     """
     Result message format:
-    Success message format: {'result', 'action', 'target', 'data:{}', 'timestamp'}
+    Success message format: {'result', 'action', 'target', 'data:{'dirsize, }', 'timestamp'}
     Failure message format: {'result', 'action', 'error_message', 'path', 'linenumber', 'timestamp', 'data:{}'}
     """
     if result == 'success':
-        return {'result': result, 'action': action, 'target': path.strip('\''),
-                'timestamp': datetime.datetime.strptime(time_stamp, '%Y/%m/%d %H-%M-%S.%f'), 'data': data}
-
+        message = {'result': result, 'action': action, 'target': path,
+                   'timestamp': datetime.datetime.strptime(time_stamp, '%Y/%m/%d %H-%M-%S.%f'), 'data': data}
     else:
-        return {'result': result, 'action': action, 'error_message': error_message,
-                'target': path, 'linenum': line,
-                'timestamp': datetime.datetime.strptime(time_stamp, '%Y/%m/%d %H-%M-%S.%f'), 'data': data}
+        message = {'result': result, 'action': action, 'error_message': error_message,
+                   'target': path, 'linenum': line,
+                   'timestamp': datetime.datetime.strptime(time_stamp, '%Y/%m/%d %H-%M-%S.%f'), 'data': data}
+    return json.dumps(message)
 
 
 class Dynamo(object):
@@ -106,8 +104,6 @@ class Dynamo(object):
 
     def _do_work(self, work):
         """
-        Success message format: {'result', 'action', 'target', 'data'}
-        Failure message format: {'result', 'action', 'error message: target', 'linenumber', 'timestamp', 'data'}
         Args:
             work: dict
 
@@ -115,25 +111,25 @@ class Dynamo(object):
 
         """
         action = work['action']
-        data = None
-        # /mnt/DIRSPLIT-node0.g8-5
+        data = {}
+        result_message = None
         mount_point = "".join(
             "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
                                                    random.randint(0, self.domains - 1)))
         self.logger.debug('Incoming target: {0}'.format(work['target']))
         try:
             if work['target'] == 'None':
-                raise DynamoIOException("{0}".format("Target not specified"))
+                raise DynamoException("{0}".format("Target not specified"))
             if action == 'mkdir':
                 os.mkdir("{0}/{1}".format(mount_point, work['target']))
-                data = os.stat("{0}/{1}".format(mount_point, work['target'])).st_size
+                data['dirsize'] = os.stat("{0}/{1}".format(mount_point, work['target'])).st_size
             elif action == 'touch':
                 dirsize = os.stat("{0}/{1}".format(mount_point, work['target'].split('/')[1])).st_size
                 if dirsize > MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
-                    data = work['target']
-                    raise DynamoIOException("Directory Entry reached {0} size limit".format(MAX_DIR_SIZE))
+                    data['target_path'] = work['target']
+                    raise DynamoException("Directory Entry reached {0} size limit".format(MAX_DIR_SIZE))
                 shell_utils.touch('{0}{1}'.format(mount_point, work['target']))
-                data = os.stat("{0}/{1}".format(mount_point, work['target'].split('/')[1])).st_size
+                data['dirsize'] = os.stat("{0}/{1}".format(mount_point, work['target'].split('/')[1])).st_size
             elif action == 'stat':
                 os.stat("{0}{1}".format(mount_point, work['target']))
             elif action == 'list':
@@ -142,11 +138,18 @@ class Dynamo(object):
                 dirpath = work['target'].split('/')[1]
                 fname = work['target'].split('/')[2]
                 os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
-        except Exception as work_error:
-            result = "failed:{0}:{1}:{2}:{3}:{4}".format(action, work_error, sys.exc_info()[-1].tb_lineno, timestamp(),
-                                                         data)
-            self.logger.info("Sending back result {0}".format(result))
-            return result
-        result = "success:{0}:{1}:{2}:{3}".format(action, work['target'], data, timestamp())
-        self.logger.info("Sending back result {0}".format(result))
-        return result
+        except (IOError, OSError) as work_error:
+            # result = "failed:{0}:{1}:{2}:{3}:{4}".format(action, work_error, sys.exc_info()[-1].tb_lineno, timestamp(),
+            #                                              data)
+            result_message = build_message('failed', action, data, timestamp(), error_message=work_error.strerror,
+                                           path=work_error.filename, line=sys.exc_info()[-1].tb_lineno)
+        except DynamoException as dynamo_io_error:
+            result_message = build_message('failed', action, data, timestamp(), error_message=dynamo_io_error,
+                                           path=work['target'], line=sys.exc_info()[-1].tb_lineno)
+        except Exception as unhandled_error:
+            result_message = build_message('failed', action, data, timestamp(), error_message=unhandled_error,
+                                           path=None, line=sys.exc_info()[-1].tb_lineno)
+        # result = "success:{0}:{1}:{2}:{3}".format(action, work['target'], data, timestamp())
+        self.logger.info("Sending back result {0}".format(result_message))
+        result_message = build_message('success', action, data, timestamp(), path=work['target'])
+        return result_message

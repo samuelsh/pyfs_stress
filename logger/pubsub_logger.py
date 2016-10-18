@@ -11,11 +11,11 @@ import config
 __author__ = 'samuels'
 
 formatters = {
-    logging.DEBUG: logging.Formatter("%(asctime)s %(name)s; %(levelname)s - %(message)s"),
-    logging.INFO: logging.Formatter("%(asctime)s %(name)s; %(levelname)s - %(message)s"),
-    logging.WARN: logging.Formatter("%(asctime)s %(name)s; %(levelname)s - %(message)s"),
-    logging.ERROR: logging.Formatter("%(asctime)s %(name)s; %(levelname)s - %(message)s"),
-    logging.CRITICAL: logging.Formatter("%(asctime)s %(name)s; %(levelname)s - %(message)s")
+    logging.DEBUG: logging.Formatter("%(asctime)s %(name)s; - %(message)s"),
+    logging.INFO: logging.Formatter("%(asctime)s %(name)s; - %(message)s"),
+    logging.WARN: logging.Formatter("%(asctime)s %(name)s; - %(message)s"),
+    logging.ERROR: logging.Formatter("%(asctime)s %(name)s; - %(message)s"),
+    logging.CRITICAL: logging.Formatter("%(asctime)s %(name)s; - %(message)s")
 }
 
 
