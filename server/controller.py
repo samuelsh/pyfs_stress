@@ -170,7 +170,7 @@ class Controller(object):
             #  Under work - Priority Queue
             # self.__rcv_message_queue.put(result)
             #
-            self._process_results(worker_id, job, result)
+            self._process_results(worker_id, job, json.loads(result))
         else:
             raise Exception('unknown message: %s' % message['message'])
 
