@@ -118,7 +118,7 @@ class Dynamo(object):
                                                    random.randint(0, self.domains - 1)))
         self.logger.debug('Incoming target: {0}'.format(work['target']))
         try:
-            if work['target'] == 'None':
+            if 'None' in work['target']:
                 raise DynamoException("{0}".format("Target not specified"))
             if action == 'mkdir':
                 os.mkdir("{0}/{1}".format(mount_point, work['target']))

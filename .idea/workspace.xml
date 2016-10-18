@@ -4,8 +4,6 @@
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo.py" afterPath="$PROJECT_DIR$/client/dynamo.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logger/pubsub_logger.py" afterPath="$PROJECT_DIR$/logger/pubsub_logger.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controller.py" afterPath="$PROJECT_DIR$/server/controller.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -88,31 +86,11 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="506">
-              <caret line="151" column="92" selection-start-line="151" selection-start-column="92" selection-end-line="151" selection-end-column="92" />
+            <state relative-caret-position="302">
+              <caret line="127" column="43" selection-start-line="127" selection-start-column="43" selection-end-line="127" selection-end-column="43" />
               <folding>
                 <element signature="e#47#58#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://C:/Python27/Lib/json/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4148">
-              <caret line="245" column="22" selection-start-line="245" selection-start-column="22" selection-end-line="245" selection-end-column="22" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="encoder.py" pinned="false" current-in-tab="false">
-        <entry file="file://C:/Python27/Lib/json/encoder.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1921">
-              <caret line="113" column="68" selection-start-line="113" selection-start-column="68" selection-end-line="113" selection-end-column="68" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -177,8 +155,8 @@
         <option value="$PROJECT_DIR$/client/dynamo_starter.py" />
         <option value="$PROJECT_DIR$/tree_runner.py" />
         <option value="$PROJECT_DIR$/logger/pubsub_logger.py" />
-        <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/server/controller.py" />
+        <option value="$PROJECT_DIR$/client/dynamo.py" />
       </list>
     </option>
   </component>
@@ -592,13 +570,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00596" summary="- fixing bugs">
-      <created>1474540388558</created>
-      <option name="number" value="00596" />
-      <option name="presentableId" value="LOCAL-00596" />
-      <option name="project" value="LOCAL" />
-      <updated>1474540388558</updated>
-    </task>
     <task id="LOCAL-00597" summary="- fixing bugs">
       <created>1474540917520</created>
       <option name="number" value="00597" />
@@ -935,7 +906,14 @@
       <option name="project" value="LOCAL" />
       <updated>1476770839871</updated>
     </task>
-    <option name="localTasksCounter" value="645" />
+    <task id="LOCAL-00645" summary="- Improving messaging protocol implemetation">
+      <created>1476795036362</created>
+      <option name="number" value="00645" />
+      <option name="presentableId" value="LOCAL-00645" />
+      <option name="project" value="LOCAL" />
+      <updated>1476795036362</updated>
+    </task>
+    <option name="localTasksCounter" value="646" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1021,7 +999,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- Some paths fixing&#10;&#10;" />
     <MESSAGE value="- Added DirTree data structure based on treelib&#10;- Added Infinite job generator &#10;" />
     <MESSAGE value=" - Added some real jobs to jobs generator&#10;" />
     <MESSAGE value=" - Fixing client mount issues&#10;" />
@@ -1046,7 +1023,8 @@
     <MESSAGE value="- PUBSUB logger for centralised client logging" />
     <MESSAGE value="- PUBSUB logger -- fixing binding issues" />
     <MESSAGE value="- Handling zmq exception on client side (DIALER)" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Handling zmq exception on client side (DIALER)" />
+    <MESSAGE value="- Improving messaging protocol implemetation" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Improving messaging protocol implemetation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1318,22 +1296,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/json/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4148">
-          <caret line="245" column="22" selection-start-line="245" selection-start-column="22" selection-end-line="245" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python27/Lib/json/encoder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1921">
-          <caret line="113" column="68" selection-start-line="113" selection-start-column="68" selection-end-line="113" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/messages_queue/priority_queue.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -1362,6 +1324,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/logger/pubsub_logger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="14" column="61" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -1382,20 +1354,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/logger/pubsub_logger.py">
+    <entry file="file://C:/Python27/Lib/json/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="14" column="61" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="323">
+          <caret line="245" column="22" selection-start-line="245" selection-start-column="22" selection-end-line="245" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/json/encoder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="642">
+          <caret line="113" column="68" selection-start-line="113" selection-start-column="68" selection-end-line="113" selection-end-column="68" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="151" column="92" selection-start-line="151" selection-start-column="92" selection-end-line="151" selection-end-column="92" />
+        <state relative-caret-position="302">
+          <caret line="127" column="43" selection-start-line="127" selection-start-column="43" selection-end-line="127" selection-end-column="43" />
           <folding>
             <element signature="e#47#58#0" expanded="true" />
           </folding>
