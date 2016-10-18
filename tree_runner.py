@@ -82,7 +82,6 @@ def run_controller(logger, event, dir_tree):
 
 def run_pubsub_logger(ip, event):
     sub_logger = SUBLogger(ip)
-    logger = sub_logger.logger
     while not event.is_set():
         try:
             topic, message = sub_logger.sub.recv_multipart(flags=zmq.NOBLOCK)

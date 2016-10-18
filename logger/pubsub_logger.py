@@ -48,21 +48,21 @@ class SUBLogger:
         self._sub.bind('tcp://{0}:{1}'.format(ip, port))
         self._sub.setsockopt(zmq.SUBSCRIBE, "")
         # create console handler and set level to info
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.INFO)
-        formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
-        handler.setFormatter(formatter)
-        self._logger.addHandler(handler)
+        # handler = logging.StreamHandler(sys.stdout)
+        # handler.setLevel(logging.INFO)
+        # formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
+        # handler.setFormatter(formatter)
+        # self._logger.addHandler(handler)
 
         # create debug file handler and set level to debug, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "client_debug.log"), "a", 100 * 1024 * 1024, 10)
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "client_debug.log"), "w", 100 * 1024 * 1024, 10)
         handler.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
         self._logger.addHandler(handler)
 
         # create debug file handler and set level to error, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "client_error.log"), "a", 100 * 1024 * 1024, 10)
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "client_error.log"), "w", 100 * 1024 * 1024, 10)
         handler.setLevel(logging.WARNING)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
