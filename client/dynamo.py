@@ -83,15 +83,16 @@ class Dynamo(object):
                     # Note that we can still use send_json()/recv_json() here,
                     # the DEALER socket ensures we don't have to deal with
                     # client ids at all.
-                    job_id, work = self._socket.recv_json()
-                    self._socket.send_json(
-                        {'message': 'job_done',
-                         'result': self._do_work(work),
-                         'job_id': job_id})
+                    try:
+                        job_id, work = self._socket.recv_json()
+                        self._socket.send_json(
+                            {'message': 'job_done',
+                             'result': self._do_work(work),
+                             'job_id': job_id})
+                    except zmq.ZMQError:
+                        self.logger.exception("ZeroMQ exception. Message lost!")
         except KeyboardInterrupt:
             pass
-        except zmq.ZMQError:
-            self.logger.exception("ZeroMQ exception. Message lost!")
         finally:
             self._disconnect()
 
@@ -141,15 +142,14 @@ class Dynamo(object):
         except (IOError, OSError) as work_error:
             # result = "failed:{0}:{1}:{2}:{3}:{4}".format(action, work_error, sys.exc_info()[-1].tb_lineno, timestamp(),
             #                                              data)
-            result_message = build_message('failed', action, data, timestamp(), error_message=work_error.strerror,
-                                           path=work_error.filename, line=sys.exc_info()[-1].tb_lineno)
+            return build_message('failed', action, data, timestamp(), error_message=work_error.strerror,
+                                 path=work_error.filename, line=sys.exc_info()[-1].tb_lineno)
         except DynamoException as dynamo_io_error:
-            result_message = build_message('failed', action, data, timestamp(), error_message=dynamo_io_error,
-                                           path=work['target'], line=sys.exc_info()[-1].tb_lineno)
+            return build_message('failed', action, data, timestamp(), error_message=dynamo_io_error,
+                                 path=work['target'], line=sys.exc_info()[-1].tb_lineno)
         except Exception as unhandled_error:
-            result_message = build_message('failed', action, data, timestamp(), error_message=unhandled_error,
-                                           path=None, line=sys.exc_info()[-1].tb_lineno)
+            return build_message('failed', action, data, timestamp(), error_message=unhandled_error,
+                                 path=None, line=sys.exc_info()[-1].tb_lineno)
         # result = "success:{0}:{1}:{2}:{3}".format(action, work['target'], data, timestamp())
-        self.logger.info("Sending back result {0}".format(result_message))
         result_message = build_message('success', action, data, timestamp(), path=work['target'])
         return result_message
