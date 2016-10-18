@@ -14,6 +14,7 @@ from logger import pubsub_logger
 from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT, CLIENT_MOUNT_POINT
 from utils import shell_utils
 
+global_logger = None
 
 def run_worker(event, controller, server, nodes, domains, proc_id):
     worker = Dynamo(event, controller, server, nodes, domains, proc_id)
@@ -42,6 +43,8 @@ def run():
     processes = []
     args = get_args()
     logger = pubsub_logger.PUBLogger(args.controller).logger
+    global global_logger
+    global_logger = logger
     logger.info("Making {0}".format(CLIENT_MOUNT_POINT))
     if not os.path.exists(CLIENT_MOUNT_POINT):
         os.mkdir(CLIENT_MOUNT_POINT)
@@ -101,5 +104,5 @@ if __name__ == '__main__':
     try:
         run()
     except Exception as e:
-        traceback.print_exc()
+        global_logger.error("{0}".format(traceback.print_exc()))
         sys.exit(1)
