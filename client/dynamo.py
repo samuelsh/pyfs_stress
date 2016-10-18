@@ -149,7 +149,6 @@ class Dynamo(object):
                                  path=work['target'], line=sys.exc_info()[-1].tb_lineno)
         except Exception as unhandled_error:
             return build_message('failed', action, data, timestamp(), error_message=unhandled_error,
-                                 path=None, line=sys.exc_info()[-1].tb_lineno)
+                                 path=work['target'], line=sys.exc_info()[-1].tb_lineno)
         # result = "success:{0}:{1}:{2}:{3}".format(action, work['target'], data, timestamp())
-        result_message = build_message('success', action, data, timestamp(), path=work['target'])
-        return result_message
+        return build_message('success', action, data, timestamp(), path=work['target'])
