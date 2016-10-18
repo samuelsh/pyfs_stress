@@ -84,9 +84,11 @@ class Dynamo(object):
                     # the DEALER socket ensures we don't have to deal with
                     # client ids at all.
                     job_id, work = self._socket.recv_json()
+                    msg = self._do_work(work)
+                    self.logger.debug("Going to send message: {0}".format(msg))
                     self._socket.send_json(
                         {'message': 'job_done',
-                         'result': self._do_work(work),
+                         'result': msg,
                          'job_id': job_id})
         except KeyboardInterrupt:
             pass
