@@ -83,14 +83,11 @@ class Dynamo(object):
                     # Note that we can still use send_json()/recv_json() here,
                     # the DEALER socket ensures we don't have to deal with
                     # client ids at all.
-                    try:
-                        job_id, work = self._socket.recv_json()
-                        self._socket.send_json(
-                            {'message': 'job_done',
-                             'result': self._do_work(work),
-                             'job_id': job_id})
-                    except zmq.ZMQError:
-                        self.logger.exception("ZeroMQ exception. Message lost!")
+                    job_id, work = self._socket.recv_json()
+                    self._socket.send_json(
+                        {'message': 'job_done',
+                         'result': self._do_work(work),
+                         'job_id': job_id})
         except KeyboardInterrupt:
             pass
         finally:
