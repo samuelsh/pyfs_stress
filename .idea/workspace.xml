@@ -74,8 +74,8 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="42" column="6" selection-start-line="42" selection-start-column="6" selection-end-line="42" selection-end-column="6" />
+            <state relative-caret-position="319">
+              <caret line="45" column="46" selection-start-line="45" selection-start-column="46" selection-end-line="45" selection-end-column="46" />
               <folding>
                 <element signature="e#47#58#0" expanded="true" />
               </folding>
@@ -558,13 +558,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00608" summary="- fixing bugs">
-      <created>1475038589123</created>
-      <option name="number" value="00608" />
-      <option name="presentableId" value="LOCAL-00608" />
-      <option name="project" value="LOCAL" />
-      <updated>1475038589123</updated>
-    </task>
     <task id="LOCAL-00609" summary="- fixing bugs">
       <created>1475053240753</created>
       <option name="number" value="00609" />
@@ -901,7 +894,14 @@
       <option name="project" value="LOCAL" />
       <updated>1476851038134</updated>
     </task>
-    <option name="localTasksCounter" value="657" />
+    <task id="LOCAL-00657" summary="- Improving messaging protocol implemetation">
+      <created>1476851417807</created>
+      <option name="number" value="00657" />
+      <option name="presentableId" value="LOCAL-00657" />
+      <option name="project" value="LOCAL" />
+      <updated>1476851417807</updated>
+    </task>
+    <option name="localTasksCounter" value="658" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1362,8 +1362,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="42" column="6" selection-start-line="42" selection-start-column="6" selection-end-line="42" selection-end-column="6" />
+        <state relative-caret-position="319">
+          <caret line="45" column="46" selection-start-line="45" selection-start-column="46" selection-end-line="45" selection-end-column="46" />
           <folding>
             <element signature="e#47#58#0" expanded="true" />
           </folding>
