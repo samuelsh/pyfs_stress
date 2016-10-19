@@ -80,7 +80,7 @@ def run_controller(logger, event, dir_tree):
     Controller(logger, event, dir_tree).run()
 
 
-def run_pubsub_logger(ip, event):
+def run_sub_logger(ip, event):
     sub_logger = SUBLogger(ip)
     while not event.is_set():
         try:
@@ -109,9 +109,9 @@ def main():
     logger.info("Starting controller")
     controller_process = Process(target=run_controller, args=(logger, stop_event, dir_tree,))
     controller_process.start()
-    pubsub_looger_process = Process(target=run_pubsub_logger,
-                                    args=(socket.gethostbyname('localhost'), stop_event,))
-    pubsub_looger_process.start()
+    sub_logger_process = Process(target=run_sub_logger,
+                                 args=(socket.gethostbyname('localhost'), stop_event,))
+    sub_logger_process.start()
     logger.info("Controller started")
     deploy_clients(clients_list)
     logger.info("Done deploying clients: {0}".format(clients_list))

@@ -25,7 +25,7 @@ class PUBLogger:
         self._logger.setLevel(logging.DEBUG)
         self.ctx = zmq.Context()
         self.pub = self.ctx.socket(zmq.PUB)
-        self.pub.connect('tcp://{0}:{1}'.format(socket.gethostbyname(host), port))
+        self.pub.connect('tcp://*:{0}'.format(port))
         # create console handler and set level to info
         # handler = logging.StreamHandler(sys.stdout)
         self._handler = PUBHandler(self.pub)
