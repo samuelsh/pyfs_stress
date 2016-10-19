@@ -79,17 +79,20 @@ class Dynamo(object):
             # is is to use zmq.NOBLOCK when reading from the socket,
             # catching zmq.AGAIN and sleeping for 0.1.
             while not self.stop_event.is_set():
-                if self._socket.poll(100):
-                    # Note that we can still use send_json()/recv_json() here,
-                    # the DEALER socket ensures we don't have to deal with
-                    # client ids at all.
-                    job_id, work = self._socket.recv_json()
-                    msg = self._do_work(work)
-                    self.logger.debug("Going to send message: {0}".format(msg))
-                    self._socket.send_json(
-                        {'message': 'job_done',
-                         'result': msg,
-                         'job_id': job_id})
+                try:
+                    if self._socket.poll(100):
+                        # Note that we can still use send_json()/recv_json() here,
+                        # the DEALER socket ensures we don't have to deal with
+                        # client ids at all.
+                        job_id, work = self._socket.recv_json()
+                        msg = self._do_work(work)
+                        self.logger.debug("Going to send message: {0}".format(msg))
+                        self._socket.send_json(
+                            {'message': 'job_done',
+                             'result': msg,
+                             'job_id': job_id})
+                except zmq.ZMQError as zmq_err:
+                    self.logger.exception(zmq_err)
         except KeyboardInterrupt:
             pass
         finally:
