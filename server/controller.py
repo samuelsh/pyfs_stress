@@ -180,8 +180,21 @@ class Controller(object):
         Success message format: {'result', 'action', 'target', 'data{}', 'timestamp'}
         Failure message format: {'result', 'action', 'error_message', 'target', 'linenumber', 'timestamp', 'data{}'}
         """
-        self.logger.info('[%s]: finished %s, result: %s',
-                         worker_id, job.id, incoming_message)
+        try:
+            formatted_message = "{0} | {1} | {2} | {4} | {5} | {6}".format(incoming_message['result'],
+                                                                           incoming_message['action'],
+                                                                           incoming_message['target'],
+                                                                           incoming_message['error_message'],
+                                                                           incoming_message['linenum'],
+                                                                           incoming_message['data'],
+                                                                           incoming_message['timestamp'])
+        except KeyError:
+            formatted_message = "{0} | {1} | {2} | {4}".format(incoming_message['result'],
+                                                               incoming_message['action'],
+                                                               incoming_message['target'],
+                                                               incoming_message['data'],
+                                                               incoming_message['timestamp'])
+        self.logger.info('[{0}]: finished {1}, result: {2}'.format(worker_id, job.id, formatted_message))
         if incoming_message['result'] == 'success':
             if incoming_message['action'] == 'mkdir':  # mkdir successful which means is synced with storage
                 syncdir = self._dir_tree.get_dir_by_name(incoming_message['target'])
@@ -238,7 +251,7 @@ class Controller(object):
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
             if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
-                 'error_message']:
+                'error_message']:
                 return
             # in case that touch op failed due to size limit
             if incoming_message['action'] == "touch" and "size limit" in incoming_message['error_message']:
