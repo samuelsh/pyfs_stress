@@ -41,7 +41,10 @@ def run():
     stop_event = Event()
     processes = []
     args = get_args()
-    logger = pubsub_logger.PUBLogger(args.controller).logger
+    try:
+        logger = pubsub_logger.PUBLogger(args.controller).logger
+    except Exception:
+        raise
     logger.info("Making {0}".format(CLIENT_MOUNT_POINT))
     if not os.path.exists(CLIENT_MOUNT_POINT):
         os.mkdir(CLIENT_MOUNT_POINT)
