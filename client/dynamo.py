@@ -134,7 +134,7 @@ class Dynamo(object):
             elif action == 'stat':
                 os.stat("{0}{1}".format(mount_point, work['target']))
             elif action == 'read':
-                with open("{0}/{1}".format(mount_point, work['target']), 'r') as f:
+                with open("{0}{1}".format(mount_point, work['target']), 'r') as f:
                     f.read()
             elif action == 'list':
                 os.listdir('{0}/{1}'.format(mount_point, work['target']))
