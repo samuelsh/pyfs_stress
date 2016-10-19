@@ -181,19 +181,19 @@ class Controller(object):
         Failure message format: {'result', 'action', 'error_message', 'target', 'linenumber', 'timestamp', 'data{}'}
         """
         try:
-            formatted_message = "{0} | {1} | {2} | {4} | {5} | {6}".format(incoming_message['result'],
+            formatted_message = "{0} | {1} | {2} | {4} | data: {5} | {6}".format(incoming_message['result'],
+                                                                                 incoming_message['action'],
+                                                                                 incoming_message['target'],
+                                                                                 incoming_message['error_message'],
+                                                                                 incoming_message['linenum'],
+                                                                                 incoming_message['data'],
+                                                                                 incoming_message['timestamp'])
+        except KeyError:
+            formatted_message = "{0} | {1} | {2} | data: {3} | {4}".format(incoming_message['result'],
                                                                            incoming_message['action'],
                                                                            incoming_message['target'],
-                                                                           incoming_message['error_message'],
-                                                                           incoming_message['linenum'],
                                                                            incoming_message['data'],
                                                                            incoming_message['timestamp'])
-        except KeyError:
-            formatted_message = "{0} | {1} | {2} | {4}".format(incoming_message['result'],
-                                                               incoming_message['action'],
-                                                               incoming_message['target'],
-                                                               incoming_message['data'],
-                                                               incoming_message['timestamp'])
         self.logger.info('[{0}]: finished {1}, result: {2}'.format(worker_id, job.id, formatted_message))
         if incoming_message['result'] == 'success':
             if incoming_message['action'] == 'mkdir':  # mkdir successful which means is synced with storage

@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo.py" afterPath="$PROJECT_DIR$/client/dynamo.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controller.py" afterPath="$PROJECT_DIR$/server/controller.py" />
     </list>
     <ignored path="file_scanner.iws" />
@@ -50,8 +51,8 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="187" column="32" selection-start-line="187" selection-start-column="32" selection-end-line="187" selection-end-column="32" />
+            <state relative-caret-position="204">
+              <caret line="183" column="43" selection-start-line="183" selection-start-column="43" selection-end-line="183" selection-end-column="43" />
               <folding>
                 <element signature="e#46#60#0" expanded="true" />
               </folding>
@@ -74,8 +75,8 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1122">
-              <caret line="84" column="77" selection-start-line="84" selection-start-column="77" selection-end-line="84" selection-end-column="77" />
+            <state relative-caret-position="0">
+              <caret line="75" column="53" selection-start-line="75" selection-start-column="53" selection-end-line="75" selection-end-column="53" />
               <folding>
                 <element signature="e#47#58#0" expanded="true" />
               </folding>
@@ -568,13 +569,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00628" summary="- PUBSUB logger -- fixing binding issues">
-      <created>1476346968529</created>
-      <option name="number" value="00628" />
-      <option name="presentableId" value="LOCAL-00628" />
-      <option name="project" value="LOCAL" />
-      <updated>1476346968529</updated>
-    </task>
     <task id="LOCAL-00629" summary="- PUBSUB logger -- fixing binding issues">
       <created>1476347155728</created>
       <option name="number" value="00629" />
@@ -911,7 +905,14 @@
       <option name="project" value="LOCAL" />
       <updated>1476864054086</updated>
     </task>
-    <option name="localTasksCounter" value="677" />
+    <task id="LOCAL-00677" summary="- formatting controller logging">
+      <created>1476870722735</created>
+      <option name="number" value="00677" />
+      <option name="presentableId" value="LOCAL-00677" />
+      <option name="project" value="LOCAL" />
+      <updated>1476870722735</updated>
+    </task>
+    <option name="localTasksCounter" value="678" />
     <servers />
   </component>
   <component name="TodoView">
@@ -997,7 +998,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" - Fixing client mount issues&#10;" />
     <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;- Added export argument to main app" />
     <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete]&#10;" />
     <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete, stat]&#10;" />
@@ -1022,7 +1022,8 @@
     <MESSAGE value="- Improving messaging protocol implemetation" />
     <MESSAGE value="- formatting client logging" />
     <MESSAGE value="- fixing client remote logging" />
-    <option name="LAST_COMMIT_MESSAGE" value="- fixing client remote logging" />
+    <MESSAGE value="- formatting controller logging" />
+    <option name="LAST_COMMIT_MESSAGE" value="- formatting controller logging" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1372,8 +1373,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
-          <caret line="84" column="77" selection-start-line="84" selection-start-column="77" selection-end-line="84" selection-end-column="77" />
+        <state relative-caret-position="0">
+          <caret line="75" column="53" selection-start-line="75" selection-start-column="53" selection-end-line="75" selection-end-column="53" />
           <folding>
             <element signature="e#47#58#0" expanded="true" />
           </folding>
@@ -1382,8 +1383,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="187" column="32" selection-start-line="187" selection-start-column="32" selection-end-line="187" selection-end-column="32" />
+        <state relative-caret-position="204">
+          <caret line="183" column="43" selection-start-line="183" selection-start-column="43" selection-end-line="183" selection-end-column="43" />
           <folding>
             <element signature="e#46#60#0" expanded="true" />
           </folding>
