@@ -110,7 +110,7 @@ def main():
     controller_process = Process(target=run_controller, args=(logger, stop_event, dir_tree,))
     controller_process.start()
     pubsub_looger_process = Process(target=run_pubsub_logger,
-                                    args=(socket.gethostbyname(socket.gethostname()), stop_event,))
+                                    args=(socket.gethostbyname('localhost'), stop_event,))
     pubsub_looger_process.start()
     logger.info("Controller started")
     deploy_clients(clients_list)
