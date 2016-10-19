@@ -144,7 +144,7 @@ class Dynamo(object):
             return build_message('failed', action, data, timestamp(), error_message=work_error.strerror,
                                  path=work_error.filename, line=sys.exc_info()[-1].tb_lineno)
         except DynamoException as dynamo_io_error:
-            return build_message('failed', action, data, timestamp(), error_message=dynamo_io_error,
+            return build_message('failed', action, data, timestamp(), error_message=dynamo_io_error.args[0],
                                  path=work['target'], line=sys.exc_info()[-1].tb_lineno)
         except Exception as unhandled_error:
             return build_message('failed', action, data, timestamp(), error_message=unhandled_error,
