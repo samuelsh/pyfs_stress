@@ -245,7 +245,7 @@ class Controller(object):
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
             if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
-                    'error_message']:
+                'error_message']:
                 return
             # in case that touch op failed due to size limit
             if incoming_message['action'] == "touch" and "size limit" in incoming_message['error_message']:
@@ -266,7 +266,8 @@ class Controller(object):
                     self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
             # in case stat or delete ops failed for some reason
-            elif incoming_message['action'] == "stat" or incoming_message['action'] == "delete":
+            elif incoming_message['action'] == "stat" or incoming_message['action'] == "delete" or \
+                    incoming_message['action'] == 'read':
                 rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
                 rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
 
