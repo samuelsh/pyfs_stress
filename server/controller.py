@@ -43,7 +43,7 @@ class Controller(object):
         self.workers = {}
         # We won't assign more than 50 jobs to a worker at a time; this ensures
         # reasonable memory usage, and less shuffling when a worker dies.
-        self.max_jobs_per_worker = 50
+        self.max_jobs_per_worker = 1000
         # When/if a client disconnects we'll put any unfinished work in here,
         # work_iterator() will return work from here as well.
         self._work_to_requeue = []
@@ -251,7 +251,7 @@ class Controller(object):
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
             if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
-                'error_message']:
+                    'error_message']:
                 return
             # in case that touch op failed due to size limit
             if incoming_message['action'] == "touch" and "size limit" in incoming_message['error_message']:
