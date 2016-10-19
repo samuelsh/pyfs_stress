@@ -110,7 +110,7 @@ def main():
     controller_process = Process(target=run_controller, args=(logger, stop_event, dir_tree,))
     controller_process.start()
     sub_logger_process = Process(target=run_sub_logger,
-                                 args=(socket.gethostbyname('localhost'), stop_event,))
+                                 args=(socket.gethostbyname(socket.gethostname()), stop_event,))
     sub_logger_process.start()
     logger.info("Controller started")
     deploy_clients(clients_list)
