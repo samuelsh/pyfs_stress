@@ -43,11 +43,11 @@ def build_message(result, action, data, time_stamp, error_message=None, path=Non
     """
     if result == 'success':
         message = {'result': result, 'action': action, 'target': path,
-                   'timestamp': time_stamp, 'data': data}
+                   'timestamp': time_stamp.strftime("%Y/%m/%d %H-%M-%S.%f"), 'data': data}
     else:
         message = {'result': result, 'action': action, 'error_message': error_message,
                    'target': path, 'linenum': line,
-                   'timestamp': time_stamp, 'data': data}
+                   'timestamp': time_stamp.strftime("%Y/%m/%d %H-%M-%S.%f"), 'data': data}
     return message
 
 
