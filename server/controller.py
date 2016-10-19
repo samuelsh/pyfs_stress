@@ -185,7 +185,7 @@ class Controller(object):
         if incoming_message['result'] == 'success':
             if incoming_message['action'] == 'mkdir':  # mkdir successful which means is synced with storage
                 syncdir = self._dir_tree.get_dir_by_name(incoming_message['target'])
-                syncdir.data.size = int(incoming_message['data']['dirszie'])
+                syncdir.data.size = int(incoming_message['data']['dirsize'])
                 syncdir.data.ondisk = True
                 syncdir.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                    '%Y/%m/%d %H-%M-%S.%f')
