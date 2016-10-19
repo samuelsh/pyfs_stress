@@ -114,7 +114,6 @@ class Dynamo(object):
         """
         action = work['action']
         data = {}
-        result_message = None
         mount_point = "".join(
             "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
                                                    random.randint(0, self.domains - 1)))
@@ -145,8 +144,8 @@ class Dynamo(object):
             #                                              data)
             return build_message('failed', action, data, timestamp(), error_message=work_error.strerror,
                                  path=work_error.filename, line=sys.exc_info()[-1].tb_lineno)
-        except DynamoException as dynamo_io_error:
-            return build_message('failed', action, data, timestamp(), error_message=dynamo_io_error.args[0],
+        except DynamoException as dynamo_error:
+            return build_message('failed', action, data, timestamp(), error_message=dynamo_error.args[0],
                                  path=work['target'], line=sys.exc_info()[-1].tb_lineno)
         except Exception as unhandled_error:
             return build_message('failed', action, data, timestamp(), error_message=unhandled_error,

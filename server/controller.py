@@ -80,7 +80,7 @@ class Controller(object):
                 if len(self._dir_tree.nids) < 10:
                     self._dir_tree.append_node()
                 self.logger.debug(
-                    "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_data().size))
+                    "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_tag()))
                 target_dir = self._dir_tree.get_random_dir_not_synced()
                 if target_dir:
                     target = target_dir.data.name
@@ -181,13 +181,14 @@ class Controller(object):
         Failure message format: {'result', 'action', 'error_message', 'target', 'linenumber', 'timestamp', 'data{}'}
         """
         try:
-            formatted_message = "{0} | {1} | {2} | {4} | data: {5} | {6}".format(incoming_message['result'],
-                                                                                 incoming_message['action'],
-                                                                                 incoming_message['target'],
-                                                                                 incoming_message['error_message'],
-                                                                                 incoming_message['linenum'],
-                                                                                 incoming_message['data'],
-                                                                                 incoming_message['timestamp'])
+            formatted_message = "{0} | {1} | {2} | {3} | {4} | data: {5} | {6}".format(incoming_message['result'],
+                                                                                       incoming_message['action'],
+                                                                                       incoming_message['target'],
+                                                                                       incoming_message[
+                                                                                           'error_message'],
+                                                                                       incoming_message['linenum'],
+                                                                                       incoming_message['data'],
+                                                                                       incoming_message['timestamp'])
         except KeyError:
             formatted_message = "{0} | {1} | {2} | data: {3} | {4}".format(incoming_message['result'],
                                                                            incoming_message['action'],
@@ -251,7 +252,7 @@ class Controller(object):
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
             if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
-                    'error_message']:
+                'error_message']:
                 return
             # in case that touch op failed due to size limit
             if incoming_message['action'] == "touch" and "size limit" in incoming_message['error_message']:
