@@ -93,14 +93,7 @@ class Controller(object):
                 else:
                     fname = rdir.data.touch()
                     target = "/{0}/{1}".format(rdir.tag, fname)
-            elif action == 'read':
-                rdir = self._dir_tree.get_random_dir_synced()
-                if not rdir:
-                    target = 'None'
-                else:
-                    fname = rdir.data.touch()
-                    target = "/{0}/{1}".format(rdir.tag, fname)
-            elif action == 'stat':
+            elif action == 'stat' or action == 'read':
                 rdir = self._dir_tree.get_random_dir_synced()
                 if rdir:
                     rfile = rdir.data.get_random_file()
