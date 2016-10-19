@@ -140,8 +140,6 @@ class Dynamo(object):
                 fname = work['target'].split('/')[2]
                 os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
         except (IOError, OSError) as work_error:
-            # result = "failed:{0}:{1}:{2}:{3}:{4}".format(action, work_error, sys.exc_info()[-1].tb_lineno, timestamp(),
-            #                                              data)
             return build_message('failed', action, data, timestamp(), error_message=work_error.strerror,
                                  path=work_error.filename, line=sys.exc_info()[-1].tb_lineno)
         except DynamoException as dynamo_error:
@@ -150,5 +148,4 @@ class Dynamo(object):
         except Exception as unhandled_error:
             return build_message('failed', action, data, timestamp(), error_message=unhandled_error,
                                  path=work['target'], line=sys.exc_info()[-1].tb_lineno)
-        # result = "success:{0}:{1}:{2}:{3}".format(action, work['target'], data, timestamp())
         return build_message('success', action, data, timestamp(), path=work['target'])

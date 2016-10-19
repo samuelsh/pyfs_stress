@@ -252,7 +252,7 @@ class Controller(object):
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
             if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
-                'error_message']:
+                    'error_message']:
                 return
             # in case that touch op failed due to size limit
             if incoming_message['action'] == "touch" and "size limit" in incoming_message['error_message']:
@@ -309,8 +309,8 @@ class Controller(object):
             else:
                 rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
                 self.logger.error(
-                    'Operation {0} FAILED UNEXPECTEDLY on Directory {1} due to {2}'.format(incoming_message['action'
-                                                                                           ], rdir_name,
+                    'Operation {0} FAILED UNEXPECTEDLY on Directory {1} due to {2}'.format(incoming_message['action'],
+                                                                                           rdir_name,
                                                                                            incoming_message[
                                                                                                'error_message']))
 
