@@ -85,15 +85,7 @@ def run_pubsub_logger(ip, event):
     while not event.is_set():
         try:
             topic, message = sub_logger.sub.recv_multipart(flags=zmq.NOBLOCK)
-            pos = topic.find('.')
-            level = topic
-            if pos > 0:
-                level = topic[:pos]
-            if message.endswith('\n'):
-                message = message[:-1]
-            log_msg = getattr(logging, level.lower())
-            if pos > 0:
-                message = topic[pos + 1:] + " | " + message
+            log_msg = getattr(logging, topic.lower())
             log_msg(message)
         except zmq.ZMQError as zmq_error:
             if zmq_error.errno == zmq.EAGAIN:
