@@ -25,7 +25,7 @@ class PUBLogger:
         self._logger.setLevel(logging.DEBUG)
         self.ctx = zmq.Context()
         self.pub = self.ctx.socket(zmq.PUB)
-        self.pub.connect('tcp://*:{0}'.format(port))
+        self.pub.bind('tcp://*:{0}'.format(port))
         # create console handler and set level to info
         # handler = logging.StreamHandler(sys.stdout)
         self._handler = PUBHandler(self.pub)
@@ -45,7 +45,7 @@ class SUBLogger:
 
         self.ctx = zmq.Context()
         self._sub = self.ctx.socket(zmq.SUB)
-        self._sub.bind('tcp://{0}:{1}'.format(ip, port))
+        self._sub.connect('tcp://{0}:{1}'.format(ip, port))
         self._sub.setsockopt(zmq.SUBSCRIBE, "")
         # create console handler and set level to info
         # handler = logging.StreamHandler(sys.stdout)
