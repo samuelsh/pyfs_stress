@@ -35,17 +35,17 @@ def timestamp(now=None):
     return time_stamp + millisecs[1:]
 
 
-def build_message(result, action, data, time_stamp, error_message=None, path=None, line=None):
+def build_message(result, action, data, time_stamp, error_code=None, error_message=None, path=None, line=None):
     """
     Result message format:
     Success message format: {'result', 'action', 'target', 'data:{'dirsize, }', 'timestamp'}
-    Failure message format: {'result', 'action', 'error_message', 'path', 'linenumber', 'timestamp', 'data:{}'}
+    Failure message format: {'result', 'action', 'error_code', 'error_message', 'path', 'linenumber', 'timestamp', 'data:{}'}
     """
     if result == 'success':
         message = {'result': result, 'action': action, 'target': path,
                    'timestamp': str(time_stamp), 'data': data}
     else:
-        message = {'result': result, 'action': action, 'error_message': error_message,
+        message = {'result': result, 'action': action, 'error_code': error_code, 'error_message': error_message,
                    'target': path, 'linenum': line,
                    'timestamp': str(time_stamp), 'data': data}
     return message
@@ -91,7 +91,7 @@ class Dynamo(object):
                              'result': msg,
                              'job_id': job_id})
                 except zmq.ZMQError:
-                    self.logger.exception("ZMQ Error. Messsage {0} lost!".format(msg))
+                    self.logger.exception("ZMQ Error. Message {0} lost!".format(msg))
         except KeyboardInterrupt:
             pass
         finally:
@@ -143,15 +143,17 @@ class Dynamo(object):
                 fname = work['target'].split('/')[2]
                 os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
         except OSError as os_error:
-            return build_message('failed', action, data, timestamp(), error_message=os_error.strerror,
+            return build_message('failed', action, data, timestamp(), error_code=os_error.errno,
+                                 error_message=os_error.strerror,
                                  path=os_error.filename, line=sys.exc_info()[-1].tb_lineno)
         except IOError as io_error:
-            return build_message('failed', action, data, timestamp(), error_message=io_error.strerror,
+            return build_message('failed', action, data, timestamp(), error_code=io_error.errno,
+                                 error_message=io_error.strerror,
                                  path='{0}{1}'.format(mount_point, work['target']), line=sys.exc_info()[-1].tb_lineno)
         except DynamoException as dynamo_error:
             return build_message('failed', action, data, timestamp(), error_message=dynamo_error.args[0],
                                  path=work['target'], line=sys.exc_info()[-1].tb_lineno)
         except Exception as unhandled_error:
-            return build_message('failed', action, data, timestamp(), error_message=unhandled_error,
+            return build_message('failed', action, data, timestamp(), error_message=unhandled_error.args[0],
                                  path=work['target'], line=sys.exc_info()[-1].tb_lineno)
         return build_message('success', action, data, timestamp(), path=work['target'])

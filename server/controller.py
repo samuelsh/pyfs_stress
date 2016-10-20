@@ -171,17 +171,19 @@ class Controller(object):
         """
         Result message format:
         Success message format: {'result', 'action', 'target', 'data{}', 'timestamp'}
-        Failure message format: {'result', 'action', 'error_message', 'target', 'linenumber', 'timestamp', 'data{}'}
+        Failure message format: {'result', 'action', 'error_code', 'error_message', 'target', 'linenumber', 'timestamp',
+         'data{}'}
         """
         try:
-            formatted_message = "{0} | {1} | {2} | {3} | {4} | data: {5} | {6}".format(incoming_message['result'],
-                                                                                       incoming_message['action'],
-                                                                                       incoming_message['target'],
-                                                                                       incoming_message[
-                                                                                           'error_message'],
-                                                                                       incoming_message['linenum'],
-                                                                                       incoming_message['data'],
-                                                                                       incoming_message['timestamp'])
+            formatted_message = "{0} | {1} | {2} | [errno:{3}] | {4} | {5} | data: {6} | {7}".format(
+                incoming_message['result'],
+                incoming_message['action'],
+                incoming_message['target'],
+                incoming_message['error_code'],
+                incoming_message['error_message'],
+                incoming_message['linenum'],
+                incoming_message['data'],
+                incoming_message['timestamp'])
         except KeyError:
             formatted_message = "{0} | {1} | {2} | data: {3} | {4}".format(incoming_message['result'],
                                                                            incoming_message['action'],
@@ -209,7 +211,9 @@ class Controller(object):
                     self.logger.debug(
                         "Directory {0} already removed from active dirs list, dropping touch {1}".format(path[0],
                                                                                                          path[1]))
-                elif syncdir.data.ondisk:
+                # There might be a raise when successful mkdir message will arrive after successful touch message
+                # So we won't check here if dir is already synced
+                else:
                     for f in syncdir.data.files:
                         if f.name == path[1]:  # Now, when we got reply from client that file was created,
                             #  we can mark it as synced
@@ -240,7 +244,7 @@ class Controller(object):
                             rfile.ondisk = False
                             self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
                         else:
-                            self.logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+                            self.logger.warn("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
                     else:
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
@@ -265,9 +269,9 @@ class Controller(object):
                 except NodeIDAbsentError:
                     self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
-            # in case stat or delete ops failed for some reason
+            # in case stat, read or delete ops failed for some reason
             elif incoming_message['action'] == "stat" or incoming_message['action'] == "delete" or \
-                    incoming_message['action'] == 'read':
+                            incoming_message['action'] == 'read':
                 rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
                 rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
 
