@@ -62,8 +62,8 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="646">
-              <caret line="266" column="32" selection-start-line="266" selection-start-column="32" selection-end-line="266" selection-end-column="32" />
+            <state relative-caret-position="425">
+              <caret line="230" column="49" selection-start-line="230" selection-start-column="49" selection-end-line="230" selection-end-column="49" />
               <folding>
                 <element signature="e#46#60#0" expanded="true" />
               </folding>
@@ -584,13 +584,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00647" summary="- Improving messaging protocol implemetation">
-      <created>1476796364409</created>
-      <option name="number" value="00647" />
-      <option name="presentableId" value="LOCAL-00647" />
-      <option name="project" value="LOCAL" />
-      <updated>1476796364409</updated>
-    </task>
     <task id="LOCAL-00648" summary="- Improving messaging protocol implemetation">
       <created>1476797157952</created>
       <option name="number" value="00648" />
@@ -927,7 +920,14 @@
       <option name="project" value="LOCAL" />
       <updated>1476946528250</updated>
     </task>
-    <option name="localTasksCounter" value="696" />
+    <task id="LOCAL-00696" summary="1. Fixed successful touch flow">
+      <created>1476948001067</created>
+      <option name="number" value="00696" />
+      <option name="presentableId" value="LOCAL-00696" />
+      <option name="project" value="LOCAL" />
+      <updated>1476948001067</updated>
+    </task>
+    <option name="localTasksCounter" value="697" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1013,7 +1013,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" - Implementing dynamo actions [mkdir, list, touch, delete, stat]&#10;" />
     <MESSAGE value=" - Adding rotation handler to logger&#10;" />
     <MESSAGE value=" - Adding error checking on touch/stat&#10;" />
     <MESSAGE value=" - Adding timestamp to messages from client&#10;" />
@@ -1038,7 +1037,8 @@
     <MESSAGE value="- formatting controller logging" />
     <MESSAGE value="- read op added" />
     <MESSAGE value="1. added errno to message structure\n 2. Fixing raise between mkdir and touch" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. added errno to message structure\n 2. Fixing raise between mkdir and touch" />
+    <MESSAGE value="1. Fixed successful touch flow" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Fixed successful touch flow" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1401,8 +1401,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="266" column="32" selection-start-line="266" selection-start-column="32" selection-end-line="266" selection-end-column="32" />
+        <state relative-caret-position="425">
+          <caret line="230" column="49" selection-start-line="230" selection-start-column="49" selection-end-line="230" selection-end-column="49" />
           <folding>
             <element signature="e#46#60#0" expanded="true" />
           </folding>

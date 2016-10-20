@@ -231,8 +231,9 @@ class Controller(object):
                                                                                                        'data'][
                                                                                                        'dirsize'])))
                             break
-                    self.logger.debug(
-                        "File {0} not found in directory {1}. Skipping touch ".format(path[0], path[1]))
+                    else:
+                        self.logger.debug(
+                            "File {0} not found in directory {1}. Skipping touch ".format(path[0], path[1]))
             elif incoming_message['action'] == 'delete':
                 path = incoming_message['target'].split('/')[1:]  # folder:file
                 deldir = self._dir_tree.get_dir_by_name(path[0])
