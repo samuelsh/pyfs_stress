@@ -30,7 +30,7 @@ class DynamoException(Exception):
 def timestamp(now=None):
     if now is None:
         now = timer()
-    time_stamp = time.strftime("%Y/%m/%d %H-%M-%S", time.localtime(now))
+    time_stamp = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(now))
     millisecs = "%.3f" % (now % 1.0,)
     return time_stamp + millisecs[1:]
 

@@ -197,7 +197,7 @@ class Controller(object):
                 syncdir.data.size = int(incoming_message['data']['dirsize'])
                 syncdir.data.ondisk = True
                 syncdir.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-                                                                   '%Y/%m/%d %H-%M-%S.%f')
+                                                                   '%Y/%m/%d %H:%M:%S.%f')
                 self._dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name).hexdigest())
                 self.logger.debug(
                     "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
@@ -220,7 +220,7 @@ class Controller(object):
                             syncdir.data.size = int(incoming_message['data']['dirsize'])
                             f.ondisk = True
                             f.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-                                                                         '%Y/%m/%d %H-%M-%S.%f')
+                                                                         '%Y/%m/%d %H:%M:%S.%f')
                             self.logger.debug(
                                 "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
                             self.logger.info(
@@ -229,6 +229,8 @@ class Controller(object):
                                                                                                        'data'][
                                                                                                        'dirsize'])))
                             break
+                    self.logger.debug(
+                        "File {0} not found in directory {1}. Skipping touch ".format(path[0], path[1]))
             elif incoming_message['action'] == 'delete':
                 path = incoming_message['target'].split('/')[1:]  # folder:file
                 deldir = self._dir_tree.get_dir_by_name(path[0])
@@ -279,7 +281,7 @@ class Controller(object):
                 if rdir:
                     rfile = rdir.data.get_file_by_name(rfile_name)
                     if rfile and rfile.ondisk:
-                        error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H-%M-%S.%f')
+                        error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                         if error_time > rfile.creation_time:
                             self.logger.error(
                                 "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
@@ -297,7 +299,7 @@ class Controller(object):
                     rfile_name = None
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 if rdir and rdir.data.ondisk:
-                    error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H-%M-%S.%f')
+                    error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                     if error_time > rdir.creation_time:
                         self.logger.error(
                             "Result Verify FAILED: Operation {0} failed on {1}/{2} which is on disk".format(
