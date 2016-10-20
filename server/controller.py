@@ -244,7 +244,7 @@ class Controller(object):
                             rfile.ondisk = False
                             self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
                         else:
-                            self.logger.warn("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+                            self.logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
                     else:
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
         else:  # failure analysis
