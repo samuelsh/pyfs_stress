@@ -86,6 +86,7 @@ class Dynamo(object):
                         # client ids at all.
                         job_id, work = self._socket.recv_json()
                         msg = self._do_work(work)
+                        self.logger.debug("Going to send {0}".format(msg))
                         self._socket.send_json(
                             {'message': 'job_done',
                              'result': msg,

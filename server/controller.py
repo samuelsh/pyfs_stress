@@ -206,6 +206,7 @@ class Controller(object):
                     'Directory {0} is synced. Size is {1}'.format(syncdir.data.name,
                                                                   int(incoming_message['data']['dirsize'])))
             elif incoming_message['result'] == 'touch':
+                self.logger.debug("Successfull touch arrived {0}".format(incoming_message['target']))
                 path = incoming_message['target'].split('/')[1:]  # folder:file
                 syncdir = self._dir_tree.get_dir_by_name(path[0])
                 if not syncdir:
