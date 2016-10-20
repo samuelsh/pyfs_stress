@@ -11,6 +11,7 @@ import uuid
 import datetime
 from threading import Thread
 
+import errno
 import zmq
 from treelib.tree import NodeIDAbsentError
 
@@ -249,7 +250,8 @@ class Controller(object):
                             self.logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
                     else:
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
-        else:  # failure analysis
+        # Failures analysis
+        else:
             if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
                 'error_message']:
                 return
@@ -290,13 +292,10 @@ class Controller(object):
                         self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
                 else:
                     self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
-            # in case if touch op failed and it's not dir size limit error
-            elif incoming_message['action'] == "touch":
+            # in case if touch op failed on ENOENT
+            elif incoming_message['action'] == "touch" and incoming_message['error_code'] == errno.ENOENT:
                 rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
-                try:  # If there's no filename, that means that stat failed
-                    rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
-                except IndexError:
-                    rfile_name = None
+                rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
                 if rdir and rdir.data.ondisk:
                     error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
