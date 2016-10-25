@@ -359,11 +359,23 @@ class Controller(object):
                     self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
             else:
                 rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
-                self.logger.error(
-                    'Operation {0} FAILED UNEXPECTEDLY on Directory {1} due to {2}'.format(incoming_message['action'],
-                                                                                           rdir_name,
-                                                                                           incoming_message[
-                                                                                               'error_message']))
+                try:
+                    rfile_name = incoming_message['target'].split('/')[4]
+                except IndexError:
+                    self.logger.error(
+                        'Operation {0} FAILED UNEXPECTEDLY on Directory {1} due to {2}'.format(
+                            incoming_message['action'],
+                            rdir_name,
+                            incoming_message[
+                                'error_message']))
+                else:
+                    self.logger.error(
+                        'Operation {0} FAILED UNEXPECTEDLY on File {1}/{2} due to {3}'.format(
+                            incoming_message['action'],
+                            rdir_name,
+                            rfile_name,
+                            incoming_message[
+                                'error_message']))
 
     def run(self):
         try:
