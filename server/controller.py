@@ -270,7 +270,7 @@ class Controller(object):
                     self.logger.debug(
                         "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
                 else:
-                    self.logger.debug('Directory exists {0}, going to delete {1}'.format(rename_dir.data.name, path[1]))
+                    self.logger.debug('Directory exists {0}, going to rename {1}'.format(rename_dir.data.name, path[1]))
                     if rename_dir.data.ondisk:
                         rfile = rename_dir.data.get_file_by_name(path[1])
                         if rfile and rfile.ondisk:
@@ -326,9 +326,26 @@ class Controller(object):
                         self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
                 else:
                     self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
-            # in case if touch or rename op failed on ENOENT
-            elif (incoming_message['action'] == "touch" or incoming_message['action'] == "rename") and incoming_message[
-                'error_code'] == errno.ENOENT:
+            # in case if rename op failed on ENOENT
+            elif incoming_message['action'] == "rename" and incoming_message['error_code'] == errno.ENOENT:
+                rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
+                rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
+
+                rdir = self._dir_tree.get_dir_by_name(rdir_name)
+                if rdir:
+                    rfile = rdir.data.get_file_by_name(rfile_name)
+                    if rfile and rfile.ondisk:
+                        error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
+                        if error_time > rfile.creation_time:
+                            self.logger.error(
+                                "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
+                                    incoming_message['action'], rdir_name + "/" + rfile_name))
+                    else:
+                        self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                else:
+                    self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            # in case if touch op failed on ENOENT
+            elif incoming_message['action'] == "touch" and incoming_message['error_code'] == errno.ENOENT:
                 rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
                 rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
