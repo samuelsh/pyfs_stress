@@ -4,7 +4,6 @@
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo.py" afterPath="$PROJECT_DIR$/client/dynamo.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controller.py" afterPath="$PROJECT_DIR$/server/controller.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -87,8 +86,8 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="150" column="96" selection-start-line="150" selection-start-column="96" selection-end-line="150" selection-end-column="96" />
+            <state relative-caret-position="272">
+              <caret line="153" column="32" selection-start-line="153" selection-start-column="32" selection-end-line="153" selection-end-column="32" />
               <folding>
                 <element signature="e#47#58#0" expanded="true" />
               </folding>
@@ -156,8 +155,8 @@
         <option value="$PROJECT_DIR$/logger/pubsub_logger.py" />
         <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/config/__init__.py" />
-        <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/server/controller.py" />
+        <option value="$PROJECT_DIR$/client/dynamo.py" />
       </list>
     </option>
   </component>
@@ -585,13 +584,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00649" summary="- Improving messaging protocol implemetation">
-      <created>1476798071503</created>
-      <option name="number" value="00649" />
-      <option name="presentableId" value="LOCAL-00649" />
-      <option name="project" value="LOCAL" />
-      <updated>1476798071503</updated>
-    </task>
     <task id="LOCAL-00650" summary="- Improving messaging protocol implemetation">
       <created>1476798657143</created>
       <option name="number" value="00650" />
@@ -928,7 +920,14 @@
       <option name="project" value="LOCAL" />
       <updated>1476953729761</updated>
     </task>
-    <option name="localTasksCounter" value="698" />
+    <task id="LOCAL-00698" summary="1. Implemented file rename op">
+      <created>1477376885985</created>
+      <option name="number" value="00698" />
+      <option name="presentableId" value="LOCAL-00698" />
+      <option name="project" value="LOCAL" />
+      <updated>1477376885986</updated>
+    </task>
+    <option name="localTasksCounter" value="699" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1014,7 +1013,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" - Adding rotation handler to logger&#10;" />
     <MESSAGE value=" - Adding error checking on touch/stat&#10;" />
     <MESSAGE value=" - Adding timestamp to messages from client&#10;" />
     <MESSAGE value=" - Getting rid of locking mechanism (not really needed)&#10;" />
@@ -1039,7 +1037,8 @@
     <MESSAGE value="- read op added" />
     <MESSAGE value="1. added errno to message structure\n 2. Fixing raise between mkdir and touch" />
     <MESSAGE value="1. Fixed successful touch flow" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. Fixed successful touch flow" />
+    <MESSAGE value="1. Implemented file rename op" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Implemented file rename op" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1392,8 +1391,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="150" column="96" selection-start-line="150" selection-start-column="96" selection-end-line="150" selection-end-column="96" />
+        <state relative-caret-position="272">
+          <caret line="153" column="32" selection-start-line="153" selection-start-column="32" selection-end-line="153" selection-end-column="32" />
           <folding>
             <element signature="e#47#58#0" expanded="true" />
           </folding>
