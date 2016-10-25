@@ -56,13 +56,14 @@ class Controller(object):
         self._socket.bind("tcp://*:{0}".format(port))
 
     def rcv_messages_worker(self):
-        while 1:
+        while not self.stop_event.is_set:
             pass
 
     @property
     def get_next_job(self):
         actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
-                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read']
+                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read', 'rename', 'rename',
+                   'rename', 'rename']
 
         while True:
             action = random.choice(actions)
@@ -122,7 +123,17 @@ class Controller(object):
                     else:
                         fname = file_to_delete.name
                         target = "/{0}/{1}".format(rdir.tag, fname)
-                        # target = self._dir_tree.get_random_dir_files()
+            elif action == 'rename':
+                rdir = self._dir_tree.get_random_dir_synced()
+                if not rdir:
+                    target = 'None'
+                else:
+                    file_to_rename = rdir.data.get_random_file()
+                    if not file_to_rename:
+                        target = 'None'
+                    else:
+                        fname = file_to_rename.name
+                        target = "/{0}/{1}".format(rdir.tag, fname)
             yield Job({'action': action, 'target': target})
 
     def _get_next_worker_id(self):
@@ -252,6 +263,10 @@ class Controller(object):
                             self.logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
                     else:
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
+            elif incoming_message['action'] == 'rename':
+                path = incoming_message['target'].split('/')[1:]  # folder:file
+                self.logger.info("File {0} renamed to {1}/{2}".format(incoming_message['target'], path[0],
+                                                                      incoming_message['data']['rename_dest']))
         # Failures analysis
         else:
             if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
@@ -277,7 +292,7 @@ class Controller(object):
                         "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
             # in case stat, read or delete ops failed for some reason
             elif incoming_message['action'] == "stat" or incoming_message['action'] == "delete" or \
-                            incoming_message['action'] == 'read':
+                            incoming_message['action'] == 'read' or incoming_message['action'] == 'rename':
                 rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
                 rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
 

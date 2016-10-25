@@ -118,7 +118,7 @@ class Dynamo(object):
         mount_point = "".join(
             "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
                                                    random.randint(0, self.domains - 1)))
-        self.logger.debug('Incoming target: {0}'.format(work['target']))
+        self.logger.debug('Incoming job: \'{0}\' on \'{1}\''.format(work['action'], work['target']))
         try:
             if 'None' in work['target']:
                 raise DynamoException("{0}".format("Target not specified"))
@@ -143,6 +143,15 @@ class Dynamo(object):
                 dirpath = work['target'].split('/')[1]
                 fname = work['target'].split('/')[2]
                 os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
+            elif action == 'rename':
+                dirpath = work['target'].split('/')[1]
+                fname = work['target'].split('/')[2]
+                dst_mount_point = "".join(
+                    "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
+                                                           random.randint(0, self.domains - 1)))
+                data['rename_dest'] = shell_utils.StringUtils.get_random_string_nospec(64)
+                os.rename("{0}/{1}/{2}".format(mount_point, dirpath, fname),
+                          "{0}/{1}/{2}".format(dst_mount_point, dirpath, data['rename_dest']))
         except OSError as os_error:
             return build_message('failed', action, data, timestamp(), error_code=os_error.errno,
                                  error_message=os_error.strerror,
