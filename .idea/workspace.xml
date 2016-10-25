@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo.py" afterPath="$PROJECT_DIR$/client/dynamo.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controller.py" afterPath="$PROJECT_DIR$/server/controller.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -59,11 +59,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="controller.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="391">
-              <caret line="263" column="24" selection-start-line="263" selection-start-column="24" selection-end-line="263" selection-end-column="24" />
+              <caret line="312" column="21" selection-start-line="312" selection-start-column="21" selection-end-line="312" selection-end-column="21" />
               <folding>
                 <element signature="e#46#60#0" expanded="true" />
               </folding>
@@ -83,14 +83,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="153" column="32" selection-start-line="153" selection-start-column="32" selection-end-line="153" selection-end-column="32" />
+            <state relative-caret-position="340">
+              <caret line="154" column="25" selection-start-line="154" selection-start-column="25" selection-end-line="154" selection-end-column="25" />
               <folding>
                 <element signature="e#47#58#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="shutil.py" pinned="false" current-in-tab="false">
+        <entry file="file://C:/Python27/Lib/shutil.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="191">
+              <caret line="271" column="0" selection-start-line="271" selection-start-column="0" selection-end-line="271" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -155,8 +165,8 @@
         <option value="$PROJECT_DIR$/logger/pubsub_logger.py" />
         <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/config/__init__.py" />
-        <option value="$PROJECT_DIR$/server/controller.py" />
         <option value="$PROJECT_DIR$/client/dynamo.py" />
+        <option value="$PROJECT_DIR$/server/controller.py" />
       </list>
     </option>
   </component>
@@ -584,13 +594,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00650" summary="- Improving messaging protocol implemetation">
-      <created>1476798657143</created>
-      <option name="number" value="00650" />
-      <option name="presentableId" value="LOCAL-00650" />
-      <option name="project" value="LOCAL" />
-      <updated>1476798657143</updated>
-    </task>
     <task id="LOCAL-00651" summary="- Improving messaging protocol implemetation">
       <created>1476798883088</created>
       <option name="number" value="00651" />
@@ -927,7 +930,14 @@
       <option name="project" value="LOCAL" />
       <updated>1477376885986</updated>
     </task>
-    <option name="localTasksCounter" value="699" />
+    <task id="LOCAL-00699" summary="1. Implemented file rename op">
+      <created>1477381542706</created>
+      <option name="number" value="00699" />
+      <option name="presentableId" value="LOCAL-00699" />
+      <option name="project" value="LOCAL" />
+      <updated>1477381542706</updated>
+    </task>
+    <option name="localTasksCounter" value="700" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1047,13 +1057,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons/multiprocessing/managers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1365">
-          <caret line="68" column="8" selection-start-line="68" selection-start-column="8" selection-end-line="68" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dir_walker_multiprocess.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="399">
@@ -1181,6 +1184,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-30">
           <caret line="521" column="8" selection-start-line="521" selection-start-column="8" selection-end-line="521" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1379,22 +1383,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/controller.py">
+    <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="263" column="24" selection-start-line="263" selection-start-column="24" selection-end-line="263" selection-end-column="24" />
+        <state relative-caret-position="340">
+          <caret line="154" column="25" selection-start-line="154" selection-start-column="25" selection-end-line="154" selection-end-column="25" />
           <folding>
-            <element signature="e#46#60#0" expanded="true" />
+            <element signature="e#47#58#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/dynamo.py">
+    <entry file="file://C:/Python27/Lib/shutil.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="153" column="32" selection-start-line="153" selection-start-column="32" selection-end-line="153" selection-end-column="32" />
+        <state relative-caret-position="191">
+          <caret line="271" column="0" selection-start-line="271" selection-start-column="0" selection-end-line="271" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="312" column="21" selection-start-line="312" selection-start-column="21" selection-end-line="312" selection-end-column="21" />
           <folding>
-            <element signature="e#47#58#0" expanded="true" />
+            <element signature="e#46#60#0" expanded="true" />
           </folding>
         </state>
       </provider>

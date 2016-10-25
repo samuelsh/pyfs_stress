@@ -292,7 +292,7 @@ class Controller(object):
                         "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
             # in case stat, read or delete ops failed for some reason
             elif incoming_message['action'] == "stat" or incoming_message['action'] == "delete" or \
-                            incoming_message['action'] == 'read' or incoming_message['action'] == 'rename':
+                            incoming_message['action'] == 'read':
                 rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
                 rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
 
@@ -309,8 +309,9 @@ class Controller(object):
                         self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
                 else:
                     self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
-            # in case if touch op failed on ENOENT
-            elif incoming_message['action'] == "touch" and incoming_message['error_code'] == errno.ENOENT:
+            # in case if touch or rename op failed on ENOENT
+            elif (incoming_message['action'] == "touch" or incoming_message['action'] == "rename") and incoming_message[
+                'error_code'] == errno.ENOENT:
                 rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
                 rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
                 rdir = self._dir_tree.get_dir_by_name(rdir_name)
