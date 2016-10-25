@@ -265,6 +265,23 @@ class Controller(object):
                         self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
             elif incoming_message['action'] == 'rename':
                 path = incoming_message['target'].split('/')[1:]  # folder:file
+                rename_dir = self._dir_tree.get_dir_by_name(path[0])
+                if not rename_dir:
+                    self.logger.debug(
+                        "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+                else:
+                    self.logger.debug('Directory exists {0}, going to delete {1}'.format(rename_dir.data.name, path[1]))
+                    if rename_dir.data.ondisk:
+                        rfile = rename_dir.data.get_file_by_name(path[1])
+                        if rfile and rfile.ondisk:
+                            self.logger.debug('File {0}/{1} is found, renaming'.format(path[0], path[1]))
+                            rfile.name = incoming_message['data']['rename_dest']
+                            self.logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
+                        else:
+                            self.logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+                    else:
+                        self.logger.debug(
+                            "Directory {0} is not on disk, nothing to update".format(rename_dir.data.name))
                 self.logger.info("File {0} renamed to {1}/{2}".format(incoming_message['target'], path[0],
                                                                       incoming_message['data']['rename_dest']))
         # Failures analysis
