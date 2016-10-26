@@ -48,7 +48,7 @@ class ConsoleLogger:
         self._logger.setLevel(logging.DEBUG)
         # create console handler and set level to info
         handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.INFO)
+        handler.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - [%(name)s]: %(message)s")
         handler.setFormatter(formatter)
         self._logger.addHandler(handler)

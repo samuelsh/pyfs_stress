@@ -26,8 +26,8 @@
       <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="99" column="42" selection-start-line="99" selection-start-column="42" selection-end-line="99" selection-end-column="42" />
+            <state relative-caret-position="459">
+              <caret line="109" column="24" selection-start-line="109" selection-start-column="24" selection-end-line="109" selection-end-column="24" />
               <folding>
                 <element signature="e#63#78#0" expanded="true" />
               </folding>
@@ -62,7 +62,7 @@
       <file leaf-file-name="controller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
+            <state relative-caret-position="102">
               <caret line="69" column="36" selection-start-line="69" selection-start-column="36" selection-end-line="69" selection-end-column="36" />
               <folding>
                 <element signature="e#46#57#0" expanded="true" />
@@ -130,8 +130,8 @@
       <file leaf-file-name="server_logger.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/logger/server_logger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+            <state relative-caret-position="455">
+              <caret line="50" column="36" selection-start-line="50" selection-start-column="36" selection-end-line="50" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -617,13 +617,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00667" summary="- formatting client logging">
-      <created>1476858870412</created>
-      <option name="number" value="00667" />
-      <option name="presentableId" value="LOCAL-00667" />
-      <option name="project" value="LOCAL" />
-      <updated>1476858870412</updated>
-    </task>
     <task id="LOCAL-00668" summary="- formatting client logging">
       <created>1476859042226</created>
       <option name="number" value="00668" />
@@ -960,7 +953,14 @@
       <option name="project" value="LOCAL" />
       <updated>1477482996948</updated>
     </task>
-    <option name="localTasksCounter" value="716" />
+    <task id="LOCAL-00716" summary="Response actions dict. replaces if/else logic in controller">
+      <created>1477483164856</created>
+      <option name="number" value="00716" />
+      <option name="presentableId" value="LOCAL-00716" />
+      <option name="project" value="LOCAL" />
+      <updated>1477483164856</updated>
+    </task>
+    <option name="localTasksCounter" value="717" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1391,12 +1391,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/controller.py">
+    <entry file="file://$PROJECT_DIR$/server/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="69" column="36" selection-start-line="69" selection-start-column="36" selection-end-line="69" selection-end-column="36" />
+        <state relative-caret-position="629">
+          <caret line="340" column="4" selection-start-line="340" selection-start-column="4" selection-end-line="340" selection-end-column="4" />
           <folding>
-            <element signature="e#46#57#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1411,20 +1411,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/response_actions.py">
+    <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="340" column="4" selection-start-line="340" selection-start-column="4" selection-end-line="340" selection-end-column="4" />
+        <state relative-caret-position="102">
+          <caret line="69" column="36" selection-start-line="69" selection-start-column="36" selection-end-line="69" selection-end-column="36" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#46#57#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tree_runner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="99" column="42" selection-start-line="99" selection-start-column="42" selection-end-line="99" selection-end-column="42" />
+        <state relative-caret-position="459">
+          <caret line="109" column="24" selection-start-line="109" selection-start-column="24" selection-end-line="109" selection-end-column="24" />
           <folding>
             <element signature="e#63#78#0" expanded="true" />
           </folding>
@@ -1433,8 +1433,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/logger/server_logger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+        <state relative-caret-position="455">
+          <caret line="50" column="36" selection-start-line="50" selection-start-column="36" selection-end-line="50" selection-end-column="36" />
           <folding />
         </state>
       </provider>
