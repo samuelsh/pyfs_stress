@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controller.py" afterPath="$PROJECT_DIR$/server/controller.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/response_actions.py" afterPath="$PROJECT_DIR$/server/response_actions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree_runner.py" afterPath="$PROJECT_DIR$/tree_runner.py" />
     </list>
     <ignored path="file_scanner.iws" />
@@ -23,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="94" column="10" selection-start-line="94" selection-start-column="10" selection-end-line="94" selection-end-column="10" />
+            <state relative-caret-position="357">
+              <caret line="112" column="107" selection-start-line="112" selection-start-column="107" selection-end-line="112" selection-end-column="107" />
               <folding>
                 <element signature="e#63#78#0" expanded="true" />
               </folding>
@@ -50,8 +52,8 @@
       <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="222" column="8" selection-start-line="222" selection-start-column="8" selection-end-line="222" selection-end-column="8" />
+            <state relative-caret-position="4862">
+              <caret line="316" column="20" selection-start-line="316" selection-start-column="20" selection-end-line="316" selection-end-column="20" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -59,13 +61,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="controller.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-119">
-              <caret line="42" column="50" selection-start-line="42" selection-start-column="50" selection-end-line="42" selection-end-column="50" />
+            <state relative-caret-position="221">
+              <caret line="52" column="48" selection-start-line="52" selection-start-column="48" selection-end-line="52" selection-end-column="48" />
               <folding>
-                <element signature="e#46#60#0" expanded="true" />
+                <element signature="e#46#57#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -74,8 +76,8 @@
       <file leaf-file-name="shell_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="250" column="1" selection-start-line="250" selection-start-column="1" selection-end-line="250" selection-end-column="1" />
+            <state relative-caret-position="489">
+              <caret line="247" column="0" selection-start-line="247" selection-start-column="0" selection-end-line="247" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -130,8 +132,8 @@
       <file leaf-file-name="server_logger.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/logger/server_logger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="10" column="5" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
+            <state relative-caret-position="187">
+              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -185,11 +187,11 @@
         <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/server/helpers.py" />
         <option value="$PROJECT_DIR$/client/dynamo.py" />
-        <option value="$PROJECT_DIR$/server/response_actions.py" />
         <option value="$PROJECT_DIR$/logger/pubsub_logger.py" />
         <option value="$PROJECT_DIR$/logger/server_logger.py" />
-        <option value="$PROJECT_DIR$/server/controller.py" />
         <option value="$PROJECT_DIR$/tree_runner.py" />
+        <option value="$PROJECT_DIR$/server/response_actions.py" />
+        <option value="$PROJECT_DIR$/server/controller.py" />
       </list>
     </option>
   </component>
@@ -617,13 +619,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00663" summary="- formatting client logging">
-      <created>1476856317575</created>
-      <option name="number" value="00663" />
-      <option name="presentableId" value="LOCAL-00663" />
-      <option name="project" value="LOCAL" />
-      <updated>1476856317575</updated>
-    </task>
     <task id="LOCAL-00664" summary="- formatting client logging">
       <created>1476856809857</created>
       <option name="number" value="00664" />
@@ -960,7 +955,14 @@
       <option name="project" value="LOCAL" />
       <updated>1477457257691</updated>
     </task>
-    <option name="localTasksCounter" value="712" />
+    <task id="LOCAL-00712" summary="1. Adding response actions dict. wich will replcae if/else logic in controller">
+      <created>1477457887082</created>
+      <option name="number" value="00712" />
+      <option name="presentableId" value="LOCAL-00712" />
+      <option name="project" value="LOCAL" />
+      <updated>1477457887082</updated>
+    </task>
+    <option name="localTasksCounter" value="713" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1308,7 +1310,7 @@
         <state relative-caret-position="153">
           <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
           <folding>
-            <element signature="e#51#63#0" expanded="true" />
+            <element signature="e#51#63#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1363,14 +1365,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="250" column="1" selection-start-line="250" selection-start-column="1" selection-end-line="250" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -1401,18 +1395,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="489">
+          <caret line="247" column="0" selection-start-line="247" selection-start-column="0" selection-end-line="247" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/logger/server_logger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="10" column="5" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
+        <state relative-caret-position="187">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tree_runner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="112" column="107" selection-start-line="112" selection-start-column="107" selection-end-line="112" selection-end-column="107" />
+          <folding>
+            <element signature="e#63#78#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="222" column="8" selection-start-line="222" selection-start-column="8" selection-end-line="222" selection-end-column="8" />
+        <state relative-caret-position="4862">
+          <caret line="316" column="20" selection-start-line="316" selection-start-column="20" selection-end-line="316" selection-end-column="20" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
@@ -1421,20 +1433,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-119">
-          <caret line="42" column="50" selection-start-line="42" selection-start-column="50" selection-end-line="42" selection-end-column="50" />
+        <state relative-caret-position="221">
+          <caret line="52" column="48" selection-start-line="52" selection-start-column="48" selection-end-line="52" selection-end-column="48" />
           <folding>
-            <element signature="e#46#60#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tree_runner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="94" column="10" selection-start-line="94" selection-start-column="10" selection-end-line="94" selection-end-column="10" />
-          <folding>
-            <element signature="e#63#78#0" expanded="true" />
+            <element signature="e#46#57#0" expanded="true" />
           </folding>
         </state>
       </provider>

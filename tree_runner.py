@@ -37,6 +37,16 @@ def get_args():
     return args
 
 
+def setup_console_logger():
+    logger = logging.getLogger(__name__)
+    # create console handler and set level to info
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
+
 def deploy_clients(clients):
     """
     Args:
@@ -94,9 +104,9 @@ def run_sub_logger(ip, event):
 
 def main():
     args = get_args()
-    logger = logging.getLogger(__name__)
     stop_event = Event()
     dir_tree = dirtree.DirTree()
+    logger = setup_console_logger()
     logger.debug("Logger initialised {0}".format(logger))
     clients_list = args.clients
     logger.info("Setting passwordless SSH connection")
