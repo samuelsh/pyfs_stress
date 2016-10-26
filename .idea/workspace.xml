@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controller.py" afterPath="$PROJECT_DIR$/server/controller.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/response_actions.py" afterPath="$PROJECT_DIR$/server/response_actions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree_runner.py" afterPath="$PROJECT_DIR$/tree_runner.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,11 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="846">
-              <caret line="84" column="28" selection-start-line="84" selection-start-column="28" selection-end-line="84" selection-end-column="28" />
+            <state relative-caret-position="319">
+              <caret line="92" column="0" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
               <folding>
                 <element signature="e#63#78#0" expanded="true" />
               </folding>
@@ -50,8 +51,8 @@
       <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1628">
-              <caret line="206" column="0" selection-start-line="206" selection-start-column="0" selection-end-line="206" selection-end-column="0" />
+            <state relative-caret-position="306">
+              <caret line="222" column="8" selection-start-line="222" selection-start-column="8" selection-end-line="222" selection-end-column="8" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -59,7 +60,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="controller.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="controller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/controller.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="238">
@@ -130,8 +131,8 @@
       <file leaf-file-name="server_logger.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/logger/server_logger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+            <state relative-caret-position="153">
+              <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -180,16 +181,16 @@
         <option value="$PROJECT_DIR$/server/async_controller.py" />
         <option value="$PROJECT_DIR$/messages_queue/priority_queue.py" />
         <option value="$PROJECT_DIR$/logger/client_logger.py" />
-        <option value="$PROJECT_DIR$/tree_runner.py" />
         <option value="$PROJECT_DIR$/client/dynamo_starter.py" />
         <option value="$PROJECT_DIR$/logger/pubsub_logger.py" />
         <option value="$PROJECT_DIR$/config/__init__.py" />
         <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/server/helpers.py" />
         <option value="$PROJECT_DIR$/logger/server_logger.py" />
-        <option value="$PROJECT_DIR$/server/response_actions.py" />
         <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/server/controller.py" />
+        <option value="$PROJECT_DIR$/server/response_actions.py" />
+        <option value="$PROJECT_DIR$/tree_runner.py" />
       </list>
     </option>
   </component>
@@ -617,13 +618,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00657" summary="- Improving messaging protocol implemetation">
-      <created>1476851417807</created>
-      <option name="number" value="00657" />
-      <option name="presentableId" value="LOCAL-00657" />
-      <option name="project" value="LOCAL" />
-      <updated>1476851417807</updated>
-    </task>
     <task id="LOCAL-00658" summary="- Improving messaging protocol implemetation">
       <created>1476851869773</created>
       <option name="number" value="00658" />
@@ -960,7 +954,14 @@
       <option name="project" value="LOCAL" />
       <updated>1477453376857</updated>
     </task>
-    <option name="localTasksCounter" value="706" />
+    <task id="LOCAL-00706" summary="1. Adding response actions dict. wich will replcae if/else logic in controller">
+      <created>1477454201482</created>
+      <option name="number" value="00706" />
+      <option name="presentableId" value="LOCAL-00706" />
+      <option name="project" value="LOCAL" />
+      <updated>1477454201482</updated>
+    </task>
+    <option name="localTasksCounter" value="707" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1046,7 +1047,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" - Getting rid of locking mechanism (not really needed)&#10;" />
     <MESSAGE value=" - If directory entry reach its size limit it will be removed from list of active dirs&#10;" />
     <MESSAGE value=" - Added verify timestamps on failed stat and delete&#10;" />
     <MESSAGE value=" - Added touch operation verify&#10;" />
@@ -1071,7 +1071,8 @@
     <MESSAGE value="1. Implemented file rename op" />
     <MESSAGE value="1. Improving loggin on UNEXPECED FAIL error" />
     <MESSAGE value="1. handlig rename op errors" />
-    <option name="LAST_COMMIT_MESSAGE" value="1. handlig rename op errors" />
+    <MESSAGE value="1. Adding response actions dict. wich will replcae if/else logic in controller" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Adding response actions dict. wich will replcae if/else logic in controller" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1313,16 +1314,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tree_runner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="846">
-          <caret line="84" column="28" selection-start-line="84" selection-start-column="28" selection-end-line="84" selection-end-column="28" />
-          <folding>
-            <element signature="e#63#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="574">
@@ -1375,24 +1366,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/logger/pubsub_logger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1037">
-          <caret line="61" column="39" selection-start-line="61" selection-start-column="39" selection-end-line="61" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/logger/server_logger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/helpers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -1409,6 +1382,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/server/controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="65" column="107" selection-start-line="65" selection-start-column="107" selection-end-line="65" selection-end-column="107" />
+          <folding>
+            <element signature="e#46#60#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/logger/pubsub_logger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1037">
+          <caret line="61" column="39" selection-start-line="61" selection-start-column="39" selection-end-line="61" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -1419,22 +1412,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/logger/server_logger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1628">
-          <caret line="206" column="0" selection-start-line="206" selection-start-column="0" selection-end-line="206" selection-end-column="0" />
+        <state relative-caret-position="306">
+          <caret line="222" column="8" selection-start-line="222" selection-start-column="8" selection-end-line="222" selection-end-column="8" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/controller.py">
+    <entry file="file://$PROJECT_DIR$/tree_runner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="65" column="107" selection-start-line="65" selection-start-column="107" selection-end-line="65" selection-end-column="107" />
+        <state relative-caret-position="319">
+          <caret line="92" column="0" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
           <folding>
-            <element signature="e#46#60#0" expanded="true" />
+            <element signature="e#63#78#0" expanded="true" />
           </folding>
         </state>
       </provider>

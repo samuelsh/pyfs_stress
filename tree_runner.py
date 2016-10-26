@@ -85,7 +85,7 @@ def run_sub_logger(ip, event):
     while not event.is_set():
         try:
             topic, message = sub_logger.sub.recv_multipart(flags=zmq.NOBLOCK)
-            log_msg = getattr(logging, topic.lower())
+            log_msg = getattr(sub_logger, topic.lower())
             log_msg(message)
         except zmq.ZMQError as zmq_error:
             if zmq_error.errno == zmq.EAGAIN:

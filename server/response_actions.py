@@ -157,7 +157,7 @@ def touch_fail(logger, incoming_message, dir_tree):
                 "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
             dir_tree.append_node()
             logger.info(
-                "New Directory node appended to tree {0}".format(self._dir_tree.get_last_node_tag()))
+                "New Directory node appended to tree {0}".format(dir_tree.get_last_node_tag()))
         except NodeIDAbsentError:
             logger.debug(
                 "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
