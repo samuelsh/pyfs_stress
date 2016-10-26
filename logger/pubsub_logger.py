@@ -40,7 +40,7 @@ class PUBLogger:
 class SUBLogger:
     def __init__(self, ip, output_dir="", port=config.PUBSUB_LOGGER_PORT):
         self.output_dir = output_dir
-        self._logger = logging.getLogger()
+        self._logger = logging.getLogger('sub_logger')
         self._logger.setLevel(logging.DEBUG)
 
         self.ctx = zmq.Context()
