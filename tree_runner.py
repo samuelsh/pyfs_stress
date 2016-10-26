@@ -16,6 +16,7 @@ import zmq
 import config
 from logger import server_logger
 from logger.pubsub_logger import SUBLogger
+from logger.server_logger import ConsoleLogger
 from server.controller import Controller
 from tree import dirtree
 from utils import shell_utils
@@ -36,16 +37,6 @@ def get_args():
     args = parser.parse_args()
     return args
 
-
-def setup_console_logger():
-    logger = logging.getLogger(__name__)
-    # create console handler and set level to info
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
 
 def deploy_clients(clients):
     """
@@ -106,8 +97,8 @@ def main():
     args = get_args()
     stop_event = Event()
     dir_tree = dirtree.DirTree()
-    logger = setup_console_logger()
-    logger.debug("Logger initialised {0}".format(logger))
+    logger = ConsoleLogger().logger
+    logger.debug("{0} Logger initialised {1}".format(__name__, logger))
     clients_list = args.clients
     logger.info("Setting passwordless SSH connection")
     shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)

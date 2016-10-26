@@ -187,6 +187,9 @@ def failed_response_actions(action):
 
 
 def mkdir_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
+        'error_message']:
+        return
     generic_error_handler(logger, incoming_message)
 
 
@@ -229,6 +232,9 @@ def touch_fail(logger, incoming_message, dir_tree):
 
 
 def list_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
+        'error_message']:
+        return
     if incoming_message['error_code'] == errno.ENOENT:
         pass
     else:
@@ -236,6 +242,9 @@ def list_fail(logger, incoming_message, dir_tree):
 
 
 def stat_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
+        'error_message']:
+        return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
@@ -258,6 +267,9 @@ def stat_fail(logger, incoming_message, dir_tree):
 
 
 def read_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
+        'error_message']:
+        return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
@@ -280,6 +292,9 @@ def read_fail(logger, incoming_message, dir_tree):
 
 
 def delete_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
+        'error_message']:
+        return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
@@ -302,6 +317,9 @@ def delete_fail(logger, incoming_message, dir_tree):
 
 
 def rename_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
+        'error_message']:
+        return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
