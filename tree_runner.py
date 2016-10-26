@@ -94,7 +94,7 @@ def run_sub_logger(ip, event):
 
 def main():
     args = get_args()
-    logger = server_logger.Logger().logger
+    logger = logging.getLogger(__name__)
     stop_event = Event()
     dir_tree = dirtree.DirTree()
     logger.debug("Logger initialised {0}".format(logger))
