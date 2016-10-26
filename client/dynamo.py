@@ -132,7 +132,9 @@ class Dynamo(object):
                 if dirsize > MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
                     data['target_path'] = work['target']
                     raise DynamoException("Directory Entry reached {0} size limit".format(MAX_DIR_SIZE))
-                shell_utils.touch('{0}{1}'.format(mount_point, work['target']))
+                # shell_utils.touch('{0}{1}'.format(mount_point, work['target']))
+                with open('{0}{1}'.format(mount_point, work['target']), 'w'):
+                    pass
                 data['dirsize'] = os.stat("{0}/{1}".format(mount_point, work['target'].split('/')[1])).st_size
             elif action == 'stat':
                 os.stat("{0}{1}".format(mount_point, work['target']))

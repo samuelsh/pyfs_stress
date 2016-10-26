@@ -17,6 +17,7 @@ from treelib.tree import NodeIDAbsentError
 
 from config import CTRL_MSG_PORT
 from messages_queue import priority_queue
+from server import helpers
 
 MAX_DIR_SIZE = 128 * 1024
 
@@ -186,22 +187,7 @@ class Controller(object):
         Failure message format: {'result', 'action', 'error_code', 'error_message', 'target', 'linenumber', 'timestamp',
          'data{}'}
         """
-        try:
-            formatted_message = "{0} | {1} | {2} | [errno:{3}] | {4} | {5} | data: {6} | {7}".format(
-                incoming_message['result'],
-                incoming_message['action'],
-                incoming_message['target'],
-                incoming_message['error_code'],
-                incoming_message['error_message'],
-                incoming_message['linenum'],
-                incoming_message['data'],
-                incoming_message['timestamp'])
-        except KeyError:
-            formatted_message = "{0} | {1} | {2} | data: {3} | {4}".format(incoming_message['result'],
-                                                                           incoming_message['action'],
-                                                                           incoming_message['target'],
-                                                                           incoming_message['data'],
-                                                                           incoming_message['timestamp'])
+        formatted_message = helpers.message_to_pretty_string(incoming_message)
         self.logger.info('[{0}]: finished {1}, result: {2}'.format(worker_id, job.id, formatted_message))
         if incoming_message['result'] == 'success':
             if incoming_message['action'] == 'mkdir':  # mkdir successful which means is synced with storage
@@ -282,8 +268,6 @@ class Controller(object):
                     else:
                         self.logger.debug(
                             "Directory {0} is not on disk, nothing to update".format(rename_dir.data.name))
-                self.logger.info("File {0} renamed to {1}/{2}".format(incoming_message['target'], path[0],
-                                                                      incoming_message['data']['rename_dest']))
         # Failures analysis
         else:
             if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[

@@ -26,14 +26,14 @@ class Logger:
         self._logger.addHandler(handler)
 
         # create debug file handler and set level to debug, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "debug.log"), "a", 100 * 1024 * 1024, 10)
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "controller_debug.log"), "a", 100 * 1024 * 1024, 10)
         handler.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
         self._logger.addHandler(handler)
 
         # create debug file handler and set level to error, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "error.log"), "a", 100 * 1024 * 1024, 10)
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "controller_error.log"), "a", 100 * 1024 * 1024, 10)
         handler.setLevel(logging.WARNING)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
