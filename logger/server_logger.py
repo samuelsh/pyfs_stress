@@ -9,13 +9,9 @@ __author__ = 'samuels'
 
 
 class Logger:
-    def __init__(self, output_dir="", mp=False):
+    def __init__(self, output_dir=""):
         self.output_dir = output_dir
-
-        if not mp:
-            self._logger = logging.getLogger()
-        else:
-            self._logger = multiprocessing.get_logger()
+        self._logger = logging.getLogger(__name__)
         self._logger.setLevel(logging.DEBUG)
 
         # create console handler and set level to info

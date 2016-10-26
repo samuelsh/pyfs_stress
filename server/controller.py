@@ -16,6 +16,7 @@ import zmq
 from treelib.tree import NodeIDAbsentError
 
 from config import CTRL_MSG_PORT
+from logger import server_logger
 from messages_queue import priority_queue
 from server import helpers
 
@@ -29,7 +30,7 @@ class Job(object):
 
 
 class Controller(object):
-    def __init__(self, logger, stop_event, dir_tree, port=CTRL_MSG_PORT):
+    def __init__(self, stop_event, dir_tree, port=CTRL_MSG_PORT):
         """
         Args:
             logger: Logger
@@ -39,7 +40,7 @@ class Controller(object):
         """
         super(Controller, self).__init__()
         self.stop_event = stop_event
-        self.logger = logger
+        self.logger = server_logger.Logger().logger
         self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
         self._context = zmq.Context()
         self.workers = {}

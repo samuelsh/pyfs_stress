@@ -76,8 +76,8 @@ def run_clients(cluster, clients, export, active_nodes, domains):
                                                            active_nodes, domains))
 
 
-def run_controller(logger, event, dir_tree):
-    Controller(logger, event, dir_tree).run()
+def run_controller(event, dir_tree):
+    Controller(event, dir_tree).run()
 
 
 def run_sub_logger(ip, event):
