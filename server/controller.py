@@ -63,8 +63,7 @@ class Controller(object):
     @property
     def get_next_job(self):
         actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
-                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read', 'rename', 'rename',
-                   'rename', 'rename']
+                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read', 'rename']
 
         while True:
             action = random.choice(actions)
