@@ -43,8 +43,8 @@ class Logger:
 
 
 class ConsoleLogger:
-    def __init__(self):
-        self._logger = logging.getLogger(__name__)
+    def __init__(self, name):
+        self._logger = logging.getLogger(name)
         # create console handler and set level to info
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.INFO)

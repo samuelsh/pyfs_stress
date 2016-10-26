@@ -97,7 +97,7 @@ def main():
     args = get_args()
     stop_event = Event()
     dir_tree = dirtree.DirTree()
-    logger = ConsoleLogger().logger
+    logger = ConsoleLogger(__name__).logger
     logger.debug("{0} Logger initialised {1}".format(__name__, logger))
     clients_list = args.clients
     logger.info("Setting passwordless SSH connection")
