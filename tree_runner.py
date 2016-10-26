@@ -107,7 +107,7 @@ def main():
     domains = shell_utils.FSUtils.get_domains_num(args.cluster)
     logger.debug("FSD domains: %s" % domains)
     logger.info("Starting controller")
-    controller_process = Process(target=run_controller, args=(logger, stop_event, dir_tree,))
+    controller_process = Process(target=run_controller, args=(stop_event, dir_tree,))
     controller_process.start()
     sub_logger_process = Process(target=run_sub_logger,
                                  args=(socket.gethostbyname(socket.gethostname()), stop_event,))
