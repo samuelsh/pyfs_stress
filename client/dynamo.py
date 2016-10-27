@@ -94,7 +94,7 @@ class Dynamo(object):
                              'result': msg,
                              'job_id': job_id})
                 except zmq.ZMQError:
-                    self.logger.exception("ZMQ Error. Message {0} lost!".format(msg))
+                    self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
         except KeyboardInterrupt:
             pass
         finally:

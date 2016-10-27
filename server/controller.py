@@ -15,6 +15,7 @@ from config import CTRL_MSG_PORT
 from logger import server_logger
 from messages_queue import priority_queue
 from server import helpers
+from server.request_actions import request_action
 from server.response_actions import response_action
 
 MAX_DIR_SIZE = 128 * 1024
@@ -68,7 +69,6 @@ class Controller(object):
 
         while True:
             action = random.choice(actions)
-            target = 'None'
             # if some client disconnected, messages assigned to him won't be lost
             if self._work_to_requeue:
                 yield self._work_to_requeue.pop()
@@ -78,64 +78,65 @@ class Controller(object):
                 self._dir_tree.append_node()
                 target = self._dir_tree.get_last_node_tag()
                 yield Job({'action': action, 'target': target})
-            if action == "mkdir":
-                # if self._dir_tree.get_last_node_data().size >= MAX_DIR_SIZE:
-                if len(self._dir_tree.nids) < 100:
-                    self._dir_tree.append_node()
-                self.logger.debug(
-                    "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_tag()))
-                target_dir = self._dir_tree.get_random_dir_not_synced()
-                if target_dir:
-                    target = target_dir.data.name
-                self.logger.debug(
-                    "Controller: Dir {0} current size is {1}".format(target, self._dir_tree.get_last_node_data().size))
-            elif action == "touch":
-                rdir = self._dir_tree.get_random_dir_synced()
-                if not rdir:
-                    target = 'None'
-                else:
-                    fname = rdir.data.touch()
-                    target = "/{0}/{1}".format(rdir.tag, fname)
-            elif action == 'stat' or action == 'read':
-                rdir = self._dir_tree.get_random_dir_synced()
-                if rdir:
-                    rfile = rdir.data.get_random_file()
-                    if not rfile:
-                        target = 'None'
-                    else:
-                        fname = rfile.name
-                        target = "/{0}/{1}".format(rdir.tag, fname)
-                else:
-                    target = 'None'
-            elif action == "list":
-                rdir = self._dir_tree.get_random_dir_synced()
-                if not rdir:
-                    target = 'None'
-                else:
-                    target = rdir.data.name
-            elif action == 'delete':
-                rdir = self._dir_tree.get_random_dir_synced()
-                if not rdir:
-                    target = 'None'
-                else:
-                    file_to_delete = rdir.data.get_random_file()
-                    if not file_to_delete:
-                        target = 'None'
-                    else:
-                        fname = file_to_delete.name
-                        target = "/{0}/{1}".format(rdir.tag, fname)
-            elif action == 'rename':
-                rdir = self._dir_tree.get_random_dir_synced()
-                if not rdir:
-                    target = 'None'
-                else:
-                    file_to_rename = rdir.data.get_random_file()
-                    if not file_to_rename:
-                        target = 'None'
-                    else:
-                        fname = file_to_rename.name
-                        target = "/{0}/{1}".format(rdir.tag, fname)
-            yield Job({'action': action, 'target': target})
+            # if action == "mkdir":
+            #     # if self._dir_tree.get_last_node_data().size >= MAX_DIR_SIZE:
+            #     if len(self._dir_tree.nids) < 100:
+            #         self._dir_tree.append_node()
+            #     self.logger.debug(
+            #         "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_tag()))
+            #     target_dir = self._dir_tree.get_random_dir_not_synced()
+            #     if target_dir:
+            #         target = target_dir.data.name
+            #     self.logger.debug(
+            #         "Controller: Dir {0} current size is {1}".format(target, self._dir_tree.get_last_node_data().size))
+            # elif action == "touch":
+            #     rdir = self._dir_tree.get_random_dir_synced()
+            #     if not rdir:
+            #         target = 'None'
+            #     else:
+            #         fname = rdir.data.touch()
+            #         target = "/{0}/{1}".format(rdir.tag, fname)
+            # elif action == 'stat' or action == 'read':
+            #     rdir = self._dir_tree.get_random_dir_synced()
+            #     if rdir:
+            #         rfile = rdir.data.get_random_file()
+            #         if not rfile:
+            #             target = 'None'
+            #         else:
+            #             fname = rfile.name
+            #             target = "/{0}/{1}".format(rdir.tag, fname)
+            #     else:
+            #         target = 'None'
+            # elif action == "list":
+            #     rdir = self._dir_tree.get_random_dir_synced()
+            #     if not rdir:
+            #         target = 'None'
+            #     else:
+            #         target = rdir.data.name
+            # elif action == 'delete':
+            #     rdir = self._dir_tree.get_random_dir_synced()
+            #     if not rdir:
+            #         target = 'None'
+            #     else:
+            #         file_to_delete = rdir.data.get_random_file()
+            #         if not file_to_delete:
+            #             target = 'None'
+            #         else:
+            #             fname = file_to_delete.name
+            #             target = "/{0}/{1}".format(rdir.tag, fname)
+            # elif action == 'rename':
+            #     rdir = self._dir_tree.get_random_dir_synced()
+            #     if not rdir:
+            #         target = 'None'
+            #     else:
+            #         file_to_rename = rdir.data.get_random_file()
+            #         if not file_to_rename:
+            #             target = 'None'
+            #         else:
+            #             fname = file_to_rename.name
+            #             target = "/{0}/{1}".format(rdir.tag, fname)
+
+            yield Job({'action': action, 'target': request_action(action, self.logger, self._dir_tree)})
 
     def _get_next_worker_id(self):
         """Return the id of the next worker available to process work. Note
@@ -190,177 +191,6 @@ class Controller(object):
         formatted_message = helpers.message_to_pretty_string(incoming_message)
         self.logger.info('[{0}]: finished {1}, result: {2}'.format(worker_id, job.id, formatted_message))
         response_action(self.logger, incoming_message, self.dir_tree)
-        # if incoming_message['result'] == 'success':
-        #     if incoming_message['action'] == 'mkdir':  # mkdir successful which means is synced with storage
-        #         syncdir = self._dir_tree.get_dir_by_name(incoming_message['target'])
-        #         syncdir.data.size = int(incoming_message['data']['dirsize'])
-        #         syncdir.data.ondisk = True
-        #         syncdir.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-        #                                                            '%Y/%m/%d %H:%M:%S.%f')
-        #         self._dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name).hexdigest())
-        #         self.logger.debug(
-        #             "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
-        #         self.logger.info(
-        #             'Directory {0} is synced. Size is {1}'.format(syncdir.data.name,
-        #                                                           int(incoming_message['data']['dirsize'])))
-        #     elif incoming_message['action'] == 'touch':
-        #         self.logger.debug("Successfull touch arrived {0}".format(incoming_message['target']))
-        #         path = incoming_message['target'].split('/')[1:]  # folder:file
-        #         syncdir = self._dir_tree.get_dir_by_name(path[0])
-        #         if not syncdir:
-        #             self.logger.debug(
-        #                 "Directory {0} already removed from active dirs list, dropping touch {1}".format(path[0],
-        #                                                                                                  path[1]))
-        #         # There might be a raise when successful mkdir message will arrive after successful touch message
-        #         # So we won't check here if dir is already synced
-        #         else:
-        #             for f in syncdir.data.files:
-        #                 if f.name == path[1]:  # Now, when we got reply from client that file was created,
-        #                     #  we can mark it as synced
-        #                     syncdir.data.size = int(incoming_message['data']['dirsize'])
-        #                     f.ondisk = True
-        #                     f.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-        #                                                                  '%Y/%m/%d %H:%M:%S.%f')
-        #                     self.logger.debug(
-        #                         "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
-        #                     self.logger.info(
-        #                         'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
-        #                                                                                        int(incoming_message[
-        #                                                                                                'data'][
-        #                                                                                                'dirsize'])))
-        #                     break
-        #             else:
-        #                 self.logger.debug(
-        #                     "File {0} not found in directory {1}. Skipping touch ".format(path[0], path[1]))
-        #     elif incoming_message['action'] == 'delete':
-        #         path = incoming_message['target'].split('/')[1:]  # folder:file
-        #         deldir = self._dir_tree.get_dir_by_name(path[0])
-        #         if not deldir:
-        #             self.logger.debug(
-        #                 "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
-        #         else:
-        #             self.logger.debug('Directory exists {0}, going to delete {1}'.format(deldir.data.name, path[1]))
-        #             if deldir.data.ondisk:
-        #                 rfile = deldir.data.get_file_by_name(path[1])
-        #                 if rfile and rfile.ondisk:
-        #                     self.logger.debug('File {0}/{1} is found, removing'.format(path[0], path[1]))
-        #                     rfile.ondisk = False
-        #                     self.logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
-        #                 else:
-        #                     self.logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
-        #             else:
-        #                 self.logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
-        #     elif incoming_message['action'] == 'rename':
-        #         path = incoming_message['target'].split('/')[1:]  # folder:file
-        #         rename_dir = self._dir_tree.get_dir_by_name(path[0])
-        #         if not rename_dir:
-        #             self.logger.debug(
-        #                 "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
-        #         else:
-        #             self.logger.debug('Directory exists {0}, going to rename {1}'.format(rename_dir.data.name, path[1]))
-        #             if rename_dir.data.ondisk:
-        #                 rfile = rename_dir.data.get_file_by_name(path[1])
-        #                 if rfile and rfile.ondisk:
-        #                     self.logger.debug('File {0}/{1} is found, renaming'.format(path[0], path[1]))
-        #                     rfile.name = incoming_message['data']['rename_dest']
-        #                     self.logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
-        #                 else:
-        #                     self.logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
-        #             else:
-        #                 self.logger.debug(
-        #                     "Directory {0} is not on disk, nothing to update".format(rename_dir.data.name))
-        # # Failures analysis
-        # else:
-        #     if incoming_message['error_message'] == "Target not specified" or "File exists" in incoming_message[
-        #         'error_message']:
-        #         return
-        #     # in case that touch op failed due to size limit
-        #     if incoming_message['action'] == "touch" and "size limit" in incoming_message['error_message']:
-        #         rdir_name = incoming_message['target'].split('/')[1]  # get target folder name from path
-        #         try:
-        #             self.logger.info("Directory {0} going to be removed from dir tree".format(rdir_name))
-        #             self._dir_tree.remove_dir_by_name(rdir_name)
-        #             node_index = self._dir_tree.synced_nodes.index(hashlib.md5(rdir_name).hexdigest())
-        #             del self._dir_tree.synced_nodes[node_index]
-        #             node_index = self._dir_tree.nids.index(hashlib.md5(rdir_name).hexdigest())
-        #             del self._dir_tree.nids[node_index]
-        #             self.logger.info(
-        #                 "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
-        #             self._dir_tree.append_node()
-        #             self.logger.info(
-        #                 "New Directory node appended to tree {0}".format(self._dir_tree.get_last_node_tag()))
-        #         except NodeIDAbsentError:
-        #             self.logger.debug(
-        #                 "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
-        #     # in case stat, read or delete ops failed for some reason
-        #     elif incoming_message['action'] == "stat" or incoming_message['action'] == "delete" or \
-        #                     incoming_message['action'] == 'read':
-        #         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
-        #         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
-        #
-        #         rdir = self._dir_tree.get_dir_by_name(rdir_name)
-        #         if rdir:
-        #             rfile = rdir.data.get_file_by_name(rfile_name)
-        #             if rfile and rfile.ondisk:
-        #                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
-        #                 if error_time > rfile.creation_time:
-        #                     self.logger.error(
-        #                         "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
-        #                             incoming_message['action'], rdir_name + "/" + rfile_name))
-        #             else:
-        #                 self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
-        #         else:
-        #             self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
-        #     # in case if rename op failed on ENOENT
-        #     elif incoming_message['action'] == "rename" and incoming_message['error_code'] == errno.ENOENT:
-        #         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
-        #         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
-        #
-        #         rdir = self._dir_tree.get_dir_by_name(rdir_name)
-        #         if rdir:
-        #             rfile = rdir.data.get_file_by_name(rfile_name)
-        #             if rfile and rfile.ondisk:
-        #                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
-        #                 if error_time > rfile.creation_time:
-        #                     self.logger.error(
-        #                         "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
-        #                             incoming_message['action'], rdir_name + "/" + rfile_name))
-        #             else:
-        #                 self.logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
-        #         else:
-        #             self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
-        #     # in case if touch op failed on ENOENT
-        #     elif incoming_message['action'] == "touch" and incoming_message['error_code'] == errno.ENOENT:
-        #         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
-        #         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
-        #         rdir = self._dir_tree.get_dir_by_name(rdir_name)
-        #         if rdir and rdir.data.ondisk:
-        #             error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
-        #             if error_time > rdir.creation_time:
-        #                 self.logger.error(
-        #                     "Result Verify FAILED: Operation {0} failed on {1}/{2} which is on disk".format(
-        #                         incoming_message['action'], rdir_name, rfile_name))
-        #         else:
-        #             self.logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
-        #     else:
-        #         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
-        #         try:
-        #             rfile_name = incoming_message['target'].split('/')[4]
-        #         except IndexError:
-        #             self.logger.error(
-        #                 'Operation {0} FAILED UNEXPECTEDLY on Directory {1} due to {2}'.format(
-        #                     incoming_message['action'],
-        #                     rdir_name,
-        #                     incoming_message[
-        #                         'error_message']))
-        #         else:
-        #             self.logger.error(
-        #                 'Operation {0} FAILED UNEXPECTEDLY on File {1}/{2} due to {3}'.format(
-        #                     incoming_message['action'],
-        #                     rdir_name,
-        #                     rfile_name,
-        #                     incoming_message[
-        #                         'error_message']))
 
     def run(self):
         try:
