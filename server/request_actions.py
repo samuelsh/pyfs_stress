@@ -25,6 +25,7 @@ def mkdir_request(logger, dir_tree):
         target = target_dir.data.name
     logger.debug(
         "Controller: Dir {0} current size is {1}".format(target, dir_tree.get_last_node_data().size))
+    return target
 
 
 def list_request(logger, dir_tree):
