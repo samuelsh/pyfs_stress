@@ -75,7 +75,8 @@ def success_response_actions(action):
         'stat': stat_success,
         'read': read_success,
         'delete': delete_success,
-        'rename': rename_success
+        'rename': rename_success,
+        'rename_exist': rename_exist_success
     }[action]
 
 
@@ -174,6 +175,27 @@ def rename_success(logger, incoming_message, dir_tree):
                 "Directory {0} is not on disk, nothing to update".format(rename_dir.data.name))
 
 
+def rename_exist_success(logger, incoming_message, dir_tree):
+    path = incoming_message['target'].split('/')[1:]  # folder:file
+    rename_dir = dir_tree.get_dir_by_name(path[0])
+    if not rename_dir:
+        logger.debug(
+            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+    else:
+        logger.debug('Directory exists {0}, going to rename {1}'.format(rename_dir.data.name, path[1]))
+        if rename_dir.data.ondisk:
+            rfile = rename_dir.data.get_file_by_name(path[1])
+            if rfile and rfile.ondisk:
+                logger.debug('File {0}/{1} is found, renaming'.format(path[0], path[1]))
+                rfile.name = incoming_message['data']['rename_dest']
+                logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
+            else:
+                logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+        else:
+            logger.debug(
+                "Directory {0} is not on disk, nothing to update".format(rename_dir.data.name))
+
+
 def failed_response_actions(action):
     return {
         'mkdir': mkdir_fail,
@@ -182,7 +204,8 @@ def failed_response_actions(action):
         'stat': stat_fail,
         'read': read_fail,
         'delete': delete_fail,
-        'rename': rename_fail
+        'rename': rename_fail,
+        'ranme_exist': rename_exist_fail
     }[action]
 
 
@@ -214,7 +237,8 @@ def touch_fail(logger, incoming_message, dir_tree):
                 "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
 
     elif incoming_message['error_code'] == errno.ENOENT:
-        if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+        if incoming_message['error_message'] == "Target not specified" or incoming_message[
+            'error_code'] == errno.EEXIST:
             return
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
@@ -335,3 +359,26 @@ def rename_fail(logger, incoming_message, dir_tree):
     else:
         generic_error_handler(logger, incoming_message)
 
+
+def rename_exist_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+        return
+    if incoming_message['error_code'] == errno.ENOENT:
+        rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
+        rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
+
+        rdir = dir_tree.get_dir_by_name(rdir_name)
+        if rdir:
+            rfile = rdir.data.get_file_by_name(rfile_name)
+            if rfile and rfile.ondisk:
+                error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
+                if error_time > rfile.creation_time:
+                    logger.error(
+                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
+                            incoming_message['action'], rdir_name + "/" + rfile_name))
+            else:
+                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+        else:
+            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+    else:
+        generic_error_handler(logger, incoming_message)

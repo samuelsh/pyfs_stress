@@ -65,7 +65,8 @@ class Controller(object):
     @property
     def get_next_job(self):
         actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
-                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read', 'rename']
+                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read', 'rename',
+                   'rename_exist']
 
         while True:
             action = random.choice(actions)
@@ -78,64 +79,6 @@ class Controller(object):
                 self._dir_tree.append_node()
                 target = self._dir_tree.get_last_node_tag()
                 yield Job({'action': action, 'target': target})
-            # if action == "mkdir":
-            #     # if self._dir_tree.get_last_node_data().size >= MAX_DIR_SIZE:
-            #     if len(self._dir_tree.nids) < 100:
-            #         self._dir_tree.append_node()
-            #     self.logger.debug(
-            #         "Controller: New dir appended to list {0}".format(self._dir_tree.get_last_node_tag()))
-            #     target_dir = self._dir_tree.get_random_dir_not_synced()
-            #     if target_dir:
-            #         target = target_dir.data.name
-            #     self.logger.debug(
-            #         "Controller: Dir {0} current size is {1}".format(target, self._dir_tree.get_last_node_data().size))
-            # elif action == "touch":
-            #     rdir = self._dir_tree.get_random_dir_synced()
-            #     if not rdir:
-            #         target = 'None'
-            #     else:
-            #         fname = rdir.data.touch()
-            #         target = "/{0}/{1}".format(rdir.tag, fname)
-            # elif action == 'stat' or action == 'read':
-            #     rdir = self._dir_tree.get_random_dir_synced()
-            #     if rdir:
-            #         rfile = rdir.data.get_random_file()
-            #         if not rfile:
-            #             target = 'None'
-            #         else:
-            #             fname = rfile.name
-            #             target = "/{0}/{1}".format(rdir.tag, fname)
-            #     else:
-            #         target = 'None'
-            # elif action == "list":
-            #     rdir = self._dir_tree.get_random_dir_synced()
-            #     if not rdir:
-            #         target = 'None'
-            #     else:
-            #         target = rdir.data.name
-            # elif action == 'delete':
-            #     rdir = self._dir_tree.get_random_dir_synced()
-            #     if not rdir:
-            #         target = 'None'
-            #     else:
-            #         file_to_delete = rdir.data.get_random_file()
-            #         if not file_to_delete:
-            #             target = 'None'
-            #         else:
-            #             fname = file_to_delete.name
-            #             target = "/{0}/{1}".format(rdir.tag, fname)
-            # elif action == 'rename':
-            #     rdir = self._dir_tree.get_random_dir_synced()
-            #     if not rdir:
-            #         target = 'None'
-            #     else:
-            #         file_to_rename = rdir.data.get_random_file()
-            #         if not file_to_rename:
-            #             target = 'None'
-            #         else:
-            #             fname = file_to_rename.name
-            #             target = "/{0}/{1}".format(rdir.tag, fname)
-
             yield Job({'action': action, 'target': request_action(action, self.logger, self._dir_tree)})
 
     def _get_next_worker_id(self):

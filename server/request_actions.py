@@ -104,4 +104,17 @@ def rename_request(logger, dir_tree):
 
 
 def rename_exist_request(logger, dir_tree):
-    pass
+    rdir_src = dir_tree.get_random_dir_synced()
+    rdir_dst = dir_tree.get_random_dir_synced()
+    if not rdir_src or not rdir_dst:
+        target = 'None'
+    else:
+        src_file_to_rename = rdir_src.data.get_random_file()
+        dst_file = rdir_src.data.get_random_file()
+        if not src_file_to_rename or not dst_file:
+            target = 'None'
+        else:
+            src_fname = src_file_to_rename.name
+            dst_fname = dst_file.name
+            target = "/{0}/{1} /{2}/{3}".format(rdir_src.tag, src_fname, rdir_dst.tag, dst_fname)
+    return target
