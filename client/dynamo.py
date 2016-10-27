@@ -166,7 +166,7 @@ class Dynamo(object):
                 dst_mount_point = "".join(
                     "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
                                                            random.randint(0, self.domains - 1)))
-                data['rename_dest'] = shell_utils.StringUtils.get_random_string_nospec(64)
+                data['rename_dest'] = "{0}".format(dst_fname)
                 shutil.move("{0}/{1}/{2}".format(mount_point, src_dirpath, src_fname),
                             "{0}/{1}/{2}".format(dst_mount_point, dst_dirpath, dst_fname))
         except OSError as os_error:
