@@ -90,7 +90,6 @@ def read_request(logger, dir_tree):
 
 
 def rename_request(logger, dir_tree):
-    pass
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
         target = 'None'
