@@ -176,24 +176,46 @@ def rename_success(logger, incoming_message, dir_tree):
 
 
 def rename_exist_success(logger, incoming_message, dir_tree):
-    path = incoming_message['target'].split('/')[1:]  # folder:file
-    rename_dir = dir_tree.get_dir_by_name(path[0])
-    if not rename_dir:
+    src_path = incoming_message['target'].split(' ')[0].split('/')[1:]  # folder:file
+    dst_path = incoming_message['target'].split(' ')[0].split('/')[1:]  # folder:file
+    src_rename_dir = dir_tree.get_dir_by_name(src_path[0])
+    dst_rename_dir = dir_tree.get_dir_by_name(dst_path[0])
+    if not src_rename_dir:
         logger.debug(
-            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+            "Source directory {0} already removed from active dirs list, skipping....".format(src_path[0]))
     else:
-        logger.debug('Directory exists {0}, going to rename {1}'.format(rename_dir.data.name, path[1]))
-        if rename_dir.data.ondisk:
-            rfile = rename_dir.data.get_file_by_name(path[1])
-            if rfile and rfile.ondisk:
-                logger.debug('File {0}/{1} is found, renaming'.format(path[0], path[1]))
-                rfile.name = incoming_message['data']['rename_dest']
-                logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
+        logger.debug(
+            'Directory exists {0}, going to delete renamed file {1} from directory'.format(src_rename_dir.data.name,
+                                                                                           src_path[1]))
+        if src_rename_dir.data.ondisk:
+            file_to_delete = src_rename_dir.data.get_file_by_name(src_path[1])
+            if file_to_delete and file_to_delete.ondisk:
+                logger.debug('File {0}/{1} is found, removing'.format(src_path[0], src_path[1]))
+                file_to_delete.ondisk = False
+                logger.info('File {0}/{1} is removed form disk'.format(src_path[0], src_path[1]))
             else:
-                logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+                logger.debug("File {0}/{1} is not on disk, nothing to update".format(src_path[0], src_path[1]))
         else:
             logger.debug(
-                "Directory {0} is not on disk, nothing to update".format(rename_dir.data.name))
+                "Directory {0} is not on disk, nothing to update".format(src_rename_dir.data.name))
+
+    #  Actual rename of destination file
+    if not dst_rename_dir:
+        logger.debug(
+            "Directory {0} already removed from active dirs list, skipping....".format(dst_path[0]))
+    else:
+        logger.debug('Directory exists {0}, going to rename {1}'.format(dst_rename_dir.data.name, dst_path[1]))
+        if dst_rename_dir.data.ondisk:
+            file_to_rename = dst_rename_dir.data.get_file_by_name(dst_path[1])
+            if file_to_rename and file_to_rename.ondisk:
+                logger.debug('File {0}/{1} is found, renaming'.format(dst_path[0], dst_path[1]))
+                file_to_rename.name = incoming_message['data']['rename_dest']
+                logger.info('File {0}/{1} is renamed to {2}'.format(dst_path[0], dst_path[1], file_to_rename.name))
+            else:
+                logger.debug("File {0}/{1} is not on disk, nothing to update".format(dst_path[0], dst_path[1]))
+        else:
+            logger.debug(
+                "Directory {0} is not on disk, nothing to update".format(dst_rename_dir.data.name))
 
 
 def failed_response_actions(action):
