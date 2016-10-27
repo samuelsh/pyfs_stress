@@ -205,7 +205,7 @@ def failed_response_actions(action):
         'read': read_fail,
         'delete': delete_fail,
         'rename': rename_fail,
-        'ranme_exist': rename_exist_fail
+        'rename_exist': rename_exist_fail
     }[action]
 
 
