@@ -130,51 +130,6 @@ class Dynamo(object):
                                        domains=self.domains)
             if response:
                 data = response
-                # if action == 'mkdir':
-                #     os.mkdir("{0}/{1}".format(mount_point, work['target']))
-                #     data['dirsize'] = os.stat("{0}/{1}".format(mount_point, work['target'])).st_size
-                # elif action == 'touch':
-                #     dirsize = os.stat("{0}/{1}".format(mount_point, work['target'].split('/')[1])).st_size
-                #     if dirsize > MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
-                #         data['target_path'] = work['target']
-                #         raise DynamoException("Directory Entry reached {0} size limit".format(MAX_DIR_SIZE))
-                #     # shell_utils.touch('{0}{1}'.format(mount_point, work['target']))
-                #     with open('{0}{1}'.format(mount_point, work['target']), 'w'):
-                #         pass
-                #     data['dirsize'] = os.stat("{0}/{1}".format(mount_point, work['target'].split('/')[1])).st_size
-                # elif action == 'stat':
-                #     os.stat("{0}{1}".format(mount_point, work['target']))
-                # elif action == 'read':
-                #     with open("{0}{1}".format(mount_point, work['target']), 'r') as f:
-                #         f.read()
-                # elif action == 'list':
-                #     os.listdir('{0}/{1}'.format(mount_point, work['target']))
-                # elif action == 'delete':
-                #     dirpath = work['target'].split('/')[1]
-                #     fname = work['target'].split('/')[2]
-                #     os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
-                # elif action == 'rename':
-                #     dirpath = work['target'].split('/')[1]
-                #     fname = work['target'].split('/')[2]
-                #     dst_mount_point = "".join(
-                #         "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
-                #                                                random.randint(0, self.domains - 1)))
-                #     data['rename_dest'] = shell_utils.StringUtils.get_random_string_nospec(64)
-                #     shutil.move("{0}/{1}/{2}".format(mount_point, dirpath, fname),
-                #                 "{0}/{1}/{2}".format(dst_mount_point, dirpath, data['rename_dest']))
-                # elif action == 'rename_exist':
-                #     src_path = work['target'].split(' ')[0]
-                #     dst_path = work['target'].split(' ')[1]
-                #     src_dirpath = src_path.split('/')[1]
-                #     src_fname = src_path.split('/')[2]
-                #     dst_dirpath = dst_path.split('/')[1]
-                #     dst_fname = dst_path.split('/')[2]
-                #     dst_mount_point = "".join(
-                #         "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
-                #                                                random.randint(0, self.domains - 1)))
-                #     data['rename_dest'] = "{0}".format(dst_fname)
-                #     shutil.move("{0}/{1}/{2}".format(mount_point, src_dirpath, src_fname),
-                #                 "{0}/{1}/{2}".format(dst_mount_point, dst_dirpath, dst_fname))
         except OSError as os_error:
             return build_message('failed', action, data, timestamp(), error_code=os_error.errno,
                                  error_message=os_error.strerror,
