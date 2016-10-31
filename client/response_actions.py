@@ -4,7 +4,7 @@ import shutil
 
 import sys
 
-from dynamo import MAX_DIR_SIZE, DynamoException
+from client.dynamo import MAX_DIR_SIZE, DynamoException
 from utils import shell_utils
 
 __author__ = "samuels"
