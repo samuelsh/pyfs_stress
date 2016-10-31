@@ -21,7 +21,7 @@ timer = timeit.default_timer
 sys.path.append('/qa/dynamo')
 from logger import pubsub_logger
 from config import CTRL_MSG_PORT, CLIENT_MOUNT_POINT
-from client.response_actions import response_action
+from response_actions import response_action
 from utils import shell_utils
 
 MAX_DIR_SIZE = 128 * 1024
