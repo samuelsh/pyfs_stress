@@ -26,24 +26,24 @@ def response_action(action, mount_point, target, **kwargs):
     }[action](mount_point, target, **kwargs)
 
 
-def mkdir(mount_point, target):
+def mkdir(mount_point, target, **kwargs):
     data = {}
     os.mkdir("{0}/{1}".format(mount_point, target))
     data['dirsize'] = os.stat("{0}/{1}".format(mount_point, target)).st_size
     return data
 
 
-def list_dir(mount_point, target):
+def list_dir(mount_point, target, **kwargs):
     os.listdir('{0}/{1}'.format(mount_point, target))
 
 
-def delete(mount_point, target):
+def delete(mount_point, target, **kwargs):
     dirpath = target.split('/')[1]
     fname = target.split('/')[2]
     os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
 
 
-def touch(mount_point, target):
+def touch(mount_point, target, **kwargs):
     data = {}
     dirsize = os.stat("{0}/{1}".format(mount_point, target.split('/')[1])).st_size
     if dirsize > MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
@@ -56,11 +56,11 @@ def touch(mount_point, target):
     return data
 
 
-def stat(mount_point, target):
+def stat(mount_point, target, **kwargs):
     os.stat("{0}{1}".format(mount_point, target))
 
 
-def read(mount_point, target):
+def read(mount_point, target, **kwargs):
     with open("{0}{1}".format(mount_point, target), 'r') as f:
         f.read()
 
