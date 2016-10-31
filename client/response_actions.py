@@ -6,7 +6,7 @@ import sys
 from utils import shell_utils
 
 sys.path.append('/qa/dynamo')
-from client.dynamo import MAX_DIR_SIZE, DynamoException
+from client import dynamo
 
 __author__ = "samuels"
 
@@ -44,9 +44,9 @@ def delete(mount_point, target):
 def touch(mount_point, target):
     data = {}
     dirsize = os.stat("{0}/{1}".format(mount_point, target.split('/')[1])).st_size
-    if dirsize > MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
+    if dirsize > dynamo.MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
         data['target_path'] = target
-        raise DynamoException("Directory Entry reached {0} size limit".format(MAX_DIR_SIZE))
+        raise dynamo.DynamoException("Directory Entry reached {0} size limit".format(dynamo.MAX_DIR_SIZE))
     # shell_utils.touch('{0}{1}'.format(mount_point, work['target']))
     with open('{0}{1}'.format(mount_point, target), 'w'):
         pass
