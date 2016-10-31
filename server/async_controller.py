@@ -159,11 +159,12 @@ class Controller(object):
                     # do this while checking for the next available worker so that
                     # if it takes a while to find one we're still processing
                     # incoming messages.
-                    try:
-                        worker_id, message = self.__incoming_message_queue.get()
-                        self._handle_worker_message(worker_id, message)
-                    except Queue.Empty:
-                        pass
+                    while not self.__incoming_message_queue.empty():
+                        try:
+                            _, (worker_id, message) = self.__incoming_message_queue.get_nowait()
+                            self._handle_worker_message(worker_id, message)
+                        except Queue.Empty:
+                            pass
                     # If there are no available workers (they all have 50 or
                     # more jobs already) sleep for half a second.
                     next_worker_id = self._get_next_worker_id()
