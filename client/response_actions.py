@@ -5,8 +5,8 @@ import shutil
 import sys
 from utils import shell_utils
 
-sys.path.append('/qa/dynamo/client')
-from dynamo import MAX_DIR_SIZE, DynamoException
+sys.path.append('/qa/dynamo')
+from client.dynamo import MAX_DIR_SIZE, DynamoException
 
 __author__ = "samuels"
 
