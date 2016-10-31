@@ -15,20 +15,13 @@ import socket
 import time
 import timeit
 
-
 timer = timeit.default_timer
 
 sys.path.append('/qa/dynamo')
 from logger import pubsub_logger
 from config import CTRL_MSG_PORT, CLIENT_MOUNT_POINT
-from response_actions import response_action
+from response_actions import response_action, DynamoException
 from utils import shell_utils
-
-MAX_DIR_SIZE = 128 * 1024
-
-
-class DynamoException(Exception):
-    pass
 
 
 def timestamp(now=None):
