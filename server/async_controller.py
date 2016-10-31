@@ -1,7 +1,9 @@
 """
-Server logic is here
+Asynchronous Server logic is here
 2016 samuels (c)
 """
+import Queue
+from random import randint, random
 import json
 import random
 import time
@@ -11,6 +13,7 @@ from threading import Thread
 
 import zmq
 
+from client.dynamo import timer
 from config import CTRL_MSG_PORT
 from logger import server_logger
 from messages_queue import priority_queue
@@ -19,6 +22,17 @@ from server.request_actions import request_action
 from server.response_actions import response_action
 
 MAX_DIR_SIZE = 128 * 1024
+MAX_CONTROLLER_WORKERS = 16
+
+__author__ = 'samuels'
+
+
+def timestamp(now=None):
+    if now is None:
+        now = timer()
+    time_stamp = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(now))
+    millisecs = "%.3f" % (now % 1.0,)
+    return time_stamp + millisecs[1:]
 
 
 class Job(object):
@@ -40,27 +54,30 @@ class Controller(object):
         self.logger = server_logger.Logger().logger
         self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
         self._context = zmq.Context()
-        self.workers = {}
+        self.client_workers = {}
+        self.incoming_message_workers = None
         # We won't assign more than 50 jobs to a worker at a time; this ensures
         # reasonable memory usage, and less shuffling when a worker dies.
         self.max_jobs_per_worker = 1000
         # When/if a client disconnects we'll put any unfinished work in here,
-        # work_iterator() will return work from here as well.
+        # get_next_job() will return work from here as well.
         self._work_to_requeue = []
-        self.__max_rcv_queue_size = 50
-        self.__rcv_message_queue = priority_queue.PriorityQueue()
-        self.__rcv_message_worker_thread = Thread(target=self.rcv_messages_worker)
+        self.__incoming_message_queue = Queue.PriorityQueue()
         # Socket to send messages on from Manager
         self._socket = self._context.socket(zmq.ROUTER)
         self._socket.bind("tcp://*:{0}".format(port))
+        self._backend = self._context.socket(zmq.DEALER)
+        self._backend.bind('inproc://backend')
+        zmq.proxy(self._socket, self._backend)
+        self.logger.info("Starting incoming messages workers")
+        for _ in range(MAX_CONTROLLER_WORKERS):
+            worker = AsyncControllerWorker(self.logger, self._context, self.__incoming_message_queue, self.stop_event)
+            worker.start()
+            self.incoming_message_workers.append(worker)
 
     @property
     def dir_tree(self):
         return self._dir_tree
-
-    def rcv_messages_worker(self):
-        while not self.stop_event.is_set:
-            pass
 
     @property
     def get_next_job(self):
@@ -88,8 +105,8 @@ class Controller(object):
         # It isn't strictly necessary since we're limiting the amount of work
         # we assign, but just to demonstrate that we're doing our own load
         # balancing we'll find the worker with the least work
-        if self.workers:
-            worker_id, work = sorted(self.workers.items(),
+        if self.client_workers:
+            worker_id, work = sorted(self.client_workers.items(),
                                      key=lambda x: len(x[1]))[0]
             if len(work) < self.max_jobs_per_worker:
                 return worker_id
@@ -104,22 +121,19 @@ class Controller(object):
         {'message': 'job_done', 'job_id': 'xxx', 'result': 'yyy'}
         """
         if message['message'] == 'connect':
-            assert worker_id not in self.workers
-            self.workers[worker_id] = {}  # Adding new worker ot workers dict on connect event
+            assert worker_id not in self.client_workers
+            self.client_workers[worker_id] = {}
             self.logger.info('[%s]: connect', worker_id)
         elif message['message'] == 'disconnect':
             # Remove the worker so no more work gets added, and put any
             # remaining work into _work_to_requeue
-            remaining_work = self.workers.pop(worker_id)
+            remaining_work = self.client_workers.pop(worker_id)
             self._work_to_requeue.extend(remaining_work.values())
             self.logger.info('[%s]: disconnect, %s jobs requeued', worker_id,
                              len(remaining_work))
         elif message['message'] == 'job_done':
             result = message['result']
-            job = self.workers[worker_id].pop(message['job_id'])
-            #  Under work - Priority Queue
-            # self.__rcv_message_queue.put(result)
-            #
+            job = self.client_workers[worker_id].pop(message['job_id'])
             self._process_results(worker_id, job, result)
         else:
             raise Exception('unknown message: %s' % message['message'])
@@ -137,7 +151,6 @@ class Controller(object):
 
     def run(self):
         try:
-            # for job in self.work_iterator():
             for job in self.get_next_job:
                 next_worker_id = None
 
@@ -146,14 +159,11 @@ class Controller(object):
                     # do this while checking for the next available worker so that
                     # if it takes a while to find one we're still processing
                     # incoming messages.
-                    while self._socket.poll(0):
-                        # Note that we're using recv_multipart() here, this is a
-                        # special method on the ROUTER socket that includes the
-                        # id of the sender. It doesn't handle the json decoding
-                        # automatically though so we have to do that ourselves.
-                        worker_id, message = self._socket.recv_multipart()
-                        message = json.loads(message.decode('utf8'))
+                    try:
+                        worker_id, message = self.__incoming_message_queue.get()
                         self._handle_worker_message(worker_id, message)
+                    except Queue.Empty:
+                        pass
                     # If there are no available workers (they all have 50 or
                     # more jobs already) sleep for half a second.
                     next_worker_id = self._get_next_worker_id()
@@ -165,7 +175,7 @@ class Controller(object):
                 # message goes.
                 self.logger.info('sending job %s to worker %s', job.id,
                                  next_worker_id)
-                self.workers[next_worker_id][job.id] = job
+                self.client_workers[next_worker_id][job.id] = job
                 self._socket.send_multipart(
                     [next_worker_id, json.dumps((job.id, job.work)).encode('utf8')])
                 if self.stop_event.is_set():
@@ -174,3 +184,35 @@ class Controller(object):
             self.logger.exception(generic_error)
             raise
         self.stop_event.set()
+
+
+class AsyncControllerWorker(Thread, object):
+    def __init__(self, logger, context, incoming_queue, stop_event):
+        super(AsyncControllerWorker, self).__init__()
+        self._logger = logger
+        self._context = context
+        self.stop_event = stop_event
+        self.incoming_queue = incoming_queue
+        self.max_jobs_per_worker = 1000
+        self.workers = {}
+
+    def run(self):
+        worker = self._context.socket(zmq.DEALER)
+        worker.connect('inproc://backend')
+        try:
+            while not self.stop_event.is_set:
+                worker_id, message = worker.recv_multipart()
+                message = json.loads(message.decode('utf8'))
+                if message['message'] == 'connect' or message['message'] == 'disconnect':
+                    time_stamp = timestamp()
+                else:
+                    time_stamp = message['result']['timestamp']
+                self.incoming_queue.put(
+                    (time_stamp, (worker_id, message)))  # Putting messages to queue by timestamp priority
+        except Queue.Full:
+            pass
+        except Exception as generic_error:
+            self._logger.exception(generic_error)
+            raise
+        finally:
+            self.stop_event.set()

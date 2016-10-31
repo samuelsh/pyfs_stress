@@ -8,7 +8,7 @@ __author__ = 'samuels'
 QA_BASHLIB_PATH = "/zebra/qa/qa-bashlib/qa-bashlib.sh"
 PARAMS_FUNCTIONS = "/zebra/qa/qa-functions/6.0-params-functions.sh"
 GLOBAL_SSH_PATH = "/zebra/qa/qa-util-scripts/global_ssh"
-SSH_PATH = "/zebra/qa/tools/gssh"
+SSH_PATH = "ssh"
 
 
 class StringUtils:
