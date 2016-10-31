@@ -2,6 +2,9 @@ import os
 import random
 import shutil
 
+import sys
+
+sys.path.append('/qa/dynamo')
 from client.dynamo import MAX_DIR_SIZE, DynamoException
 from utils import shell_utils
 
