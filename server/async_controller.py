@@ -71,7 +71,8 @@ class Controller(object):
             self._backend = self._context.socket(zmq.DEALER)
             self._backend.bind('inproc://backend')
             self.logger.info("Starting Proxy Device...")
-            zmq.proxy(self._socket, self._backend)
+            proxy_device_thread = ProxyDevice(self.logger, self._socket, self._backend)
+            proxy_device_thread.start()
             self.logger.info("Starting incoming messages workers")
             for _ in range(MAX_CONTROLLER_WORKERS):
                 worker = AsyncControllerWorker(self.logger, self._context, self._incoming_message_queue,
@@ -172,8 +173,8 @@ class Controller(object):
                     # do this while checking for the next available worker so that
                     # if it takes a while to find one we're still processing
                     # incoming messages.
-                    while not self.__incoming_message_queue.empty():
-                        _, (worker_id, message) = self.__incoming_message_queue.get()
+                    while not self._incoming_message_queue.empty():
+                        _, (worker_id, message) = self._incoming_message_queue.get()
                         self._handle_worker_message(worker_id, message)
                     # If there are no available workers (they all have 50 or
                     # more jobs already) sleep for half a second.
@@ -239,3 +240,6 @@ class ProxyDevice(Thread, object):
         self._frontend = frontend
         self._backend = backend
 
+    def run(self):
+        self._logger.info("Proxy Device thread {0} started - Forwarding: frontend -> backend".format(self.name))
+        zmq.proxy(self._frontend, self._backend)
