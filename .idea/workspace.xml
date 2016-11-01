@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/async_controller.py" afterPath="$PROJECT_DIR$/server/async_controller.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -50,8 +49,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="165" column="24" selection-start-line="165" selection-start-column="24" selection-end-line="165" selection-end-column="24" />
+            <state relative-caret-position="-1279">
+              <caret line="158" column="59" selection-start-line="158" selection-start-column="59" selection-end-line="158" selection-end-column="59" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -597,13 +596,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00726" summary="Added response methods to dynamo client instead of if/else logic">
-      <created>1477813706826</created>
-      <option name="number" value="00726" />
-      <option name="presentableId" value="LOCAL-00726" />
-      <option name="project" value="LOCAL" />
-      <updated>1477813706826</updated>
-    </task>
     <task id="LOCAL-00727" summary="Added response methods to dynamo client instead of if/else logic">
       <created>1477818669268</created>
       <option name="number" value="00727" />
@@ -940,7 +932,14 @@
       <option name="project" value="LOCAL" />
       <updated>1478005614950</updated>
     </task>
-    <option name="localTasksCounter" value="775" />
+    <task id="LOCAL-00775" summary="Fixing async controller bugs">
+      <created>1478005933618</created>
+      <option name="number" value="00775" />
+      <option name="presentableId" value="LOCAL-00775" />
+      <option name="project" value="LOCAL" />
+      <updated>1478005933618</updated>
+    </task>
+    <option name="localTasksCounter" value="776" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1469,8 +1468,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="165" column="24" selection-start-line="165" selection-start-column="24" selection-end-line="165" selection-end-column="24" />
+        <state relative-caret-position="-1279">
+          <caret line="158" column="59" selection-start-line="158" selection-start-column="59" selection-end-line="158" selection-end-column="59" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>
