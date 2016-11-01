@@ -55,7 +55,6 @@ class Controller(object):
             self.stop_event = stop_event
             self.logger = server_logger.Logger().logger
             self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
-            # self._context = zmq.Context()
             self.client_workers = {}
             self.incoming_message_workers = []
             # We won't assign more than 50 jobs to a worker at a time; this ensures
@@ -66,9 +65,6 @@ class Controller(object):
             self._work_to_requeue = []
             self._incoming_message_queue = Queue.PriorityQueue()
             self._outgoing_message_queue = Queue.Queue()
-            # Socket to send messages on from Manager
-            # self._socket = self._context.socket(zmq.ROUTER)
-            # self._socket.bind("tcp://*:{0}".format(port))
             self.logger.info("Starting Async Server....")
             proxy_device_thread = AsyncControllerServer(self.logger, self.stop_event, self._incoming_message_queue,
                                                         self._outgoing_message_queue)
@@ -244,8 +240,9 @@ class AsyncControllerWorker(Thread, object):
 
     def run(self):
         self._logger.info("Controller incoming/outgoing messages worker thread {0} started".format(self.name))
-        try:
-            while not self.stop_event.is_set:
+        while not self.stop_event.is_set:
+            try:
+                self._logger.debug("Waiting for incoming message")
                 worker_id, message = self._worker.recv_multipart()
                 self._logger.debug("AsyncControllerWorker incoming message {0} from {1]".format(message, worker_id))
                 message = json.loads(message.decode('utf8'))
@@ -261,11 +258,11 @@ class AsyncControllerWorker(Thread, object):
                 self._logger.debug("AsyncControllerWorker outgoing message {0} from {1]".format(job_id, next_worker_id))
                 self._worker.send_multipart(
                     [next_worker_id, json.dumps((job_id, job_work)).encode('utf8')])
-        except (Queue.Full, Queue.Empty):
-            pass
-        except zmq.ZMQError as zmq_error:
-            self._logger.error("ZMQ Error: {0}".format(zmq_error))
-        except Exception as generic_error:
-            self._logger.exception("Unhandled exception {0}".format(generic_error))
-            self.stop_event.set()
-            raise
+            except (Queue.Full, Queue.Empty):
+                pass
+            except zmq.ZMQError as zmq_error:
+                self._logger.error("ZMQ Error: {0}".format(zmq_error))
+            except Exception as generic_error:
+                self._logger.exception("Unhandled exception {0}".format(generic_error))
+                self.stop_event.set()
+                raise

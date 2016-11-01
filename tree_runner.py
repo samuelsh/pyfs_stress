@@ -108,6 +108,9 @@ def main():
     logger.debug("Active Nodes: %s" % active_nodes)
     domains = shell_utils.FSUtils.get_domains_num(args.cluster)
     logger.debug("FSD domains: %s" % domains)
+    logger.info("Starting controller")
+    controller_process = Process(target=run_controller, args=(stop_event, dir_tree,))
+    controller_process.start()
     sub_logger_process = Process(target=run_sub_logger,
                                  args=(socket.gethostbyname(socket.gethostname()), stop_event,))
     sub_logger_process.start()
@@ -116,9 +119,6 @@ def main():
     logger.info("Done deploying clients: {0}".format(clients_list))
     run_clients(args.cluster, clients_list, args.export, active_nodes, domains)
     logger.info("Dynamo started on all clients ....")
-    logger.info("Starting controller")
-    controller_process = Process(target=run_controller, args=(stop_event, dir_tree,))
-    controller_process.start()
 
     try:
         while not stop_event.is_set():
