@@ -63,17 +63,20 @@ class Controller(object):
         # get_next_job() will return work from here as well.
         self._work_to_requeue = []
         self.__incoming_message_queue = Queue.PriorityQueue()
-        # Socket to send messages on from Manager
-        self._socket = self._context.socket(zmq.ROUTER)
-        self._socket.bind("tcp://*:{0}".format(port))
-        self._backend = self._context.socket(zmq.DEALER)
-        self._backend.bind('inproc://backend')
-        zmq.proxy(self._socket, self._backend)
-        self.logger.info("Starting incoming messages workers")
-        for _ in range(MAX_CONTROLLER_WORKERS):
-            worker = AsyncControllerWorker(self.logger, self._context, self.__incoming_message_queue, self.stop_event)
-            worker.start()
-            self.incoming_message_workers.append(worker)
+        try:
+            # Socket to send messages on from Manager
+            self._socket = self._context.socket(zmq.ROUTER)
+            self._socket.bind("tcp://*:{0}".format(port))
+            self._backend = self._context.socket(zmq.DEALER)
+            self._backend.bind('inproc://backend')
+            zmq.proxy(self._socket, self._backend)
+            self.logger.info("Starting incoming messages workers")
+            for _ in range(MAX_CONTROLLER_WORKERS):
+                worker = AsyncControllerWorker(self.logger, self._context, self.__incoming_message_queue, self.stop_event)
+                worker.start()
+                self.incoming_message_workers.append(worker)
+        except Exception as e:
+            self.logger.exception(e)
 
     def __del__(self):
         self.logger.info("Closing sockets...")
