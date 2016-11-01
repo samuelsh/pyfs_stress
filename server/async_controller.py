@@ -227,11 +227,9 @@ class AsyncControllerWorker(Thread, object):
         except zmq.ZMQError as zmq_error:
             self._logger.error("ZMQ Error: {0}".format(zmq_error))
         except Exception as generic_error:
-            self.stop_event.set()
             self._logger.exception("Uhandled exception {0}".format(generic_error))
-            raise
-        finally:
             self.stop_event.set()
+            raise
 
 
 class ProxyDevice(Thread, object):
