@@ -205,7 +205,7 @@ class AsyncControllerServer(Thread, object):
             "Async Controller Server thread {0} started".format(self.name))
         try:
             for _ in range(MAX_CONTROLLER_WORKERS):
-                worker = AsyncControllerWorker(self._logger, self._context, self._incoming_queue,
+                worker = AsyncControllerWorker(self._logger, self._context, self._incoming_queue, self._outgoing_queue,
                                                self._stop_event)
                 worker.start()
             self._logger.info("Starting Proxy Device...")
