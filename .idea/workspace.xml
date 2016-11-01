@@ -4,6 +4,7 @@
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/async_controller.py" afterPath="$PROJECT_DIR$/server/async_controller.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree_runner.py" afterPath="$PROJECT_DIR$/tree_runner.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,8 +27,8 @@
       <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="51" column="49" selection-start-line="51" selection-start-column="49" selection-end-line="51" selection-end-column="49" />
+            <state relative-caret-position="357">
+              <caret line="21" column="23" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -48,8 +49,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="165" column="25" selection-start-line="165" selection-start-column="25" selection-end-line="165" selection-end-column="25" />
+            <state relative-caret-position="3587">
+              <caret line="211" column="34" selection-start-line="211" selection-start-column="34" selection-end-line="211" selection-end-column="34" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -149,7 +150,6 @@
         <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/server/helpers.py" />
         <option value="$PROJECT_DIR$/logger/pubsub_logger.py" />
-        <option value="$PROJECT_DIR$/tree_runner.py" />
         <option value="$PROJECT_DIR$/logger/server_logger.py" />
         <option value="$PROJECT_DIR$/server/request_actions.py" />
         <option value="$PROJECT_DIR$/server/response_actions.py" />
@@ -157,6 +157,7 @@
         <option value="$PROJECT_DIR$/utils/shell_utils.py" />
         <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/client/response_actions.py" />
+        <option value="$PROJECT_DIR$/tree_runner.py" />
         <option value="$PROJECT_DIR$/server/async_controller.py" />
       </list>
     </option>
@@ -585,13 +586,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00695" summary="1. added errno to message structure\n 2. Fixing raise between mkdir and touch">
-      <created>1476946528250</created>
-      <option name="number" value="00695" />
-      <option name="presentableId" value="LOCAL-00695" />
-      <option name="project" value="LOCAL" />
-      <updated>1476946528250</updated>
-    </task>
     <task id="LOCAL-00696" summary="1. Fixed successful touch flow">
       <created>1476948001067</created>
       <option name="number" value="00696" />
@@ -928,7 +922,14 @@
       <option name="project" value="LOCAL" />
       <updated>1477915705325</updated>
     </task>
-    <option name="localTasksCounter" value="744" />
+    <task id="LOCAL-00744" summary="Working on async controller">
+      <created>1477920317229</created>
+      <option name="number" value="00744" />
+      <option name="presentableId" value="LOCAL-00744" />
+      <option name="project" value="LOCAL" />
+      <updated>1477920317229</updated>
+    </task>
+    <option name="localTasksCounter" value="745" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1323,14 +1324,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/threading.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="650" column="69" selection-start-line="650" selection-start-column="69" selection-end-line="650" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python27/Lib/site-packages/zmq/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="557">
@@ -1417,6 +1410,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/server/controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="646">
+          <caret line="175" column="8" selection-start-line="175" selection-start-column="8" selection-end-line="175" selection-end-column="8" />
+          <folding>
+            <element signature="e#46#57#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-170">
@@ -1429,26 +1432,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tree_runner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="51" column="49" selection-start-line="51" selection-start-column="49" selection-end-line="51" selection-end-column="49" />
+        <state relative-caret-position="357">
+          <caret line="21" column="23" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/controller.py">
+    <entry file="file://C:/Python27/Lib/threading.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="175" column="8" selection-start-line="175" selection-start-column="8" selection-end-line="175" selection-end-column="8" />
-          <folding>
-            <element signature="e#46#57#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="242">
+          <caret line="959" column="56" selection-start-line="959" selection-start-column="53" selection-end-line="959" selection-end-column="57" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="165" column="25" selection-start-line="165" selection-start-column="25" selection-end-line="165" selection-end-column="25" />
+        <state relative-caret-position="3587">
+          <caret line="211" column="34" selection-start-line="211" selection-start-column="34" selection-end-line="211" selection-end-column="34" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>

@@ -17,7 +17,8 @@ import config
 from logger import server_logger
 from logger.pubsub_logger import SUBLogger
 from logger.server_logger import ConsoleLogger
-from server.controller import Controller
+# from server.controller import Controller
+from server.async_controller import Controller
 from tree import dirtree
 from utils import shell_utils
 from utils.shell_utils import ShellUtils
