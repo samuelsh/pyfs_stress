@@ -206,15 +206,19 @@ class AsyncControllerWorker(Thread, object):
         self.stop_event = stop_event
         self.incoming_queue = incoming_queue
         self.max_jobs_per_worker = 1000
-        self.workers = {}
+        try:
+            self._worker = self._context.socket(zmq.DEALER)
+            self._worker.connect('inproc://backend')
+        except zmq.ZMQError as zmq_error:
+            self._logger.exception(zmq_error)
+            self.stop_event.set()
+            raise zmq_error
 
     def run(self):
-        worker = self._context.socket(zmq.DEALER)
-        worker.connect('inproc://backend')
         self._logger.info("Controller incoming messages Worker thread {0} started".format(self.name))
         try:
             while not self.stop_event.is_set:
-                worker_id, message = worker.recv_multipart()
+                worker_id, message = self._worker.recv_multipart()
                 self._logger.debug("AsyncControllerWorkwer incoming message {0} from {1]".format(message, worker_id))
                 message = json.loads(message.decode('utf8'))
                 if message['message'] == 'connect' or message['message'] == 'disconnect':
