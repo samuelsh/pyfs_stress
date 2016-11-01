@@ -254,7 +254,7 @@ class AsyncControllerWorker(Thread, object):
                     (time_stamp, (worker_id, message)))  # Putting messages to queue by timestamp priority
 
                 #  Sending out messages from outgoing message queue
-                next_worker_id, job_id, job_work = self.outgoing_queue.get_nowat()
+                next_worker_id, job_id, job_work = self.outgoing_queue.get_nowait()
                 self._logger.debug("AsyncControllerWorker outgoing message {0} from {1}".format(job_id, next_worker_id))
                 self._worker.send_multipart(
                     [next_worker_id, json.dumps((job_id, job_work)).encode('utf8')])
