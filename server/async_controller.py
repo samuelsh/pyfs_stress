@@ -81,7 +81,7 @@ class Controller(object):
                 self.incoming_message_workers.append(worker)
             [worker.join() for worker in self.incoming_message_workers]
         except Exception as e:
-            print e
+            self.logger.exception(e)
 
     def __del__(self):
         self.logger.info("Closing sockets...")
