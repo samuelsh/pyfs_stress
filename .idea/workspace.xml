@@ -50,8 +50,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="234" column="11" selection-start-line="234" selection-start-column="11" selection-end-line="234" selection-end-column="11" />
+            <state relative-caret-position="340">
+              <caret line="217" column="113" selection-start-line="217" selection-start-column="113" selection-end-line="217" selection-end-column="113" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -597,13 +597,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00708" summary="1. Adding response actions dict. wich will replcae if/else logic in controller">
-      <created>1477456416939</created>
-      <option name="number" value="00708" />
-      <option name="presentableId" value="LOCAL-00708" />
-      <option name="project" value="LOCAL" />
-      <updated>1477456416939</updated>
-    </task>
     <task id="LOCAL-00709" summary="1. Adding response actions dict. wich will replcae if/else logic in controller">
       <created>1477456595357</created>
       <option name="number" value="00709" />
@@ -940,7 +933,14 @@
       <option name="project" value="LOCAL" />
       <updated>1477991167365</updated>
     </task>
-    <option name="localTasksCounter" value="757" />
+    <task id="LOCAL-00757" summary="Fixing async controller bugs">
+      <created>1477991350389</created>
+      <option name="number" value="00757" />
+      <option name="presentableId" value="LOCAL-00757" />
+      <option name="project" value="LOCAL" />
+      <updated>1477991350389</updated>
+    </task>
+    <option name="localTasksCounter" value="758" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1468,8 +1468,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="234" column="11" selection-start-line="234" selection-start-column="11" selection-end-line="234" selection-end-column="11" />
+        <state relative-caret-position="340">
+          <caret line="217" column="113" selection-start-line="217" selection-start-column="113" selection-end-line="217" selection-end-column="113" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>

@@ -215,6 +215,7 @@ class AsyncControllerWorker(Thread, object):
         try:
             while not self.stop_event.is_set:
                 worker_id, message = worker.recv_multipart()
+                self._logger.debug("AsyncControllerWorkwer incoming message {0} from {1]".format(message, worker_id))
                 message = json.loads(message.decode('utf8'))
                 if message['message'] == 'connect' or message['message'] == 'disconnect':
                     time_stamp = timestamp()
