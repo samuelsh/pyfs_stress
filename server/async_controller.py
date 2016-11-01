@@ -57,7 +57,7 @@ class Controller(object):
             self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
             self._context = zmq.Context()
             self.client_workers = {}
-            self.incoming_message_workers = None
+            self.incoming_message_workers = []
             # We won't assign more than 50 jobs to a worker at a time; this ensures
             # reasonable memory usage, and less shuffling when a worker dies.
             self.max_jobs_per_worker = 1000
