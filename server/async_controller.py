@@ -192,10 +192,10 @@ class Controller(object):
                 if self.stop_event.is_set():
                     break
         except Exception as generic_error:
-            self.stop_event.set()
             self.logger.exception(generic_error)
             raise
-        self.stop_event.set()
+        finally:
+            self.stop_event.set()
 
 
 class AsyncControllerWorker(Thread, object):
