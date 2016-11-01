@@ -3,6 +3,7 @@ Asynchronous Server logic is here
 2016 samuels (c)
 """
 import Queue
+import timeit
 from random import randint, random
 import json
 import random
@@ -13,13 +14,14 @@ from threading import Thread
 
 import zmq
 
-from client.dynamo import timer
 from config import CTRL_MSG_PORT
 from logger import server_logger
 from messages_queue import priority_queue
 from server import helpers
 from server.request_actions import request_action
 from server.response_actions import response_action
+
+timer = timeit.default_timer
 
 MAX_DIR_SIZE = 128 * 1024
 MAX_CONTROLLER_WORKERS = 16
@@ -49,7 +51,6 @@ class Controller(object):
             dir_tree: DirTree
             port: int
         """
-        super(Controller, self).__init__()
         self.stop_event = stop_event
         self.logger = server_logger.Logger().logger
         self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
