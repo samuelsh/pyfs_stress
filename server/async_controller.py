@@ -68,10 +68,8 @@ class Controller(object):
             # Socket to send messages on from Manager
             self._socket = self._context.socket(zmq.ROUTER)
             self._socket.bind("tcp://*:{0}".format(port))
-            self._backend = self._context.socket(zmq.DEALER)
-            self._backend.bind('inproc://backend')
             self.logger.info("Starting Proxy Device...")
-            proxy_device_thread = ProxyDevice(self.logger, self._socket, self._backend, self.stop_event)
+            proxy_device_thread = ProxyDevice(self.logger, self.stop_event)
             proxy_device_thread.start()
             self.logger.info("Starting incoming messages workers")
             for _ in range(MAX_CONTROLLER_WORKERS):
@@ -238,12 +236,15 @@ class AsyncControllerWorker(Thread, object):
 
 
 class ProxyDevice(Thread, object):
-    def __init__(self, logger, frontend, backend, stop_event):
+    def __init__(self, logger, stop_event):
         super(ProxyDevice, self).__init__()
         self._stop_event = stop_event
         self._logger = logger
-        self._frontend = frontend
-        self._backend = backend
+        self._context = zmq.Context()
+        self._frontend = self._context.socket(zmq.ROUTER)
+        self._frontend.bind("tcp://*:{0}".format(CTRL_MSG_PORT))
+        self._backend = self._context.socket(zmq.DEALER)
+        self._backend.bind('inproc://backend')
 
     def run(self):
         self._logger.info("Proxy Device thread {0} started - Forwarding: frontend -> backend".format(self.name))
