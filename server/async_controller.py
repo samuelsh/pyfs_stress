@@ -69,10 +69,10 @@ class Controller(object):
             # Socket to send messages on from Manager
             # self._socket = self._context.socket(zmq.ROUTER)
             # self._socket.bind("tcp://*:{0}".format(port))
+            self.logger.info("Starting Async Server....")
             proxy_device_thread = AsyncControllerServer(self.logger, self.stop_event, self._incoming_message_queue,
                                                         self._outgoing_message_queue)
             proxy_device_thread.start()
-            self.logger.info("Starting incoming messages workers")
         except Exception as e:
             self.logger.exception(e)
 
@@ -162,6 +162,7 @@ class Controller(object):
                     # incoming messages.
                     while not self._incoming_message_queue.empty():
                         _, (worker_id, message) = self._incoming_message_queue.get()
+                        self.logger.debug("Processing incoming message {0} from {1]".format(message, worker_id))
                         self._handle_worker_message(worker_id, message)
                     # If there are no available workers (they all have 50 or
                     # more jobs already) sleep for half a second.
@@ -240,7 +241,7 @@ class AsyncControllerWorker(Thread, object):
             raise zmq_error
 
     def run(self):
-        self._logger.info("Controller incoming messages Worker thread {0} started".format(self.name))
+        self._logger.info("Controller incoming/outgoing messages worker thread {0} started".format(self.name))
         try:
             while not self.stop_event.is_set:
                 worker_id, message = self._worker.recv_multipart()
@@ -263,6 +264,6 @@ class AsyncControllerWorker(Thread, object):
         except zmq.ZMQError as zmq_error:
             self._logger.error("ZMQ Error: {0}".format(zmq_error))
         except Exception as generic_error:
-            self._logger.exception("Uhandled exception {0}".format(generic_error))
+            self._logger.exception("Unhandled exception {0}".format(generic_error))
             self.stop_event.set()
             raise
