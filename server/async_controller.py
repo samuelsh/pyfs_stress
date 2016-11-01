@@ -65,18 +65,14 @@ class Controller(object):
             # get_next_job() will return work from here as well.
             self._work_to_requeue = []
             self._incoming_message_queue = Queue.PriorityQueue()
+            self._outgoing_message_queue = Queue.Queue()
             # Socket to send messages on from Manager
             self._socket = self._context.socket(zmq.ROUTER)
             self._socket.bind("tcp://*:{0}".format(port))
-            self.logger.info("Starting Proxy Device...")
-            proxy_device_thread = ProxyDevice(self.logger, self.stop_event)
+            proxy_device_thread = AsyncControllerServer(self.logger, self.stop_event, self._incoming_message_queue,
+                                                        self._outgoing_message_queue)
             proxy_device_thread.start()
             self.logger.info("Starting incoming messages workers")
-            for _ in range(MAX_CONTROLLER_WORKERS):
-                worker = AsyncControllerWorker(self.logger, self._context, self._incoming_message_queue,
-                                               self.stop_event)
-                worker.start()
-                self.incoming_message_workers.append(worker)
         except Exception as e:
             self.logger.exception(e)
 
@@ -185,10 +181,11 @@ class Controller(object):
                 self.logger.info('sending job %s to worker %s', job.id,
                                  next_worker_id)
                 self.client_workers[next_worker_id][job.id] = job
-                self._socket.send_multipart(
-                    [next_worker_id, json.dumps((job.id, job.work)).encode('utf8')])
+                self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
                 if self.stop_event.is_set():
                     break
+        except Queue.Full:
+            pass
         except Exception as generic_error:
             self.logger.exception(generic_error)
             raise
@@ -196,13 +193,43 @@ class Controller(object):
             self.stop_event.set()
 
 
+class AsyncControllerServer(Thread, object):
+    def __init__(self, logger, stop_event, incoming_queue, outgoing_queue):
+        super(AsyncControllerServer, self).__init__()
+        self._stop_event = stop_event
+        self._logger = logger
+        self._incoming_queue = incoming_queue
+        self._outgoing_queue = outgoing_queue
+        self._context = zmq.Context()
+        self._frontend = self._context.socket(zmq.ROUTER)
+        self._frontend.bind("tcp://*:{0}".format(CTRL_MSG_PORT))
+        self._backend = self._context.socket(zmq.DEALER)
+        self._backend.bind('inproc://backend')
+
+    def run(self):
+        self._logger.info(
+            "Async Controller Server thread {0} started".format(self.name))
+        try:
+            for _ in range(MAX_CONTROLLER_WORKERS):
+                worker = AsyncControllerWorker(self._logger, self._context, self._incoming_queue,
+                                                       self._stop_event)
+                worker.start()
+            self._logger.info("Starting Proxy Device...")
+            zmq.proxy(self._frontend, self._backend)
+        except zmq.ZMQError as zmq_error:
+            self._logger.exception(zmq_error)
+            self._stop_event.set()
+            raise zmq_error
+
+
 class AsyncControllerWorker(Thread, object):
-    def __init__(self, logger, context, incoming_queue, stop_event):
+    def __init__(self, logger, context, incoming_queue, outgoing_queue, stop_event):
         super(AsyncControllerWorker, self).__init__()
         self._logger = logger
         self._context = context
         self.stop_event = stop_event
         self.incoming_queue = incoming_queue
+        self.outgoing_queue = outgoing_queue
         self.max_jobs_per_worker = 1000
         try:
             self._worker = self._context.socket(zmq.DEALER)
@@ -217,7 +244,7 @@ class AsyncControllerWorker(Thread, object):
         try:
             while not self.stop_event.is_set:
                 worker_id, message = self._worker.recv_multipart()
-                self._logger.debug("AsyncControllerWorkwer incoming message {0} from {1]".format(message, worker_id))
+                self._logger.debug("AsyncControllerWorker incoming message {0} from {1]".format(message, worker_id))
                 message = json.loads(message.decode('utf8'))
                 if message['message'] == 'connect' or message['message'] == 'disconnect':
                     time_stamp = timestamp()
@@ -225,7 +252,13 @@ class AsyncControllerWorker(Thread, object):
                     time_stamp = message['result']['timestamp']
                 self.incoming_queue.put(
                     (time_stamp, (worker_id, message)))  # Putting messages to queue by timestamp priority
-        except Queue.Full:
+
+                #  Sending out messages from outgoing message queue
+                next_worker_id, job_id, job_work = self.outgoing_queue.get_nowat()
+                self._logger.debug("AsyncControllerWorker outgoing message {0} from {1]".format(job_id, next_worker_id))
+                self._worker.send_multipart(
+                    [next_worker_id, json.dumps((job_id, job_work)).encode('utf8')])
+        except (Queue.Full, Queue.Empty):
             pass
         except zmq.ZMQError as zmq_error:
             self._logger.error("ZMQ Error: {0}".format(zmq_error))
@@ -233,24 +266,3 @@ class AsyncControllerWorker(Thread, object):
             self._logger.exception("Uhandled exception {0}".format(generic_error))
             self.stop_event.set()
             raise
-
-
-class ProxyDevice(Thread, object):
-    def __init__(self, logger, stop_event):
-        super(ProxyDevice, self).__init__()
-        self._stop_event = stop_event
-        self._logger = logger
-        self._context = zmq.Context()
-        self._frontend = self._context.socket(zmq.ROUTER)
-        self._frontend.bind("tcp://*:{0}".format(CTRL_MSG_PORT))
-        self._backend = self._context.socket(zmq.DEALER)
-        self._backend.bind('inproc://backend')
-
-    def run(self):
-        self._logger.info("Proxy Device thread {0} started - Forwarding: frontend -> backend".format(self.name))
-        try:
-            zmq.proxy(self._frontend, self._backend)
-        except zmq.ZMQError as zmq_error:
-            self._logger.exception(zmq_error)
-            self._stop_event.set()
-            raise zmq_error
