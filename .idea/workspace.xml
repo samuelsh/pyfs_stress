@@ -50,8 +50,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="54" column="36" selection-start-line="54" selection-start-column="36" selection-end-line="54" selection-end-column="36" />
+            <state relative-caret-position="391">
+              <caret line="74" column="52" selection-start-line="74" selection-start-column="52" selection-end-line="74" selection-end-column="52" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -597,13 +597,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00700" summary="1. Implemented file rename op">
-      <created>1477383106985</created>
-      <option name="number" value="00700" />
-      <option name="presentableId" value="LOCAL-00700" />
-      <option name="project" value="LOCAL" />
-      <updated>1477383106985</updated>
-    </task>
     <task id="LOCAL-00701" summary="1. Implemented file rename op">
       <created>1477385436494</created>
       <option name="number" value="00701" />
@@ -940,7 +933,14 @@
       <option name="project" value="LOCAL" />
       <updated>1477985576291</updated>
     </task>
-    <option name="localTasksCounter" value="749" />
+    <task id="LOCAL-00749" summary="Fixing async controller bugs">
+      <created>1477985807816</created>
+      <option name="number" value="00749" />
+      <option name="presentableId" value="LOCAL-00749" />
+      <option name="project" value="LOCAL" />
+      <updated>1477985807816</updated>
+    </task>
+    <option name="localTasksCounter" value="750" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1468,8 +1468,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="54" column="36" selection-start-line="54" selection-start-column="36" selection-end-line="54" selection-end-column="36" />
+        <state relative-caret-position="391">
+          <caret line="74" column="52" selection-start-line="74" selection-start-column="52" selection-end-line="74" selection-end-column="52" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>

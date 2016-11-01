@@ -70,6 +70,7 @@ class Controller(object):
             self._socket.bind("tcp://*:{0}".format(port))
             self._backend = self._context.socket(zmq.DEALER)
             self._backend.bind('inproc://backend')
+            self.logger.info("Starting Proxy Device...")
             zmq.proxy(self._socket, self._backend)
             self.logger.info("Starting incoming messages workers")
             for _ in range(MAX_CONTROLLER_WORKERS):
@@ -77,7 +78,7 @@ class Controller(object):
                                                self.stop_event)
                 worker.start()
                 self.incoming_message_workers.append(worker)
-                [worker.join() for worker in self.incoming_message_workers]
+            [worker.join() for worker in self.incoming_message_workers]
         except Exception as e:
             print e
 
@@ -229,3 +230,12 @@ class AsyncControllerWorker(Thread, object):
             raise
         finally:
             self.stop_event.set()
+
+
+class ProxyDevice(Thread, object):
+    def __init__(self, logger, frontend, backend):
+        super(ProxyDevice, self).__init__()
+        self._logger = logger
+        self._frontend = frontend
+        self._backend = backend
+
