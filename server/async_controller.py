@@ -193,6 +193,7 @@ class Controller(object):
                 if self.stop_event.is_set():
                     break
         except Exception as generic_error:
+            self.stop_event.set()
             self.logger.exception(generic_error)
             raise
         self.stop_event.set()
@@ -227,6 +228,7 @@ class AsyncControllerWorker(Thread, object):
         except zmq.ZMQError as zmq_error:
             self._logger.error("ZMQ Error: {0}".format(zmq_error))
         except Exception as generic_error:
+            self.stop_event.set()
             self._logger.exception("Uhandled exception {0}".format(generic_error))
             raise
         finally:
@@ -242,4 +244,7 @@ class ProxyDevice(Thread, object):
 
     def run(self):
         self._logger.info("Proxy Device thread {0} started - Forwarding: frontend -> backend".format(self.name))
-        zmq.proxy(self._frontend, self._backend)
+        try:
+            zmq.proxy(self._frontend, self._backend)
+        except zmq.ZMQError as zmq_error:
+            self._logger.exception(zmq_error)
