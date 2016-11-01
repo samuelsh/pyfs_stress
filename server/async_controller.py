@@ -51,20 +51,20 @@ class Controller(object):
             dir_tree: DirTree
             port: int
         """
-        self.stop_event = stop_event
-        self.logger = server_logger.Logger().logger
-        self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
-        self._context = zmq.Context()
-        self.client_workers = {}
-        self.incoming_message_workers = None
-        # We won't assign more than 50 jobs to a worker at a time; this ensures
-        # reasonable memory usage, and less shuffling when a worker dies.
-        self.max_jobs_per_worker = 1000
-        # When/if a client disconnects we'll put any unfinished work in here,
-        # get_next_job() will return work from here as well.
-        self._work_to_requeue = []
-        self._incoming_message_queue = Queue.PriorityQueue()
         try:
+            self.stop_event = stop_event
+            self.logger = server_logger.Logger().logger
+            self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
+            self._context = zmq.Context()
+            self.client_workers = {}
+            self.incoming_message_workers = None
+            # We won't assign more than 50 jobs to a worker at a time; this ensures
+            # reasonable memory usage, and less shuffling when a worker dies.
+            self.max_jobs_per_worker = 1000
+            # When/if a client disconnects we'll put any unfinished work in here,
+            # get_next_job() will return work from here as well.
+            self._work_to_requeue = []
+            self._incoming_message_queue = Queue.PriorityQueue()
             # Socket to send messages on from Manager
             self._socket = self._context.socket(zmq.ROUTER)
             self._socket.bind("tcp://*:{0}".format(port))
@@ -79,7 +79,7 @@ class Controller(object):
                 self.incoming_message_workers.append(worker)
                 [worker.join() for worker in self.incoming_message_workers]
         except Exception as e:
-            self.logger.exception(e)
+            print e
 
     def __del__(self):
         self.logger.info("Closing sockets...")
