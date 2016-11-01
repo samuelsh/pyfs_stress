@@ -166,7 +166,7 @@ class Controller(object):
                         if next_worker_id is None:
                             time.sleep(0.5)
                     except Queue.Empty:
-                        pass
+                        self.logger.debug("Queue Empty!")
                 # We've got a Job and an available worker_id, all we need to do
                 # is send it. Note that we're now using send_multipart(), the
                 # counterpart to recv_multipart(), to tell the ROUTER where our
@@ -177,8 +177,8 @@ class Controller(object):
                 self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
                 if self.stop_event.is_set():
                     break
-        except (Queue.Full, Queue.Empty):
-            pass
+        except Queue.Full:
+            self.logger.debug("Queue Full!")
         except Exception as generic_error:
             self.logger.exception(generic_error)
             raise
