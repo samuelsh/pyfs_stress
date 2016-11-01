@@ -205,9 +205,11 @@ class AsyncControllerServer(Thread, object):
         self._logger.info(
             "Async Controller Server thread {0} started".format(self.name))
         try:
+            workers = []
             for _ in range(MAX_CONTROLLER_WORKERS):
                 worker = AsyncControllerWorker(self._logger, self._context, self._incoming_queue, self._outgoing_queue,
                                                self._stop_event)
+                workers.append(worker)
                 worker.start()
             self._logger.info("Starting Proxy Device...")
             zmq.proxy(self._frontend, self._backend)
