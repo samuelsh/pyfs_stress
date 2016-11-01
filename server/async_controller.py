@@ -242,7 +242,7 @@ class AsyncControllerWorker(Thread, object):
         self._logger.info("Controller incoming/outgoing messages worker thread {0} started".format(self.name))
         while not self.stop_event.is_set:
             try:
-                self._logger.debug("Waiting for incoming message")
+                self._logger.debug("Waiting for incoming message...")
                 worker_id, message = self._worker.recv_multipart()
                 self._logger.debug("AsyncControllerWorker incoming message {0} from {1]".format(message, worker_id))
                 message = json.loads(message.decode('utf8'))
