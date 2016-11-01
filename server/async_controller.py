@@ -55,7 +55,7 @@ class Controller(object):
             self.stop_event = stop_event
             self.logger = server_logger.Logger().logger
             self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
-            self._context = zmq.Context()
+            # self._context = zmq.Context()
             self.client_workers = {}
             self.incoming_message_workers = []
             # We won't assign more than 50 jobs to a worker at a time; this ensures
@@ -67,20 +67,14 @@ class Controller(object):
             self._incoming_message_queue = Queue.PriorityQueue()
             self._outgoing_message_queue = Queue.Queue()
             # Socket to send messages on from Manager
-            self._socket = self._context.socket(zmq.ROUTER)
-            self._socket.bind("tcp://*:{0}".format(port))
+            # self._socket = self._context.socket(zmq.ROUTER)
+            # self._socket.bind("tcp://*:{0}".format(port))
             proxy_device_thread = AsyncControllerServer(self.logger, self.stop_event, self._incoming_message_queue,
                                                         self._outgoing_message_queue)
             proxy_device_thread.start()
             self.logger.info("Starting incoming messages workers")
         except Exception as e:
             self.logger.exception(e)
-
-    def __del__(self):
-        self.logger.info("Closing sockets...")
-        self._socket.close()
-        self._backend.close()
-        self._context.term()
 
     @property
     def dir_tree(self):
@@ -212,7 +206,7 @@ class AsyncControllerServer(Thread, object):
         try:
             for _ in range(MAX_CONTROLLER_WORKERS):
                 worker = AsyncControllerWorker(self._logger, self._context, self._incoming_queue,
-                                                       self._stop_event)
+                                               self._stop_event)
                 worker.start()
             self._logger.info("Starting Proxy Device...")
             zmq.proxy(self._frontend, self._backend)
@@ -220,6 +214,12 @@ class AsyncControllerServer(Thread, object):
             self._logger.exception(zmq_error)
             self._stop_event.set()
             raise zmq_error
+
+    def __del__(self):
+        self._logger.info("Closing sockets...")
+        self._context.close()
+        self._backend.close()
+        self._context.term()
 
 
 class AsyncControllerWorker(Thread, object):
