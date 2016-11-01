@@ -71,7 +71,7 @@ class Controller(object):
             self._backend = self._context.socket(zmq.DEALER)
             self._backend.bind('inproc://backend')
             self.logger.info("Starting Proxy Device...")
-            proxy_device_thread = ProxyDevice(self.logger, self._socket, self._backend)
+            proxy_device_thread = ProxyDevice(self.logger, self._socket, self._backend, self.stop_event)
             proxy_device_thread.start()
             self.logger.info("Starting incoming messages workers")
             for _ in range(MAX_CONTROLLER_WORKERS):
@@ -238,8 +238,9 @@ class AsyncControllerWorker(Thread, object):
 
 
 class ProxyDevice(Thread, object):
-    def __init__(self, logger, frontend, backend):
+    def __init__(self, logger, frontend, backend, stop_event):
         super(ProxyDevice, self).__init__()
+        self._stop_event = stop_event
         self._logger = logger
         self._frontend = frontend
         self._backend = backend
@@ -250,3 +251,5 @@ class ProxyDevice(Thread, object):
             zmq.proxy(self._frontend, self._backend)
         except zmq.ZMQError as zmq_error:
             self._logger.exception(zmq_error)
+            self._stop_event.set()
+            raise zmq_error
