@@ -156,14 +156,17 @@ class Controller(object):
                     # do this while checking for the next available worker so that
                     # if it takes a while to find one we're still processing
                     # incoming messages.
-                    while not self._incoming_message_queue.empty():
-                        _, (worker_id, message) = self._incoming_message_queue.get()
+                    # while not self._incoming_message_queue.empty():
+                    try:
+                        _, (worker_id, message) = self._incoming_message_queue.get_nowait()
                         self._handle_worker_message(worker_id, message)
-                    # If there are no available workers (they all have 50 or
-                    # more jobs already) sleep for half a second.
-                    next_worker_id = self._get_next_worker_id()
-                    if next_worker_id is None:
-                        time.sleep(0.5)
+                        # If there are no available workers (they all have 50 or
+                        # more jobs already) sleep for half a second.
+                        next_worker_id = self._get_next_worker_id()
+                        if next_worker_id is None:
+                            time.sleep(0.5)
+                    except Queue.Empty:
+                        pass
                 # We've got a Job and an available worker_id, all we need to do
                 # is send it. Note that we're now using send_multipart(), the
                 # counterpart to recv_multipart(), to tell the ROUTER where our
