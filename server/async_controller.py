@@ -240,7 +240,7 @@ class AsyncControllerWorker(Thread, object):
 
     def run(self):
         self._logger.info("Controller incoming/outgoing messages worker thread {0} started".format(self.name))
-        while not self.stop_event.is_set:
+        while not self.stop_event.is_set():
             try:
                 self._logger.debug("Waiting for incoming message...")
                 worker_id, message = self._worker.recv_multipart()
