@@ -158,7 +158,7 @@ class Controller(object):
                     # incoming messages.
                     while not self._incoming_message_queue.empty():
                         _, (worker_id, message) = self._incoming_message_queue.get()
-                        self.logger.debug("Processing incoming message {0} from {1]".format(message, worker_id))
+                        self.logger.debug("Processing incoming message {0} from {1}".format(message, worker_id))
                         self._handle_worker_message(worker_id, message)
                     # If there are no available workers (they all have 50 or
                     # more jobs already) sleep for half a second.
@@ -244,7 +244,7 @@ class AsyncControllerWorker(Thread, object):
             try:
                 self._logger.debug("Waiting for incoming message...")
                 worker_id, message = self._worker.recv_multipart()
-                self._logger.debug("AsyncControllerWorker incoming message {0} from {1]".format(message, worker_id))
+                self._logger.debug("AsyncControllerWorker incoming message {0} from {1}".format(message, worker_id))
                 message = json.loads(message.decode('utf8'))
                 if message['message'] == 'connect' or message['message'] == 'disconnect':
                     time_stamp = timestamp()
@@ -255,7 +255,7 @@ class AsyncControllerWorker(Thread, object):
 
                 #  Sending out messages from outgoing message queue
                 next_worker_id, job_id, job_work = self.outgoing_queue.get_nowat()
-                self._logger.debug("AsyncControllerWorker outgoing message {0} from {1]".format(job_id, next_worker_id))
+                self._logger.debug("AsyncControllerWorker outgoing message {0} from {1}".format(job_id, next_worker_id))
                 self._worker.send_multipart(
                     [next_worker_id, json.dumps((job_id, job_work)).encode('utf8')])
             except (Queue.Full, Queue.Empty):
