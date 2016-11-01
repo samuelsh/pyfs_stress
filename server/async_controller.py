@@ -79,7 +79,6 @@ class Controller(object):
                                                self.stop_event)
                 worker.start()
                 self.incoming_message_workers.append(worker)
-            [worker.join() for worker in self.incoming_message_workers]
         except Exception as e:
             self.logger.exception(e)
 
