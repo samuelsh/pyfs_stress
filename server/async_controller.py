@@ -174,7 +174,7 @@ class Controller(object):
                 self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
                 if self.stop_event.is_set():
                     break
-        except Queue.Full:
+        except (Queue.Full, Queue.Empty):
             pass
         except Exception as generic_error:
             self.logger.exception(generic_error)
