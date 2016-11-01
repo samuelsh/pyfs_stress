@@ -63,7 +63,7 @@ class Controller(object):
         # When/if a client disconnects we'll put any unfinished work in here,
         # get_next_job() will return work from here as well.
         self._work_to_requeue = []
-        self.__incoming_message_queue = Queue.PriorityQueue()
+        self._incoming_message_queue = Queue.PriorityQueue()
         try:
             # Socket to send messages on from Manager
             self._socket = self._context.socket(zmq.ROUTER)
@@ -73,9 +73,11 @@ class Controller(object):
             zmq.proxy(self._socket, self._backend)
             self.logger.info("Starting incoming messages workers")
             for _ in range(MAX_CONTROLLER_WORKERS):
-                worker = AsyncControllerWorker(self.logger, self._context, self.__incoming_message_queue, self.stop_event)
+                worker = AsyncControllerWorker(self.logger, self._context, self._incoming_message_queue,
+                                               self.stop_event)
                 worker.start()
                 self.incoming_message_workers.append(worker)
+                [worker.join() for worker in self.incoming_message_workers]
         except Exception as e:
             self.logger.exception(e)
 
