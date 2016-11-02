@@ -244,7 +244,7 @@ class AsyncControllerWorker(Thread, object):
         except Exception as generic_error:
             self._logger.exception("Unhandled exception {0}".format(generic_error))
             self.stop_event.set()
-        raise
+            raise generic_error
 
     def run(self):
         self._logger.info("Controller incoming/outgoing messages worker thread {0} started".format(self.name))
