@@ -262,9 +262,11 @@ class AsyncControllerWorker(Thread, object):
                 if zmq_error == zmq.EAGAIN:
                     pass
                 else:
+                    self._logger.exception("ZMQ Error {0}".format(zmq_error))
                     self.stop_event.set()
                     raise zmq_error
-            else:
+            except Exception as generic_error:
+                self._logger.exception("Unhandled exception {0}".format(generic_error))
                 self.stop_event.set()
                 raise
             try:
