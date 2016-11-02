@@ -259,7 +259,7 @@ class AsyncControllerWorker(Thread, object):
                 self.incoming_queue.put(
                     (time_stamp, (worker_id, message)))  # Putting messages to queue by timestamp priority
             except zmq.ZMQError as zmq_error:
-                if zmq_error == zmq.EAGAIN:
+                if zmq_error.errno == zmq.EAGAIN:
                     pass
                 else:
                     self._logger.exception("ZMQ Error {0}".format(zmq_error))
