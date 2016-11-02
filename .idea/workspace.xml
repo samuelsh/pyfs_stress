@@ -51,7 +51,7 @@
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="442">
-              <caret line="26" column="25" selection-start-line="26" selection-start-column="25" selection-end-line="26" selection-end-column="25" />
+              <caret line="26" column="24" selection-start-line="26" selection-start-column="24" selection-end-line="26" selection-end-column="24" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -597,13 +597,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00743" summary="Working on async controller">
-      <created>1477915705325</created>
-      <option name="number" value="00743" />
-      <option name="presentableId" value="LOCAL-00743" />
-      <option name="project" value="LOCAL" />
-      <updated>1477915705325</updated>
-    </task>
     <task id="LOCAL-00744" summary="Working on async controller">
       <created>1477920317229</created>
       <option name="number" value="00744" />
@@ -940,7 +933,14 @@
       <option name="project" value="LOCAL" />
       <updated>1478069667523</updated>
     </task>
-    <option name="localTasksCounter" value="792" />
+    <task id="LOCAL-00792" summary="Fixing async server bugs">
+      <created>1478086064835</created>
+      <option name="number" value="00792" />
+      <option name="presentableId" value="LOCAL-00792" />
+      <option name="project" value="LOCAL" />
+      <updated>1478086064835</updated>
+    </task>
+    <option name="localTasksCounter" value="793" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1471,7 +1471,7 @@
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
-          <caret line="26" column="25" selection-start-line="26" selection-start-column="25" selection-end-line="26" selection-end-column="25" />
+          <caret line="26" column="24" selection-start-line="26" selection-start-column="24" selection-end-line="26" selection-end-column="24" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>
