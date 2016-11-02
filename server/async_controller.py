@@ -163,8 +163,8 @@ class Controller(object):
                         # If there are no available workers (they all have 50 or
                         # more jobs already) sleep for half a second.
                         next_worker_id = self._get_next_worker_id()
-                        if next_worker_id is None:
-                            time.sleep(0.5)
+                        # if next_worker_id is None:
+                            # time.sleep(0.5)
                     except Queue.Empty:
                         pass
                         # self.logger.debug("Queue Empty!")

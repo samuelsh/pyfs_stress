@@ -50,8 +50,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="260" column="47" selection-start-line="260" selection-start-column="47" selection-end-line="260" selection-end-column="47" />
+            <state relative-caret-position="357">
+              <caret line="166" column="24" selection-start-line="166" selection-start-column="24" selection-end-line="166" selection-end-column="24" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -607,13 +607,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00731" summary="Working on async controller">
-      <created>1477913351537</created>
-      <option name="number" value="00731" />
-      <option name="presentableId" value="LOCAL-00731" />
-      <option name="project" value="LOCAL" />
-      <updated>1477913351537</updated>
-    </task>
     <task id="LOCAL-00732" summary="Working on async controller">
       <created>1477913437049</created>
       <option name="number" value="00732" />
@@ -950,7 +943,14 @@
       <option name="project" value="LOCAL" />
       <updated>1478062808304</updated>
     </task>
-    <option name="localTasksCounter" value="780" />
+    <task id="LOCAL-00780" summary="Improved zmq errors handling">
+      <created>1478063477568</created>
+      <option name="number" value="00780" />
+      <option name="presentableId" value="LOCAL-00780" />
+      <option name="project" value="LOCAL" />
+      <updated>1478063477568</updated>
+    </task>
+    <option name="localTasksCounter" value="781" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1036,7 +1036,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- improving multiclient load balance" />
     <MESSAGE value="- fix: mkdir will get only not synced dir names" />
     <MESSAGE value="- fix: working on messages format - message body will be pure JSON + preparations to integrate msgpack" />
     <MESSAGE value="- PUBSUB logger for centralised client logging" />
@@ -1061,7 +1060,8 @@
     <MESSAGE value="Integrating async controller" />
     <MESSAGE value="Fixing async controller bugs" />
     <MESSAGE value="Fixing timestamp milliseconds granularity" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixing timestamp milliseconds granularity" />
+    <MESSAGE value="Improved zmq errors handling" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improved zmq errors handling" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1480,8 +1480,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="260" column="47" selection-start-line="260" selection-start-column="47" selection-end-line="260" selection-end-column="47" />
+        <state relative-caret-position="357">
+          <caret line="166" column="24" selection-start-line="166" selection-start-column="24" selection-end-line="166" selection-end-column="24" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>
