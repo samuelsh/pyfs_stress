@@ -250,7 +250,7 @@ class AsyncControllerWorker(Thread, object):
         self._logger.info("Controller incoming/outgoing messages worker thread {0} started".format(self.name))
         while not self.stop_event.is_set():
             try:
-                worker_id, message = self._worker.recv_multipart()
+                worker_id, message = self._worker.recv_multipart(flags=zmq.NOBLOCK)
                 message = json.loads(message.decode('utf8'))
                 if message['message'] == 'connect' or message['message'] == 'disconnect':
                     time_stamp = timestamp()
@@ -258,16 +258,22 @@ class AsyncControllerWorker(Thread, object):
                     time_stamp = message['result']['timestamp']
                 self.incoming_queue.put(
                     (time_stamp, (worker_id, message)))  # Putting messages to queue by timestamp priority
-
+            except zmq.ZMQError as zmq_error:
+                if zmq_error == zmq.EAGAIN:
+                    pass
+                else:
+                    self.stop_event.set()
+                    raise zmq_error
+            else:
+                self.stop_event.set()
+                raise
+            try:
                 #  Sending out messages from outgoing message queue
                 next_worker_id, job_id, job_work = self.outgoing_queue.get_nowait()
                 self._worker.send_multipart(
                     [next_worker_id, json.dumps((job_id, job_work)).encode('utf8')])
             except Queue.Empty:
                 pass
-            except Queue.Full:
-                pass
-                # self._logger.warn("Queue Full!!!!")
             except zmq.ZMQError as zmq_error:
                 if zmq_error.errno == zmq.EAGAIN:
                     pass
