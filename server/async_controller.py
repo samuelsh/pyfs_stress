@@ -179,7 +179,8 @@ class Controller(object):
                 if self.stop_event.is_set():
                     break
         except Queue.Full:
-            self.logger.debug("Queue Full!")
+            pass
+            # self.logger.debug("Queue Full!")
         except Exception as generic_error:
             self.logger.exception(generic_error)
             raise
@@ -261,7 +262,8 @@ class AsyncControllerWorker(Thread, object):
             except Queue.Empty:
                 pass
             except Queue.Full:
-                self._logger.warn("Queue Full!!!!")
+                pass
+                # self._logger.warn("Queue Full!!!!")
             except zmq.ZMQError as zmq_error:
                 if zmq_error.errno == zmq.EAGAIN:
                     pass
