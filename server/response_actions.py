@@ -173,6 +173,8 @@ def rename_success(logger, incoming_message, dir_tree):
                 logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(path[0], path[1]))
                 rfile.ondisk = True
                 rfile.name = incoming_message['data']['rename_dest']
+                rfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                             '%Y/%m/%d %H:%M:%S.%f')
                 logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
@@ -223,6 +225,8 @@ def rename_exist_success(logger, incoming_message, dir_tree):
                 logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(dst_path[0], dst_path[1]))
                 file_to_rename.ondisk = True
                 file_to_rename.name = incoming_message['data']['rename_dest']
+                file_to_rename.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                             '%Y/%m/%d %H:%M:%S.%f')
                 logger.info('File {0}/{1} is renamed to {2}'.format(dst_path[0], dst_path[1], file_to_rename.name))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(dst_path[0], dst_path[1]))
