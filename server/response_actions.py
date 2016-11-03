@@ -259,9 +259,6 @@ def touch_fail(logger, incoming_message, dir_tree):
                 "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
 
     elif incoming_message['error_code'] == errno.ENOENT:
-        if incoming_message['error_message'] == "Target not specified" or incoming_message[
-            'error_code'] == errno.EEXIST:
-            return
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
         rdir = dir_tree.get_dir_by_name(rdir_name)
@@ -300,8 +297,9 @@ def stat_fail(logger, incoming_message, dir_tree):
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
-                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
+                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
                             incoming_message['action'], rdir_name + "/" + rfile_name))
+                    rfile.ondisk = False
             else:
                 logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
@@ -324,8 +322,9 @@ def read_fail(logger, incoming_message, dir_tree):
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
-                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
+                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
                             incoming_message['action'], rdir_name + "/" + rfile_name))
+                    rfile.ondisk = False
             else:
                 logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
@@ -348,8 +347,9 @@ def delete_fail(logger, incoming_message, dir_tree):
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
-                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
+                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
                             incoming_message['action'], rdir_name + "/" + rfile_name))
+                    rfile.ondisk = False
             else:
                 logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
@@ -372,8 +372,9 @@ def rename_fail(logger, incoming_message, dir_tree):
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
-                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
+                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
                             incoming_message['action'], rdir_name + "/" + rfile_name))
+                    rfile.ondisk = False
             else:
                 logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
@@ -396,8 +397,9 @@ def rename_exist_fail(logger, incoming_message, dir_tree):
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
-                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk".format(
+                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
                             incoming_message['action'], rdir_name + "/" + rfile_name))
+                    rfile.ondisk = False
             else:
                 logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
