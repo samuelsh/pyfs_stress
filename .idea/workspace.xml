@@ -597,13 +597,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00744" summary="Working on async controller">
-      <created>1477920317229</created>
-      <option name="number" value="00744" />
-      <option name="presentableId" value="LOCAL-00744" />
-      <option name="project" value="LOCAL" />
-      <updated>1477920317229</updated>
-    </task>
     <task id="LOCAL-00745" summary="Integrating async controller">
       <created>1477983392304</created>
       <option name="number" value="00745" />
@@ -940,7 +933,14 @@
       <option name="project" value="LOCAL" />
       <updated>1478086064835</updated>
     </task>
-    <option name="localTasksCounter" value="793" />
+    <task id="LOCAL-00793" summary="Fixing async server bugs">
+      <created>1478086319520</created>
+      <option name="number" value="00793" />
+      <option name="presentableId" value="LOCAL-00793" />
+      <option name="project" value="LOCAL" />
+      <updated>1478086319520</updated>
+    </task>
+    <option name="localTasksCounter" value="794" />
     <servers />
   </component>
   <component name="TodoView">
