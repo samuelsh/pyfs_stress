@@ -174,7 +174,7 @@ def rename_success(logger, incoming_message, dir_tree):
                 rfile.ondisk = True
                 rfile.name = incoming_message['data']['rename_dest']
                 rfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-                                                             '%Y/%m/%d %H:%M:%S.%f')
+                                                                 '%Y/%m/%d %H:%M:%S.%f')
                 logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
@@ -185,7 +185,7 @@ def rename_success(logger, incoming_message, dir_tree):
 
 def rename_exist_success(logger, incoming_message, dir_tree):
     src_path = incoming_message['target'].split(' ')[0].split('/')[1:]  # folder:file
-    dst_path = incoming_message['target'].split(' ')[0].split('/')[1:]  # folder:file
+    dst_path = incoming_message['target'].split(' ')[1].split('/')[1:]  # folder:file
     src_rename_dir = dir_tree.get_dir_by_name(src_path[0])
     dst_rename_dir = dir_tree.get_dir_by_name(dst_path[0])
     if not src_rename_dir:
@@ -208,7 +208,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
             logger.debug(
                 "Directory {0} is not on disk, nothing to update".format(src_rename_dir.data.name))
 
-    #  Actual rename of destination file
+    # Actual rename of destination file
     if not dst_rename_dir:
         logger.debug(
             "Directory {0} already removed from active dirs list, skipping....".format(dst_path[0]))
@@ -226,7 +226,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
                 file_to_rename.ondisk = True
                 file_to_rename.name = incoming_message['data']['rename_dest']
                 file_to_rename.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-                                                             '%Y/%m/%d %H:%M:%S.%f')
+                                                                          '%Y/%m/%d %H:%M:%S.%f')
                 logger.info('File {0}/{1} is renamed to {2}'.format(dst_path[0], dst_path[1], file_to_rename.name))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(dst_path[0], dst_path[1]))
