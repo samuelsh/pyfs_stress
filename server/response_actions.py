@@ -168,6 +168,12 @@ def rename_success(logger, incoming_message, dir_tree):
                 logger.debug('File {0}/{1} is found, renaming'.format(path[0], path[1]))
                 rfile.name = incoming_message['data']['rename_dest']
                 logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
+            # In case there is raise and rename arrived before touch we'll sync the file here
+            elif rfile:
+                logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(path[0], path[1]))
+                rfile.ondisk = True
+                rfile.name = incoming_message['data']['rename_dest']
+                logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
         else:
@@ -187,6 +193,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
         logger.debug(
             'Directory exists {0}, going to delete renamed file {1} from directory'.format(src_rename_dir.data.name,
                                                                                            src_path[1]))
+        #  Firs we delete the source file
         if src_rename_dir.data.ondisk:
             file_to_delete = src_rename_dir.data.get_file_by_name(src_path[1])
             if file_to_delete and file_to_delete.ondisk:
@@ -209,6 +216,12 @@ def rename_exist_success(logger, incoming_message, dir_tree):
             file_to_rename = dst_rename_dir.data.get_file_by_name(dst_path[1])
             if file_to_rename and file_to_rename.ondisk:
                 logger.debug('File {0}/{1} is found, renaming'.format(dst_path[0], dst_path[1]))
+                file_to_rename.name = incoming_message['data']['rename_dest']
+                logger.info('File {0}/{1} is renamed to {2}'.format(dst_path[0], dst_path[1], file_to_rename.name))
+            # In case that destination file wasn't synced to disk for some reason, we'll sync it during rename
+            elif file_to_rename:
+                logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(dst_path[0], dst_path[1]))
+                file_to_rename.ondisk = True
                 file_to_rename.name = incoming_message['data']['rename_dest']
                 logger.info('File {0}/{1} is renamed to {2}'.format(dst_path[0], dst_path[1], file_to_rename.name))
             else:
