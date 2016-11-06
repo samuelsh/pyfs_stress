@@ -216,6 +216,7 @@ class File(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
         self.cheksum = 0
+        self.last_action = None
         self.creation_time = None
         self.ondisk = False
 

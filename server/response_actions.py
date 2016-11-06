@@ -213,7 +213,8 @@ def rename_exist_success(logger, incoming_message, dir_tree):
         logger.debug(
             "Directory {0} already removed from active dirs list, skipping....".format(dst_path[0]))
     else:
-        logger.debug('Directory exists {0}, going to rename {1}'.format(dst_rename_dir.data.name, dst_path[1]))
+        logger.debug('Directory exists {0}, going to rename {1} to {2}'.format(dst_rename_dir.data.name, src_path[1],
+                     dst_path[1]))
         if dst_rename_dir.data.ondisk:
             file_to_rename = dst_rename_dir.data.get_file_by_name(dst_path[1])
             if file_to_rename and file_to_rename.ondisk:
