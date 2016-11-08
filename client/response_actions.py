@@ -2,7 +2,7 @@ import os
 import random
 import shutil
 import fcntl
-import data.data_generators
+import data_operations.data_generators
 from utils import shell_utils
 
 __author__ = "samuels"
@@ -28,10 +28,10 @@ DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B]
 class DynamoException(Exception):
     pass
 
+
 class DataPatterns:
     def __init__(self):
         self.data_patterns_dict = {}
-
 
 
 def response_action(action, mount_point, target, **kwargs):
