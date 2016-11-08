@@ -1,16 +1,37 @@
 import os
 import random
 import shutil
-
+import fcntl
+import data.data_generators
 from utils import shell_utils
 
 __author__ = "samuels"
 
 MAX_DIR_SIZE = 128 * 1024
+INLINE_MAX_SIZE = 3499
+KB1 = 1024
+KB4 = KB1 * 4
+MB1 = (1024 * 1024)
+GB1 = (1024 * 1024 * 1024)
+TB1 = (1024 * 1024 * 1024 * 1024)
+MB512 = (MB1 * 512)  # level 1 can map up to 512MB
+GB256 = (GB1 * 256)  # level 2 can map up to 256GB
+TB128 = (TB1 * 128)  # level 3 can map up to 128TB
+ZERO_PADDING_START = 128 * MB1  # 128MB
+DATA_PATTERN_A = 'A' * 17
+DATA_PATTERN_B = 'B' * 17
+
+OFFSETS_LIST = [KB1, KB4, MB1, GB1, TB1, MB512, GB256]
+DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B]
 
 
 class DynamoException(Exception):
     pass
+
+class DataPatterns:
+    def __init__(self):
+        self.data_patterns_dict = {}
+
 
 
 def response_action(action, mount_point, target, **kwargs):
@@ -65,6 +86,17 @@ def read(mount_point, target, **kwargs):
         f.read()
 
 
+def write(mount_point, target, **kwargs):
+    with open("{0}{1}".format(mount_point, target), 'r+') as f:
+        fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        offset = random.choice(OFFSETS_LIST)
+        data_pattern = random.choice(DATA_PATTERNS_LIST)
+        f.seek(ZERO_PADDING_START + offset)
+        f.write(data_pattern)
+        f.flush()
+        os.fsync(f.fileno())
+
+
 def rename(mount_point, target, **kwargs):
     data = {}
     dirpath = target.split('/')[1]
@@ -86,6 +118,8 @@ def rename_exist(mount_point, target, **kwargs):
     src_fname = src_path.split('/')[2]
     dst_dirpath = dst_path.split('/')[1]
     dst_fname = dst_path.split('/')[2]
+    if src_fname == dst_fname:
+        raise DynamoException("Trying to move file into itself. Dropping...")
     dst_mount_point = "".join(
         "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
                                                random.randint(0, kwargs['domains'] - 1)))
