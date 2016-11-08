@@ -3,7 +3,12 @@ import random
 import shutil
 import fcntl
 # import data_operations.data_generators
+import sys
+
 from utils import shell_utils
+
+sys.path.append('/qa/dynamo')
+from config import error_codes
 
 __author__ = "samuels"
 
@@ -25,7 +30,7 @@ OFFSETS_LIST = [KB1, KB4, MB1, GB1, TB1, MB512, GB256]
 DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B]
 
 
-class DynamoException(Exception):
+class DynamoException(EnvironmentError):
     pass
 
 
@@ -69,7 +74,8 @@ def touch(mount_point, target, **kwargs):
     dirsize = os.stat("{0}/{1}".format(mount_point, target.split('/')[1])).st_size
     if dirsize > MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
         data['target_path'] = target
-        raise DynamoException("Directory Entry reached {0} size limit".format(MAX_DIR_SIZE))
+        raise DynamoException(error_codes.MAX_DIR_SIZE, "Directory Entry reached {0} size limit".format(MAX_DIR_SIZE),
+                              target)
     # shell_utils.touch('{0}{1}'.format(mount_point, work['target']))
     with open('{0}{1}'.format(mount_point, target), 'w'):
         pass
@@ -119,7 +125,7 @@ def rename_exist(mount_point, target, **kwargs):
     dst_dirpath = dst_path.split('/')[1]
     dst_fname = dst_path.split('/')[2]
     if src_fname == dst_fname:
-        raise DynamoException("Trying to move file into itself. Dropping...")
+        raise DynamoException(error_codes.SAMEFILE, "Trying to move file into itself. Dropping...", src_path)
     dst_mount_point = "".join(
         "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
                                                random.randint(0, kwargs['domains'] - 1)))

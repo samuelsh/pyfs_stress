@@ -15,11 +15,13 @@ import socket
 import time
 import timeit
 
+from config import error_codes
+
 timer = timeit.default_timer
 
 sys.path.append('/qa/dynamo')
 from logger import pubsub_logger
-from config import CTRL_MSG_PORT, CLIENT_MOUNT_POINT
+from config import CTRL_MSG_PORT
 from response_actions import response_action, DynamoException
 from utils import shell_utils
 
@@ -118,7 +120,7 @@ class Dynamo(object):
         self.logger.debug('Incoming job: \'{0}\' on \'{1}\''.format(work['action'], work['target']))
         try:
             if 'None' in work['target']:
-                raise DynamoException("{0}".format("Target not specified"))
+                raise DynamoException(error_codes.NO_TARGET, "{0}".format("Target not specified", work['target']))
             response = response_action(action, mount_point, work['target'], nodes=self.nodes, server=self._server,
                                        domains=self.domains)
             if response:
