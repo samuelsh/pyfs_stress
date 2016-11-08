@@ -4,6 +4,8 @@ import hashlib
 import errno
 from treelib.tree import NodeIDAbsentError
 
+from config import error_codes
+
 __author__ = "samuels"
 
 
@@ -250,15 +252,15 @@ def failed_response_actions(action):
 
 
 def mkdir_fail(logger, incoming_message, dir_tree):
-    if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
         return
     generic_error_handler(logger, incoming_message)
 
 
 def touch_fail(logger, incoming_message, dir_tree):
-    if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
         return
-    if "size limit" in incoming_message['error_message']:
+    if incoming_message['error_code'] == error_codes.MAX_DIR_SIZE:
         rdir_name = incoming_message['target'].split('/')[1]  # get target folder name from path
         try:
             logger.info("Directory {0} going to be removed from dir tree".format(rdir_name))
@@ -293,7 +295,7 @@ def touch_fail(logger, incoming_message, dir_tree):
 
 
 def list_fail(logger, incoming_message, dir_tree):
-    if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         pass
@@ -302,7 +304,7 @@ def list_fail(logger, incoming_message, dir_tree):
 
 
 def stat_fail(logger, incoming_message, dir_tree):
-    if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -327,7 +329,7 @@ def stat_fail(logger, incoming_message, dir_tree):
 
 
 def read_fail(logger, incoming_message, dir_tree):
-    if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -352,7 +354,7 @@ def read_fail(logger, incoming_message, dir_tree):
 
 
 def delete_fail(logger, incoming_message, dir_tree):
-    if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -377,7 +379,7 @@ def delete_fail(logger, incoming_message, dir_tree):
 
 
 def rename_fail(logger, incoming_message, dir_tree):
-    if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -402,7 +404,9 @@ def rename_fail(logger, incoming_message, dir_tree):
 
 
 def rename_exist_fail(logger, incoming_message, dir_tree):
-    if incoming_message['error_message'] == "Target not specified" or incoming_message['error_code'] == errno.EEXIST:
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
+        return
+    if incoming_message['error_code'] == error_codes.SAMEFILE:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
