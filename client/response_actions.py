@@ -2,7 +2,7 @@ import os
 import random
 import shutil
 import fcntl
-import data_operations.data_generators
+# import data_operations.data_generators
 from utils import shell_utils
 
 __author__ = "samuels"
