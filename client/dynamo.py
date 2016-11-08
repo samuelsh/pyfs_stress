@@ -15,14 +15,13 @@ import socket
 import time
 import timeit
 
-from config import error_codes
-
 timer = timeit.default_timer
 
 sys.path.append('/qa/dynamo')
 from logger import pubsub_logger
 from config import CTRL_MSG_PORT
 from response_actions import response_action, DynamoException
+from config import error_codes
 from utils import shell_utils
 
 
