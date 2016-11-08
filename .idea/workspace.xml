@@ -68,8 +68,8 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+            <state relative-caret-position="404">
+              <caret line="132" column="64" selection-start-line="132" selection-start-column="64" selection-end-line="132" selection-end-column="64" />
               <folding>
                 <element signature="e#47#58#0" expanded="true" />
               </folding>
@@ -597,13 +597,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00756" summary="Fixing async controller bugs">
-      <created>1477991167365</created>
-      <option name="number" value="00756" />
-      <option name="presentableId" value="LOCAL-00756" />
-      <option name="project" value="LOCAL" />
-      <updated>1477991167365</updated>
-    </task>
     <task id="LOCAL-00757" summary="Fixing async controller bugs">
       <created>1477991350389</created>
       <option name="number" value="00757" />
@@ -940,7 +933,14 @@
       <option name="project" value="LOCAL" />
       <updated>1478596241677</updated>
     </task>
-    <option name="localTasksCounter" value="805" />
+    <task id="LOCAL-00805" summary="Improving DynamoException">
+      <created>1478596411810</created>
+      <option name="number" value="00805" />
+      <option name="presentableId" value="LOCAL-00805" />
+      <option name="project" value="LOCAL" />
+      <updated>1478596411811</updated>
+    </task>
+    <option name="localTasksCounter" value="806" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1427,8 +1427,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+        <state relative-caret-position="404">
+          <caret line="132" column="64" selection-start-line="132" selection-start-column="64" selection-end-line="132" selection-end-column="64" />
           <folding>
             <element signature="e#47#58#0" expanded="true" />
           </folding>
