@@ -2,13 +2,7 @@
 Client load generator
 2016 samules (c)
 """
-import json
 import random
-import os
-
-import datetime
-import shutil
-
 import zmq
 import sys
 import socket
@@ -22,7 +16,6 @@ from logger import pubsub_logger
 from config import CTRL_MSG_PORT
 from response_actions import response_action, DynamoException
 from config import error_codes
-from utils import shell_utils
 
 
 def timestamp(now=None):
