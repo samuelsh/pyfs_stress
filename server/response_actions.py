@@ -76,6 +76,7 @@ def success_response_actions(action):
         'list': list_success,
         'stat': stat_success,
         'read': read_success,
+        'write': write_success,
         'delete': delete_success,
         'rename': rename_success,
         'rename_exist': rename_exist_success
