@@ -118,6 +118,7 @@ def write(mount_point, target, **kwargs):
         f.write(data_pattern)
         f.flush()
         os.fsync(f.fileno())
+        fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
     data['data_pattern'] = data_pattern['pattern']
     data['repeats'] = data_pattern['repeats']
     data['hash'] = data_hash
