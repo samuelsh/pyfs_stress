@@ -3,6 +3,8 @@ Client load generator
 2016 samules (c)
 """
 import random
+import traceback
+
 import zmq
 import sys
 import socket
@@ -86,6 +88,8 @@ class Dynamo(object):
                     self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
         except KeyboardInterrupt:
             pass
+        except Exception as e:
+            traceback.print_exc()
         finally:
             self._disconnect()
 
