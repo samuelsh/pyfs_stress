@@ -123,6 +123,7 @@ def write(mount_point, target, **kwargs):
     data['repeats'] = data_pattern['repeats']
     data['hash'] = data_hash
     data['offset'] = offset
+    return data
 
 
 def rename(mount_point, target, **kwargs):
