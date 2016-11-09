@@ -21,7 +21,7 @@ def generic_error_handler(logger, incoming_message):
     """
     try:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
-    except IndexError:
+    except AttributeError:
         logger.error(
             'Operation {0} FAILED UNEXPECTEDLY due to {2}'.format(
                 incoming_message['action'],
