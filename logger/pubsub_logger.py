@@ -33,12 +33,12 @@ class PUBLogger:
         self._logger.addHandler(self._handler)
 
         # create debug file handler and set level to debug, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join("/qa/dynamo", "client_local_debug.log"), "w",
-                                               100 * 1024 * 1024, 10)
-        handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
-        handler.setFormatter(formatter)
-        self._logger.addHandler(handler)
+        # handler = handlers.RotatingFileHandler(os.path.join("/qa/dynamo", "client_local_debug.log"), "w",
+        #                                        100 * 1024 * 1024, 10)
+        # handler.setLevel(logging.DEBUG)
+        # formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
+        # handler.setFormatter(formatter)
+        # self._logger.addHandler(handler)
 
     @property
     def logger(self):
