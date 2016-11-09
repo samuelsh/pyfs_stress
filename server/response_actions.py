@@ -19,7 +19,14 @@ def generic_error_handler(logger, incoming_message):
     Returns:
 
     """
-    rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
+    try:
+        rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
+    except IndexError:
+        logger.error(
+            'Operation {0} FAILED UNEXPECTEDLY due to {2}'.format(
+                incoming_message['action'],
+                incoming_message[
+                    'error_message']))
     try:
         rfile_name = incoming_message['target'].split('/')[4]
     except IndexError:
