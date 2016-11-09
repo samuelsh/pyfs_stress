@@ -113,12 +113,12 @@ def write(mount_point, target, **kwargs):
     hasher.update(pattern)
     data_hash = hasher.hexdigest()
     with open("{0}{1}".format(mount_point, target), 'r+') as f:
-        fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        # fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         f.seek(ZERO_PADDING_START + offset)
         f.write(data_pattern)
         f.flush()
         os.fsync(f.fileno())
-        fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
+        # fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
     data['data_pattern'] = data_pattern['pattern']
     data['repeats'] = data_pattern['repeats']
     data['hash'] = data_hash
