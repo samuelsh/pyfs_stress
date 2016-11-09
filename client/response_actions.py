@@ -109,13 +109,13 @@ def write(mount_point, target, **kwargs):
     hasher = hashlib.md5()
     offset = random.choice(OFFSETS_LIST)
     data_pattern = random.choice(DATA_PATTERNS_LIST)
-    pattern = data_pattern['pattern'] * data_pattern['repeats']
-    hasher.update(pattern)
+    pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
+    hasher.update(pattern_to_write)
     data_hash = hasher.hexdigest()
     with open("{0}{1}".format(mount_point, target), 'r+') as f:
         fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         f.seek(ZERO_PADDING_START + offset)
-        f.write(data_pattern)
+        f.write(pattern_to_write)
         f.flush()
         os.fsync(f.fileno())
         fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
