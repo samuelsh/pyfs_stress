@@ -123,7 +123,7 @@ class Dynamo(object):
                                  path=os_error.filename, line=sys.exc_info()[-1].tb_lineno)
         except IOError as io_error:
             return build_message('failed', action, data, timestamp(), error_code=io_error.errno,
-                                 error_message=io_error,
+                                 error_message=io_error.strerror,
                                  path='{0}{1}'.format(mount_point, work['target']), line=sys.exc_info()[-1].tb_lineno)
         except DynamoException as dynamo_error:
             return build_message('failed', action, data, timestamp(), error_code=dynamo_error.errno,
