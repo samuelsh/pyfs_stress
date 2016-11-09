@@ -101,7 +101,7 @@ def stat(mount_point, target, **kwargs):
 
 def read(mount_point, target, **kwargs):
     with open("{0}{1}".format(mount_point, target), 'r') as f:
-        f.read()
+        f.read(17)
 
 
 def write(mount_point, target, **kwargs):
