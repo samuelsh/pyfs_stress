@@ -9,6 +9,7 @@ def request_action(action, logger, dir_tree):
         "touch": touch_request,
         "stat": stat_request,
         "read": read_request,
+        "write": write_request,
         "rename": rename_request,
         "rename_exist": rename_exist_request
     }[action](logger, dir_tree)
@@ -76,6 +77,20 @@ def stat_request(logger, dir_tree):
 
 
 def read_request(logger, dir_tree):
+    rdir = dir_tree.get_random_dir_synced()
+    if rdir:
+        rfile = rdir.data.get_random_file()
+        if not rfile:
+            target = 'None'
+        else:
+            fname = rfile.name
+            target = "/{0}/{1}".format(rdir.tag, fname)
+    else:
+        target = 'None'
+    return target
+
+
+def write_request(logger, dir_tree):
     rdir = dir_tree.get_random_dir_synced()
     if rdir:
         rfile = rdir.data.get_random_file()
