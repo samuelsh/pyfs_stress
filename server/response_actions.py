@@ -136,6 +136,10 @@ def read_success(logger, incoming_message, dir_tree):
     pass
 
 
+def write_success(logger, incoming_message, dir_tree):
+    pass
+
+
 def delete_success(logger, incoming_message, dir_tree):
     path = incoming_message['target'].split('/')[1:]  # folder:file
     deldir = dir_tree.get_dir_by_name(path[0])
@@ -216,7 +220,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
             "Directory {0} already removed from active dirs list, skipping....".format(dst_path[0]))
     else:
         logger.debug('Directory exists {0}, going to rename {1} to {2}'.format(dst_rename_dir.data.name, src_path[1],
-                     dst_path[1]))
+                                                                               dst_path[1]))
         if dst_rename_dir.data.ondisk:
             file_to_rename = dst_rename_dir.data.get_file_by_name(dst_path[1])
             if file_to_rename and file_to_rename.ondisk:
@@ -245,6 +249,7 @@ def failed_response_actions(action):
         'list': list_fail,
         'stat': stat_fail,
         'read': read_fail,
+        'write': write_fail,
         'delete': delete_fail,
         'rename': rename_fail,
         'rename_exist': rename_exist_fail
@@ -329,6 +334,31 @@ def stat_fail(logger, incoming_message, dir_tree):
 
 
 def read_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
+        return
+    if incoming_message['error_code'] == errno.ENOENT:
+        rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
+        rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
+
+        rdir = dir_tree.get_dir_by_name(rdir_name)
+        if rdir:
+            rfile = rdir.data.get_file_by_name(rfile_name)
+            if rfile and rfile.ondisk:
+                error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
+                if error_time > rfile.creation_time:
+                    logger.error(
+                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
+                            incoming_message['action'], rdir_name + "/" + rfile_name))
+                    rfile.ondisk = False
+            else:
+                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+        else:
+            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+    else:
+        generic_error_handler(logger, incoming_message)
+
+
+def write_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
         return
     if incoming_message['error_code'] == errno.ENOENT:

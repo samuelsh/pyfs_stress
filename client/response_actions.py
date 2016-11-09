@@ -1,3 +1,4 @@
+import hashlib
 import os
 import random
 import shutil
@@ -23,11 +24,18 @@ MB512 = (MB1 * 512)  # level 1 can map up to 512MB
 GB256 = (GB1 * 256)  # level 2 can map up to 256GB
 TB128 = (TB1 * 128)  # level 3 can map up to 128TB
 ZERO_PADDING_START = 128 * MB1  # 128MB
-DATA_PATTERN_A = 'A' * 17
-DATA_PATTERN_B = 'B' * 17
+DATA_PATTERN_A = {'pattern': 'A', 'repeats': 1}
+DATA_PATTERN_B = {'pattern': 'B', 'repeats': 3}
+DATA_PATTERN_C = {'pattern': 'C', 'repeats': 17}
+DATA_PATTERN_D = {'pattern': 'D', 'repeats': 33}
+DATA_PATTERN_E = {'pattern': 'E', 'repeats': 65}
+DATA_PATTERN_F = {'pattern': 'F', 'repeats': 129}
+DATA_PATTERN_G = {'pattern': 'G', 'repeats': 257}
+DATA_PATTERN_H = {'pattern': 'H', 'repeats': 1025}
 
 OFFSETS_LIST = [KB1, KB4, MB1, GB1, TB1, MB512, GB256]
-DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B]
+DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
+                      DATA_PATTERN_G, DATA_PATTERN_H]
 
 
 class DynamoException(EnvironmentError):
@@ -38,6 +46,9 @@ class DataPatterns:
     def __init__(self):
         self.data_patterns_dict = {}
 
+        for _ in range(1000):
+            pass
+
 
 def response_action(action, mount_point, target, **kwargs):
     return {
@@ -47,6 +58,7 @@ def response_action(action, mount_point, target, **kwargs):
         "touch": touch,
         "stat": stat,
         "read": read,
+        "write": write,
         "rename": rename,
         "rename_exist": rename_exist
     }[action](mount_point, target, **kwargs)
@@ -93,14 +105,23 @@ def read(mount_point, target, **kwargs):
 
 
 def write(mount_point, target, **kwargs):
+    data = {}
+    hasher = hashlib.md5()
+    offset = random.choice(OFFSETS_LIST)
+    data_pattern = random.choice(DATA_PATTERNS_LIST)
+    pattern = data_pattern['pattern'] * data_pattern['repeat']
+    hasher.update(pattern)
+    data_hash = hasher.hexdigest()
     with open("{0}{1}".format(mount_point, target), 'r+') as f:
         fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        offset = random.choice(OFFSETS_LIST)
-        data_pattern = random.choice(DATA_PATTERNS_LIST)
         f.seek(ZERO_PADDING_START + offset)
         f.write(data_pattern)
         f.flush()
         os.fsync(f.fileno())
+    data['data_pattern'] = data_pattern['pattern']
+    data['repeats'] = data_pattern['repeats']
+    data['hash'] = data_hash
+    data['offset'] = offset
 
 
 def rename(mount_point, target, **kwargs):
@@ -125,7 +146,7 @@ def rename_exist(mount_point, target, **kwargs):
     dst_dirpath = dst_path.split('/')[1]
     dst_fname = dst_path.split('/')[2]
     if src_fname == dst_fname:
-        raise DynamoException(error_codes.SAMEFILE, "Trying to move file into itself. Dropping...", src_path)
+        raise DynamoException(error_codes.SAMEFILE, "Error: Trying to move file into itself.", src_path)
     dst_mount_point = "".join(
         "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
                                                random.randint(0, kwargs['domains'] - 1)))
