@@ -36,6 +36,12 @@ def generic_error_handler(logger, incoming_message):
                 rdir_name,
                 incoming_message[
                     'error_message']))
+    except AttributeError:
+        logger.error(
+            'Operation {0} FAILED UNEXPECTEDLY due to {1}'.format(
+                incoming_message['action'],
+                incoming_message[
+                    'error_message']))
     else:
         logger.error(
             'Operation {0} FAILED UNEXPECTEDLY on File {1}/{2} due to {3}'.format(
