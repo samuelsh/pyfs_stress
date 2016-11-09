@@ -89,7 +89,7 @@ class Dynamo(object):
         except KeyboardInterrupt:
             pass
         except Exception as e:
-            traceback.print_exc()
+            self.logger.exception(e)
         finally:
             self._disconnect()
 
