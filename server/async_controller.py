@@ -159,6 +159,7 @@ class Controller(object):
                     # while not self._incoming_message_queue.empty():
                     try:
                         _, (worker_id, message) = self._incoming_message_queue.get_nowait()
+                        self.logger.debug("Arrived {0} {1}".format(worker_id, message))
                         self._handle_worker_message(worker_id, message)
                         # If there are no available workers (they all have 50 or
                         # more jobs already) sleep for half a second.
