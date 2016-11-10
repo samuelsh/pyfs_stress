@@ -147,11 +147,58 @@ def stat_success(logger, incoming_message, dir_tree):
 
 
 def read_success(logger, incoming_message, dir_tree):
-    pass
+    path = incoming_message['target'].split('/')[1:]  # folder:file
+    readdir = dir_tree.get_dir_by_name(path[0])
+    if not readdir:
+        logger.debug(
+            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+    else:
+        logger.debug('Directory exists {0}, going to check file {1} integrity'.format(readdir.data.name, path[1]))
+        if readdir.data.ondisk:
+            rfile = readdir.data.get_file_by_name(path[1])
+            if not rfile.data_pattern_hash == incoming_message['data']['hash']:
+                logger.error("Hashes mismatch! File {0} - saved hash: {1} incoming hash {2}".format(rfile.name,
+                                rfile.data_pattern_hash, incoming_message['data']['hash']))
+            else:
+                logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+        else:
+            logger.debug("Directory {0} is not on disk, nothing to update".format(readdir.data.name))
 
 
 def write_success(logger, incoming_message, dir_tree):
-    pass
+    path = incoming_message['target'].split('/')[1:]  # folder:file
+    writedir = dir_tree.get_dir_by_name(path[0])
+    if not writedir:
+        logger.debug(
+            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+    else:
+        logger.debug('Directory exists {0}, going to update file {1}'.format(writedir.data.name, path[1]))
+        if writedir.data.ondisk:
+            wfile = writedir.data.get_file_by_name(path[1])
+            if wfile and wfile.ondisk:
+                logger.debug('File {0}/{1} is found, removing'.format(path[0], path[1]))
+                wfile.ondisk = True
+                wfile.data_pattern = incoming_message['data']['data_pattern']
+                wfile.data_pattern_len = incoming_message['data']['repeats']
+                wfile.data_pattern_hash = incoming_message['data']['hash']
+                wfile.data_pattern_offset = incoming_message['data']['offset']
+                logger.info('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
+            # In case there is raise and write arrived before touch we'll sync the file here
+            elif wfile:
+                logger.debug("File {0}/{1} Write OP arrived before touch, syncing...".format(path[0], path[1]))
+                wfile.ondisk = True
+                wfile.name = incoming_message['data']['rename_dest']
+                wfile.data_pattern = incoming_message['data']['data_pattern']
+                wfile.data_pattern_len = incoming_message['data']['repeats']
+                wfile.data_pattern_hash = incoming_message['data']['hash']
+                wfile.data_pattern_offset = incoming_message['data']['offset']
+                wfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                                 '%Y/%m/%d %H:%M:%S.%f')
+                logger.info('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
+            else:
+                logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+        else:
+            logger.debug("Directory {0} is not on disk, nothing to update".format(writedir.data.name))
 
 
 def delete_success(logger, incoming_message, dir_tree):

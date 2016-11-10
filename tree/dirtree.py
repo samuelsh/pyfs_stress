@@ -215,7 +215,10 @@ class Directory(object):
 class File(object):
     def __init__(self):
         self._name = StringUtils.get_random_string_nospec(64)
-        self.cheksum = 0
+        self.data_pattern = 0
+        self.data_pattern_len = 0
+        self.data_pattern_hash = None
+        self.data_pattern_offset = 0
         self.last_action = None
         self.creation_time = None
         self.ondisk = False

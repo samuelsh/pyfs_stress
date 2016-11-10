@@ -100,8 +100,14 @@ def stat(mount_point, incoming_data, **kwargs):
 
 
 def read(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
     with open("{0}{1}".format(mount_point, incoming_data['target']), 'r') as f:
-        f.read(17)
+        f.seek(incoming_data['offset'])
+        buf = f.read(incoming_data['repeats'])
+        hasher = hashlib.md5()
+        hasher.update(buf)
+        outgoing_data['hash'] = hasher.hexdigest()
+        return outgoing_data
 
 
 def write(mount_point, incoming_data, **kwargs):
@@ -122,7 +128,7 @@ def write(mount_point, incoming_data, **kwargs):
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['repeats'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
-    outgoing_data['offset'] = offset
+    outgoing_data['offset'] = ZERO_PADDING_START + offset
     return outgoing_data
 
 
