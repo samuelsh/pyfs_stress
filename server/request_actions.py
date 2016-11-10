@@ -112,11 +112,12 @@ def write_request(logger, dir_tree):
         wfile = wdir.data.get_random_file()
         if not wfile:
             target = 'None'
+            return {'target': 'None'}
         else:
             fname = wfile.name
             target = "/{0}/{1}".format(wdir.tag, fname)
     else:
-        target = 'None'
+        return {'target': 'None'}
     data['target'] = target
     data['data_pattern'] = wfile.data_pattern
     data['repeats'] = wfile.data_pattern_len
