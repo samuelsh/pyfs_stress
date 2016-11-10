@@ -92,7 +92,7 @@ class Controller(object):
                 action = "mkdir"
                 self._dir_tree.append_node()
                 target = self._dir_tree.get_last_node_tag()
-                yield Job({'action': action, 'target': target})
+                yield Job({'action': action, 'data': {'target': target}})
             yield Job({'action': action, 'data': request_action(action, self.logger, self._dir_tree)})
 
     def _get_next_worker_id(self):
