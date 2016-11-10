@@ -57,18 +57,18 @@ def run():
     # multidomain nfs  mount
     try:
         os.chdir('/qa/dynamo/client')
-        logger.info("Setting passwordless SSH connection")
-        shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.server, False)
-        logger.info("Getting cluster params...")
-        active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.server)
-        logger.debug("Active Nodes: %s" % active_nodes)
-        domains = shell_utils.FSUtils.get_domains_num(args.server)
-        logger.debug("FSD domains: %s" % domains)
+        # logger.info("Setting passwordless SSH connection")
+        # shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.server, False)
+        # logger.info("Getting cluster params...")
+        # active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.server)
+        # logger.debug("Active Nodes: %s" % active_nodes)
+        # domains = shell_utils.FSUtils.get_domains_num(args.server)
+        # logger.debug("FSD domains: %s" % domains)
         logger.info("Mounting work path...")
-        shell_utils.FSUtils.mount_fsd(args.server, '/' + args.export, active_nodes, domains, 'nfs3', 'DIRSPLIT', '6')
+        shell_utils.FSUtils.mount_fsd(args.server, '/' + args.export, args.nodes, args.domains, 'nfs3', 'DIRSPLIT', '6')
         # /mnt/DIRSPLIT-node0.g8-5
-        for i in range(active_nodes):
-            for j in range(domains):
+        for i in range(args.nodes):
+            for j in range(args.domains):
                 if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('DIRSPLIT', i, args.server, j)):
                     logger.error('mount_fsd failed!')
                     raise RuntimeError
