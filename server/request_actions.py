@@ -94,24 +94,26 @@ def read_request(logger, dir_tree):
     if rdir:
         rfile = rdir.data.get_random_file()
         if not rfile:
-            target = 'None'
+            return {'target': 'None'}
         else:
             fname = rfile.name
             target = "/{0}/{1}".format(rdir.tag, fname)
     else:
-        target = 'None'
+        return {'target': 'None'}
     data['target'] = target
+    data['data_pattern'] = rfile.data_pattern
+    data['repeats'] = rfile.data_pattern_len
+    data['hash'] = rfile.data_pattern_hash
+    data['offset'] = rfile.data_pattern_offset
     return data
 
 
 def write_request(logger, dir_tree):
     data = {}
-    wfile = None
     wdir = dir_tree.get_random_dir_synced()
     if wdir:
         wfile = wdir.data.get_random_file()
         if not wfile:
-            target = 'None'
             return {'target': 'None'}
         else:
             fname = wfile.name
@@ -119,10 +121,6 @@ def write_request(logger, dir_tree):
     else:
         return {'target': 'None'}
     data['target'] = target
-    data['data_pattern'] = wfile.data_pattern
-    data['repeats'] = wfile.data_pattern_len
-    data['hash'] = wfile.data_pattern_hash
-    data['offset'] = wfile.data_pattern_offset
     return data
 
 
