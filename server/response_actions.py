@@ -204,8 +204,8 @@ def rename_success(logger, incoming_message, dir_tree):
 
 
 def rename_exist_success(logger, incoming_message, dir_tree):
-    src_path = incoming_message['target'].split(' ')[0].split('/')[1:]  # folder:file
-    dst_path = incoming_message['target'].split(' ')[1].split('/')[1:]  # folder:file
+    src_path = incoming_message['rename_source'].split('/')[1:]  # folder:file
+    dst_path = incoming_message['rename_dest'].split('/')[1:]  # folder:file
     src_rename_dir = dir_tree.get_dir_by_name(src_path[0])
     dst_rename_dir = dir_tree.get_dir_by_name(dst_path[0])
     if not src_rename_dir:
