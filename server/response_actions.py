@@ -156,7 +156,7 @@ def read_success(logger, incoming_message, dir_tree):
         logger.debug('Directory exists {0}, going to check file {1} integrity'.format(readdir.data.name, path[1]))
         if readdir.data.ondisk:
             rfile = readdir.data.get_file_by_name(path[1])
-            if rfile.data_pattern_hash:
+            if rfile and rfile.data_pattern_hash:
                 if not rfile.data_pattern_hash == incoming_message['data']['hash']:
                     logger.error("Hashes mismatch! File {0} - saved hash: {1} incoming hash {2}".format(rfile.name,
                                                                                                         rfile.data_pattern_hash,
