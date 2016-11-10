@@ -156,9 +156,13 @@ def read_success(logger, incoming_message, dir_tree):
         logger.debug('Directory exists {0}, going to check file {1} integrity'.format(readdir.data.name, path[1]))
         if readdir.data.ondisk:
             rfile = readdir.data.get_file_by_name(path[1])
-            if not rfile.data_pattern_hash == incoming_message['data']['hash']:
-                logger.error("Hashes mismatch! File {0} - saved hash: {1} incoming hash {2}".format(rfile.name,
-                                rfile.data_pattern_hash, incoming_message['data']['hash']))
+            if rfile.data_pattern_hash:
+                if not rfile.data_pattern_hash == incoming_message['data']['hash']:
+                    logger.error("Hashes mismatch! File {0} - saved hash: {1} incoming hash {2}".format(rfile.name,
+                                                                                                        rfile.data_pattern_hash,
+                                                                                                        incoming_message[
+                                                                                                            'data'][
+                                                                                                            'hash']))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
         else:
@@ -187,7 +191,6 @@ def write_success(logger, incoming_message, dir_tree):
             elif wfile:
                 logger.debug("File {0}/{1} Write OP arrived before touch, syncing...".format(path[0], path[1]))
                 wfile.ondisk = True
-                wfile.name = incoming_message['data']['rename_dest']
                 wfile.data_pattern = incoming_message['data']['data_pattern']
                 wfile.data_pattern_len = incoming_message['data']['repeats']
                 wfile.data_pattern_hash = incoming_message['data']['hash']
