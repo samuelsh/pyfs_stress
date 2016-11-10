@@ -113,7 +113,6 @@ class Dynamo(object):
         mount_point = "".join(
             "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
                                                    random.randint(0, self.domains - 1)))
-        self.logger.debug('DEBUG WORK: {0}'.format(work))
         self.logger.debug('Incoming job: \'{0}\' on \'{1}\''.format(work['action'], work['data']['target']))
         try:
             if 'None' in work['data']['target']:
