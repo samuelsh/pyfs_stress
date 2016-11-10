@@ -142,8 +142,8 @@ def rename(mount_point, incoming_data, **kwargs):
 
 def rename_exist(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    src_path = incoming_data['rename_source'].split(' ')[0]
-    dst_path = incoming_data['rename_dest'].split(' ')[1]
+    src_path = incoming_data['rename_source']
+    dst_path = incoming_data['rename_dest']
     src_dirpath = src_path.split('/')[1]
     src_fname = src_path.split('/')[2]
     dst_dirpath = dst_path.split('/')[1]
