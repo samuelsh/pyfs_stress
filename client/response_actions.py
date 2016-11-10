@@ -153,8 +153,8 @@ def rename_exist(mount_point, incoming_data, **kwargs):
     dst_mount_point = "".join(
         "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
                                                random.randint(0, kwargs['domains'] - 1)))
-    outgoing_data['rename_source'] = src_path
-    outgoing_data['rename_dest'] = dst_path
     shutil.move("{0}/{1}/{2}".format(mount_point, src_dirpath, src_fname),
                 "{0}/{1}/{2}".format(dst_mount_point, dst_dirpath, dst_fname))
+    outgoing_data['rename_source'] = src_path
+    outgoing_data['rename_dest'] = dst_path
     return outgoing_data
