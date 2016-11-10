@@ -50,7 +50,7 @@ class DataPatterns:
             pass
 
 
-def response_action(action, mount_point, target, **kwargs):
+def response_action(action, mount_point, incoming_data, **kwargs):
     return {
         "mkdir": mkdir,
         "list": list_dir,
@@ -61,88 +61,89 @@ def response_action(action, mount_point, target, **kwargs):
         "write": write,
         "rename": rename,
         "rename_exist": rename_exist
-    }[action](mount_point, target, **kwargs)
+    }[action](mount_point, incoming_data, **kwargs)
 
 
-def mkdir(mount_point, target, **kwargs):
-    data = {}
-    os.mkdir("{0}/{1}".format(mount_point, target))
-    data['dirsize'] = os.stat("{0}/{1}".format(mount_point, target)).st_size
-    return data
+def mkdir(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
+    os.mkdir("{0}/{1}".format(mount_point, incoming_data['target']))
+    outgoing_data['dirsize'] = os.stat("{0}/{1}".format(mount_point, incoming_data['target'])).st_size
+    return outgoing_data
 
 
-def list_dir(mount_point, target, **kwargs):
-    os.listdir('{0}/{1}'.format(mount_point, target))
+def list_dir(mount_point, incoming_data, **kwargs):
+    os.listdir('{0}/{1}'.format(mount_point, incoming_data['target']))
 
 
-def delete(mount_point, target, **kwargs):
-    dirpath = target.split('/')[1]
-    fname = target.split('/')[2]
+def delete(mount_point, incoming_data, **kwargs):
+    dirpath = incoming_data['target'].split('/')[1]
+    fname = incoming_data['target'].split('/')[2]
     os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
 
 
-def touch(mount_point, target, **kwargs):
-    data = {}
-    dirsize = os.stat("{0}/{1}".format(mount_point, target.split('/')[1])).st_size
+def touch(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
+    dirsize = os.stat("{0}/{1}".format(mount_point, incoming_data['target'].split('/')[1])).st_size
     if dirsize > MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
-        data['target_path'] = target
+        outgoing_data['target_path'] = incoming_data['target']
         raise DynamoException(error_codes.MAX_DIR_SIZE, "Directory Entry reached {0} size limit".format(MAX_DIR_SIZE),
-                              target)
+                              incoming_data['target'])
     # shell_utils.touch('{0}{1}'.format(mount_point, work['target']))
-    with open('{0}{1}'.format(mount_point, target), 'w'):
+    with open('{0}{1}'.format(mount_point, incoming_data['target']), 'w'):
         pass
-    data['dirsize'] = os.stat("{0}/{1}".format(mount_point, target.split('/')[1])).st_size
-    return data
+    outgoing_data['dirsize'] = os.stat("{0}/{1}".format(mount_point, incoming_data['target'].split('/')[1])).st_size
+    return outgoing_data
 
 
-def stat(mount_point, target, **kwargs):
-    os.stat("{0}{1}".format(mount_point, target))
+def stat(mount_point, incoming_data, **kwargs):
+    os.stat("{0}{1}".format(mount_point, incoming_data['target']))
 
 
-def read(mount_point, target, **kwargs):
-    with open("{0}{1}".format(mount_point, target), 'r') as f:
+def read(mount_point, incoming_data, **kwargs):
+    with open("{0}{1}".format(mount_point, incoming_data['target']), 'r') as f:
         f.read(17)
 
 
-def write(mount_point, target, **kwargs):
-    data = {}
+def write(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
     hasher = hashlib.md5()
     offset = random.choice(OFFSETS_LIST)
     data_pattern = random.choice(DATA_PATTERNS_LIST)
     pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
     hasher.update(pattern_to_write)
     data_hash = hasher.hexdigest()
-    with open("{0}{1}".format(mount_point, target), 'r+') as f:
+    with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
         fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         f.seek(ZERO_PADDING_START + offset)
         f.write(pattern_to_write)
         f.flush()
         os.fsync(f.fileno())
         fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
-    data['data_pattern'] = data_pattern['pattern']
-    data['repeats'] = data_pattern['repeats']
-    data['hash'] = data_hash
-    data['offset'] = offset
-    return data
+    outgoing_data['data_pattern'] = data_pattern['pattern']
+    outgoing_data['repeats'] = data_pattern['repeats']
+    outgoing_data['hash'] = data_hash
+    outgoing_data['offset'] = offset
+    return outgoing_data
 
 
-def rename(mount_point, target, **kwargs):
-    data = {}
-    dirpath = target.split('/')[1]
-    fname = target.split('/')[2]
+def rename(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
+    fullpath = incoming_data['target'].split('/')[1:]
+    dirpath = fullpath[0]
+    fname = fullpath[1]
     dst_mount_point = "".join(
         "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
                                                random.randint(0, kwargs['domains'] - 1)))
-    data['rename_dest'] = shell_utils.StringUtils.get_random_string_nospec(64)
+    outgoing_data['rename_dest'] = incoming_data['rename_dest']
     shutil.move("{0}/{1}/{2}".format(mount_point, dirpath, fname),
-                "{0}/{1}/{2}".format(dst_mount_point, dirpath, data['rename_dest']))
-    return data
+                "{0}/{1}/{2}".format(dst_mount_point, dirpath, incoming_data['rename_dest']))
+    return outgoing_data
 
 
-def rename_exist(mount_point, target, **kwargs):
-    data = {}
-    src_path = target.split(' ')[0]
-    dst_path = target.split(' ')[1]
+def rename_exist(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
+    src_path = incoming_data['rename_source'].split(' ')[0]
+    dst_path = incoming_data['rename_dest'].split(' ')[1]
     src_dirpath = src_path.split('/')[1]
     src_fname = src_path.split('/')[2]
     dst_dirpath = dst_path.split('/')[1]
@@ -152,7 +153,7 @@ def rename_exist(mount_point, target, **kwargs):
     dst_mount_point = "".join(
         "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
                                                random.randint(0, kwargs['domains'] - 1)))
-    data['rename_dest'] = "{0}".format(dst_fname)
+    outgoing_data['rename_dest'] = "{0}".format(dst_fname)
     shutil.move("{0}/{1}/{2}".format(mount_point, src_dirpath, src_fname),
                 "{0}/{1}/{2}".format(dst_mount_point, dst_dirpath, dst_fname))
-    return data
+    return outgoing_data

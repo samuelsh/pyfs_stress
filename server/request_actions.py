@@ -1,3 +1,5 @@
+from utils import shell_utils
+
 __author__ = "samuels"
 
 
@@ -16,6 +18,7 @@ def request_action(action, logger, dir_tree):
 
 
 def mkdir_request(logger, dir_tree):
+    data = {}
     target = 'None'
     if len(dir_tree.nids) < 100:
         dir_tree.append_node()
@@ -26,19 +29,23 @@ def mkdir_request(logger, dir_tree):
         target = target_dir.data.name
     logger.debug(
         "Controller: Dir {0} current size is {1}".format(target, dir_tree.get_last_node_data().size))
-    return target
+    data['target'] = target
+    return data
 
 
 def list_request(logger, dir_tree):
+    data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
         target = 'None'
     else:
         target = rdir.data.name
-    return target
+    data['target'] = target
+    return data
 
 
 def delete_request(logger, dir_tree):
+    data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
         target = 'None'
@@ -49,20 +56,24 @@ def delete_request(logger, dir_tree):
         else:
             fname = file_to_delete.name
             target = "/{0}/{1}".format(rdir.tag, fname)
-    return target
+    data['target'] = target
+    return data
 
 
 def touch_request(logger, dir_tree):
+    data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
         target = 'None'
     else:
         fname = rdir.data.touch()
         target = "/{0}/{1}".format(rdir.tag, fname)
-    return target
+    data['target'] = target
+    return data
 
 
 def stat_request(logger, dir_tree):
+    data = {}
     rdir = dir_tree.get_random_dir_synced()
     if rdir:
         rfile = rdir.data.get_random_file()
@@ -73,10 +84,12 @@ def stat_request(logger, dir_tree):
             target = "/{0}/{1}".format(rdir.tag, fname)
     else:
         target = 'None'
-    return target
+    data['target'] = target
+    return data
 
 
 def read_request(logger, dir_tree):
+    data = {}
     rdir = dir_tree.get_random_dir_synced()
     if rdir:
         rfile = rdir.data.get_random_file()
@@ -87,10 +100,12 @@ def read_request(logger, dir_tree):
             target = "/{0}/{1}".format(rdir.tag, fname)
     else:
         target = 'None'
-    return target
+    data['target'] = target
+    return data
 
 
 def write_request(logger, dir_tree):
+    data = {}
     rdir = dir_tree.get_random_dir_synced()
     if rdir:
         rfile = rdir.data.get_random_file()
@@ -101,10 +116,12 @@ def write_request(logger, dir_tree):
             target = "/{0}/{1}".format(rdir.tag, fname)
     else:
         target = 'None'
-    return target
+    data['target'] = target
+    return data
 
 
 def rename_request(logger, dir_tree):
+    data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
         target = 'None'
@@ -115,10 +132,13 @@ def rename_request(logger, dir_tree):
         else:
             fname = file_to_rename.name
             target = "/{0}/{1}".format(rdir.tag, fname)
-    return target
+    data['target'] = target
+    data['rename_dest'] = shell_utils.StringUtils.get_random_string_nospec(64)
+    return data
 
 
 def rename_exist_request(logger, dir_tree):
+    data = {}
     rdir_src = dir_tree.get_random_dir_synced()
     rdir_dst = dir_tree.get_random_dir_synced()
     if not rdir_src or not rdir_dst:
@@ -131,5 +151,8 @@ def rename_exist_request(logger, dir_tree):
         else:
             src_fname = src_file_to_rename.name
             dst_fname = dst_file.name
-            target = "/{0}/{1} /{2}/{3}".format(rdir_src.tag, src_fname, rdir_dst.tag, dst_fname)
-    return target
+            target = "/{0}/{1}".format(rdir_src.tag, src_fname)
+            data['rename_dest'] = "/{0}/{1}".format(rdir_dst.tag, dst_fname)
+    data['target'] = target
+    data['rename_source'] = target
+    return data

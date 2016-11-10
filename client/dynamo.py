@@ -115,9 +115,9 @@ class Dynamo(object):
                                                    random.randint(0, self.domains - 1)))
         self.logger.debug('Incoming job: \'{0}\' on \'{1}\''.format(work['action'], work['target']))
         try:
-            if 'None' in work['target']:
+            if 'None' in work['data']['target']:
                 raise DynamoException(error_codes.NO_TARGET, "{0}".format("Target not specified", work['target']))
-            response = response_action(action, mount_point, work['target'], nodes=self.nodes, server=self._server,
+            response = response_action(action, mount_point, work['data'], nodes=self.nodes, server=self._server,
                                        domains=self.domains)
             if response:
                 data = response
