@@ -145,11 +145,10 @@ def read_success(logger, incoming_message, dir_tree):
             rfile = readdir.data.get_file_by_name(path[1])
             if rfile and rfile.data_pattern_hash:
                 if not rfile.data_pattern_hash == incoming_message['data']['hash']:
-                    logger.error("Hashes mismatch! File {0} - stored hash: {1} incoming hash {2}".format(rfile.name,
-                                                                                                        rfile.data_pattern_hash,
-                                                                                                        incoming_message[
-                                                                                                            'data'][
-                                                                                                            'hash']))
+                    logger.error(
+                        "Hashes mismatch! File {0} - stored hash: {1} incoming hash {2} offset {3} chunk size {4}"
+                            .format(rfile.name, rfile.data_pattern_hash, incoming_message['data']['hash'],
+                                    incoming_message['data']['offset'], incoming_message['data']['chunk_size']))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
         else:

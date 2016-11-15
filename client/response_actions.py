@@ -107,6 +107,8 @@ def read(mount_point, incoming_data, **kwargs):
         hasher = hashlib.md5()
         hasher.update(buf)
         outgoing_data['hash'] = hasher.hexdigest()
+        outgoing_data['offset'] = incoming_data['offset']
+        outgoing_data['chunk_size'] = incoming_data['repeats']
         return outgoing_data
 
 
