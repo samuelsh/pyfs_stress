@@ -166,7 +166,7 @@ def write_success(logger, incoming_message, dir_tree):
         if writedir.data.ondisk:
             wfile = writedir.data.get_file_by_name(path[1])
             if wfile and wfile.ondisk:
-                logger.debug('File {0}/{1} is found, removing'.format(path[0], path[1]))
+                logger.debug('File {0}/{1} is found, writing'.format(path[0], path[1]))
                 wfile.ondisk = True
                 wfile.data_pattern = incoming_message['data']['data_pattern']
                 wfile.data_pattern_len = incoming_message['data']['repeats']
