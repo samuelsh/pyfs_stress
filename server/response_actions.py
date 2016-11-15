@@ -277,7 +277,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
             if file_to_rename and file_to_rename.ondisk:
                 logger.debug('File {0}/{1} is found, renaming'.format(dst_path[0], dst_path[1]))
                 file_to_rename.name = file_to_delete.name
-                logger.info('File {0}/{1} is renamed to {2}'.format(dst_path[0], dst_path[1], file_to_rename.name))
+                logger.info('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], file_to_delete.name))
             # In case that destination file wasn't synced to disk for some reason, we'll sync it during rename
             elif file_to_rename:
                 logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(dst_path[0], dst_path[1]))
@@ -285,7 +285,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
                 file_to_rename.name = file_to_delete.name
                 file_to_rename.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                           '%Y/%m/%d %H:%M:%S.%f')
-                logger.info('File {0}/{1} is renamed to {2}'.format(dst_path[0], dst_path[1], file_to_rename.name))
+                logger.info('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], file_to_delete.name))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(dst_path[0], dst_path[1]))
         else:
