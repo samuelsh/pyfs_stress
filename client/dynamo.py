@@ -125,7 +125,7 @@ class Dynamo(object):
         except OSError as os_error:
             return build_message('failed', action, data, timestamp(), error_code=os_error.errno,
                                  error_message=os_error.strerror,
-                                 path=os_error.filename, line=sys.exc_info()[-1].tb_lineno)
+                                 path='{0}{1}'.format(mount_point, work['data']['target']), line=sys.exc_info()[-1].tb_lineno)
         except IOError as io_error:
             return build_message('failed', action, data, timestamp(), error_code=io_error.errno,
                                  error_message=io_error.strerror,
