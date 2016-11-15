@@ -146,7 +146,7 @@ def read_success(logger, incoming_message, dir_tree):
             if rfile and rfile.data_pattern_hash:
                 if not rfile.data_pattern_hash == incoming_message['data']['hash']:
                     logger.error(
-                        "Hashes mismatch! File {0} - stored hash: {1} incoming hash {2} offset {3} chunk size {4}"
+                        "Hashes mismatch! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk size: {4}"
                             .format(rfile.name, rfile.data_pattern_hash, incoming_message['data']['hash'],
                                     incoming_message['data']['offset'], incoming_message['data']['chunk_size']))
             else:
