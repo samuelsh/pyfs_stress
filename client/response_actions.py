@@ -118,13 +118,16 @@ def write(mount_point, incoming_data, **kwargs):
     pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
     hasher.update(pattern_to_write)
     data_hash = hasher.hexdigest()
-    with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
-        fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        f.seek(ZERO_PADDING_START + offset)
-        f.write(pattern_to_write)
-        f.flush()
-        os.fsync(f.fileno())
-        fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
+    try:
+        with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
+            fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            f.seek(ZERO_PADDING_START + offset)
+            f.write(pattern_to_write)
+            f.flush()
+            os.fsync(f.fileno())
+            fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
+    except (IOError, OSError) as env_error:
+        raise env_error
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['repeats'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
