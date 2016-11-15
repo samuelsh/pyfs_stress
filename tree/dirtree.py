@@ -217,7 +217,7 @@ class File(object):
         self._name = StringUtils.get_random_string_nospec(64)
         self.data_pattern = 0
         self.data_pattern_len = 0
-        self.data_pattern_hash = None
+        self.data_pattern_hash = 'd41d8cd98f00b204e9800998ecf8427e'  # zero md5 hash
         self.data_pattern_offset = 0
         self.last_action = None
         self.creation_time = None
