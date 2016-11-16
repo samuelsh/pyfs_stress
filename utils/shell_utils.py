@@ -31,7 +31,7 @@ class StringUtils:
     def string_from_file_generator(file_names):
         while 1:
             for file_name in file_names:
-                yield file_name.rsplit('\n')
+                yield file_name.rstrip('\n')
 
 
 
