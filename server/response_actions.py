@@ -386,7 +386,7 @@ def stat_fail(logger, incoming_message, dir_tree):
 
 def read_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == error_codes.SAMEFILE:
+                    incoming_message['error_code'] == error_codes.ZERO_SIZE:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
