@@ -11,6 +11,7 @@ import traceback
 from multiprocessing import Event
 from multiprocessing import Process
 
+import errno
 import zmq
 
 import config
@@ -95,9 +96,16 @@ def run_sub_logger(ip, event):
 
 
 def main():
+    file_names = None
     args = get_args()
     stop_event = Event()
-    dir_tree = dirtree.DirTree()
+    # try:
+    with open('filenames.dat', 'r') as f:
+        file_names = f.readlines()
+    # except OSError as os_error:
+    #     if os_error.errno == errno.ENOENT:
+    #         pass
+    dir_tree = dirtree.DirTree(file_names)
     logger = ConsoleLogger(__name__).logger
     logger.debug("{0} Logger initialised {1}".format(__name__, logger))
     clients_list = args.clients
@@ -108,8 +116,9 @@ def main():
     logger.debug("Active Nodes: %s" % active_nodes)
     domains = shell_utils.FSUtils.get_domains_num(args.cluster)
     logger.debug("FSD domains: %s" % domains)
+    logger.info("loading pregenerated file names...")
     logger.info("Starting controller")
-    controller_process = Process(target=run_controller, args=(stop_event, dir_tree,))
+    controller_process = Process(target=run_controller, args=(stop_event, dir_tree))
     controller_process.start()
     sub_logger_process = Process(target=run_sub_logger,
                                  args=(socket.gethostbyname(socket.gethostname()), stop_event,))

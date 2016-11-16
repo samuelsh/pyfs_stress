@@ -23,6 +23,18 @@ class StringUtils:
     def get_random_string_nospec(length):
         return ''.join(random.choice(digits + letters) for _ in range(length))
 
+    @staticmethod
+    def random_string_generator(length):
+        yield ''.join(random.choice(digits + letters) for _ in range(length))
+
+    @staticmethod
+    def string_from_file_generator(file_names):
+        while 1:
+            for file_name in file_names:
+                yield file_name
+
+
+
 
 class ShellUtils:
     def __init__(self):

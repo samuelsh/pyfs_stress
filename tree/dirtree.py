@@ -8,15 +8,19 @@ from utils.shell_utils import StringUtils
 
 
 class DirTree(object):
-    def __init__(self):
+    def __init__(self, file_names=None):
         self._dir_tree = treelib.Tree()
         self._tree_base = self._dir_tree.create_node('Root', 'root')
         self._last_node = self._tree_base
+        if file_names:
+            self.file_names = StringUtils.string_from_file_generator(file_names)  # pre-generated file_names iterator
+        else:
+            self.file_names = StringUtils.random_string_generator(64)
         self._nids = []  # Nodes IDs pool for easy random sampling
         self.synced_nodes = []  # Nodes IDs list which already Synced with storage
 
     def append_node(self):
-        directory = Directory()
+        directory = Directory(self.file_names)
         name = directory.name
         nid = hashlib.md5(name).hexdigest()
         self._nids.append(nid)
@@ -138,7 +142,7 @@ def build_recursive_tree(tree, base, depth, width):
     if depth >= 0:
         depth -= 1
         for i in xrange(width):
-            directory = Directory()
+            directory = Directory(None)
             tree.create_node("{0}".format(directory.name), "{0}".format(hashlib.md5(directory.name)),
                              parent=base.identifier, data=directory)
         dirs_nodes = tree.children(base.identifier)
@@ -150,8 +154,9 @@ def build_recursive_tree(tree, base, depth, width):
 
 
 class Directory(object):
-    def __init__(self):
-        self._name = StringUtils.get_random_string_nospec(64)
+    def __init__(self, file_names_generator):
+        self.file_names_generator = file_names_generator
+        self._name = next(self.file_names_generator)
         self.ondisk = False
         self.checksum = 0
         self.creation_time = None
@@ -168,7 +173,7 @@ class Directory(object):
         Returns: list
 
         """
-        self.files.append(File())
+        self.files.append(File(self.file_names_generator))
         return self.files[-1].name
 
     def get_file_by_name(self, name):
@@ -213,8 +218,10 @@ class Directory(object):
 
 
 class File(object):
-    def __init__(self):
-        self._name = StringUtils.get_random_string_nospec(64)
+    def __init__(self, file_name_generator):
+        # self._name = StringUtils.get_random_string_nospec(64)
+        self._name = next(file_name_generator)
+        self.data_pattern = 0
         self.data_pattern = 0
         self.data_pattern_len = 0
         self.data_pattern_hash = 'd41d8cd98f00b204e9800998ecf8427e'  # zero md5 hash
