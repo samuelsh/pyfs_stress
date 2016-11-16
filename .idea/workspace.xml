@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/string_generator.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/response_actions.py" afterPath="$PROJECT_DIR$/client/response_actions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/error_codes.py" afterPath="$PROJECT_DIR$/config/error_codes.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/string_generator.py" afterPath="$PROJECT_DIR$/string_generator.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -94,8 +92,8 @@
       <file leaf-file-name="string_generator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/string_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="50" column="45" selection-start-line="50" selection-start-column="45" selection-end-line="50" selection-end-column="45" />
+            <state relative-caret-position="472">
+              <caret line="70" column="8" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
               <folding>
                 <element signature="e#38#53#0" expanded="true" />
               </folding>
@@ -634,13 +632,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00810" summary="Working on adding write/write veirfy method">
-      <created>1478687860351</created>
-      <option name="number" value="00810" />
-      <option name="presentableId" value="LOCAL-00810" />
-      <option name="project" value="LOCAL" />
-      <updated>1478687860351</updated>
-    </task>
     <task id="LOCAL-00811" summary="Working on adding write/write veirfy method">
       <created>1478688074569</created>
       <option name="number" value="00811" />
@@ -977,7 +968,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479209682317</updated>
     </task>
-    <option name="localTasksCounter" value="859" />
+    <task id="LOCAL-00859" summary="read method will rise exception if enforced to read empty file. New util added: file names generator with hash collision">
+      <created>1479278871099</created>
+      <option name="number" value="00859" />
+      <option name="presentableId" value="LOCAL-00859" />
+      <option name="project" value="LOCAL" />
+      <updated>1479278871099</updated>
+    </task>
+    <option name="localTasksCounter" value="860" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1063,7 +1061,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="1. Fixed successful touch flow" />
     <MESSAGE value="1. Implemented file rename op" />
     <MESSAGE value="1. Improving loggin on UNEXPECED FAIL error" />
     <MESSAGE value="1. handlig rename op errors" />
@@ -1088,7 +1085,8 @@
     <MESSAGE value="Removing some debugs" />
     <MESSAGE value="Improve unexpected error handling" />
     <MESSAGE value="Adding info to hash mismatch error" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding info to hash mismatch error" />
+    <MESSAGE value="read method will rise exception if enforced to read empty file. New util added: file names generator with hash collision" />
+    <option name="LAST_COMMIT_MESSAGE" value="read method will rise exception if enforced to read empty file. New util added: file names generator with hash collision" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1475,8 +1473,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/string_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="50" column="45" selection-start-line="50" selection-start-column="45" selection-end-line="50" selection-end-column="45" />
+        <state relative-caret-position="472">
+          <caret line="70" column="8" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
           <folding>
             <element signature="e#38#53#0" expanded="true" />
           </folding>
