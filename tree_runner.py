@@ -99,12 +99,12 @@ def main():
     file_names = None
     args = get_args()
     stop_event = Event()
-    # try:
-    with open('filenames.dat', 'r') as f:
-        file_names = f.readlines()
-    # except OSError as os_error:
-    #     if os_error.errno == errno.ENOENT:
-    #         pass
+    try:
+        with open(config.FILE_NAMES_PATH, 'r') as f:  # If file with names isn't exists, we'll just create random files
+            file_names = f.readlines()
+    except OSError as os_error:
+        if os_error.errno == errno.ENOENT:
+            pass
     dir_tree = dirtree.DirTree(file_names)
     logger = ConsoleLogger(__name__).logger
     logger.debug("{0} Logger initialised {1}".format(__name__, logger))
