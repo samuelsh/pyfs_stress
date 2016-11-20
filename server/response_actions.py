@@ -2,6 +2,8 @@ import datetime
 import hashlib
 
 import errno
+import uuid
+
 from treelib.tree import NodeIDAbsentError
 
 from config import error_codes
@@ -115,6 +117,7 @@ def touch_success(logger, incoming_message, dir_tree):
                 f.ondisk = True
                 f.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                              '%Y/%m/%d %H:%M:%S.%f')
+                f.uuid = uuid.uuid4().hex[-5:]  # Unique session ID, will be modified on each file modify action
                 logger.debug(
                     "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
                 logger.info(

@@ -2,6 +2,8 @@ import hashlib
 import random
 
 import itertools
+import uuid
+
 import treelib
 
 from utils.shell_utils import StringUtils
@@ -225,6 +227,7 @@ class File(object):
         self.data_pattern_len = 0
         self.data_pattern_hash = 'd41d8cd98f00b204e9800998ecf8427e'  # zero md5 hash
         self.data_pattern_offset = 0
+        self.uuid = uuid.uuid4().hex[-5:]  # Unique session ID, will be modified on each file modify action
         self.last_action = None
         self.creation_time = None
         self.ondisk = False
