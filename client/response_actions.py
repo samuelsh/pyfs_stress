@@ -101,10 +101,10 @@ def stat(mount_point, incoming_data, **kwargs):
 
 def read(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    if incoming_data['repeats'] == 0:
-        raise DynamoException(error_codes.ZERO_SIZE,
-                              "File {0} is empty. Nothing to read.".format(incoming_data['target']),
-                              incoming_data['target'])
+    # if incoming_data['repeats'] == 0:
+    #     raise DynamoException(error_codes.ZERO_SIZE,
+    #                           "File {0} is empty. Nothing to read.".format(incoming_data['target']),
+    #                           incoming_data['target'])
     with open("{0}{1}".format(mount_point, incoming_data['target']), 'r') as f:
         f.seek(incoming_data['offset'])
         buf = f.read(incoming_data['repeats'])

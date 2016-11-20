@@ -143,8 +143,10 @@ def read_success(logger, incoming_message, dir_tree):
         logger.debug('Directory exists {0}, going to check file {1} integrity'.format(readdir.data.name, path[1]))
         if readdir.data.ondisk:
             rfile = readdir.data.get_file_by_name(path[1])
-            if rfile and rfile.data_pattern_hash:
-                if not rfile.data_pattern_hash == incoming_message['data']['hash']:
+            if rfile:
+                if not rfile.data_pattern_hash == incoming_message['data']['hash'] and rfile.data_pattern_len == \
+                        incoming_message['data']['chunk_size'] and rfile.data_pattern_offset == \
+                        incoming_message['data']['offset']:
                     logger.error(
                         "Hashes mismatch! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk size: {4}"
                             .format(rfile.name, rfile.data_pattern_hash, incoming_message['data']['hash'],
@@ -277,13 +279,13 @@ def rename_exist_success(logger, incoming_message, dir_tree):
             file_to_rename = dst_rename_dir.data.get_file_by_name(dst_path[1])
             if file_to_rename and file_to_rename.ondisk:
                 logger.debug('File {0}/{1} is found, renaming'.format(dst_path[0], dst_path[1]))
-                file_to_rename.name = src_rename_file #file_to_delete.name
+                file_to_rename.name = src_rename_file  # file_to_delete.name
                 logger.info('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], src_rename_file))
             # In case that destination file wasn't synced to disk for some reason, we'll sync it during rename
             elif file_to_rename:
                 logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(dst_path[0], dst_path[1]))
                 file_to_rename.ondisk = True
-                file_to_rename.name = src_rename_file #file_to_delete.name
+                file_to_rename.name = src_rename_file  # file_to_delete.name
                 file_to_rename.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                           '%Y/%m/%d %H:%M:%S.%f')
                 logger.info('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], src_rename_file))
