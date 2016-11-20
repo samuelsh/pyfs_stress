@@ -28,11 +28,12 @@ def store_redis():
     pass
 
 
-def generate_random_string_hc(hc_value):
+def generate_random_string_hc(hc_value, level=1):
+    levels = {1: 6, 2: ""}
     while 1:
         generated_string = utils.shell_utils.StringUtils.get_random_string_nospec(64)
         generated_hash = utils.shell_utils.ShellUtils.run_shell_command("/zebra/qa/samuels/misc/hash_tool",
-                                                                        '{0} 6'.format(generated_string))
+                                                                        '{0} 6'.format(generated_string, levels[level]))
         generated_hash = int(generated_hash)
         if hc_value == generated_hash:
             return generated_string
@@ -47,10 +48,12 @@ def get_args():
         description='String generator')
     parser.add_argument('--length', type=str, default=64, help="String Length")
     parser.add_argument('--hc', action='store_true', help="Force hash collision")
+    parser.add_argument('--level', type=int, choices=[1, 2], default=1,
+                        help="Level of hash collision. Depends on --hc flag")
     parser.add_argument('--count', type=int, default=10, help="Number of strings to generate")
     parser.add_argument('--hc_val', type=int, default=45, help="Hash collision value")
     parser.add_argument('--store', type=str, required=True, choices=['console', 'file', 'sqlite', 'redis'],
-                        help="Where to store generated data")
+                        default="console", help="Where to store generated data")
     args = parser.parse_args()
     return args
 
@@ -66,7 +69,7 @@ def main():
 
     if args.hc:
         for _ in range(args.count):
-            store_method[args.store](generate_random_string_hc(args.hc_val))
+            store_method[args.store](generate_random_string_hc(args.hc_val, args.level))
 
     else:
         for _ in range(args.count):

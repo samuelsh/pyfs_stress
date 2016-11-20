@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/response_actions.py" afterPath="$PROJECT_DIR$/server/response_actions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree/dirtree.py" afterPath="$PROJECT_DIR$/tree/dirtree.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/string_generator.py" afterPath="$PROJECT_DIR$/string_generator.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,7 +23,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="289">
@@ -32,6 +31,16 @@
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="string_generator.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/string_generator.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="34" column="105" selection-start-line="34" selection-start-column="105" selection-end-line="34" selection-end-column="105" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -174,7 +183,6 @@
         <option value="$PROJECT_DIR$/server/request_actions.py" />
         <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/config/error_codes.py" />
-        <option value="$PROJECT_DIR$/string_generator.py" />
         <option value="$PROJECT_DIR$/utils/shell_utils.py" />
         <option value="$PROJECT_DIR$/server/async_controller.py" />
         <option value="$PROJECT_DIR$/client/response_actions.py" />
@@ -182,6 +190,7 @@
         <option value="$PROJECT_DIR$/tree_runner.py" />
         <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/server/response_actions.py" />
+        <option value="$PROJECT_DIR$/string_generator.py" />
       </list>
     </option>
   </component>
@@ -623,13 +632,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00821" summary="Working on adding write/write veirfy method">
-      <created>1478695489095</created>
-      <option name="number" value="00821" />
-      <option name="presentableId" value="LOCAL-00821" />
-      <option name="project" value="LOCAL" />
-      <updated>1478695489095</updated>
-    </task>
     <task id="LOCAL-00822" summary="Working on adding write/write veirfy method">
       <created>1478695718172</created>
       <option name="number" value="00822" />
@@ -966,7 +968,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479627782614</updated>
     </task>
-    <option name="localTasksCounter" value="870" />
+    <task id="LOCAL-00870" summary="Feature: adding uuid property to file object to track changes">
+      <created>1479645883555</created>
+      <option name="number" value="00870" />
+      <option name="presentableId" value="LOCAL-00870" />
+      <option name="project" value="LOCAL" />
+      <updated>1479645883555</updated>
+    </task>
+    <option name="localTasksCounter" value="871" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1052,7 +1061,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="1. Adding response actions dict. wich will replcae if/else logic in controller" />
     <MESSAGE value="Response actions dict. replaces if/else logic in controller" />
     <MESSAGE value="Request actions dict. replaces if/else request logic in controller" />
     <MESSAGE value="Added &quot;rename exist&quot; method" />
@@ -1077,7 +1085,8 @@
     <MESSAGE value="Bug fix" />
     <MESSAGE value="Fix: hashes will be only checked if readed from same offset with same length to pevent false errors due to &quot;old&quot; read arrives after newer write" />
     <MESSAGE value="Fix: If file names file isn't exists, we'll create random file names on the fly" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix: If file names file isn't exists, we'll create random file names on the fly" />
+    <MESSAGE value="Feature: adding uuid property to file object to track changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feature: adding uuid property to file object to track changes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1392,16 +1401,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/string_generator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="59" column="19" selection-start-line="59" selection-start-column="19" selection-end-line="59" selection-end-column="19" />
-          <folding>
-            <element signature="e#38#53#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
@@ -1473,6 +1472,14 @@
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string_generator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="34" column="105" selection-start-line="34" selection-start-column="105" selection-end-line="34" selection-end-column="105" />
+          <folding />
         </state>
       </provider>
     </entry>
