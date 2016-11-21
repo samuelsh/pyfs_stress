@@ -102,7 +102,7 @@ def main():
             print("{0} CPU/s detected".format(num_cores))
             workers_pool = multiprocessing.Pool(num_cores, pool_setup, (stop_event, ))
             for _ in range(num_cores):
-                workers_pool.apply_async(hc_worker, args=(args.hc_value, names_queue, levels[args.level]))
+                workers_pool.apply_async(hc_worker, args=(args.hc_val, names_queue, levels[args.level]))
             for _ in range(args.count):
                 print "names_queue.get()"
                 store_method[args.store](names_queue.get())

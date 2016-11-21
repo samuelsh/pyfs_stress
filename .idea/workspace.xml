@@ -38,8 +38,8 @@
       <file leaf-file-name="string_generator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/string_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="104" column="16" selection-start-line="104" selection-start-column="16" selection-end-line="104" selection-end-column="16" />
+            <state relative-caret-position="289">
+              <caret line="93" column="30" selection-start-line="93" selection-start-column="30" selection-end-line="93" selection-end-column="30" />
               <folding>
                 <element signature="e#38#53#0" expanded="true" />
               </folding>
@@ -612,13 +612,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00842" summary="Message format from controller to clients changed: now 'data' filed will hold all relevant info, including target path">
-      <created>1478776318955</created>
-      <option name="number" value="00842" />
-      <option name="presentableId" value="LOCAL-00842" />
-      <option name="project" value="LOCAL" />
-      <updated>1478776318955</updated>
-    </task>
     <task id="LOCAL-00843" summary="Message format from controller to clients changed: now 'data' filed will hold all relevant info, including target path">
       <created>1478776827646</created>
       <option name="number" value="00843" />
@@ -955,7 +948,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479711950886</updated>
     </task>
-    <option name="localTasksCounter" value="891" />
+    <task id="LOCAL-00891" summary="Feature: String generating tool will support multicore processing to faster names generation">
+      <created>1479712328632</created>
+      <option name="number" value="00891" />
+      <option name="presentableId" value="LOCAL-00891" />
+      <option name="project" value="LOCAL" />
+      <updated>1479712328632</updated>
+    </task>
+    <option name="localTasksCounter" value="892" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1460,8 +1460,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/string_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="104" column="16" selection-start-line="104" selection-start-column="16" selection-end-line="104" selection-end-column="16" />
+        <state relative-caret-position="289">
+          <caret line="93" column="30" selection-start-line="93" selection-start-column="30" selection-end-line="93" selection-end-column="30" />
           <folding>
             <element signature="e#38#53#0" expanded="true" />
           </folding>
