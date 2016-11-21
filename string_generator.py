@@ -57,6 +57,7 @@ def generate_random_string_hc(hc_value, names_queue, level=1):
     for _ in range(num_cores):
         workers_pool.apply_async(hc_worker, args=(hc_value, names_queue, levels[level]))
     workers_pool.close()
+    workers_pool.join()
 
 
 def get_args():
