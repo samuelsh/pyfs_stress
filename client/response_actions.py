@@ -37,7 +37,7 @@ DATA_PATTERN_J = {'pattern': 'DUP', 'repeats': 64 * KB1 + 1}
 PADDING = [0, ZERO_PADDING_START]
 OFFSETS_LIST = [0, KB1, KB4, MB1, GB1, TB1, MB512, GB256, TB128]
 DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
-                      DATA_PATTERN_G, DATA_PATTERN_H]
+                      DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_J]
 
 
 class DynamoException(EnvironmentError):
@@ -121,6 +121,7 @@ def read(mount_point, incoming_data, **kwargs):
 def write(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     hasher = hashlib.md5()
+    padding = random.choice(PADDING)
     offset = random.choice(OFFSETS_LIST)
     data_pattern = random.choice(DATA_PATTERNS_LIST)
     pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
@@ -129,7 +130,7 @@ def write(mount_point, incoming_data, **kwargs):
     try:
         with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
             fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-            f.seek(ZERO_PADDING_START + offset)
+            f.seek(padding + offset)
             f.write(pattern_to_write)
             f.flush()
             os.fsync(f.fileno())
