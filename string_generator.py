@@ -92,7 +92,7 @@ def main():
     }
     try:
         if args.hc:
-            generate_random_string_hc(stop_event, args.hc_val, names_queue, args.level)
+            generate_random_string_hc(args.hc_val, names_queue, args.level)
             for _ in range(args.count):
                 store_method[args.store](names_queue.get())
             stop_event.set()
