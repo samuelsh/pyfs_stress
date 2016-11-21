@@ -14,7 +14,7 @@ from config import error_codes
 __author__ = "samuels"
 
 MAX_DIR_SIZE = 128 * 1024
-INLINE_MAX_SIZE = 3499
+INLINE = INLINE_MAX_SIZE = 3499
 KB1 = 1024
 KB4 = KB1 * 4
 MB1 = (1024 * 1024)
@@ -22,6 +22,7 @@ GB1 = (1024 * 1024 * 1024)
 TB1 = (1024 * 1024 * 1024 * 1024)
 MB512 = (MB1 * 512)  # level 1 can map up to 512MB
 GB256 = (GB1 * 256)  # level 2 can map up to 256GB
+GB512 = (GB1 * 512)  # level 2 can map up to 256GB
 TB128 = (TB1 * 128)  # level 3 can map up to 128TB
 ZERO_PADDING_START = 128 * MB1  # 128MB
 DATA_PATTERN_A = {'pattern': 'A', 'repeats': 1}
@@ -32,10 +33,10 @@ DATA_PATTERN_E = {'pattern': 'E', 'repeats': 65}
 DATA_PATTERN_F = {'pattern': 'F', 'repeats': 129}
 DATA_PATTERN_G = {'pattern': 'G', 'repeats': 257}
 DATA_PATTERN_H = {'pattern': 'H', 'repeats': 1025}
-DATA_PATTERN_J = {'pattern': 'DUP', 'repeats': 64 * KB1 + 1}
+DATA_PATTERN_J = {'pattern': 'J', 'repeats': 64 * KB1 + 1}
 
 PADDING = [0, ZERO_PADDING_START]
-OFFSETS_LIST = [0, KB1, KB4, MB1, GB1, TB1, MB512, GB256, TB128]
+OFFSETS_LIST = [0, INLINE, KB1, KB4, MB1, MB512, GB1, GB256, GB512, TB1]
 DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
                       DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_J]
 
