@@ -59,7 +59,7 @@ def generate_random_string_hc(hc_value, level=1):
     workers_pool = multiprocessing.Pool(num_cores, pool_setup, (stop_event, names_queue))
     for _ in range(num_cores):
         workers_pool.apply_async(hc_worker, args=(hc_value, levels[level]))
-        # workers_pool.close()
+        workers_pool.close()
         # workers_pool.join()
 
 
