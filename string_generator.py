@@ -75,7 +75,8 @@ def get_args():
 def main():
     args = get_args()
     stop_event = multiprocessing.Event()
-    names_queue = Manager().Queue()
+    manager = multiprocessing.Manager()
+    names_queue = manager.Queue()
     store_method = {
         'console': store_console,
         'file': store_file,

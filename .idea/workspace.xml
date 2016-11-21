@@ -38,8 +38,8 @@
       <file leaf-file-name="string_generator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/string_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="75" column="20" selection-start-line="75" selection-start-column="20" selection-end-line="75" selection-end-column="20" />
+            <state relative-caret-position="149">
+              <caret line="74" column="10" selection-start-line="74" selection-start-column="10" selection-end-line="74" selection-end-column="10" />
               <folding>
                 <element signature="e#38#53#0" expanded="true" />
               </folding>
@@ -634,13 +634,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00828" summary="Working on adding write/write veirfy method">
-      <created>1478700554504</created>
-      <option name="number" value="00828" />
-      <option name="presentableId" value="LOCAL-00828" />
-      <option name="project" value="LOCAL" />
-      <updated>1478700554504</updated>
-    </task>
     <task id="LOCAL-00829" summary="Working on adding write/write veirfy method">
       <created>1478700771823</created>
       <option name="number" value="00829" />
@@ -977,7 +970,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479709347337</updated>
     </task>
-    <option name="localTasksCounter" value="877" />
+    <task id="LOCAL-00877" summary="Feature: String generating tool will support multicore processing to faster names generation">
+      <created>1479709508222</created>
+      <option name="number" value="00877" />
+      <option name="presentableId" value="LOCAL-00877" />
+      <option name="project" value="LOCAL" />
+      <updated>1479709508222</updated>
+    </task>
+    <option name="localTasksCounter" value="878" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1481,8 +1481,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/string_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="75" column="20" selection-start-line="75" selection-start-column="20" selection-end-line="75" selection-end-column="20" />
+        <state relative-caret-position="149">
+          <caret line="74" column="10" selection-start-line="74" selection-start-column="10" selection-end-line="74" selection-end-column="10" />
           <folding>
             <element signature="e#38#53#0" expanded="true" />
           </folding>
