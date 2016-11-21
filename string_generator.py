@@ -55,6 +55,7 @@ def hc_worker(hc_value, names_queue, level):
 def generate_random_string_hc(hc_value, names_queue, level=1):
     levels = {1: 6, 2: ""}
     num_cores = multiprocessing.cpu_count()
+    print("{0} CPU/s detected")
     workers_pool = multiprocessing.Pool(num_cores, pool_setup, (stop_event, ))
     for _ in range(num_cores):
         workers_pool.apply_async(hc_worker, args=(hc_value, names_queue, levels[level]))
@@ -97,6 +98,7 @@ def main():
         if args.hc:
             generate_random_string_hc(args.hc_val, names_queue, args.level)
             for _ in range(args.count):
+                print "names_queue.get()"
                 store_method[args.store](names_queue.get())
             stop_event.set()
 
