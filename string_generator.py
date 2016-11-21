@@ -50,6 +50,7 @@ def hc_worker(hc_value, level):
                                                                         '{0} 6'.format(generated_string, level))
         generated_hash = int(generated_hash)
         if hc_value == generated_hash:
+            print("Generated {0}".format(generated_string))
             names_queue.put(generated_string)
 
 
@@ -60,7 +61,7 @@ def generate_random_string_hc(hc_value, level=1):
     for _ in range(num_cores):
         workers_pool.apply_async(hc_worker, args=(hc_value, levels[level]))
         workers_pool.close()
-        # workers_pool.join()
+        workers_pool.join()
 
 
 def get_args():
