@@ -16,7 +16,6 @@ __author__ = 'samuels'
 PATH_TO_HASH_TOOL = "/zebra/qa/samuels/misc/hash_tool"
 
 stop_event = None
-names_queue = None
 
 
 def store_console(string):
@@ -36,13 +35,12 @@ def store_redis():
     pass
 
 
-def pool_setup(_event, _queue):
-    global stop_event, names_queue
+def pool_setup(_event):
+    global stop_event
     stop_event = _event
-    names_queue = _queue
 
 
-def hc_worker(hc_value, level):
+def hc_worker(hc_value, names_queue, level):
     print("Worker {0} started...".format(uuid.uuid4()))
     while not stop_event.is_set():
         generated_string = utils.shell_utils.StringUtils.get_random_string_nospec(64)
@@ -50,18 +48,18 @@ def hc_worker(hc_value, level):
                                                                         '{0} 6'.format(generated_string, level))
         generated_hash = int(generated_hash)
         if hc_value == generated_hash:
-            print("Generated {0}".format(generated_string))
+            print("Generated: {0}".format(generated_string))
             names_queue.put(generated_string)
 
 
-def generate_random_string_hc(hc_value, level=1):
+def generate_random_string_hc(hc_value, names_queue, level=1):
     levels = {1: 6, 2: ""}
     num_cores = multiprocessing.cpu_count()
-    workers_pool = multiprocessing.Pool(num_cores, pool_setup, (stop_event, names_queue))
+    workers_pool = multiprocessing.Pool(num_cores, pool_setup, (stop_event, ))
     for _ in range(num_cores):
-        workers_pool.apply_async(hc_worker, args=(hc_value, levels[level]))
-        workers_pool.close()
-        workers_pool.join()
+        workers_pool.apply_async(hc_worker, args=(hc_value, names_queue, levels[level]))
+    workers_pool.close()
+    workers_pool.join()
 
 
 def get_args():
@@ -84,7 +82,7 @@ def get_args():
 
 
 def main():
-    global stop_event, names_queue
+    global stop_event
     args = get_args()
     stop_event = multiprocessing.Event()
     manager = multiprocessing.Manager()
@@ -97,7 +95,7 @@ def main():
     }
     try:
         if args.hc:
-            generate_random_string_hc(args.hc_val, args.level)
+            generate_random_string_hc(args.hc_val, names_queue, args.level)
             for _ in range(args.count):
                 store_method[args.store](names_queue.get())
             stop_event.set()
