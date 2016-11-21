@@ -3,6 +3,7 @@ Alphanumeric string generator
 """
 import argparse
 import multiprocessing
+from multiprocessing import Queue
 import sys
 import traceback
 import uuid
@@ -74,7 +75,7 @@ def get_args():
 def main():
     args = get_args()
     stop_event = multiprocessing.Event()
-    names_queue = multiprocessing.Queue()
+    names_queue = Queue()
     store_method = {
         'console': store_console,
         'file': store_file,
