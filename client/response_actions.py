@@ -141,7 +141,7 @@ def write(mount_point, incoming_data, **kwargs):
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['repeats'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
-    outgoing_data['offset'] = ZERO_PADDING_START + offset
+    outgoing_data['offset'] = padding + offset
     return outgoing_data
 
 
