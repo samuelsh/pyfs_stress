@@ -2,14 +2,17 @@
 Alphanumeric string generator
 """
 import argparse
+import multiprocessing
 import sys
+import traceback
+import uuid
+from time import sleep
 
 import utils.shell_utils
 
 __author__ = 'samuels'
 
 PATH_TO_HASH_TOOL = "/zebra/qa/samuels/misc/hash_tool"
-
 
 def store_console(string):
     print string
@@ -28,15 +31,24 @@ def store_redis():
     pass
 
 
-def generate_random_string_hc(hc_value, level=1):
-    levels = {1: 6, 2: ""}
-    while 1:
+def hc_worker(stop_event, hc_value, names_queue, level):
+    print("Worker {0} started...".format(uuid.uuid4()))
+    while not stop_event.is_set():
         generated_string = utils.shell_utils.StringUtils.get_random_string_nospec(64)
         generated_hash = utils.shell_utils.ShellUtils.run_shell_command("/zebra/qa/samuels/misc/hash_tool",
-                                                                        '{0} 6'.format(generated_string, levels[level]))
+                                                                        '{0} 6'.format(generated_string, level))
         generated_hash = int(generated_hash)
         if hc_value == generated_hash:
-            return generated_string
+            names_queue.put(generated_string)
+
+
+def generate_random_string_hc(stop_event, hc_value, names_queue, level=1):
+    levels = {1: 6, 2: ""}
+    num_cores = multiprocessing.cpu_count()
+    workers_pool = multiprocessing.Pool(num_cores)
+    for _ in num_cores:
+        workers_pool.apply_async(hc_worker, args=(stop_event, hc_value, names_queue, levels[level]))
+    workers_pool.close()
 
 
 def get_args():
@@ -60,24 +72,33 @@ def get_args():
 
 def main():
     args = get_args()
+    stop_event = multiprocessing.Event()
+    names_queue = multiprocessing.Queue()
     store_method = {
         'console': store_console,
         'file': store_file,
         'sqlite': store_sqlite,
         'redis': store_redis
     }
+    try:
+        if args.hc:
+            generate_random_string_hc(stop_event, args.hc_val, names_queue, args.level)
+            for _ in range(args.count):
+                store_method[args.store](names_queue.get())
+            stop_event.set()
 
-    if args.hc:
-        for _ in range(args.count):
-            store_method[args.store](generate_random_string_hc(args.hc_val, args.level))
-
-    else:
-        for _ in range(args.count):
-            store_method[args.store](utils.shell_utils.StringUtils.get_random_string_nospec(64))
+        else:
+            for _ in range(args.count):
+                store_method[args.store](utils.shell_utils.StringUtils.get_random_string_nospec(64))
+    except KeyboardInterrupt:
+        stop_event.set()
 
 
 if __name__ == '__main__':
     try:
         main()
+    except KeyboardInterrupt:
+        pass
     except Exception:
+        traceback.print_exc()
         sys.exit(1)
