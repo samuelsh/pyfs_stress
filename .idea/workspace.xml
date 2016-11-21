@@ -38,8 +38,8 @@
       <file leaf-file-name="string_generator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/string_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="84" column="82" selection-start-line="84" selection-start-column="82" selection-end-line="84" selection-end-column="82" />
+            <state relative-caret-position="374">
+              <caret line="48" column="28" selection-start-line="48" selection-start-column="28" selection-end-line="48" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -632,13 +632,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00823" summary="Working on adding write/write veirfy method">
-      <created>1478696337860</created>
-      <option name="number" value="00823" />
-      <option name="presentableId" value="LOCAL-00823" />
-      <option name="project" value="LOCAL" />
-      <updated>1478696337860</updated>
-    </task>
     <task id="LOCAL-00824" summary="Working on adding write/write veirfy method">
       <created>1478696526542</created>
       <option name="number" value="00824" />
@@ -975,7 +968,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479646468883</updated>
     </task>
-    <option name="localTasksCounter" value="872" />
+    <task id="LOCAL-00872" summary="Feature: String generating tool will support multicore processing to faster names generation">
+      <created>1479707848261</created>
+      <option name="number" value="00872" />
+      <option name="presentableId" value="LOCAL-00872" />
+      <option name="project" value="LOCAL" />
+      <updated>1479707848261</updated>
+    </task>
+    <option name="localTasksCounter" value="873" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1061,7 +1061,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Request actions dict. replaces if/else request logic in controller" />
     <MESSAGE value="Added &quot;rename exist&quot; method" />
     <MESSAGE value="Added response methods to dynamo client instead of if/else logic" />
     <MESSAGE value="Working on async controller" />
@@ -1086,7 +1085,8 @@
     <MESSAGE value="Fix: If file names file isn't exists, we'll create random file names on the fly" />
     <MESSAGE value="Feature: adding uuid property to file object to track changes" />
     <MESSAGE value="Feature: string generator tool will generated flienames with complete hash collision" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feature: string generator tool will generated flienames with complete hash collision" />
+    <MESSAGE value="Feature: String generating tool will support multicore processing to faster names generation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feature: String generating tool will support multicore processing to faster names generation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1478,8 +1478,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/string_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="84" column="82" selection-start-line="84" selection-start-column="82" selection-end-line="84" selection-end-column="82" />
+        <state relative-caret-position="374">
+          <caret line="48" column="28" selection-start-line="48" selection-start-column="28" selection-end-line="48" selection-end-column="28" />
           <folding />
         </state>
       </provider>
