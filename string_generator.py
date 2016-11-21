@@ -16,6 +16,8 @@ __author__ = 'samuels'
 PATH_TO_HASH_TOOL = "/zebra/qa/samuels/misc/hash_tool"
 
 stop_event = None
+names_queue = None
+
 
 def store_console(string):
     print string
@@ -34,12 +36,13 @@ def store_redis():
     pass
 
 
-def pool_setup(_event):
-    global stop_event
+def pool_setup(_event, _queue):
+    global stop_event, names_queue
     stop_event = _event
+    names_queue = _queue
 
 
-def hc_worker(hc_value, names_queue, level):
+def hc_worker(hc_value, level):
     print("Worker {0} started...".format(uuid.uuid4()))
     while not stop_event.is_set():
         generated_string = utils.shell_utils.StringUtils.get_random_string_nospec(64)
@@ -50,14 +53,14 @@ def hc_worker(hc_value, names_queue, level):
             names_queue.put(generated_string)
 
 
-def generate_random_string_hc(hc_value, names_queue, level=1):
+def generate_random_string_hc(hc_value, level=1):
     levels = {1: 6, 2: ""}
     num_cores = multiprocessing.cpu_count()
-    workers_pool = multiprocessing.Pool(num_cores, pool_setup, (stop_event, ))
+    workers_pool = multiprocessing.Pool(num_cores, pool_setup, (stop_event, names_queue))
     for _ in range(num_cores):
-        workers_pool.apply_async(hc_worker, args=(hc_value, names_queue, levels[level]))
-    # workers_pool.close()
-    # workers_pool.join()
+        workers_pool.apply_async(hc_worker, args=(hc_value, levels[level]))
+        # workers_pool.close()
+        # workers_pool.join()
 
 
 def get_args():
@@ -80,7 +83,7 @@ def get_args():
 
 
 def main():
-    global stop_event
+    global stop_event, names_queue
     args = get_args()
     stop_event = multiprocessing.Event()
     manager = multiprocessing.Manager()
