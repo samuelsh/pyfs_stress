@@ -32,8 +32,10 @@ DATA_PATTERN_E = {'pattern': 'E', 'repeats': 65}
 DATA_PATTERN_F = {'pattern': 'F', 'repeats': 129}
 DATA_PATTERN_G = {'pattern': 'G', 'repeats': 257}
 DATA_PATTERN_H = {'pattern': 'H', 'repeats': 1025}
+DATA_PATTERN_J = {'pattern': 'DUP', 'repeats': 64 * KB1 + 1}
 
-OFFSETS_LIST = [KB1, KB4, MB1, GB1, TB1, MB512, GB256]
+PADDING = [0, ZERO_PADDING_START]
+OFFSETS_LIST = [0, KB1, KB4, MB1, GB1, TB1, MB512, GB256, TB128]
 DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
                       DATA_PATTERN_G, DATA_PATTERN_H]
 
