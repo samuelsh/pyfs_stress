@@ -147,9 +147,8 @@ def read_success(logger, incoming_message, dir_tree):
         if readdir.data.ondisk:
             rfile = readdir.data.get_file_by_name(path[1])
             if rfile:
-                if not rfile.data_pattern_hash == incoming_message['data']['hash'] and rfile.data_pattern_len == \
-                        incoming_message['data']['chunk_size'] and rfile.data_pattern_offset == \
-                        incoming_message['data']['offset']:
+                if not rfile.data_pattern_hash == incoming_message['data']['hash'] and rfile.uuid == \
+                        incoming_message['data']['uuid']:
                     logger.error(
                         "Hashes mismatch! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk size: {4}"
                             .format(rfile.name, rfile.data_pattern_hash, incoming_message['data']['hash'],

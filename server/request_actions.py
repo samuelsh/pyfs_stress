@@ -105,6 +105,7 @@ def read_request(logger, dir_tree):
     data['repeats'] = rfile.data_pattern_len
     data['hash'] = rfile.data_pattern_hash
     data['offset'] = rfile.data_pattern_offset
+    data['uuid'] = rfile.uuid
     return data
 
 

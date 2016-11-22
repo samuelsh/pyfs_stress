@@ -33,12 +33,13 @@ DATA_PATTERN_E = {'pattern': 'E', 'repeats': 65}
 DATA_PATTERN_F = {'pattern': 'F', 'repeats': 129}
 DATA_PATTERN_G = {'pattern': 'G', 'repeats': 257}
 DATA_PATTERN_H = {'pattern': 'H', 'repeats': 1025}
+DATA_PATTERN_I = {'pattern': 'I', 'repeats': 128 * KB1 + 1}
 DATA_PATTERN_J = {'pattern': 'J', 'repeats': 64 * KB1 + 1}
 
 PADDING = [0, ZERO_PADDING_START]
 OFFSETS_LIST = [0, INLINE, KB1, KB4, MB1, MB512, GB1, GB256, GB512, TB1]
 DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
-                      DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_J]
+                      DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_I, DATA_PATTERN_J]
 
 
 class DynamoException(EnvironmentError):
@@ -116,6 +117,7 @@ def read(mount_point, incoming_data, **kwargs):
         outgoing_data['hash'] = hasher.hexdigest()
         outgoing_data['offset'] = incoming_data['offset']
         outgoing_data['chunk_size'] = incoming_data['repeats']
+        outgoing_data['uuid'] = incoming_data['uuid']
         return outgoing_data
 
 
