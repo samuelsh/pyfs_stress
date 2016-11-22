@@ -13,7 +13,7 @@ import utils.shell_utils
 
 __author__ = 'samuels'
 
-PATH_TO_HASH_TOOL = "/zebra/qa/samuels/misc/hash_tool"
+PATH_TO_HASH_TOOL = "hash_tool"
 
 stop_event = None
 
