@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/async_controller.py" afterPath="$PROJECT_DIR$/server/async_controller.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/response_actions.py" afterPath="$PROJECT_DIR$/server/response_actions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree/dirtree.py" afterPath="$PROJECT_DIR$/tree/dirtree.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,8 +26,8 @@
       <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="149" column="69" selection-start-line="149" selection-start-column="69" selection-end-line="149" selection-end-column="69" />
+            <state relative-caret-position="136">
+              <caret line="496" column="51" selection-start-line="496" selection-start-column="51" selection-end-line="496" selection-end-column="51" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -643,13 +641,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00854" summary="Improve unexpected error handling">
-      <created>1479200767404</created>
-      <option name="number" value="00854" />
-      <option name="presentableId" value="LOCAL-00854" />
-      <option name="project" value="LOCAL" />
-      <updated>1479200767404</updated>
-    </task>
     <task id="LOCAL-00855" summary="Adding info to hash mismatch error">
       <created>1479200785027</created>
       <option name="number" value="00855" />
@@ -986,7 +977,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479878958609</updated>
     </task>
-    <option name="localTasksCounter" value="903" />
+    <task id="LOCAL-00903" summary="Fixes: will check hash mismatch only if files have same UUID and read done, before next modification to file">
+      <created>1479883422922</created>
+      <option name="number" value="00903" />
+      <option name="presentableId" value="LOCAL-00903" />
+      <option name="project" value="LOCAL" />
+      <updated>1479883422922</updated>
+    </task>
+    <option name="localTasksCounter" value="904" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1000,7 +998,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15964173" sideWeight="0.49499285" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32885906" sideWeight="0.49789253" order="6" side_tool="false" content_ui="tabs" />
@@ -1072,7 +1070,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Integrating async controller" />
     <MESSAGE value="Fixing async controller bugs" />
     <MESSAGE value="Fixing timestamp milliseconds granularity" />
     <MESSAGE value="Improved zmq errors handling" />
@@ -1097,7 +1094,8 @@
     <MESSAGE value="Feature: Edding new write patterns" />
     <MESSAGE value="Feature: Adding UUID to File object.  Adding mount drivers" />
     <MESSAGE value="Feature: Async server messaging engine fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feature: Async server messaging engine fixes" />
+    <MESSAGE value="Fixes: will check hash mismatch only if files have same UUID and read done, before next modification to file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixes: will check hash mismatch only if files have same UUID and read done, before next modification to file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1513,8 +1511,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="149" column="69" selection-start-line="149" selection-start-column="69" selection-end-line="149" selection-end-column="69" />
+        <state relative-caret-position="136">
+          <caret line="496" column="51" selection-start-line="496" selection-start-column="51" selection-end-line="496" selection-end-column="51" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
