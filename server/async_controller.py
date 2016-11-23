@@ -176,8 +176,8 @@ class Controller(object):
                                  next_worker_id)
                 self.client_workers[next_worker_id][job.id] = job
                 self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
-                self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
-                                                                                  self._outgoing_message_queue.qsize()))
+                # self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
+                #                                                                   self._outgoing_message_queue.qsize()))
                 if self.stop_event.is_set():
                     break
         except Exception as generic_error:
