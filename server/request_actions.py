@@ -13,7 +13,8 @@ def request_action(action, logger, dir_tree):
         "read": read_request,
         "write": write_request,
         "rename": rename_request,
-        "rename_exist": rename_exist_request
+        "rename_exist": rename_exist_request,
+        "truncate": truncate_request
     }[action](logger, dir_tree)
 
 
@@ -160,4 +161,20 @@ def rename_exist_request(logger, dir_tree):
             data['rename_dest'] = "/{0}/{1}".format(rdir_dst.tag, dst_fname)
     data['target'] = target
     data['rename_source'] = target
+    return data
+
+
+def truncate_request(logger, dir_tree):
+    data = {}
+    tdir = dir_tree.get_random_dir_synced()
+    if not tdir:
+        target = 'None'
+    else:
+        file_to_truncate = tdir.data.get_random_file()
+        if not file_to_truncate:
+            target = 'None'
+        else:
+            fname = file_to_truncate.name
+            target = "/{0}/{1}".format(tdir.tag, fname)
+    data['target'] = target
     return data

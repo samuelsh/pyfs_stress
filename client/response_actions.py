@@ -64,7 +64,8 @@ def response_action(action, mount_point, incoming_data, **kwargs):
         "read": read,
         "write": write,
         "rename": rename,
-        "rename_exist": rename_exist
+        "rename_exist": rename_exist,
+        "truncate": truncate
     }[action](mount_point, incoming_data, **kwargs)
 
 
@@ -171,9 +172,21 @@ def rename_exist(mount_point, incoming_data, **kwargs):
     if src_fname == dst_fname:
         raise DynamoException(error_codes.SAMEFILE, "Error: Trying to move file into itself.", src_path)
     dst_mount_point = "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
-                                               random.randint(0, kwargs['domains'] - 1))
+                                                             random.randint(0, kwargs['domains'] - 1))
     shutil.move("{0}/{1}/{2}".format(mount_point, src_dirpath, src_fname),
                 "{0}/{1}/{2}".format(dst_mount_point, dst_dirpath, dst_fname))
     outgoing_data['rename_source'] = src_path
     outgoing_data['rename_dest'] = dst_path
     return outgoing_data
+
+
+def truncate(mount_point, incoming_data, **kwargs):
+    try:
+        with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
+            fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            f.truncate(0)
+            f.flush()
+            os.fsync(f.fileno())
+            fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
+    except (IOError, OSError) as env_error:
+        raise env_error

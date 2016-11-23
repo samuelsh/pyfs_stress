@@ -81,7 +81,8 @@ def success_response_actions(action):
         'write': write_success,
         'delete': delete_success,
         'rename': rename_success,
-        'rename_exist': rename_exist_success
+        'rename_exist': rename_exist_success,
+        'truncate': truncate_success
     }[action]
 
 
@@ -133,6 +134,10 @@ def list_success(logger, incoming_message, dir_tree):
 
 
 def stat_success(logger, incoming_message, dir_tree):
+    pass
+
+
+def truncate_success(logger, incoming_message, dir_tree):
     pass
 
 
@@ -312,7 +317,8 @@ def failed_response_actions(action):
         'write': write_fail,
         'delete': delete_fail,
         'rename': rename_fail,
-        'rename_exist': rename_exist_fail
+        'rename_exist': rename_exist_fail,
+        'truncate': truncate_fail
     }[action]
 
 
@@ -369,6 +375,32 @@ def list_fail(logger, incoming_message, dir_tree):
 
 
 def stat_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
+                    incoming_message['error_code'] == errno.ESTALE:
+        return
+    if incoming_message['error_code'] == errno.ENOENT:
+        rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
+        rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
+
+        rdir = dir_tree.get_dir_by_name(rdir_name)
+        if rdir:
+            rfile = rdir.data.get_file_by_name(rfile_name)
+            if rfile and rfile.ondisk:
+                error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
+                if error_time > rfile.creation_time:
+                    logger.error(
+                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
+                            incoming_message['action'], rdir_name + "/" + rfile_name))
+                    rfile.ondisk = False
+            else:
+                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+        else:
+            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+    else:
+        generic_error_handler(logger, incoming_message)
+
+
+def truncate_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
                     incoming_message['error_code'] == errno.ESTALE:
         return
