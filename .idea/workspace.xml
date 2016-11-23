@@ -70,8 +70,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="438">
-              <caret line="175" column="16" selection-start-line="175" selection-start-column="16" selection-end-line="175" selection-end-column="16" />
+            <state relative-caret-position="149">
+              <caret line="87" column="12" selection-start-line="87" selection-start-column="12" selection-end-line="87" selection-end-column="12" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -98,18 +98,6 @@
               <caret line="49" column="63" selection-start-line="49" selection-start-column="63" selection-end-line="49" selection-end-column="63" />
               <folding>
                 <element signature="e#47#60#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="string_generator.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/string_generator.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="20" selection-start-line="15" selection-start-column="20" selection-end-line="15" selection-end-column="20" />
-              <folding>
-                <element signature="e#38#53#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -641,13 +629,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00856" summary="Adding info to hash mismatch error">
-      <created>1479201691620</created>
-      <option name="number" value="00856" />
-      <option name="presentableId" value="LOCAL-00856" />
-      <option name="project" value="LOCAL" />
-      <updated>1479201691620</updated>
-    </task>
     <task id="LOCAL-00857" summary="Adding info to hash mismatch error">
       <created>1479206032372</created>
       <option name="number" value="00857" />
@@ -984,7 +965,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479884802706</updated>
     </task>
-    <option name="localTasksCounter" value="905" />
+    <task id="LOCAL-00905" summary="Fix: Moving all stale errors to debug level">
+      <created>1479885019919</created>
+      <option name="number" value="00905" />
+      <option name="presentableId" value="LOCAL-00905" />
+      <option name="project" value="LOCAL" />
+      <updated>1479885019919</updated>
+    </task>
+    <option name="localTasksCounter" value="906" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1104,13 +1092,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://C:/Python27/Lib/multiprocessing/pool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="556">
-          <caret line="723" column="28" selection-start-line="723" selection-start-column="28" selection-end-line="723" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharm2016.2/system/python_stubs/-762174762/itertools.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="353">
@@ -1509,10 +1490,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/Python27/Lib/random.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="699" column="8" selection-start-line="699" selection-start-column="8" selection-end-line="699" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="175" column="16" selection-start-line="175" selection-start-column="16" selection-end-line="175" selection-end-column="16" />
+        <state relative-caret-position="149">
+          <caret line="87" column="12" selection-start-line="87" selection-start-column="12" selection-end-line="87" selection-end-column="12" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>

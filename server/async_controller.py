@@ -4,6 +4,7 @@ Asynchronous Server logic is here
 """
 import Queue
 import timeit
+from bisect import bisect
 from random import randint, random
 import json
 import random
@@ -35,6 +36,18 @@ def timestamp(now=None):
     time_stamp = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(now))
     millisecs = "%.6f" % (now % 1.0,)
     return time_stamp + millisecs[1:]
+
+
+def weighted_choice(choices):
+    values, weights = zip(*choices)
+    total = 0
+    cum_weights = []
+    for w in weights:
+        total += w
+        cum_weights.append(total)
+    x = random.random() * total
+    i = bisect(cum_weights, x)
+    return values[i]
 
 
 class Job(object):
@@ -78,12 +91,13 @@ class Controller(object):
 
     @property
     def get_next_job(self):
-        actions = ['mkdir', 'list', 'list', 'list', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
-                   'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read', 'rename',
-                   'rename_exist', 'write']
-
+        # actions = ['mkdir', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
+        #            'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read', 'rename',
+        #            'rename_exist', 'write']
+        actions = [('mkdir', 10), ('list', 5), ('delete', 5), ('touch', 50), ('stat', 5), ('read', 10), ('rename', 5),
+                   ('rename_exist', 5), ('write', 5)]
         while True:
-            action = random.choice(actions)
+            action = weighted_choice(actions)
             # if some client disconnected, messages assigned to him won't be lost
             if self._work_to_requeue:
                 yield self._work_to_requeue.pop()
@@ -249,7 +263,7 @@ class AsyncControllerWorker(Thread, object):
         self._logger.info("Controller incoming/outgoing messages worker thread {0} started".format(self.name))
         while not self.stop_event.is_set():
             try:
-                worker_id, message = self._worker.recv_multipart()  #flags=zmq.NOBLOCK)
+                worker_id, message = self._worker.recv_multipart()  # flags=zmq.NOBLOCK)
                 message = json.loads(message.decode('utf8'))
                 if message['message'] == 'connect' or message['message'] == 'disconnect':
                     time_stamp = timestamp()
