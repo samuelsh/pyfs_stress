@@ -25,7 +25,8 @@ class StringUtils:
 
     @staticmethod
     def random_string_generator(length):
-        yield ''.join(random.choice(digits + letters) for _ in range(length))
+        while 1:
+            yield ''.join(random.choice(digits + letters) for _ in range(length))
 
     @staticmethod
     def string_from_file_generator(file_names):
