@@ -102,8 +102,8 @@ def main():
     try:
         with open(config.FILE_NAMES_PATH, 'r') as f:  # If file with names isn't exists, we'll just create random files
             file_names = f.readlines()
-    except OSError as os_error:
-        if os_error.errno == errno.ENOENT:
+    except IOError as io_error:
+        if io_error.errno == errno.ENOENT:
             pass
     dir_tree = dirtree.DirTree(file_names)
     logger = ConsoleLogger(__name__).logger
