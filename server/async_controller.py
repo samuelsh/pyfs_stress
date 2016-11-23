@@ -175,17 +175,14 @@ class Controller(object):
                 self.logger.info('sending job %s to worker %s', job.id,
                                  next_worker_id)
                 self.client_workers[next_worker_id][job.id] = job
-                self._outgoing_message_queue.put_nowait((next_worker_id, job.id, job.work))
+                self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
                 self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
                                                                                   self._outgoing_message_queue.qsize()))
                 if self.stop_event.is_set():
                     break
-        except Queue.Full:
-            pass
-            # self.logger.debug("Queue Full!")
         except Exception as generic_error:
             self.logger.exception(generic_error)
-            raise
+            raise generic_error
         finally:
             self.stop_event.set()
 
