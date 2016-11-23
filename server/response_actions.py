@@ -147,6 +147,7 @@ def read_success(logger, incoming_message, dir_tree):
         if readdir.data.ondisk:
             rfile = readdir.data.get_file_by_name(path[1])
             if rfile:
+                read_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if not rfile.data_pattern_hash == incoming_message['data']['hash'] and rfile.uuid == \
                         incoming_message['data']['uuid']:
                     logger.error(
