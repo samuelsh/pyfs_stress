@@ -4,6 +4,8 @@
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/async_controller.py" afterPath="$PROJECT_DIR$/server/async_controller.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/response_actions.py" afterPath="$PROJECT_DIR$/server/response_actions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree/dirtree.py" afterPath="$PROJECT_DIR$/tree/dirtree.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="149" column="15" selection-start-line="149" selection-start-column="15" selection-end-line="149" selection-end-column="15" />
+            <state relative-caret-position="221">
+              <caret line="149" column="69" selection-start-line="149" selection-start-column="69" selection-end-line="149" selection-end-column="69" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -45,6 +47,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="dirtree.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="387">
+              <caret line="230" column="30" selection-start-line="230" selection-start-column="30" selection-end-line="230" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -57,11 +69,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="319">
-              <caret line="269" column="20" selection-start-line="269" selection-start-column="20" selection-end-line="269" selection-end-column="20" />
+            <state relative-caret-position="472">
+              <caret line="266" column="15" selection-start-line="266" selection-start-column="15" selection-end-line="266" selection-end-column="15" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -181,15 +193,15 @@
         <option value="$PROJECT_DIR$/utils/shell_utils.py" />
         <option value="$PROJECT_DIR$/config/__init__.py" />
         <option value="$PROJECT_DIR$/tree_runner.py" />
-        <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/string_generator.py" />
         <option value="$PROJECT_DIR$/client/fluidfs_mount.py" />
         <option value="$PROJECT_DIR$/client/fluidfs_mounter.py" />
         <option value="$PROJECT_DIR$/client/generic_mounter.py" />
         <option value="$PROJECT_DIR$/server/request_actions.py" />
         <option value="$PROJECT_DIR$/client/response_actions.py" />
-        <option value="$PROJECT_DIR$/server/response_actions.py" />
         <option value="$PROJECT_DIR$/server/async_controller.py" />
+        <option value="$PROJECT_DIR$/tree/dirtree.py" />
+        <option value="$PROJECT_DIR$/server/response_actions.py" />
       </list>
     </option>
   </component>
@@ -631,13 +643,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00853" summary="Improve unexpected error handling">
-      <created>1479198340348</created>
-      <option name="number" value="00853" />
-      <option name="presentableId" value="LOCAL-00853" />
-      <option name="project" value="LOCAL" />
-      <updated>1479198340348</updated>
-    </task>
     <task id="LOCAL-00854" summary="Improve unexpected error handling">
       <created>1479200767404</created>
       <option name="number" value="00854" />
@@ -974,7 +979,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479877639578</updated>
     </task>
-    <option name="localTasksCounter" value="902" />
+    <task id="LOCAL-00902" summary="Feature: Async server messaging engine fixes">
+      <created>1479878958609</created>
+      <option name="number" value="00902" />
+      <option name="presentableId" value="LOCAL-00902" />
+      <option name="project" value="LOCAL" />
+      <updated>1479878958609</updated>
+    </task>
+    <option name="localTasksCounter" value="903" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1060,7 +1072,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Working on async controller" />
     <MESSAGE value="Integrating async controller" />
     <MESSAGE value="Fixing async controller bugs" />
     <MESSAGE value="Fixing timestamp milliseconds granularity" />
@@ -1085,7 +1096,8 @@
     <MESSAGE value="Feature: String generating tool will support multicore processing to faster names generation" />
     <MESSAGE value="Feature: Edding new write patterns" />
     <MESSAGE value="Feature: Adding UUID to File object.  Adding mount drivers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feature: Adding UUID to File object.  Adding mount drivers" />
+    <MESSAGE value="Feature: Async server messaging engine fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feature: Async server messaging engine fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1349,14 +1361,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="229" column="20" selection-start-line="229" selection-start-column="20" selection-end-line="229" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python27/Lib/multiprocessing/managers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="251">
@@ -1489,22 +1493,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/response_actions.py">
+    <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="149" column="15" selection-start-line="149" selection-start-column="15" selection-end-line="149" selection-end-column="15" />
+        <state relative-caret-position="472">
+          <caret line="266" column="15" selection-start-line="266" selection-start-column="15" selection-end-line="266" selection-end-column="15" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#59#71#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/async_controller.py">
+    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="319">
-          <caret line="269" column="20" selection-start-line="269" selection-start-column="20" selection-end-line="269" selection-end-column="20" />
+        <state relative-caret-position="387">
+          <caret line="230" column="30" selection-start-line="230" selection-start-column="30" selection-end-line="230" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/response_actions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="149" column="69" selection-start-line="149" selection-start-column="69" selection-end-line="149" selection-end-column="69" />
           <folding>
-            <element signature="e#59#71#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>

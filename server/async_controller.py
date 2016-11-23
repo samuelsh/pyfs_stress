@@ -249,7 +249,7 @@ class AsyncControllerWorker(Thread, object):
         self._logger.info("Controller incoming/outgoing messages worker thread {0} started".format(self.name))
         while not self.stop_event.is_set():
             try:
-                worker_id, message = self._worker.recv_multipart()#flags=zmq.NOBLOCK)
+                worker_id, message = self._worker.recv_multipart()  #flags=zmq.NOBLOCK)
                 message = json.loads(message.decode('utf8'))
                 if message['message'] == 'connect' or message['message'] == 'disconnect':
                     time_stamp = timestamp()

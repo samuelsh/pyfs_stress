@@ -230,6 +230,7 @@ class File(object):
         self.uuid = uuid.uuid4().hex[-5:]  # Unique session ID, will be modified on each file modify action
         self.last_action = None
         self.creation_time = None
+        self.modify_time = None
         self.ondisk = False
 
     @property

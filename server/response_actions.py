@@ -149,7 +149,7 @@ def read_success(logger, incoming_message, dir_tree):
             if rfile:
                 read_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if not rfile.data_pattern_hash == incoming_message['data']['hash'] and rfile.uuid == \
-                        incoming_message['data']['uuid']:
+                        incoming_message['data']['uuid'] and read_time <= rfile.modify_time:
                     logger.error(
                         "Hashes mismatch! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk size: {4}"
                             .format(rfile.name, rfile.data_pattern_hash, incoming_message['data']['hash'],
@@ -173,6 +173,8 @@ def write_success(logger, incoming_message, dir_tree):
             if wfile and wfile.ondisk:
                 logger.debug('File {0}/{1} is found, writing'.format(path[0], path[1]))
                 wfile.ondisk = True
+                wfile.modify_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                               '%Y/%m/%d %H:%M:%S.%f')
                 wfile.data_pattern = incoming_message['data']['data_pattern']
                 wfile.data_pattern_len = incoming_message['data']['repeats']
                 wfile.data_pattern_hash = incoming_message['data']['hash']
@@ -188,6 +190,7 @@ def write_success(logger, incoming_message, dir_tree):
                 wfile.data_pattern_offset = incoming_message['data']['offset']
                 wfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                  '%Y/%m/%d %H:%M:%S.%f')
+                wfile.modify_time = wfile.creation_time
                 logger.info('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
