@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/response_actions.py" afterPath="$PROJECT_DIR$/client/response_actions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/async_controller.py" afterPath="$PROJECT_DIR$/server/async_controller.py" />
     </list>
     <ignored path="file_scanner.iws" />
@@ -58,8 +59,8 @@
       <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="115" column="25" selection-start-line="115" selection-start-column="25" selection-end-line="115" selection-end-column="25" />
+            <state relative-caret-position="0">
+              <caret line="45" column="7" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -70,8 +71,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="149">
-              <caret line="87" column="12" selection-start-line="87" selection-start-column="12" selection-end-line="87" selection-end-column="12" />
+            <state relative-caret-position="234">
+              <caret line="92" column="21" selection-start-line="92" selection-start-column="21" selection-end-line="92" selection-end-column="21" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -184,9 +185,9 @@
         <option value="$PROJECT_DIR$/client/fluidfs_mounter.py" />
         <option value="$PROJECT_DIR$/client/generic_mounter.py" />
         <option value="$PROJECT_DIR$/server/request_actions.py" />
-        <option value="$PROJECT_DIR$/client/response_actions.py" />
         <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/server/response_actions.py" />
+        <option value="$PROJECT_DIR$/client/response_actions.py" />
         <option value="$PROJECT_DIR$/server/async_controller.py" />
       </list>
     </option>
@@ -629,13 +630,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00857" summary="Adding info to hash mismatch error">
-      <created>1479206032372</created>
-      <option name="number" value="00857" />
-      <option name="presentableId" value="LOCAL-00857" />
-      <option name="project" value="LOCAL" />
-      <updated>1479206032372</updated>
-    </task>
     <task id="LOCAL-00858" summary="Adding info to hash mismatch error">
       <created>1479209682317</created>
       <option name="number" value="00858" />
@@ -972,7 +966,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479885019919</updated>
     </task>
-    <option name="localTasksCounter" value="906" />
+    <task id="LOCAL-00906" summary="Feature: Implementing weighted actions choice">
+      <created>1479886496604</created>
+      <option name="number" value="00906" />
+      <option name="presentableId" value="LOCAL-00906" />
+      <option name="project" value="LOCAL" />
+      <updated>1479886496604</updated>
+    </task>
+    <option name="localTasksCounter" value="907" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1058,7 +1059,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixing timestamp milliseconds granularity" />
     <MESSAGE value="Improved zmq errors handling" />
     <MESSAGE value="Fixing async server bugs" />
     <MESSAGE value="Fixing bugs/Improving server logic" />
@@ -1083,7 +1083,8 @@
     <MESSAGE value="Feature: Async server messaging engine fixes" />
     <MESSAGE value="Fixes: will check hash mismatch only if files have same UUID and read done, before next modification to file" />
     <MESSAGE value="Fix: Moving all stale errors to debug level" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix: Moving all stale errors to debug level" />
+    <MESSAGE value="Feature: Implementing weighted actions choice" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feature: Implementing weighted actions choice" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1416,16 +1417,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/response_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="115" column="25" selection-start-line="115" selection-start-column="25" selection-end-line="115" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="816">
@@ -1472,16 +1463,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/response_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="499" column="0" selection-start-line="499" selection-start-column="0" selection-end-line="499" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/request_actions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
@@ -1498,10 +1479,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/client/response_actions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="45" column="7" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/response_actions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="499" column="0" selection-start-line="499" selection-start-column="0" selection-end-line="499" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="149">
-          <caret line="87" column="12" selection-start-line="87" selection-start-column="12" selection-end-line="87" selection-end-column="12" />
+        <state relative-caret-position="234">
+          <caret line="92" column="21" selection-start-line="92" selection-start-column="21" selection-end-line="92" selection-end-column="21" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>

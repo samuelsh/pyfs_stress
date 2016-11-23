@@ -91,9 +91,6 @@ class Controller(object):
 
     @property
     def get_next_job(self):
-        # actions = ['mkdir', 'list', 'delete', 'touch', 'touch', 'touch', 'touch', 'touch',
-        #            'touch', 'stat', 'stat', 'stat', 'stat', 'stat', 'read', 'read', 'read', 'read', 'rename',
-        #            'rename_exist', 'write']
         actions = [('mkdir', 10), ('list', 5), ('delete', 5), ('touch', 50), ('stat', 5), ('read', 10), ('rename', 5),
                    ('rename_exist', 5), ('write', 5)]
         while True:
