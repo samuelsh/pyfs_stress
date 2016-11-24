@@ -87,10 +87,6 @@ class Dynamo(object):
                 except zmq.ZMQError as zmq_error:
                     if zmq_error.errno == zmq.EAGAIN:
                         pass
-                        # # if No message received, we signalling that we ready to receive a new one
-                        # self._socket.send_json(
-                        #     {'message': 'job_done',
-                        #      'result': 'ready'})
                     else:
                         self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
         except KeyboardInterrupt:

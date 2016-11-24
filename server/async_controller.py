@@ -140,11 +140,8 @@ class Controller(object):
                              len(remaining_work))
         elif message['message'] == 'job_done':
             result = message['result']
-            try:
-                job = self.client_workers[worker_id].pop(message['job_id'])
-                self._process_results(worker_id, job, result)
-            except KeyError:  # If job_id not found this 'ready' message from worker
-                self.logger.debug("Worker {0} sent {1}".format(worker_id, result))
+            job = self.client_workers[worker_id].pop(message['job_id'])
+            self._process_results(worker_id, job, result)
         else:
             raise Exception('unknown message: %s' % message['message'])
 
@@ -169,18 +166,11 @@ class Controller(object):
                     # do this while checking for the next available worker so that
                     # if it takes a while to find one we're still processing
                     # incoming messages.
-                    # while not self._incoming_message_queue.empty():
-                    try:
-                        _, (worker_id, message) = self._incoming_message_queue.get_nowait()
-                        self._handle_worker_message(worker_id, message)
-                        # If there are no available workers (they all have 50 or
-                        # more jobs already) sleep for half a second.
-                        next_worker_id = self._get_next_worker_id()
-                        # if next_worker_id is None:
-                        # time.sleep(0.5)
-                    except Queue.Empty:
-                        pass
-                        # self.logger.debug("Queue Empty!")
+                    _, (worker_id, message) = self._incoming_message_queue.get()
+                    self._handle_worker_message(worker_id, message)
+                    # If there are no available workers (they all have 50 or
+                    # more jobs already) sleep for half a second.
+                    next_worker_id = self._get_next_worker_id()
                 # We've got a Job and an available worker_id, all we need to do
                 # is send it. Note that we're now using send_multipart(), the
                 # counterpart to recv_multipart(), to tell the ROUTER where our
@@ -264,20 +254,16 @@ class AsyncControllerWorker(Thread, object):
             try:
                 worker_id, message = self._worker.recv_multipart()  # flags=zmq.NOBLOCK)
                 message = json.loads(message.decode('utf8'))
-                if message['message'] == 'connect' or message['message'] == 'disconnect' or message[
-                    'result'] == 'ready':
+                if message['message'] == 'connect' or message['message'] == 'disconnect':
                     time_stamp = timestamp()
                 else:
                     time_stamp = message['result']['timestamp']
                 self.incoming_queue.put(
                     (time_stamp, (worker_id, message)))  # Putting messages to queue by timestamp priority
             except zmq.ZMQError as zmq_error:
-                if zmq_error.errno == zmq.EAGAIN:
-                    pass
-                else:
-                    self._logger.exception("ZMQ Error {0}".format(zmq_error))
-                    self.stop_event.set()
-                    raise zmq_error
+                self._logger.exception("ZMQ Error {0}".format(zmq_error))
+                self.stop_event.set()
+                raise zmq_error
             except Exception as generic_error:
                 self._logger.exception("Unhandled exception {0}".format(generic_error))
                 self.stop_event.set()
