@@ -138,7 +138,34 @@ def stat_success(logger, incoming_message, dir_tree):
 
 
 def truncate_success(logger, incoming_message, dir_tree):
-    pass
+    path = incoming_message['target'].split('/')[1:]  # folder:file
+    writedir = dir_tree.get_dir_by_name(path[0])
+    if not writedir:
+        logger.debug(
+            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+    else:
+        logger.debug('Directory exists {0}, going to truncate file {1}'.format(writedir.data.name, path[1]))
+        if writedir.data.ondisk:
+            wfile = writedir.data.get_file_by_name(path[1])
+            if wfile and wfile.ondisk:
+                logger.debug('File {0}/{1} is found, truncating'.format(path[0], path[1]))
+                wfile.modify_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                               '%Y/%m/%d %H:%M:%S.%f')
+                wfile.size = incoming_message['data']['size']
+                logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
+            # In case there is raise and write arrived before touch we'll sync the file here
+            elif wfile:
+                logger.debug("File {0}/{1} Truncate OP arrived before touch, syncing...".format(path[0], path[1]))
+                wfile.ondisk = True
+                wfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                                 '%Y/%m/%d %H:%M:%S.%f')
+                wfile.modify_time = wfile.creation_time
+                wfile.size = incoming_message['data']['size']
+                logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
+            else:
+                logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+        else:
+            logger.debug("Directory {0} is not on disk, nothing to update".format(writedir.data.name))
 
 
 def read_success(logger, incoming_message, dir_tree):

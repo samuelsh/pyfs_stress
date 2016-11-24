@@ -232,6 +232,7 @@ class File(object):
         self.creation_time = None
         self.modify_time = None
         self.ondisk = False
+        self.size = 0
 
     @property
     def name(self):
