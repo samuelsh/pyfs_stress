@@ -24,7 +24,7 @@ from server.response_actions import response_action
 timer = timeit.default_timer
 
 MAX_DIR_SIZE = 128 * 1024
-MAX_CONTROLLER_WORKERS = 16
+MAX_CONTROLLER_WORKERS = 2
 
 __author__ = 'samuels'
 
