@@ -65,6 +65,7 @@ class Dynamo(object):
     def run(self):
         self.logger.info("Dynamo {0} started".format(self._socket.identity))
         try:
+            msg = None
             # Send a connect message
             self._socket.send_json({'message': 'connect'})
             # Poll the socket for incoming messages. This will wait up to
@@ -73,19 +74,24 @@ class Dynamo(object):
             # catching zmq.AGAIN and sleeping for 0.1.
             while not self.stop_event.is_set():
                 try:
-                    if self._socket.poll(100):
-                        # Note that we can still use send_json()/recv_json() here,
-                        # the DEALER socket ensures we don't have to deal with
-                        # client ids at all.
-                        job_id, work = self._socket.recv_json()
-                        msg = self._do_work(work)
-                        self.logger.debug("Going to send {0}".format(msg))
+                    # Note that we can still use send_json()/recv_json() here,
+                    # the DEALER socket ensures we don't have to deal with
+                    # client ids at all.
+                    job_id, work = self._socket.recv_json(zmq.NOBLOCK)
+                    msg = self._do_work(work)
+                    self.logger.debug("Going to send {0}".format(msg))
+                    self._socket.send_json(
+                        {'message': 'job_done',
+                         'result': msg,
+                         'job_id': job_id})
+                except zmq.ZMQError as zmq_error:
+                    if zmq_error.errno == zmq.EAGAIN:
+                        # if No message received, we signalling that we ready to receive a new one
                         self._socket.send_json(
                             {'message': 'job_done',
-                             'result': msg,
-                             'job_id': job_id})
-                except zmq.ZMQError:
-                    self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
+                             'result': 'ready'})
+                    else:
+                        self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
         except KeyboardInterrupt:
             pass
         except Exception as e:
@@ -125,7 +131,8 @@ class Dynamo(object):
         except OSError as os_error:
             return build_message('failed', action, data, timestamp(), error_code=os_error.errno,
                                  error_message=os_error.strerror,
-                                 path='{0}{1}'.format(mount_point, work['data']['target']), line=sys.exc_info()[-1].tb_lineno)
+                                 path='{0}{1}'.format(mount_point, work['data']['target']),
+                                 line=sys.exc_info()[-1].tb_lineno)
         except IOError as io_error:
             return build_message('failed', action, data, timestamp(), error_code=io_error.errno,
                                  error_message=io_error.strerror,

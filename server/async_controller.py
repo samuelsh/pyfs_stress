@@ -140,8 +140,11 @@ class Controller(object):
                              len(remaining_work))
         elif message['message'] == 'job_done':
             result = message['result']
-            job = self.client_workers[worker_id].pop(message['job_id'])
-            self._process_results(worker_id, job, result)
+            try:
+                job = self.client_workers[worker_id].pop(message['job_id'])
+                self._process_results(worker_id, job, result)
+            except KeyError:
+                self.logger.debug("Worker sent {0}".format(result))
         else:
             raise Exception('unknown message: %s' % message['message'])
 

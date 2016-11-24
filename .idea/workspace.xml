@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo.py" afterPath="$PROJECT_DIR$/client/dynamo.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/async_controller.py" afterPath="$PROJECT_DIR$/server/async_controller.py" />
     </list>
     <ignored path="file_scanner.iws" />
@@ -70,8 +71,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="90" column="12" selection-start-line="90" selection-start-column="12" selection-end-line="90" selection-end-column="12" />
+            <state relative-caret-position="701">
+              <caret line="171" column="47" selection-start-line="171" selection-start-column="47" selection-end-line="171" selection-end-column="47" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -87,6 +88,16 @@
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client/dynamo.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="319">
+              <caret line="77" column="33" selection-start-line="77" selection-start-column="33" selection-end-line="77" selection-end-column="33" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -161,7 +172,6 @@
         <option value="$PROJECT_DIR$/data/data_generators.py" />
         <option value="$PROJECT_DIR$/logger/pubsub_logger.py" />
         <option value="$PROJECT_DIR$/client/dynamo_starter.py" />
-        <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/config/error_codes.py" />
         <option value="$PROJECT_DIR$/config/__init__.py" />
         <option value="$PROJECT_DIR$/string_generator.py" />
@@ -175,6 +185,7 @@
         <option value="$PROJECT_DIR$/server/request_actions.py" />
         <option value="$PROJECT_DIR$/client/response_actions.py" />
         <option value="$PROJECT_DIR$/server/response_actions.py" />
+        <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/server/async_controller.py" />
       </list>
     </option>
@@ -617,13 +628,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00864" summary="read method will rise exception if enforced to read empty file. New util added: file names generator with hash collision">
-      <created>1479292407570</created>
-      <option name="number" value="00864" />
-      <option name="presentableId" value="LOCAL-00864" />
-      <option name="project" value="LOCAL" />
-      <updated>1479292407570</updated>
-    </task>
     <task id="LOCAL-00865" summary="read method will rise exception if enforced to read empty file. New util added: file names generator with hash collision">
       <created>1479292769117</created>
       <option name="number" value="00865" />
@@ -960,7 +964,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479908457490</updated>
     </task>
-    <option name="localTasksCounter" value="913" />
+    <task id="LOCAL-00913" summary="Feature: adding truncate method">
+      <created>1479908573198</created>
+      <option name="number" value="00913" />
+      <option name="presentableId" value="LOCAL-00913" />
+      <option name="project" value="LOCAL" />
+      <updated>1479908573198</updated>
+    </task>
+    <option name="localTasksCounter" value="914" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1369,16 +1380,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/dynamo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="833">
-          <caret line="49" column="63" selection-start-line="49" selection-start-column="63" selection-end-line="49" selection-end-column="63" />
-          <folding>
-            <element signature="e#47#60#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="816">
@@ -1441,6 +1442,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/server/response_actions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1105">
+          <caret line="414" column="79" selection-start-line="414" selection-start-column="79" selection-end-line="414" selection-end-column="79" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/client/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="646">
@@ -1448,6 +1459,22 @@
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/dynamo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="77" column="33" selection-start-line="77" selection-start-column="33" selection-end-line="77" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/request_actions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2805">
+          <caret line="171" column="0" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1469,28 +1496,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/request_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2805">
-          <caret line="171" column="0" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/response_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="414" column="79" selection-start-line="414" selection-start-column="79" selection-end-line="414" selection-end-column="79" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="90" column="12" selection-start-line="90" selection-start-column="12" selection-end-line="90" selection-end-column="12" />
+        <state relative-caret-position="701">
+          <caret line="171" column="47" selection-start-line="171" selection-start-column="47" selection-end-line="171" selection-end-column="47" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>
