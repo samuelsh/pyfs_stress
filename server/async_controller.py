@@ -185,8 +185,8 @@ class Controller(object):
                 # is send it. Note that we're now using send_multipart(), the
                 # counterpart to recv_multipart(), to tell the ROUTER where our
                 # message goes.
-                self.logger.debug('sending job %s to worker %s', job.id,
-                                  next_worker_id)
+                # self.logger.debug('sending job %s to worker %s', job.id,
+                #                   next_worker_id)
                 self.client_workers[next_worker_id][job.id] = job
                 self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
                 # self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
@@ -300,3 +300,9 @@ class AsyncControllerWorker(Thread, object):
                 self._logger.exception("Unhandled exception {0}".format(generic_error))
                 self.stop_event.set()
                 raise
+
+    def __del__(self):
+        self._logger.info("Closing sockets...")
+        self._context.close()
+        self._worker.close()
+        self._context.term()
