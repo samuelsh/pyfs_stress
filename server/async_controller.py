@@ -142,6 +142,7 @@ class Controller(object):
             result = message['result']
             try:
                 job = self.client_workers[worker_id].pop(message['job_id'])
+                self.logger.debug("DEBUG JOB: {0}".format(job))
                 self._process_results(worker_id, job, result)
             except KeyError:
                 self.logger.debug("Worker sent {0}".format(result))

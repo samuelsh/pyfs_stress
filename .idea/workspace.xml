@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo.py" afterPath="$PROJECT_DIR$/client/dynamo.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/async_controller.py" afterPath="$PROJECT_DIR$/server/async_controller.py" />
     </list>
     <ignored path="file_scanner.iws" />
@@ -71,8 +70,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="701">
-              <caret line="171" column="47" selection-start-line="171" selection-start-column="47" selection-end-line="171" selection-end-column="47" />
+            <state relative-caret-position="421">
+              <caret line="142" column="15" selection-start-line="142" selection-start-column="15" selection-end-line="142" selection-end-column="15" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -628,13 +627,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00865" summary="read method will rise exception if enforced to read empty file. New util added: file names generator with hash collision">
-      <created>1479292769117</created>
-      <option name="number" value="00865" />
-      <option name="presentableId" value="LOCAL-00865" />
-      <option name="project" value="LOCAL" />
-      <updated>1479292769117</updated>
-    </task>
     <task id="LOCAL-00866" summary="Bug fix">
       <created>1479391265322</created>
       <option name="number" value="00866" />
@@ -971,7 +963,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479908573198</updated>
     </task>
-    <option name="localTasksCounter" value="914" />
+    <task id="LOCAL-00914" summary="Working on correct load balancing">
+      <created>1479969749854</created>
+      <option name="number" value="00914" />
+      <option name="presentableId" value="LOCAL-00914" />
+      <option name="project" value="LOCAL" />
+      <updated>1479969749854</updated>
+    </task>
+    <option name="localTasksCounter" value="915" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1057,7 +1056,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixing bugs/Improving server logic" />
     <MESSAGE value="Starting working on data verification and file locking. Data Generators added" />
     <MESSAGE value="Improving DynamoException" />
     <MESSAGE value="Working on adding write/write veirfy method" />
@@ -1082,7 +1080,8 @@
     <MESSAGE value="Feature: Implementing weighted actions choice" />
     <MESSAGE value="Fix: removed useless 'join' from dynamo methods" />
     <MESSAGE value="Feature: adding truncate method" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feature: adding truncate method" />
+    <MESSAGE value="Working on correct load balancing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working on correct load balancing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1478,14 +1477,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="222" column="8" selection-start-line="222" selection-start-column="8" selection-end-line="222" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="423">
@@ -1496,10 +1487,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="222" column="8" selection-start-line="222" selection-start-column="8" selection-end-line="222" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="701">
-          <caret line="171" column="47" selection-start-line="171" selection-start-column="47" selection-end-line="171" selection-end-column="47" />
+        <state relative-caret-position="421">
+          <caret line="142" column="15" selection-start-line="142" selection-start-column="15" selection-end-line="142" selection-end-column="15" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>
