@@ -38,8 +38,8 @@
       <file leaf-file-name="request_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/request_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2805">
-              <caret line="171" column="0" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
+            <state relative-caret-position="289">
+              <caret line="20" column="4" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -80,8 +80,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="184" column="76" selection-start-line="184" selection-start-column="76" selection-end-line="184" selection-end-column="76" />
+            <state relative-caret-position="170">
+              <caret line="92" column="71" selection-start-line="92" selection-start-column="71" selection-end-line="92" selection-end-column="71" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -104,7 +104,7 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
+            <state relative-caret-position="-4">
               <caret line="91" column="39" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="39" />
               <folding />
             </state>
@@ -637,13 +637,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00870" summary="Feature: adding uuid property to file object to track changes">
-      <created>1479645883555</created>
-      <option name="number" value="00870" />
-      <option name="presentableId" value="LOCAL-00870" />
-      <option name="project" value="LOCAL" />
-      <updated>1479645883555</updated>
-    </task>
     <task id="LOCAL-00871" summary="Feature: string generator tool will generated flienames with complete hash collision">
       <created>1479646468883</created>
       <option name="number" value="00871" />
@@ -980,7 +973,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479972604262</updated>
     </task>
-    <option name="localTasksCounter" value="919" />
+    <task id="LOCAL-00919" summary="Working on correct load balancing">
+      <created>1479973239295</created>
+      <option name="number" value="00919" />
+      <option name="presentableId" value="LOCAL-00919" />
+      <option name="project" value="LOCAL" />
+      <updated>1479973239295</updated>
+    </task>
+    <option name="localTasksCounter" value="920" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1461,32 +1461,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/request_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2805">
-          <caret line="171" column="0" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/response_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="184" column="43" selection-start-line="184" selection-start-column="43" selection-end-line="184" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/dynamo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="91" column="39" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/logger/server_logger.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -1505,10 +1479,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/server/request_actions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="20" column="4" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/response_actions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="646">
+          <caret line="184" column="43" selection-start-line="184" selection-start-column="43" selection-end-line="184" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/dynamo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4">
+          <caret line="91" column="39" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="184" column="76" selection-start-line="184" selection-start-column="76" selection-end-line="184" selection-end-column="76" />
+        <state relative-caret-position="170">
+          <caret line="92" column="71" selection-start-line="92" selection-start-column="71" selection-end-line="92" selection-end-column="71" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>

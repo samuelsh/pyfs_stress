@@ -90,7 +90,7 @@ class Controller(object):
 
     @property
     def get_next_job(self):
-        actions = [('mkdir', 10), ('list', 5), ('delete', 5), ('touch', 50), ('stat', 5), ('read', 5), ('rename', 5),
+        actions = [('mkdir', 20), ('list', 5), ('delete', 5), ('touch', 40), ('stat', 5), ('read', 5), ('rename', 5),
                    ('rename_exist', 5), ('write', 5), ('truncate', 5)]
         while True:
             action = weighted_choice(actions)
@@ -189,8 +189,8 @@ class Controller(object):
                                   next_worker_id)
                 self.client_workers[next_worker_id][job.id] = job
                 self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
-                self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
-                                                                                   self._outgoing_message_queue.qsize()))
+                # self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
+                #                                                                   self._outgoing_message_queue.qsize()))
                 if self.stop_event.is_set():
                     break
         except Exception as generic_error:
