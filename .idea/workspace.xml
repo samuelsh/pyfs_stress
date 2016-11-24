@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="Working on correct load balancing">
+    <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/async_controller.py" afterPath="$PROJECT_DIR$/server/async_controller.py" />
     </list>
@@ -70,8 +70,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="90" column="12" lean-forward="false" selection-start-line="90" selection-start-column="12" selection-end-line="90" selection-end-column="12" />
+            <state relative-caret-position="238">
+              <caret line="92" column="71" lean-forward="false" selection-start-line="92" selection-start-column="71" selection-end-line="92" selection-end-column="71" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -620,13 +620,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00880" summary="Feature: String generating tool will support multicore processing to faster names generation">
-      <created>1479710439779</created>
-      <option name="number" value="00880" />
-      <option name="presentableId" value="LOCAL-00880" />
-      <option name="project" value="LOCAL" />
-      <updated>1479710439779</updated>
-    </task>
     <task id="LOCAL-00881" summary="Feature: String generating tool will support multicore processing to faster names generation">
       <created>1479710487331</created>
       <option name="number" value="00881" />
@@ -963,7 +956,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479993884097</updated>
     </task>
-    <option name="localTasksCounter" value="929" />
+    <task id="LOCAL-00929" summary="Working on correct load balancing">
+      <created>1479996058769</created>
+      <option name="number" value="00929" />
+      <option name="presentableId" value="LOCAL-00929" />
+      <option name="project" value="LOCAL" />
+      <updated>1479996058769</updated>
+    </task>
+    <option name="localTasksCounter" value="930" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1454,8 +1454,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="90" column="12" lean-forward="false" selection-start-line="90" selection-start-column="12" selection-end-line="90" selection-end-column="12" />
+        <state relative-caret-position="238">
+          <caret line="92" column="71" lean-forward="false" selection-start-line="92" selection-start-column="71" selection-end-line="92" selection-end-column="71" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>

@@ -90,7 +90,7 @@ class Controller(object):
 
     @property
     def get_next_job(self):
-        actions = [('mkdir', 5), ('list', 5), ('delete', 10), ('touch', 50), ('stat', 5), ('read', 10), ('rename', 5),
+        actions = [('mkdir', 5), ('list', 5), ('delete', 5), ('touch', 55), ('stat', 5), ('read', 5), ('rename', 5),
                    ('rename_exist', 5), ('write', 5), ('truncate', 5)]
         while True:
             action = weighted_choice(actions)
