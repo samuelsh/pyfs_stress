@@ -142,10 +142,9 @@ class Controller(object):
             result = message['result']
             try:
                 job = self.client_workers[worker_id].pop(message['job_id'])
-                self.logger.debug("DEBUG JOB: {0}".format(job))
                 self._process_results(worker_id, job, result)
-            except KeyError:
-                self.logger.debug("Worker sent {0}".format(result))
+            except KeyError:  # If job_id not found this 'ready' message from worker
+                self.logger.debug("Worker {0} sent {1}".format(worker_id, result))
         else:
             raise Exception('unknown message: %s' % message['message'])
 
@@ -186,8 +185,8 @@ class Controller(object):
                 # is send it. Note that we're now using send_multipart(), the
                 # counterpart to recv_multipart(), to tell the ROUTER where our
                 # message goes.
-                self.logger.info('sending job %s to worker %s', job.id,
-                                 next_worker_id)
+                self.logger.debug('sending job %s to worker %s', job.id,
+                                  next_worker_id)
                 self.client_workers[next_worker_id][job.id] = job
                 self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
                 # self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
@@ -266,7 +265,7 @@ class AsyncControllerWorker(Thread, object):
                 worker_id, message = self._worker.recv_multipart()  # flags=zmq.NOBLOCK)
                 message = json.loads(message.decode('utf8'))
                 if message['message'] == 'connect' or message['message'] == 'disconnect' or message[
-                                    'result'] == 'ready':
+                    'result'] == 'ready':
                     time_stamp = timestamp()
                 else:
                     time_stamp = message['result']['timestamp']
