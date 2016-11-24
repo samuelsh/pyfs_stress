@@ -265,7 +265,8 @@ class AsyncControllerWorker(Thread, object):
             try:
                 worker_id, message = self._worker.recv_multipart()  # flags=zmq.NOBLOCK)
                 message = json.loads(message.decode('utf8'))
-                if message['message'] == 'connect' or message['message'] == 'disconnect':
+                if message['message'] == 'connect' or message['message'] == 'disconnect' or message[
+                                    'result'] == 'ready':
                     time_stamp = timestamp()
                 else:
                     time_stamp = message['result']['timestamp']
