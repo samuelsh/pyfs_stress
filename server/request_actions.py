@@ -47,6 +47,7 @@ def list_request(logger, dir_tree):
 
 def delete_request(logger, dir_tree):
     data = {}
+    file_to_delete = None
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
         target = 'None'
@@ -58,6 +59,7 @@ def delete_request(logger, dir_tree):
             fname = file_to_delete.name
             target = "/{0}/{1}".format(rdir.tag, fname)
     data['target'] = target
+    data['uuid'] = file_to_delete.uuid
     return data
 
 
@@ -75,6 +77,7 @@ def touch_request(logger, dir_tree):
 
 def stat_request(logger, dir_tree):
     data = {}
+    rfile = None
     rdir = dir_tree.get_random_dir_synced()
     if rdir:
         rfile = rdir.data.get_random_file()
@@ -86,6 +89,7 @@ def stat_request(logger, dir_tree):
     else:
         target = 'None'
     data['target'] = target
+    data['uuid'] = rfile.uuid
     return data
 
 
@@ -123,11 +127,13 @@ def write_request(logger, dir_tree):
     else:
         return {'target': 'None'}
     data['target'] = target
+    data['uuid'] = wfile.uuid
     return data
 
 
 def rename_request(logger, dir_tree):
     data = {}
+    file_to_rename = None
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
         target = 'None'
@@ -139,12 +145,14 @@ def rename_request(logger, dir_tree):
             fname = file_to_rename.name
             target = "/{0}/{1}".format(rdir.tag, fname)
     data['target'] = target
+    data['uuid'] = file_to_rename.uuid
     data['rename_dest'] = shell_utils.StringUtils.get_random_string_nospec(64)
     return data
 
 
 def rename_exist_request(logger, dir_tree):
     data = {}
+    src_file_to_rename = None
     rdir_src = dir_tree.get_random_dir_synced()
     rdir_dst = dir_tree.get_random_dir_synced()
     if not rdir_src or not rdir_dst:
@@ -160,12 +168,14 @@ def rename_exist_request(logger, dir_tree):
             target = "/{0}/{1}".format(rdir_src.tag, src_fname)
             data['rename_dest'] = "/{0}/{1}".format(rdir_dst.tag, dst_fname)
     data['target'] = target
+    data['uuid'] = src_file_to_rename.uuid
     data['rename_source'] = target
     return data
 
 
 def truncate_request(logger, dir_tree):
     data = {}
+    file_to_truncate = None
     tdir = dir_tree.get_random_dir_synced()
     if not tdir:
         target = 'None'
@@ -177,4 +187,5 @@ def truncate_request(logger, dir_tree):
             fname = file_to_truncate.name
             target = "/{0}/{1}".format(tdir.tag, fname)
     data['target'] = target
+    data['uuid'] = file_to_truncate.uuid
     return data

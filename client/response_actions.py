@@ -81,9 +81,11 @@ def list_dir(mount_point, incoming_data, **kwargs):
 
 
 def delete(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
     dirpath = incoming_data['target'].split('/')[1]
     fname = incoming_data['target'].split('/')[2]
     os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
+    outgoing_data['uuid'] = incoming_data['uuid']
 
 
 def touch(mount_point, incoming_data, **kwargs):
@@ -97,11 +99,14 @@ def touch(mount_point, incoming_data, **kwargs):
     with open('{0}{1}'.format(mount_point, incoming_data['target']), 'w'):
         pass
     outgoing_data['dirsize'] = os.stat("{0}/{1}".format(mount_point, incoming_data['target'].split('/')[1])).st_size
+    outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 
 
 def stat(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
     os.stat("{0}{1}".format(mount_point, incoming_data['target']))
+    outgoing_data['uuid'] = incoming_data['uuid']
 
 
 def read(mount_point, incoming_data, **kwargs):
@@ -145,6 +150,7 @@ def write(mount_point, incoming_data, **kwargs):
     outgoing_data['repeats'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
     outgoing_data['offset'] = offset
+    outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 
 
@@ -158,6 +164,7 @@ def rename(mount_point, incoming_data, **kwargs):
     outgoing_data['rename_dest'] = incoming_data['rename_dest']
     shutil.move("{0}/{1}/{2}".format(mount_point, dirpath, fname),
                 "{0}/{1}/{2}".format(dst_mount_point, dirpath, incoming_data['rename_dest']))
+    outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 
 
@@ -177,6 +184,7 @@ def rename_exist(mount_point, incoming_data, **kwargs):
                 "{0}/{1}/{2}".format(dst_mount_point, dst_dirpath, dst_fname))
     outgoing_data['rename_source'] = src_path
     outgoing_data['rename_dest'] = dst_path
+    outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 
 
@@ -194,4 +202,5 @@ def truncate(mount_point, incoming_data, **kwargs):
     except (IOError, OSError) as env_error:
         raise env_error
     outgoing_data['size'] = offset
+    outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
