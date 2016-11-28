@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/response_actions.py" afterPath="$PROJECT_DIR$/client/response_actions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/response_actions.py" afterPath="$PROJECT_DIR$/server/response_actions.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="340">
-              <caret line="415" column="19" lean-forward="false" selection-start-line="415" selection-start-column="19" selection-end-line="415" selection-end-column="19" />
+              <caret line="447" column="72" lean-forward="false" selection-start-line="447" selection-start-column="72" selection-end-line="447" selection-end-column="72" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -79,11 +79,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="646">
-              <caret line="206" column="22" lean-forward="false" selection-start-line="206" selection-start-column="22" selection-end-line="206" selection-end-column="22" />
+            <state relative-caret-position="533">
+              <caret line="205" column="40" lean-forward="false" selection-start-line="205" selection-start-column="40" selection-end-line="205" selection-end-column="40" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -106,7 +106,7 @@
       <file leaf-file-name="dynamo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/dynamo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-510">
+            <state relative-caret-position="-640">
               <caret line="75" column="19" lean-forward="false" selection-start-line="75" selection-start-column="19" selection-end-line="75" selection-end-column="19" />
               <folding>
                 <element signature="e#47#60#0" expanded="true" />
@@ -186,8 +186,8 @@
         <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/server/async_controller.py" />
         <option value="$PROJECT_DIR$/server/request_actions.py" />
-        <option value="$PROJECT_DIR$/server/response_actions.py" />
         <option value="$PROJECT_DIR$/client/response_actions.py" />
+        <option value="$PROJECT_DIR$/server/response_actions.py" />
       </list>
     </option>
   </component>
@@ -620,13 +620,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00886" summary="Feature: String generating tool will support multicore processing to faster names generation">
-      <created>1479711275935</created>
-      <option name="number" value="00886" />
-      <option name="presentableId" value="LOCAL-00886" />
-      <option name="project" value="LOCAL" />
-      <updated>1479711275935</updated>
-    </task>
     <task id="LOCAL-00887" summary="Feature: String generating tool will support multicore processing to faster names generation">
       <created>1479711357882</created>
       <option name="number" value="00887" />
@@ -963,7 +956,14 @@
       <option name="project" value="LOCAL" />
       <updated>1480325636548</updated>
     </task>
-    <option name="localTasksCounter" value="935" />
+    <task id="LOCAL-00935" summary="Adding uuid to all messages to track if file was deleted and recreated">
+      <created>1480328919825</created>
+      <option name="number" value="00935" />
+      <option name="presentableId" value="LOCAL-00935" />
+      <option name="project" value="LOCAL" />
+      <updated>1480328919825</updated>
+    </task>
+    <option name="localTasksCounter" value="936" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1387,16 +1387,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="25" column="10" lean-forward="false" selection-start-line="25" selection-start-column="10" selection-end-line="25" selection-end-column="10" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="193">
@@ -1415,12 +1405,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/client/response_actions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="533">
+          <caret line="205" column="40" lean-forward="false" selection-start-line="205" selection-start-column="40" selection-end-line="205" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1139">
+          <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+          <folding>
+            <element signature="e#22#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-510">
+        <state relative-caret-position="-640">
           <caret line="75" column="19" lean-forward="false" selection-start-line="75" selection-start-column="19" selection-end-line="75" selection-end-column="19" />
           <folding>
             <element signature="e#47#60#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="25" column="10" lean-forward="false" selection-start-line="25" selection-start-column="10" selection-end-line="25" selection-end-column="10" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1436,29 +1456,9 @@
     <entry file="file://$PROJECT_DIR$/server/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
-          <caret line="415" column="19" lean-forward="false" selection-start-line="415" selection-start-column="19" selection-end-line="415" selection-end-column="19" />
+          <caret line="447" column="72" lean-forward="false" selection-start-line="447" selection-start-column="72" selection-end-line="447" selection-end-column="72" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1139">
-          <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-          <folding>
-            <element signature="e#22#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/response_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="206" column="22" lean-forward="false" selection-start-line="206" selection-start-column="22" selection-end-line="206" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
