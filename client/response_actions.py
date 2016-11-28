@@ -99,7 +99,7 @@ def touch(mount_point, incoming_data, **kwargs):
     with open('{0}{1}'.format(mount_point, incoming_data['target']), 'w'):
         pass
     outgoing_data['dirsize'] = os.stat("{0}/{1}".format(mount_point, incoming_data['target'].split('/')[1])).st_size
-    outgoing_data['uuid'] = incoming_data['uuid']
+    # outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 
 
