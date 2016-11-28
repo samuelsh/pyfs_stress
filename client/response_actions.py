@@ -107,6 +107,7 @@ def stat(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     os.stat("{0}{1}".format(mount_point, incoming_data['target']))
     outgoing_data['uuid'] = incoming_data['uuid']
+    return outgoing_data
 
 
 def read(mount_point, incoming_data, **kwargs):
