@@ -31,7 +31,7 @@ class Mounter:
             logger = server_logger.ConsoleLogger(socket.gethostname()).logger
         else:
             logger = self.logger
-        mount_point = self.prefix + '_' + self.export + '_' + self.server
+        mount_point = MOUNT_BASE + '/' + self.prefix + '_' + self.export + '_' + self.server
         if self.mount_type == 3:
             shell_utils.FSUtils.mount_fsd(self.server, '/' + self.export, self.nodes, self.domains, 'nfs3',
                                           self.prefix, '6')
@@ -52,11 +52,11 @@ class Mounter:
                     logger.error(os_error)
                     raise os_error
             try:
-                shell_utils.ShellUtils.run_shell_command('umount', '-fl {0}/{1}'.format(MOUNT_BASE, mount_point))
+                shell_utils.ShellUtils.run_shell_command('umount', '-fl {0}'.format(mount_point))
             except RuntimeError as e:
                 logger.warn(e)
             shell_utils.ShellUtils.run_shell_command('mount',
-                                                     '-o nfsvers={0} {1}/{2}:/{3}'.format(self.mount_type, self.server,
+                                                     '-o nfsvers={0} {1}:/{2} {3}'.format(self.mount_type, self.server,
                                                                                           self.export, mount_point))
             self.mount_points.append(mount_point)
             if not os.path.ismount(mount_point):
