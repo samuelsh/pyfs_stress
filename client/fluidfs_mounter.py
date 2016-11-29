@@ -24,7 +24,7 @@ class Mounter:
         self.mount_type = mount_type
         self.server = server
         self.export = export
-        self.mount_points = None
+        self.mount_points = []
 
     def mount(self):
         if not self.logger:
