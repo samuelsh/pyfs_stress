@@ -35,7 +35,7 @@ def get_args():
     parser.add_argument('-c', '--cluster', type=str, required=True, help='Cluster name')
     parser.add_argument('--clients', type=str, nargs='+', required=True, help="Space separated list of clients")
     parser.add_argument('-e', '--export', type=str, default="vol0", help="Space separated list of clients")
-    parser.add_argument('-m', '--mtype', type=str, default="nfs3", help='Mount type')
+    parser.add_argument('-m', '--mtype', type=int, default=3, help='Mount type')
     args = parser.parse_args()
     return args
 
@@ -57,7 +57,7 @@ def deploy_clients(clients):
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('utils', client, '{0}'.format(config.DYNAMO_PATH)))
 
 
-def run_clients(cluster, clients, export, active_nodes, domains):
+def run_clients(cluster, clients, export, active_nodes, domains, mtype):
     """
 
     Args:
@@ -74,9 +74,9 @@ def run_clients(cluster, clients, export, active_nodes, domains):
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client,
                                                        'python {0} --controller {1} --server {2} --export {3}'
-                                                       ' --nodes {4} --domains {5} --mtype 3 &'.format(
+                                                       ' --nodes {4} --domains {5} --mtype {6} &'.format(
                                                            config.DYNAMO_BIN_PATH, controller, cluster, export,
-                                                           active_nodes, domains))
+                                                           active_nodes, domains, mtype))
 
 
 def run_controller(event, dir_tree):
@@ -126,7 +126,7 @@ def main():
     logger.info("Controller started")
     deploy_clients(clients_list)
     logger.info("Done deploying clients: {0}".format(clients_list))
-    run_clients(args.cluster, clients_list, args.export, active_nodes, domains)
+    run_clients(args.cluster, clients_list, args.export, active_nodes, domains, args.mtype)
     logger.info("Dynamo started on all clients ....")
 
     try:
