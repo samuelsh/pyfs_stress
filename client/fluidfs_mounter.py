@@ -32,10 +32,9 @@ class Mounter:
         else:
             logger = self.logger
         mount_point = self.prefix + '_' + self.export + '_' + self.server
-        if self.nodes and self.domains:
-            if self.mount_type == 3:
-                shell_utils.FSUtils.mount_fsd(self.server, '/' + self.export, self.nodes, self.domains, 'nfs3',
-                                              self.prefix, '6')
+        if self.mount_type == 3:
+            shell_utils.FSUtils.mount_fsd(self.server, '/' + self.export, self.nodes, self.domains, 'nfs3',
+                                          self.prefix, '6')
             for i in range(self.nodes):
                 for j in range(self.domains):
                     mount_point = '/mnt/%s-node%d.%s-%d' % ('DIRSPLIT', i, self.server, j)
