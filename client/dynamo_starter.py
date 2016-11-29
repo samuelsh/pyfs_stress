@@ -67,6 +67,7 @@ def run():
         # logger.debug("FSD domains: %s" % domains)
         logger.info("Mounting work path...")
         mounter = Mounter(args.server, args.export, args.mtype, 'DIRSPLIT', logger, args.nodes, args.domains)
+        mounter.mount()
         # shell_utils.FSUtils.mount_fsd(args.server, '/' + args.export, args.nodes, args.domains, 'nfs3', 'DIRSPLIT', '6')
         # # /mnt/DIRSPLIT-node0.g8-5
         # for i in range(args.nodes):
