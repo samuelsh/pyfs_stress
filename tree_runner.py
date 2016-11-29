@@ -74,7 +74,7 @@ def run_clients(cluster, clients, export, active_nodes, domains):
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client,
                                                        'python {0} --controller {1} --server {2} --export {3}'
-                                                       ' --nodes {4} --domains {5} &'.format(
+                                                       ' --nodes {4} --domains {5} --mtype 3 &'.format(
                                                            config.DYNAMO_BIN_PATH, controller, cluster, export,
                                                            active_nodes, domains))
 

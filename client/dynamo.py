@@ -45,9 +45,10 @@ def build_message(result, action, data, time_stamp, error_code=None, error_messa
 
 
 class Dynamo(object):
-    def __init__(self, stop_event, controller, server, nodes, domains, proc_id=None):
+    def __init__(self, stop_event, mounter, controller, server, nodes, domains, proc_id=None):
         self.stop_event = stop_event
         self.logger = pubsub_logger.PUBLogger(controller).logger
+        self.mounter = mounter
         self._server = server  # Server Cluster hostname
         self.nodes = nodes
         self.domains = domains
@@ -113,16 +114,17 @@ class Dynamo(object):
         """
         action = work['action']
         data = {}
-        mount_point = "".join(
-            "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
-                                                   random.randint(0, self.domains - 1)))
+        # mount_point = "".join(
+        #     "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
+        #                                            random.randint(0, self.domains - 1)))
+        mount_point = self.mounter.get_random_mountpoint()
         self.logger.debug('Incoming job: \'{0}\' on \'{1}\''.format(work['action'], work['data']['target']))
         try:
             if 'None' in work['data']['target']:
                 raise DynamoException(error_codes.NO_TARGET,
                                       "{0}".format("Target not specified", work['data']['target']))
-            response = response_action(action, mount_point, work['data'], nodes=self.nodes, server=self._server,
-                                       domains=self.domains)
+            response = response_action(action, mount_point, work['data'],
+                                       dst_mount_point=self.mounter.get_random_mountpoint())
             if response:
                 data = response
         except OSError as os_error:

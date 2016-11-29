@@ -9,14 +9,15 @@ import time
 
 import sys
 
+from client.fluidfs_mounter import Mounter
 from dynamo import Dynamo
 from logger import pubsub_logger
 from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT, CLIENT_MOUNT_POINT
 from utils import shell_utils
 
 
-def run_worker(event, controller, server, nodes, domains, proc_id):
-    worker = Dynamo(event, controller, server, nodes, domains, proc_id)
+def run_worker(event, mounter, controller, server, nodes, domains, proc_id):
+    worker = Dynamo(event, mounter, controller, server, nodes, domains, proc_id)
     worker.run()
 
 
@@ -46,7 +47,7 @@ def run():
     logger.info("Making {0}".format(CLIENT_MOUNT_POINT))
     if not os.path.exists(CLIENT_MOUNT_POINT):
         os.mkdir(CLIENT_MOUNT_POINT)
-    else:  # if folder already created, umounting just in case ....
+    else:  # if folder already created, unmounting just in case ....
         try:
             shell_utils.umount(CLIENT_MOUNT_POINT)
         except Exception as syserr:
@@ -65,20 +66,22 @@ def run():
         # domains = shell_utils.FSUtils.get_domains_num(args.server)
         # logger.debug("FSD domains: %s" % domains)
         logger.info("Mounting work path...")
-        shell_utils.FSUtils.mount_fsd(args.server, '/' + args.export, args.nodes, args.domains, 'nfs3', 'DIRSPLIT', '6')
-        # /mnt/DIRSPLIT-node0.g8-5
-        for i in range(args.nodes):
-            for j in range(args.domains):
-                if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('DIRSPLIT', i, args.server, j)):
-                    logger.error('mount_fsd failed!')
-                    raise RuntimeError
+        mounter = Mounter(args.server, args.export, args.mtype, 'DIRSPLIT', logger, args.nodes, args.domains)
+        # shell_utils.FSUtils.mount_fsd(args.server, '/' + args.export, args.nodes, args.domains, 'nfs3', 'DIRSPLIT', '6')
+        # # /mnt/DIRSPLIT-node0.g8-5
+        # for i in range(args.nodes):
+        #     for j in range(args.domains):
+        #         if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('DIRSPLIT', i, args.server, j)):
+        #             logger.error('mount_fsd failed!')
+        #             raise RuntimeError
     except Exception as error_on_init:
-        logger.error("".join(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
+        logger.error(str(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
         raise
     # Start a few worker processes
     for i in range(MAX_WORKERS_PER_CLIENT):
         processes.append(Process(target=run_worker,
-                                 args=(stop_event, args.controller, args.server, args.nodes, args.domains, i,)))
+                                 args=(stop_event, mounter, args.controller, args.server, args.nodes,
+                                       args.domains, i,)))
     for p in processes:
         p.start()
     try:

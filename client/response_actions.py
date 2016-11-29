@@ -160,8 +160,9 @@ def rename(mount_point, incoming_data, **kwargs):
     fullpath = incoming_data['target'].split('/')[1:]
     dirpath = fullpath[0]
     fname = fullpath[1]
-    dst_mount_point = "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
-                                                             random.randint(0, kwargs['domains'] - 1))
+    # dst_mount_point = "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
+    #                                                          random.randint(0, kwargs['domains'] - 1))
+    dst_mount_point = kwargs['dst_mount_point']
     outgoing_data['rename_dest'] = incoming_data['rename_dest']
     shutil.move("{0}/{1}/{2}".format(mount_point, dirpath, fname),
                 "{0}/{1}/{2}".format(dst_mount_point, dirpath, incoming_data['rename_dest']))
@@ -179,8 +180,9 @@ def rename_exist(mount_point, incoming_data, **kwargs):
     dst_fname = dst_path.split('/')[2]
     if src_fname == dst_fname:
         raise DynamoException(error_codes.SAMEFILE, "Error: Trying to move file into itself.", src_path)
-    dst_mount_point = "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
-                                                             random.randint(0, kwargs['domains'] - 1))
+    # dst_mount_point = "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
+    #                                                          random.randint(0, kwargs['domains'] - 1))
+    dst_mount_point = kwargs['dst_mount_point']
     shutil.move("{0}/{1}/{2}".format(mount_point, src_dirpath, src_fname),
                 "{0}/{1}/{2}".format(dst_mount_point, dst_dirpath, dst_fname))
     outgoing_data['rename_source'] = src_path
