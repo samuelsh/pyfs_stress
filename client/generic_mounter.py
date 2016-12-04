@@ -28,7 +28,7 @@ class Mounter:
             logger = self.logger
         mount_point = MOUNT_BASE + '/' + self.prefix + '_' + self.export + '_' + self.server
         try:
-            os.makedirs('{0}/{1}'.format(MOUNT_BASE, mount_point))
+            os.makedirs('{0}'.format(mount_point))
         except OSError as os_error:
             if os_error.errno == errno.EEXIST:
                 pass
