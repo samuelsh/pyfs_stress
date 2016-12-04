@@ -17,7 +17,7 @@ class DirTree(object):
         if file_names:
             self.file_names = StringUtils.string_from_file_generator(file_names)  # pre-generated file_names iterator
         else:
-            self.file_names = StringUtils.random_string_generator(64)
+            self.file_names = StringUtils.random_string_generator()
         self._nids = []  # Nodes IDs pool for easy random sampling
         self.synced_nodes = []  # Nodes IDs list which already Synced with storage
 

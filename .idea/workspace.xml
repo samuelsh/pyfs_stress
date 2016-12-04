@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/fluidfs_mounter.py" afterPath="$PROJECT_DIR$/client/fluidfs_mounter.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree/dirtree.py" afterPath="$PROJECT_DIR$/tree/dirtree.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils/shell_utils.py" afterPath="$PROJECT_DIR$/utils/shell_utils.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,43 +27,41 @@
       <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="80" column="0" lean-forward="true" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+            <state relative-caret-position="408">
+              <caret line="107" column="27" lean-forward="true" selection-start-line="107" selection-start-column="27" selection-end-line="107" selection-end-column="27" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/response_actions.py">
+      <file leaf-file-name="dirtree.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3264">
-              <caret line="488" column="12" lean-forward="false" selection-start-line="488" selection-start-column="12" selection-end-line="488" selection-end-column="12" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="request_actions.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/request_actions.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="93" column="4" lean-forward="false" selection-start-line="93" selection-start-column="4" selection-end-line="93" selection-end-column="4" />
+            <state relative-caret-position="187">
+              <caret line="19" column="58" lean-forward="false" selection-start-line="19" selection-start-column="58" selection-end-line="19" selection-end-column="58" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="shell_utils.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="shell_utils.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="91" column="8" lean-forward="false" selection-start-line="91" selection-start-column="8" selection-end-line="91" selection-end-column="8" />
+            <state relative-caret-position="189">
+              <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="random.py" pinned="false" current-in-tab="false">
+        <entry file="file://C:/Python27/Lib/random.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="223">
+              <caret line="237" column="8" lean-forward="false" selection-start-line="237" selection-start-column="8" selection-end-line="237" selection-end-column="8" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -82,7 +81,7 @@
       <file leaf-file-name="dynamo_starter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
+            <state relative-caret-position="969">
               <caret line="66" column="21" lean-forward="false" selection-start-line="66" selection-start-column="21" selection-end-line="66" selection-end-column="21" />
               <folding>
                 <element signature="e#22#37#0" expanded="true" />
@@ -113,11 +112,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fluidfs_mounter.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fluidfs_mounter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/fluidfs_mounter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+            <state relative-caret-position="584">
+              <caret line="56" column="29" lean-forward="false" selection-start-line="56" selection-start-column="29" selection-end-line="56" selection-end-column="29" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -185,17 +184,17 @@
         <option value="$PROJECT_DIR$/string_generator.py" />
         <option value="$PROJECT_DIR$/client/fluidfs_mount.py" />
         <option value="$PROJECT_DIR$/client/generic_mounter.py" />
-        <option value="$PROJECT_DIR$/utils/shell_utils.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/tree/dirtree.py" />
         <option value="$PROJECT_DIR$/server/async_controller.py" />
         <option value="$PROJECT_DIR$/server/request_actions.py" />
         <option value="$PROJECT_DIR$/server/response_actions.py" />
-        <option value="$PROJECT_DIR$/tree_runner.py" />
         <option value="$PROJECT_DIR$/client/dynamo.py" />
         <option value="$PROJECT_DIR$/client/response_actions.py" />
         <option value="$PROJECT_DIR$/client/dynamo_starter.py" />
+        <option value="$PROJECT_DIR$/tree_runner.py" />
         <option value="$PROJECT_DIR$/client/fluidfs_mounter.py" />
+        <option value="$PROJECT_DIR$/tree/dirtree.py" />
+        <option value="$PROJECT_DIR$/utils/shell_utils.py" />
       </list>
     </option>
   </component>
@@ -628,34 +627,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00892" summary="Feature: String generating tool will support multicore processing to faster names generation">
-      <created>1479712369210</created>
-      <option name="number" value="00892" />
-      <option name="presentableId" value="LOCAL-00892" />
-      <option name="project" value="LOCAL" />
-      <updated>1479712369210</updated>
-    </task>
-    <task id="LOCAL-00893" summary="Feature: String generating tool will support multicore processing to faster names generation">
-      <created>1479712456727</created>
-      <option name="number" value="00893" />
-      <option name="presentableId" value="LOCAL-00893" />
-      <option name="project" value="LOCAL" />
-      <updated>1479712456727</updated>
-    </task>
-    <task id="LOCAL-00894" summary="Feature: String generating tool will support multicore processing to faster names generation">
-      <created>1479718973834</created>
-      <option name="number" value="00894" />
-      <option name="presentableId" value="LOCAL-00894" />
-      <option name="project" value="LOCAL" />
-      <updated>1479718973834</updated>
-    </task>
-    <task id="LOCAL-00895" summary="Feature: Edding new write patterns">
-      <created>1479719056250</created>
-      <option name="number" value="00895" />
-      <option name="presentableId" value="LOCAL-00895" />
-      <option name="project" value="LOCAL" />
-      <updated>1479719056250</updated>
-    </task>
     <task id="LOCAL-00896" summary="Feature: Edding new write patterns">
       <created>1479719699960</created>
       <option name="number" value="00896" />
@@ -971,7 +942,35 @@
       <option name="project" value="LOCAL" />
       <updated>1480407905348</updated>
     </task>
-    <option name="localTasksCounter" value="941" />
+    <task id="LOCAL-00941" summary="Fefature: added mounter class to handle all mounting routines via various protocols">
+      <created>1480408054968</created>
+      <option name="number" value="00941" />
+      <option name="presentableId" value="LOCAL-00941" />
+      <option name="project" value="LOCAL" />
+      <updated>1480408054968</updated>
+    </task>
+    <task id="LOCAL-00942" summary="Fefature: added mount type argument to test runner module">
+      <created>1480408786045</created>
+      <option name="number" value="00942" />
+      <option name="presentableId" value="LOCAL-00942" />
+      <option name="project" value="LOCAL" />
+      <updated>1480408786045</updated>
+    </task>
+    <task id="LOCAL-00943" summary="Fefature: added mount type argument to test runner module">
+      <created>1480409097694</created>
+      <option name="number" value="00943" />
+      <option name="presentableId" value="LOCAL-00943" />
+      <option name="project" value="LOCAL" />
+      <updated>1480409097694</updated>
+    </task>
+    <task id="LOCAL-00944" summary="Fefature: added mount type argument to test runner module">
+      <created>1480409549861</created>
+      <option name="number" value="00944" />
+      <option name="presentableId" value="LOCAL-00944" />
+      <option name="project" value="LOCAL" />
+      <updated>1480409549861</updated>
+    </task>
+    <option name="localTasksCounter" value="945" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1057,7 +1056,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Working on adding write/write veirfy method" />
     <MESSAGE value="Message format from controller to clients changed: now 'data' filed will hold all relevant info, including target path" />
     <MESSAGE value="implementing write method and hash compare on read" />
     <MESSAGE value="File object will be initialised with &quot;zero&quot; hash" />
@@ -1082,7 +1080,8 @@
     <MESSAGE value="Working on correct load balancing" />
     <MESSAGE value="Adding uuid to all messages to track if file was deleted and recreated" />
     <MESSAGE value="Fefature: added mounter class to handle all mounting routines via various protocols" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fefature: added mounter class to handle all mounting routines via various protocols" />
+    <MESSAGE value="Fefature: added mount type argument to test runner module" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fefature: added mount type argument to test runner module" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1330,13 +1329,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/random.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="699" column="8" lean-forward="false" selection-start-line="699" selection-start-column="8" selection-end-line="699" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1349,14 +1341,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="223">
           <caret line="2825" column="8" lean-forward="false" selection-start-line="2825" selection-start-column="8" selection-end-line="2825" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="221" column="18" lean-forward="false" selection-start-line="221" selection-start-column="18" selection-end-line="221" selection-end-column="18" />
           <folding />
         </state>
       </provider>
@@ -1379,16 +1363,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="91" column="8" lean-forward="false" selection-start-line="91" selection-start-column="8" selection-end-line="91" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/request_actions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
@@ -1404,14 +1378,6 @@
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tree_runner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="80" column="0" lean-forward="true" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1433,14 +1399,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/generic_mounter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="19" column="30" lean-forward="false" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -1453,7 +1411,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
+        <state relative-caret-position="969">
           <caret line="66" column="21" lean-forward="false" selection-start-line="66" selection-start-column="21" selection-end-line="66" selection-end-column="21" />
           <folding>
             <element signature="e#22#37#0" expanded="true" />
@@ -1463,8 +1421,50 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/fluidfs_mounter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+        <state relative-caret-position="584">
+          <caret line="56" column="29" lean-forward="false" selection-start-line="56" selection-start-column="29" selection-end-line="56" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/generic_mounter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="19" column="30" lean-forward="false" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tree_runner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="107" column="27" lean-forward="true" selection-start-line="107" selection-start-column="27" selection-end-line="107" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="19" column="58" lean-forward="false" selection-start-line="19" selection-start-column="58" selection-end-line="19" selection-end-column="58" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/random.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="237" column="8" lean-forward="false" selection-start-line="237" selection-start-column="8" selection-end-line="237" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
