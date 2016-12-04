@@ -44,37 +44,11 @@ def run():
     args = get_args()
     logger = pubsub_logger.PUBLogger(args.controller).logger
     time.sleep(10)
-    logger.info("Making {0}".format(CLIENT_MOUNT_POINT))
-    if not os.path.exists(CLIENT_MOUNT_POINT):
-        os.mkdir(CLIENT_MOUNT_POINT)
-    else:  # if folder already created, unmounting just in case ....
-        try:
-            shell_utils.umount(CLIENT_MOUNT_POINT)
-        except Exception as syserr:
-            logger.error(syserr)
-    # if not shell_utils.mount(args.server, args.export, CLIENT_MOUNT_POINT, args.mtype):
-    #     logger.error("Mount failed. Exiting...")
-    #     return
-    # multidomain nfs  mount
     try:
         os.chdir('/qa/dynamo/client')
-        # logger.info("Setting passwordless SSH connection")
-        # shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.server, False)
-        # logger.info("Getting cluster params...")
-        # active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.server)
-        # logger.debug("Active Nodes: %s" % active_nodes)
-        # domains = shell_utils.FSUtils.get_domains_num(args.server)
-        # logger.debug("FSD domains: %s" % domains)
         logger.info("Mounting work path...")
         mounter = Mounter(args.server, args.export, args.mtype, 'DIRSPLIT', logger, args.nodes, args.domains)
         mounter.mount()
-        # shell_utils.FSUtils.mount_fsd(args.server, '/' + args.export, args.nodes, args.domains, 'nfs3', 'DIRSPLIT', '6')
-        # # /mnt/DIRSPLIT-node0.g8-5
-        # for i in range(args.nodes):
-        #     for j in range(args.domains):
-        #         if not os.path.ismount('/mnt/%s-node%d.%s-%d' % ('DIRSPLIT', i, args.server, j)):
-        #             logger.error('mount_fsd failed!')
-        #             raise RuntimeError
     except Exception as error_on_init:
         logger.error(str(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
         raise
