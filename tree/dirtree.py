@@ -158,7 +158,7 @@ def build_recursive_tree(tree, base, depth, width):
 class Directory(object):
     def __init__(self, file_names_generator):
         self.file_names_generator = file_names_generator
-        self._name = StringUtils.get_random_string_nospec(64)
+        self._name = next(file_names_generator)
         self.ondisk = False
         self.checksum = 0
         self.creation_time = None
