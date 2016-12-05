@@ -58,7 +58,7 @@
       <file leaf-file-name="dirtree.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
+            <state relative-caret-position="374">
               <caret line="157" column="23" lean-forward="false" selection-start-line="157" selection-start-column="23" selection-end-line="157" selection-end-column="23" />
               <folding />
             </state>
@@ -628,13 +628,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00900" summary="Feature: Adding UUID to File object.  Adding mount drivers">
-      <created>1479876754071</created>
-      <option name="number" value="00900" />
-      <option name="presentableId" value="LOCAL-00900" />
-      <option name="project" value="LOCAL" />
-      <updated>1479876754071</updated>
-    </task>
     <task id="LOCAL-00901" summary="Feature: Adding UUID to File object.  Adding mount drivers">
       <created>1479877639578</created>
       <option name="number" value="00901" />
@@ -971,7 +964,14 @@
       <option name="project" value="LOCAL" />
       <updated>1480860561841</updated>
     </task>
-    <option name="localTasksCounter" value="949" />
+    <task id="LOCAL-00949" summary="Feature: Directory name will be generated with random length 1 - 64">
+      <created>1480919600117</created>
+      <option name="number" value="00949" />
+      <option name="presentableId" value="LOCAL-00949" />
+      <option name="project" value="LOCAL" />
+      <updated>1480919600117</updated>
+    </task>
+    <option name="localTasksCounter" value="950" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1057,7 +1057,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="File object will be initialised with &quot;zero&quot; hash" />
     <MESSAGE value="Removing some debugs" />
     <MESSAGE value="Improve unexpected error handling" />
     <MESSAGE value="Adding info to hash mismatch error" />
@@ -1082,7 +1081,8 @@
     <MESSAGE value="Fefature: added mount type argument to test runner module" />
     <MESSAGE value="Fefature: Filename will be created with random length 1 - 64" />
     <MESSAGE value="Dynamo starter - refactoring" />
-    <option name="LAST_COMMIT_MESSAGE" value="Dynamo starter - refactoring" />
+    <MESSAGE value="Feature: Directory name will be generated with random length 1 - 64" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feature: Directory name will be generated with random length 1 - 64" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1467,7 +1467,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
+        <state relative-caret-position="374">
           <caret line="157" column="23" lean-forward="false" selection-start-line="157" selection-start-column="23" selection-end-line="157" selection-end-column="23" />
           <folding />
         </state>
