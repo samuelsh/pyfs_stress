@@ -154,7 +154,7 @@ def write(mount_point, incoming_data, **kwargs):
                 raise DynamoException(error_codes.HASHERR, "Data patter verification on disk failed!",
                                       incoming_data['target'])
             fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
-    except (IOError, OSError) as env_error:
+    except (IOError, OSError, DynamoException) as env_error:
         raise env_error
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['repeats'] = data_pattern['repeats']

@@ -73,10 +73,12 @@ class ShellUtils:
     @staticmethod
     def run_shell_script(script, params, stdout=True):
         FNULL = open(os.devnull, 'w')
+        cmdline = [script]
+        cmdline = cmdline + params.split(' ')
         if not stdout:
-            p = subprocess.call([script, params], stdout=FNULL)
+            p = subprocess.call(cmdline, stdout=FNULL)
         else:
-            p = subprocess.call([script, params])
+            p = subprocess.call(cmdline)
         return p
 
     @staticmethod
