@@ -206,11 +206,9 @@ def truncate(mount_point, incoming_data, **kwargs):
     offset = random.choice(OFFSETS_LIST) + padding
     try:
         with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
-            fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
             f.truncate(offset)
             f.flush()
             os.fsync(f.fileno())
-            fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
     except (IOError, OSError) as env_error:
         raise env_error
     outgoing_data['size'] = offset
