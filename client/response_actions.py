@@ -144,6 +144,15 @@ def write(mount_point, incoming_data, **kwargs):
             f.write(pattern_to_write)
             f.flush()
             os.fsync(f.fileno())
+            #  Checking if original data pattern and pattern on disk are the same
+            f.seek(offset)
+            buf = f.read(data_pattern['repeats'])
+            hasher = hashlib.md5()
+            hasher.update(buf)
+            if hasher.hexdigest() != data_hash:
+                fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
+                raise DynamoException(error_codes.HASHERR, "Data patter verification on disk failed!",
+                                      incoming_data['target'])
             fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
     except (IOError, OSError) as env_error:
         raise env_error
