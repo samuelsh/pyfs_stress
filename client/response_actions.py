@@ -139,7 +139,7 @@ def write(mount_point, incoming_data, **kwargs):
     data_hash = hasher.hexdigest()
     try:
         with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
-            fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, incoming_data['repeats'], offset, 0)
+            fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
             f.seek(offset)
             f.write(pattern_to_write)
             f.flush()
