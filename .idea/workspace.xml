@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/dynamo_starter.py" afterPath="$PROJECT_DIR$/client/dynamo_starter.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/response_actions.py" afterPath="$PROJECT_DIR$/client/response_actions.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -69,11 +69,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2380">
-              <caret line="140" column="55" lean-forward="false" selection-start-line="140" selection-start-column="55" selection-end-line="140" selection-end-column="55" />
+            <state relative-caret-position="493">
+              <caret line="204" column="12" lean-forward="false" selection-start-line="204" selection-start-column="12" selection-end-line="204" selection-end-column="12" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -117,7 +117,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dynamo_starter.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dynamo_starter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="357">
@@ -188,9 +188,9 @@
         <option value="$APPLICATION_CONFIG_DIR$/consoles/ide/ide-scripting.js" />
         <option value="$PROJECT_DIR$/utils/shell_utils.py" />
         <option value="$PROJECT_DIR$/server/response_actions.py" />
-        <option value="$PROJECT_DIR$/client/response_actions.py" />
         <option value="$PROJECT_DIR$/client/generic_mounter.py" />
         <option value="$PROJECT_DIR$/client/dynamo_starter.py" />
+        <option value="$PROJECT_DIR$/client/response_actions.py" />
       </list>
     </option>
   </component>
@@ -623,13 +623,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00913" summary="Feature: adding truncate method">
-      <created>1479908573198</created>
-      <option name="number" value="00913" />
-      <option name="presentableId" value="LOCAL-00913" />
-      <option name="project" value="LOCAL" />
-      <updated>1479908573198</updated>
-    </task>
     <task id="LOCAL-00914" summary="Working on correct load balancing">
       <created>1479969749854</created>
       <option name="number" value="00914" />
@@ -966,7 +959,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481108962118</updated>
     </task>
-    <option name="localTasksCounter" value="962" />
+    <task id="LOCAL-00962" summary="Fix: mount will use generic mounter driver due to prevent shutil do copy on rename">
+      <created>1481109234441</created>
+      <option name="number" value="00962" />
+      <option name="presentableId" value="LOCAL-00962" />
+      <option name="project" value="LOCAL" />
+      <updated>1481109234441</updated>
+    </task>
+    <option name="localTasksCounter" value="963" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1383,16 +1383,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="72" column="16" lean-forward="false" selection-start-line="72" selection-start-column="16" selection-end-line="72" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/request_actions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1419,42 +1409,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/response_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2380">
-          <caret line="140" column="55" lean-forward="false" selection-start-line="140" selection-start-column="55" selection-end-line="140" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2669">
-          <caret line="157" column="23" lean-forward="false" selection-start-line="157" selection-start-column="23" selection-end-line="157" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/fluidfs_mounter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/dynamo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-374">
           <caret line="17" column="8" lean-forward="false" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="8" />
           <folding>
             <element signature="e#47#60#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="48" column="43" lean-forward="false" selection-start-line="48" selection-start-column="43" selection-end-line="48" selection-end-column="43" />
+          <folding>
+            <element signature="e#22#37#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1469,12 +1439,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/dynamo_starter.py">
+    <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="48" column="43" lean-forward="false" selection-start-line="48" selection-start-column="43" selection-end-line="48" selection-end-column="43" />
+        <state relative-caret-position="2669">
+          <caret line="157" column="23" lean-forward="false" selection-start-line="157" selection-start-column="23" selection-end-line="157" selection-end-column="23" />
           <folding>
-            <element signature="e#22#37#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="72" column="16" lean-forward="false" selection-start-line="72" selection-start-column="16" selection-end-line="72" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/fluidfs_mounter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/response_actions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="204" column="12" lean-forward="false" selection-start-line="204" selection-start-column="12" selection-end-line="204" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
