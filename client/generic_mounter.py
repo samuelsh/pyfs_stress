@@ -4,6 +4,9 @@ import errno
 import random
 import socket
 
+import sys
+
+sys.path.append('/qa/dynamo')
 from logger import server_logger
 from utils import shell_utils
 
