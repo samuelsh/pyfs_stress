@@ -137,25 +137,22 @@ def write(mount_point, incoming_data, **kwargs):
     pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
     hasher.update(pattern_to_write)
     data_hash = hasher.hexdigest()
-    try:
-        with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
-            fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
-            f.seek(offset)
-            f.write(pattern_to_write)
-            f.flush()
-            os.fsync(f.fileno())
-            #  Checking if original data pattern and pattern on disk are the same
-            f.seek(offset)
-            buf = f.read(data_pattern['repeats'])
-            hasher = hashlib.md5()
-            hasher.update(buf)
-            if hasher.hexdigest() != data_hash:
-                fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
-                raise DynamoException(error_codes.HASHERR, "Data patter verification on disk failed!",
-                                      incoming_data['target'])
+    with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
+        fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
+        f.seek(offset)
+        f.write(pattern_to_write)
+        f.flush()
+        os.fsync(f.fileno())
+        #  Checking if original data pattern and pattern on disk are the same
+        f.seek(offset)
+        buf = f.read(data_pattern['repeats'])
+        hasher = hashlib.md5()
+        hasher.update(buf)
+        if hasher.hexdigest() != data_hash:
             fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
-    except (IOError, OSError, DynamoException) as env_error:
-        raise env_error
+            raise DynamoException(error_codes.HASHERR, "Data patter verification on disk failed!",
+                                  incoming_data['target'])
+    fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['repeats'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
