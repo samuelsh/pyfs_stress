@@ -9,7 +9,7 @@ import time
 
 import sys
 
-from fluidfs_mounter import Mounter
+from generic_mounter import Mounter
 from dynamo import Dynamo
 from logger import pubsub_logger
 from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT, CLIENT_MOUNT_POINT
