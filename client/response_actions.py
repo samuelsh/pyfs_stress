@@ -152,7 +152,7 @@ def write(mount_point, incoming_data, **kwargs):
             fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
             raise DynamoException(error_codes.HASHERR, "Data patter verification on disk failed!",
                                   incoming_data['target'])
-    fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
+        fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['repeats'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
