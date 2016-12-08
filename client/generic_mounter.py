@@ -1,3 +1,4 @@
+import json
 import os
 
 import errno
@@ -9,6 +10,7 @@ import sys
 sys.path.append('/qa/dynamo')
 from logger import server_logger
 from utils import shell_utils
+from config import DYNAMO_PATH
 
 __author__ = "samuels"
 
@@ -49,11 +51,13 @@ class Mounter:
                                                      '-o nfsvers={0} {1}:/{2} {3}'.format(mtype, self.server,
                                                                                           self.export, mount_point))
         elif 'smb' in self.mount_type:
+            with open(DYNAMO_PATH + "/client/smb_params.json") as f:
+                smb_params = json.load(f)
             mtype = self.mount_type.strip('smb')
-            user = 'load{0}'.format(random.randint(0, 1000))
             shell_utils.ShellUtils.run_shell_command('mount', '-t cifs //{0}/{1} {2} -o vers={3},user={4}/{5}%{6}'.
-                                                     format(self.server, self.export, mount_point, mtype, 'qa', user,
-                                                            'manager11'))
+                                                     format(self.server, self.export, mount_point, mtype,
+                                                            smb_params['domain'], smb_params['user'],
+                                                            smb_params['password']))
         self.mount_points.append(mount_point)
         if not os.path.ismount(mount_point):
             self.logger.error('mount failed! type: {0} server: {1} export: {2} mount point: {3}'.format(self.mount_type,
