@@ -43,9 +43,11 @@ class Mounter:
             shell_utils.ShellUtils.run_shell_command('umount', '-fl {0}'.format(mount_point))
         except RuntimeError as e:
             self.logger.warn(e)
-        shell_utils.ShellUtils.run_shell_command('mount',
-                                                 '-o nfsvers={0} {1}:/{2} {3}'.format(self.mount_type, self.server,
-                                                                                      self.export, mount_point))
+        if 'nfs' in self.mount_type:
+            mtype = self.mount_type.strip('nfs')
+            shell_utils.ShellUtils.run_shell_command('mount',
+                                                     '-o nfsvers={0} {1}:/{2} {3}'.format(mtype, self.server,
+                                                                                          self.export, mount_point))
         self.mount_points.append(mount_point)
         if not os.path.ismount(mount_point):
             self.logger.error('mount failed! type: {0} server: {1} export: {2} mount point: {3}'.format(self.mount_type,

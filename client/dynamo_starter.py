@@ -33,7 +33,8 @@ def get_args():
     parser.add_argument('-e', '--export', type=str, help='NFS Export Name', default="vol0")
     parser.add_argument('-n', '--nodes', type=int, help='Number of active nodes', required=True)
     parser.add_argument('-d', '--domains', type=int, help='Number of fs domains', required=True)
-    parser.add_argument('-m', '--mtype', type=int, help='Mount Type', default=3)
+    parser.add_argument('-m', '--mtype', type=str, help='Mount Type', choices=['nfs3', 'nfs4', 'nfs4.1', 'smb1', 'smb2',
+                                                                               'smb3'], default="nfs3")
     args = parser.parse_args()
     return args
 
