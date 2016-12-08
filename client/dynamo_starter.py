@@ -47,7 +47,8 @@ def run():
     try:
         os.chdir('/qa/dynamo/client')
         logger.info("Mounting work path...")
-        mounter = Mounter(args.server, args.export, args.mtype, 'DIRSPLIT', logger) #, args.nodes, args.domains)
+        mounter = Mounter(args.server, args.export, args.mtype, 'DIRSPLIT', logger=logger, nodes=args.nodes,
+                          domains=args.domains)
         mounter.mount()
     except Exception as error_on_init:
         logger.error(str(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
