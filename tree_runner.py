@@ -95,6 +95,8 @@ def run_sub_logger(ip, event):
         except zmq.ZMQError as zmq_error:
             if zmq_error.errno == zmq.EAGAIN:
                 pass
+        except KeyboardInterrupt:
+            event.set()
 
 
 def cleanup(logger, clients=None):
