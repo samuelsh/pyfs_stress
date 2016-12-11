@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/response_actions.py" afterPath="$PROJECT_DIR$/client/response_actions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/response_actions.py" afterPath="$PROJECT_DIR$/server/response_actions.py" />
     </list>
     <ignored path="file_scanner.iws" />
@@ -27,8 +26,8 @@
       <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="170" column="19" lean-forward="false" selection-start-line="170" selection-start-column="19" selection-end-line="170" selection-end-column="19" />
+            <state relative-caret-position="257">
+              <caret line="515" column="19" lean-forward="false" selection-start-line="515" selection-start-column="19" selection-end-line="515" selection-end-column="19" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -616,13 +615,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00930" summary="Working on correct load balancing">
-      <created>1479996239076</created>
-      <option name="number" value="00930" />
-      <option name="presentableId" value="LOCAL-00930" />
-      <option name="project" value="LOCAL" />
-      <updated>1479996239076</updated>
-    </task>
     <task id="LOCAL-00931" summary="Adding uuid to all messages to track if file was deleted and recreated">
       <created>1480254533063</created>
       <option name="number" value="00931" />
@@ -959,7 +951,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481461169150</updated>
     </task>
-    <option name="localTasksCounter" value="979" />
+    <task id="LOCAL-00979" summary="Fix: Catch hash error at controller side">
+      <created>1481463472672</created>
+      <option name="number" value="00979" />
+      <option name="presentableId" value="LOCAL-00979" />
+      <option name="project" value="LOCAL" />
+      <updated>1481463472672</updated>
+    </task>
+    <option name="localTasksCounter" value="980" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1045,7 +1044,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Feature: Adding UUID to File object.  Adding mount drivers" />
     <MESSAGE value="Feature: Async server messaging engine fixes" />
     <MESSAGE value="Fixes: will check hash mismatch only if files have same UUID and read done, before next modification to file" />
     <MESSAGE value="Fix: Moving all stale errors to debug level" />
@@ -1070,7 +1068,8 @@
     <MESSAGE value="Fix: hash mismatch validation false positive" />
     <MESSAGE value="Fix: catch KeyboardInterrup on exit" />
     <MESSAGE value="Feature: cleanup clients on exit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feature: cleanup clients on exit" />
+    <MESSAGE value="Fix: Catch hash error at controller side" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix: Catch hash error at controller side" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1466,8 +1465,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="170" column="19" lean-forward="false" selection-start-line="170" selection-start-column="19" selection-end-line="170" selection-end-column="19" />
+        <state relative-caret-position="257">
+          <caret line="515" column="19" lean-forward="false" selection-start-line="515" selection-start-column="19" selection-end-line="515" selection-end-column="19" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
