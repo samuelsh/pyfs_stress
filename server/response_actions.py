@@ -171,14 +171,6 @@ def truncate_success(logger, incoming_message, dir_tree):
 def read_success(logger, incoming_message, dir_tree):
     path = incoming_message['target'].split('/')[1:]  # folder:file
     readdir = dir_tree.get_dir_by_name(path[0])
-    if 'dynamo_error' in incoming_message['data']:
-        if incoming_message['data']['dynamo_error'] == error_codes.HASHERR:
-            logger.error(
-                "Hash mismatch on write pattern verify! File {0} - good hash: {1} bad hash: {2} offset: {3} chunk "
-                "size: {4} "
-                .format(incoming_message['target'], incoming_message['data']['hash'],
-                        incoming_message['data']['bad_hash'],
-                        incoming_message['data']['offset'], incoming_message['data']['chunk_size']))
     if not readdir:
         logger.debug(
             "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
@@ -205,6 +197,13 @@ def read_success(logger, incoming_message, dir_tree):
 def write_success(logger, incoming_message, dir_tree):
     path = incoming_message['target'].split('/')[1:]  # folder:file
     writedir = dir_tree.get_dir_by_name(path[0])
+    if 'dynamo_error' in incoming_message['data']:
+        if incoming_message['data']['dynamo_error'] == error_codes.HASHERR:
+            logger.error(
+                "Hash mismatch on write pattern verify! File {0} - good hash: {1} bad hash: {2} offset: {3} chunk "
+                "size: {4}".format(incoming_message['target'], incoming_message['data']['hash'],
+                                   incoming_message['data']['bad_hash'],
+                                   incoming_message['data']['offset'], incoming_message['data']['chunk_size']))
     if not writedir:
         logger.debug(
             "Directory {0} already removed from active dirs list, skipping....".format(path[0]))

@@ -26,8 +26,8 @@
       <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="257">
-              <caret line="515" column="19" lean-forward="false" selection-start-line="515" selection-start-column="19" selection-end-line="515" selection-end-column="19" />
+            <state relative-caret-position="340">
+              <caret line="202" column="36" lean-forward="false" selection-start-line="202" selection-start-column="36" selection-end-line="202" selection-end-column="36" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -615,13 +615,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00931" summary="Adding uuid to all messages to track if file was deleted and recreated">
-      <created>1480254533063</created>
-      <option name="number" value="00931" />
-      <option name="presentableId" value="LOCAL-00931" />
-      <option name="project" value="LOCAL" />
-      <updated>1480254533063</updated>
-    </task>
     <task id="LOCAL-00932" summary="Adding uuid to all messages to track if file was deleted and recreated">
       <created>1480324050233</created>
       <option name="number" value="00932" />
@@ -958,7 +951,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481463472672</updated>
     </task>
-    <option name="localTasksCounter" value="980" />
+    <task id="LOCAL-00980" summary="Fix: Catch hash error at controller side">
+      <created>1481463502507</created>
+      <option name="number" value="00980" />
+      <option name="presentableId" value="LOCAL-00980" />
+      <option name="project" value="LOCAL" />
+      <updated>1481463502507</updated>
+    </task>
+    <option name="localTasksCounter" value="981" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1465,8 +1465,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="515" column="19" lean-forward="false" selection-start-line="515" selection-start-column="19" selection-end-line="515" selection-end-column="19" />
+        <state relative-caret-position="340">
+          <caret line="202" column="36" lean-forward="false" selection-start-line="202" selection-start-column="36" selection-end-line="202" selection-end-column="36" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
