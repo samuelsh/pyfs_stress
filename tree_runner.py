@@ -3,6 +3,7 @@ Directory Tree integrity test runner
 2016 samuelsh (c)
 """
 import argparse
+import atexit
 import logging
 import socket
 import sys
@@ -96,6 +97,18 @@ def run_sub_logger(ip, event):
                 pass
 
 
+def cleanup(logger, clients=None):
+    logger.info("Cleaning up on exit....")
+    if clients:
+        for client in clients:
+            logger.info("{0}: Killing all workers".format(client))
+            ShellUtils.run_shell_remote_command(client, 'pkill -f python')
+            logger.info("{0}: Unmounting".format(client))
+            ShellUtils.run_shell_remote_command(client, 'umount -fl /mnt/{0}'.format('DIRSPLIT*'))
+            logger.info("{0}: Removing moutpoint folder/s".format(client))
+            ShellUtils.run_shell_remote_command(client, 'rm -f /mnt/{0}'.format('DIRSPLIT*'))
+
+
 def main():
     file_names = None
     args = get_args()
@@ -109,6 +122,7 @@ def main():
     dir_tree = dirtree.DirTree(file_names)
     logger = ConsoleLogger(__name__).logger
     logger.debug("{0} Logger initialised {1}".format(__name__, logger))
+    atexit.register(cleanup, logger, clients=args.clients)
     clients_list = args.clients
     logger.info("Setting passwordless SSH connection")
     shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
