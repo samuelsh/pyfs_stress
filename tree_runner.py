@@ -135,7 +135,7 @@ def main():
             time.sleep(1)
     except KeyboardInterrupt:
         stop_event.set()
-    print('waiting for Controller to stop...')
+    print('CTRL + C was pressed. Waiting for Controller to stop...')
     controller_process.join()
     print('all done')
 
@@ -144,6 +144,8 @@ def main():
 if __name__ == "__main__":
     try:
         main()
+    except KeyboardInterrupt:
+        print("Good Bye! Please come back again :)")
     except Exception as e:
         traceback.print_exc()
         sys.exit(1)

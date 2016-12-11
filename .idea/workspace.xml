@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/response_actions.py" afterPath="$PROJECT_DIR$/server/response_actions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree_runner.py" afterPath="$PROJECT_DIR$/tree_runner.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,10 +23,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="response_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/response_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="646">
+            <state relative-caret-position="1768">
               <caret line="208" column="16" lean-forward="false" selection-start-line="208" selection-start-column="16" selection-end-line="208" selection-end-column="16" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
@@ -35,23 +35,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="shell_utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/utils/shell_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="72" column="16" lean-forward="false" selection-start-line="72" selection-start-column="16" selection-end-line="72" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="41" column="0" lean-forward="true" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+            <state relative-caret-position="-249">
+              <caret line="103" column="84" lean-forward="true" selection-start-line="103" selection-start-column="84" selection-end-line="103" selection-end-column="84" />
               <folding />
             </state>
           </provider>
@@ -84,8 +72,8 @@
       <file leaf-file-name="generic_mounter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/generic_mounter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="61" column="15" lean-forward="false" selection-start-line="61" selection-start-column="15" selection-end-line="61" selection-end-column="15" />
+            <state relative-caret-position="210">
+              <caret line="49" column="60" lean-forward="false" selection-start-line="49" selection-start-column="60" selection-end-line="49" selection-end-column="60" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -183,11 +171,11 @@
         <option value="$APPLICATION_CONFIG_DIR$/consoles/ide/ide-scripting.js" />
         <option value="$PROJECT_DIR$/utils/shell_utils.py" />
         <option value="$PROJECT_DIR$/client/response_actions.py" />
-        <option value="$PROJECT_DIR$/tree_runner.py" />
         <option value="$PROJECT_DIR$/client/dynamo_starter.py" />
         <option value="$PROJECT_DIR$/client/smb_params.json" />
         <option value="$PROJECT_DIR$/client/generic_mounter.py" />
         <option value="$PROJECT_DIR$/server/response_actions.py" />
+        <option value="$PROJECT_DIR$/tree_runner.py" />
       </list>
     </option>
   </component>
@@ -625,13 +613,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00919" summary="Working on correct load balancing">
-      <created>1479973239295</created>
-      <option name="number" value="00919" />
-      <option name="presentableId" value="LOCAL-00919" />
-      <option name="project" value="LOCAL" />
-      <updated>1479973239295</updated>
-    </task>
     <task id="LOCAL-00920" summary="Working on correct load balancing">
       <created>1479974696883</created>
       <option name="number" value="00920" />
@@ -968,7 +949,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481205005139</updated>
     </task>
-    <option name="localTasksCounter" value="968" />
+    <task id="LOCAL-00968" summary="Fix: hash mismatch validation false positive">
+      <created>1481442584461</created>
+      <option name="number" value="00968" />
+      <option name="presentableId" value="LOCAL-00968" />
+      <option name="project" value="LOCAL" />
+      <updated>1481442584461</updated>
+    </task>
+    <option name="localTasksCounter" value="969" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1054,7 +1042,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Feature: string generator tool will generated flienames with complete hash collision" />
     <MESSAGE value="Feature: String generating tool will support multicore processing to faster names generation" />
     <MESSAGE value="Feature: Edding new write patterns" />
     <MESSAGE value="Feature: Adding UUID to File object.  Adding mount drivers" />
@@ -1079,7 +1066,8 @@
     <MESSAGE value="Fix: minor fixes in generic mounter" />
     <MESSAGE value="Feature: Added linux smb mount feature" />
     <MESSAGE value="Feature: Added linux smb mount feature with json config" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feature: Added linux smb mount feature with json config" />
+    <MESSAGE value="Fix: hash mismatch validation false positive" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix: hash mismatch validation false positive" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1417,30 +1405,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tree_runner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="41" column="0" lean-forward="true" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tree/dirtree.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="550">
           <caret line="242" column="8" lean-forward="false" selection-start-line="242" selection-start-column="8" selection-end-line="242" selection-end-column="8" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/generic_mounter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="61" column="15" lean-forward="false" selection-start-line="61" selection-start-column="15" selection-end-line="61" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1473,13 +1443,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/client/generic_mounter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="49" column="60" lean-forward="false" selection-start-line="49" selection-start-column="60" selection-end-line="49" selection-end-column="60" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/response_actions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
+        <state relative-caret-position="1768">
           <caret line="208" column="16" lean-forward="false" selection-start-line="208" selection-start-column="16" selection-end-line="208" selection-end-column="16" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tree_runner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-249">
+          <caret line="103" column="84" lean-forward="true" selection-start-line="103" selection-start-column="84" selection-end-line="103" selection-end-column="84" />
+          <folding />
         </state>
       </provider>
     </entry>
