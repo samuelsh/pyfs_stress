@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree_runner.py" afterPath="$PROJECT_DIR$/tree_runner.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,7 +37,7 @@
       <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
+            <state relative-caret-position="-68">
               <caret line="98" column="0" lean-forward="true" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
               <folding />
             </state>
@@ -625,13 +624,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00921" summary="Working on correct load balancing">
-      <created>1479975689908</created>
-      <option name="number" value="00921" />
-      <option name="presentableId" value="LOCAL-00921" />
-      <option name="project" value="LOCAL" />
-      <updated>1479975689908</updated>
-    </task>
     <task id="LOCAL-00922" summary="Working on correct load balancing">
       <created>1479980550752</created>
       <option name="number" value="00922" />
@@ -968,7 +960,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481444265856</updated>
     </task>
-    <option name="localTasksCounter" value="970" />
+    <task id="LOCAL-00970" summary="Feature: cleanup clients on exit">
+      <created>1481446735109</created>
+      <option name="number" value="00970" />
+      <option name="presentableId" value="LOCAL-00970" />
+      <option name="project" value="LOCAL" />
+      <updated>1481446735109</updated>
+    </task>
+    <option name="localTasksCounter" value="971" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1054,7 +1053,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Feature: Edding new write patterns" />
     <MESSAGE value="Feature: Adding UUID to File object.  Adding mount drivers" />
     <MESSAGE value="Feature: Async server messaging engine fixes" />
     <MESSAGE value="Fixes: will check hash mismatch only if files have same UUID and read done, before next modification to file" />
@@ -1079,7 +1077,8 @@
     <MESSAGE value="Feature: Added linux smb mount feature with json config" />
     <MESSAGE value="Fix: hash mismatch validation false positive" />
     <MESSAGE value="Fix: catch KeyboardInterrup on exit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix: catch KeyboardInterrup on exit" />
+    <MESSAGE value="Feature: cleanup clients on exit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feature: cleanup clients on exit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1477,7 +1476,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tree_runner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
+        <state relative-caret-position="-68">
           <caret line="98" column="0" lean-forward="true" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
           <folding />
         </state>
