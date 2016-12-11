@@ -81,6 +81,8 @@ class Controller(object):
             proxy_device_thread = AsyncControllerServer(self.logger, self.stop_event, self._incoming_message_queue,
                                                         self._outgoing_message_queue)
             proxy_device_thread.start()
+        except KeyboardInterrupt:
+            stop_event.set()
         except Exception as e:
             self.logger.exception(e)
 
