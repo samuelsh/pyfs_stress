@@ -105,8 +105,8 @@ def cleanup(logger, clients=None):
             ShellUtils.run_shell_remote_command(client, 'pkill -f python')
             logger.info("{0}: Unmounting".format(client))
             ShellUtils.run_shell_remote_command(client, 'umount -fl /mnt/{0}'.format('DIRSPLIT*'))
-            logger.info("{0}: Removing moutpoint folder/s".format(client))
-            ShellUtils.run_shell_remote_command(client, 'rm -f /mnt/{0}'.format('DIRSPLIT*'))
+            logger.info("{0}: Removing mountpoint folder/s".format(client))
+            ShellUtils.run_shell_remote_command(client, 'rm -fr /mnt/{0}'.format('DIRSPLIT*'))
 
 
 def main():

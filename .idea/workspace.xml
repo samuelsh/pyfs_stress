@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tree_runner.py" afterPath="$PROJECT_DIR$/tree_runner.py" />
     </list>
     <ignored path="file_scanner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,8 +38,8 @@
       <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="128" column="20" lean-forward="true" selection-start-line="128" selection-start-column="20" selection-end-line="128" selection-end-column="20" />
+            <state relative-caret-position="544">
+              <caret line="107" column="41" lean-forward="false" selection-start-line="107" selection-start-column="41" selection-end-line="107" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -624,13 +625,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00923" summary="Working on correct load balancing">
-      <created>1479982995768</created>
-      <option name="number" value="00923" />
-      <option name="presentableId" value="LOCAL-00923" />
-      <option name="project" value="LOCAL" />
-      <updated>1479982995768</updated>
-    </task>
     <task id="LOCAL-00924" summary="Working on correct load balancing">
       <created>1479989631534</created>
       <option name="number" value="00924" />
@@ -967,7 +961,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481446748643</updated>
     </task>
-    <option name="localTasksCounter" value="972" />
+    <task id="LOCAL-00972" summary="Feature: cleanup clients on exit">
+      <created>1481448334047</created>
+      <option name="number" value="00972" />
+      <option name="presentableId" value="LOCAL-00972" />
+      <option name="project" value="LOCAL" />
+      <updated>1481448334047</updated>
+    </task>
+    <option name="localTasksCounter" value="973" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1476,8 +1477,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tree_runner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="128" column="20" lean-forward="true" selection-start-line="128" selection-start-column="20" selection-end-line="128" selection-end-column="20" />
+        <state relative-caret-position="544">
+          <caret line="107" column="41" lean-forward="false" selection-start-line="107" selection-start-column="41" selection-end-line="107" selection-end-column="41" />
           <folding />
         </state>
       </provider>
