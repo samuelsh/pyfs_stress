@@ -180,8 +180,9 @@ def read_success(logger, incoming_message, dir_tree):
             rfile = readdir.data.get_file_by_name(path[1])
             if rfile:
                 read_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
-                if not rfile.data_pattern_hash == incoming_message['data']['hash'] and rfile.uuid == \
-                        incoming_message['data']['uuid'] and read_time <= rfile.modify_time:
+                if not rfile.data_pattern_hash == incoming_message['data']['hash'] and rfile.data_pattern_offset == \
+                        incoming_message['data']['offset'] and rfile.data_pattern_len == \
+                        incoming_message['data']['chunk_size'] and read_time <= rfile.modify_time:
                     logger.error(
                         "Hashes mismatch! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk size: {4}"
                             .format(rfile.name, rfile.data_pattern_hash, incoming_message['data']['hash'],
