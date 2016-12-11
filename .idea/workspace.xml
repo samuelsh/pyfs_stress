@@ -72,8 +72,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="69" column="26" lean-forward="false" selection-start-line="69" selection-start-column="26" selection-end-line="69" selection-end-column="26" />
+            <state relative-caret-position="442">
+              <caret line="187" column="14" lean-forward="false" selection-start-line="187" selection-start-column="14" selection-end-line="187" selection-end-column="14" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -625,13 +625,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00926" summary="Working on correct load balancing">
-      <created>1479992629303</created>
-      <option name="number" value="00926" />
-      <option name="presentableId" value="LOCAL-00926" />
-      <option name="project" value="LOCAL" />
-      <updated>1479992629303</updated>
-    </task>
     <task id="LOCAL-00927" summary="Working on correct load balancing">
       <created>1479993622596</created>
       <option name="number" value="00927" />
@@ -968,7 +961,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481451251176</updated>
     </task>
-    <option name="localTasksCounter" value="975" />
+    <task id="LOCAL-00975" summary="Feature: cleanup clients on exit">
+      <created>1481451600760</created>
+      <option name="number" value="00975" />
+      <option name="presentableId" value="LOCAL-00975" />
+      <option name="project" value="LOCAL" />
+      <updated>1481451600760</updated>
+    </task>
+    <option name="localTasksCounter" value="976" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1475,8 +1475,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="69" column="26" lean-forward="false" selection-start-line="69" selection-start-column="26" selection-end-line="69" selection-end-column="26" />
+        <state relative-caret-position="442">
+          <caret line="187" column="14" lean-forward="false" selection-start-line="187" selection-start-column="14" selection-end-line="187" selection-end-column="14" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>

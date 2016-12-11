@@ -185,6 +185,8 @@ class Controller(object):
                 #                                                                   self._outgoing_message_queue.qsize()))
                 if self.stop_event.is_set():
                     break
+        except KeyboardInterrupt:
+            pass
         except Exception as generic_error:
             self.logger.exception(generic_error)
             raise generic_error
