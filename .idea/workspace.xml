@@ -38,8 +38,8 @@
       <file leaf-file-name="tree_runner.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tree_runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="107" column="41" lean-forward="false" selection-start-line="107" selection-start-column="41" selection-end-line="107" selection-end-column="41" />
+            <state relative-caret-position="221">
+              <caret line="138" column="70" lean-forward="false" selection-start-line="138" selection-start-column="70" selection-end-line="138" selection-end-column="70" />
               <folding />
             </state>
           </provider>
@@ -625,13 +625,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00924" summary="Working on correct load balancing">
-      <created>1479989631534</created>
-      <option name="number" value="00924" />
-      <option name="presentableId" value="LOCAL-00924" />
-      <option name="project" value="LOCAL" />
-      <updated>1479989631535</updated>
-    </task>
     <task id="LOCAL-00925" summary="Working on correct load balancing">
       <created>1479990511968</created>
       <option name="number" value="00925" />
@@ -968,7 +961,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481448334047</updated>
     </task>
-    <option name="localTasksCounter" value="973" />
+    <task id="LOCAL-00973" summary="Feature: cleanup clients on exit">
+      <created>1481449152879</created>
+      <option name="number" value="00973" />
+      <option name="presentableId" value="LOCAL-00973" />
+      <option name="project" value="LOCAL" />
+      <updated>1481449152879</updated>
+    </task>
+    <option name="localTasksCounter" value="974" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1477,8 +1477,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tree_runner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="107" column="41" lean-forward="false" selection-start-line="107" selection-start-column="41" selection-end-line="107" selection-end-column="41" />
+        <state relative-caret-position="221">
+          <caret line="138" column="70" lean-forward="false" selection-start-line="138" selection-start-column="70" selection-end-line="138" selection-end-column="70" />
           <folding />
         </state>
       </provider>

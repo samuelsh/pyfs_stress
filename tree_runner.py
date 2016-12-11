@@ -144,14 +144,13 @@ def main():
     run_clients(args.cluster, clients_list, args.export, active_nodes, domains, args.mtype)
     logger.info("Dynamo started on all clients ....")
 
-    try:
-        while not stop_event.is_set():
-            time.sleep(1)
-    except KeyboardInterrupt:
-        stop_event.set()
-    print('CTRL + C was pressed. Waiting for Controller to stop...')
+    # try:
+    #     while not stop_event.is_set():
+    #         time.sleep(1)
+    # except KeyboardInterrupt:
+    #     stop_event.set()
     controller_process.join()
-    print('all done')
+    print('All done')
 
 
 # Start program
@@ -159,7 +158,7 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("Good Bye! Please come back again :)")
+        print('CTRL + C was pressed. Waiting for Controller to stop...')
     except Exception as e:
         traceback.print_exc()
         sys.exit(1)
