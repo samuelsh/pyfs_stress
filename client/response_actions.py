@@ -149,9 +149,8 @@ def write(mount_point, incoming_data, **kwargs):
         hasher = hashlib.md5()
         hasher.update(buf)
         if hasher.hexdigest() != data_hash:
-            fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
-            raise DynamoException(error_codes.HASHERR, "Data patter verification on disk failed!",
-                                  incoming_data['target'])
+            outgoing_data['dynamo_error'] = error_codes.HASHERR
+            outgoing_data['bad_hash'] = hasher.hexdigest()
         fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['repeats'] = data_pattern['repeats']

@@ -171,6 +171,14 @@ def truncate_success(logger, incoming_message, dir_tree):
 def read_success(logger, incoming_message, dir_tree):
     path = incoming_message['target'].split('/')[1:]  # folder:file
     readdir = dir_tree.get_dir_by_name(path[0])
+    if 'dynamo_error' in incoming_message['data']:
+        if incoming_message['data']['dynamo_error'] == error_codes.HASHERR:
+            logger.error(
+                "Hash mismatch on write pattern verify! File {0} - good hash: {1} bad hash: {2} offset: {3} chunk "
+                "size: {4} "
+                .format(incoming_message['target'], incoming_message['data']['hash'],
+                        incoming_message['data']['bad_hash'],
+                        incoming_message['data']['offset'], incoming_message['data']['chunk_size']))
     if not readdir:
         logger.debug(
             "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
@@ -184,7 +192,8 @@ def read_success(logger, incoming_message, dir_tree):
                         incoming_message['data']['offset'] and rfile.data_pattern_len == \
                         incoming_message['data']['chunk_size'] and read_time <= rfile.modify_time:
                     logger.error(
-                        "Hashes mismatch! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk size: {4}"
+                        "Hash mismatch on Read! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk "
+                        "size: {4} "
                             .format(rfile.name, rfile.data_pattern_hash, incoming_message['data']['hash'],
                                     incoming_message['data']['offset'], incoming_message['data']['chunk_size']))
             else:
@@ -416,7 +425,10 @@ def stat_fail(logger, incoming_message, dir_tree):
             if rfile and rfile.ondisk:
                 if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
                     logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.format(rfile.name,
-                                                                        rfile.uuid, incoming_message['data']['uuid']))
+                                                                                                        rfile.uuid,
+                                                                                                        incoming_message[
+                                                                                                            'data'][
+                                                                                                            'uuid']))
                     return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
@@ -446,7 +458,10 @@ def truncate_fail(logger, incoming_message, dir_tree):
             if rfile and rfile.ondisk:
                 if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
                     logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.format(rfile.name,
-                                                                        rfile.uuid, incoming_message['data']['uuid']))
+                                                                                                        rfile.uuid,
+                                                                                                        incoming_message[
+                                                                                                            'data'][
+                                                                                                            'uuid']))
                     return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
@@ -477,7 +492,10 @@ def read_fail(logger, incoming_message, dir_tree):
             if rfile and rfile.ondisk:
                 if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
                     logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.format(rfile.name,
-                                                                            rfile.uuid, incoming_message['data']['uuid']))
+                                                                                                        rfile.uuid,
+                                                                                                        incoming_message[
+                                                                                                            'data'][
+                                                                                                            'uuid']))
                     return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
@@ -510,7 +528,10 @@ def write_fail(logger, incoming_message, dir_tree):
             if rfile and rfile.ondisk:
                 if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
                     logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.format(rfile.name,
-                                                                            rfile.uuid, incoming_message['data']['uuid']))
+                                                                                                        rfile.uuid,
+                                                                                                        incoming_message[
+                                                                                                            'data'][
+                                                                                                            'uuid']))
                     return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
@@ -540,7 +561,10 @@ def delete_fail(logger, incoming_message, dir_tree):
             if rfile and rfile.ondisk:
                 if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
                     logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.format(rfile.name,
-                                                                                rfile.uuid, incoming_message['data']['uuid']))
+                                                                                                        rfile.uuid,
+                                                                                                        incoming_message[
+                                                                                                            'data'][
+                                                                                                            'uuid']))
                     return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
@@ -570,7 +594,10 @@ def rename_fail(logger, incoming_message, dir_tree):
             if rfile and rfile.ondisk:
                 if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
                     logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.format(rfile.name,
-                                                                                rfile.uuid, incoming_message['data']['uuid']))
+                                                                                                        rfile.uuid,
+                                                                                                        incoming_message[
+                                                                                                            'data'][
+                                                                                                            'uuid']))
                     return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
@@ -602,7 +629,10 @@ def rename_exist_fail(logger, incoming_message, dir_tree):
             if rfile and rfile.ondisk:
                 if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
                     logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.format(rfile.name,
-                                                                                rfile.uuid, incoming_message['data']['uuid']))
+                                                                                                        rfile.uuid,
+                                                                                                        incoming_message[
+                                                                                                            'data'][
+                                                                                                            'uuid']))
                     return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
