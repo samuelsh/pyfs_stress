@@ -1,7 +1,6 @@
 CTRL_MSG_PORT = 5557
 CLIENT_MSG_PORT = 5558
 PUBSUB_LOGGER_PORT = 5559
-
 MAX_FILES_PER_DIR = 1000
 
 SET_SSH_PATH = "/zebra/qa/qa-util-scripts/set-ssh-client"

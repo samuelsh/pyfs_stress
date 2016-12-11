@@ -145,12 +145,6 @@ def main():
     logger.info("Done deploying clients: {0}".format(clients_list))
     run_clients(args.cluster, clients_list, args.export, active_nodes, domains, args.mtype)
     logger.info("Dynamo started on all clients ....")
-
-    # try:
-    #     while not stop_event.is_set():
-    #         time.sleep(1)
-    # except KeyboardInterrupt:
-    #     stop_event.set()
     controller_process.join()
     print('All done')
 
