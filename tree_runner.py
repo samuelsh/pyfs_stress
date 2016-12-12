@@ -103,12 +103,15 @@ def cleanup(logger, clients=None):
     logger.info("Cleaning up on exit....")
     if clients:
         for client in clients:
-            logger.info("{0}: Killing all workers".format(client))
-            ShellUtils.run_shell_remote_command(client, 'pkill -f python')
-            logger.info("{0}: Unmounting".format(client))
-            ShellUtils.run_shell_remote_command(client, 'umount -fl /mnt/{0}'.format('DIRSPLIT*'))
-            logger.info("{0}: Removing mountpoint folder/s".format(client))
-            ShellUtils.run_shell_remote_command(client, 'rm -fr /mnt/{0}'.format('DIRSPLIT*'))
+            try:
+                logger.info("{0}: Killing all workers".format(client))
+                ShellUtils.run_shell_remote_command(client, 'pkill -f python')
+                logger.info("{0}: Unmounting".format(client))
+                ShellUtils.run_shell_remote_command(client, 'umount -fl /mnt/{0}'.format('DIRSPLIT*'))
+                logger.info("{0}: Removing mountpoint folder/s".format(client))
+                ShellUtils.run_shell_remote_command(client, 'rm -fr /mnt/{0}'.format('DIRSPLIT*'))
+            except RuntimeError:
+                pass
 
 
 def main():
