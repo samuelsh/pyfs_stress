@@ -1,0 +1,12 @@
+{
+  "mkdir": 5,
+  "list": 5,
+  "delete": 5,
+  "touch": 55,
+  "stat": 5,
+  "read": 5,
+  "rename": 5,
+  "rename_exist": 5,
+  "write": 5,
+  "truncate": 5
+}

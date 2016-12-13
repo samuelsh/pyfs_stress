@@ -68,8 +68,16 @@ class Controller(object):
             self.logger = server_logger.Logger().logger
             self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
             self.client_workers = {}
-            self.incoming_message_workers = []
-            # We won't assign more than 50 jobs to a worker at a time; this ensures
+            self.file_operations = {}  # Contains pre-loaded file operations priorities for weighted choice method
+            with open("server/file_ops.json") as f:
+                fops = json.load(f)
+            weights_total = 0
+            for _, v in fops.items():
+                weights_total += v
+            if weights_total != 100:
+                raise ValueError("Bad total weight of file operations. Got {0}, 100 is expected".format(weights_total))
+            self.file_operations = [(k, v) for k, v in fops.items()]
+            # We won't assign more than 100 jobs to a worker at a time; this ensures
             # reasonable memory usage, and less shuffling when a worker dies.
             self.max_jobs_per_worker = 100
             # When/if a client disconnects we'll put any unfinished work in here,
@@ -92,10 +100,10 @@ class Controller(object):
 
     @property
     def get_next_job(self):
-        actions = [('mkdir', 5), ('list', 5), ('delete', 5), ('touch', 55), ('stat', 5), ('read', 5), ('rename', 5),
-                   ('rename_exist', 5), ('write', 5), ('truncate', 5)]
+        # actions = [('mkdir', 5), ('list', 5), ('delete', 5), ('touch', 55), ('stat', 5), ('read', 5), ('rename', 5),
+        #            ('rename_exist', 5), ('write', 5), ('truncate', 5)]
         while True:
-            action = weighted_choice(actions)
+            action = weighted_choice(self.file_operations)
             # if some client disconnected, messages assigned to him won't be lost
             if self._work_to_requeue:
                 yield self._work_to_requeue.pop()
