@@ -100,8 +100,6 @@ class Controller(object):
 
     @property
     def get_next_job(self):
-        # actions = [('mkdir', 5), ('list', 5), ('delete', 5), ('touch', 55), ('stat', 5), ('read', 5), ('rename', 5),
-        #            ('rename_exist', 5), ('write', 5), ('truncate', 5)]
         while True:
             action = weighted_choice(self.file_operations)
             # if some client disconnected, messages assigned to him won't be lost
@@ -176,8 +174,9 @@ class Controller(object):
                     # do this while checking for the next available worker so that
                     # if it takes a while to find one we're still processing
                     # incoming messages.
-                    _, (worker_id, message) = self._incoming_message_queue.get()
-                    self._handle_worker_message(worker_id, message)
+                    if not self._incoming_message_queue.empty():
+                        _, (worker_id, message) = self._incoming_message_queue.get()
+                        self._handle_worker_message(worker_id, message)
                     # If there are no available workers (they all have 50 or
                     # more jobs already) sleep for half a second.
                     next_worker_id = self._get_next_worker_id()
