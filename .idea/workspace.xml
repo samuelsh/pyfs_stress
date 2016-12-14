@@ -73,8 +73,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="377">
-              <caret line="124" column="64" lean-forward="false" selection-start-line="124" selection-start-column="64" selection-end-line="124" selection-end-column="64" />
+            <state relative-caret-position="374">
+              <caret line="189" column="50" lean-forward="false" selection-start-line="189" selection-start-column="50" selection-end-line="189" selection-end-column="50" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -525,20 +525,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00947" summary="Fefature: Filename will be created with random length 1 - 64">
-      <created>1480839806633</created>
-      <option name="number" value="00947" />
-      <option name="presentableId" value="LOCAL-00947" />
-      <option name="project" value="LOCAL" />
-      <updated>1480839806633</updated>
-    </task>
-    <task id="LOCAL-00948" summary="Dynamo starter - refactoring">
-      <created>1480860561841</created>
-      <option name="number" value="00948" />
-      <option name="presentableId" value="LOCAL-00948" />
-      <option name="project" value="LOCAL" />
-      <updated>1480860561841</updated>
-    </task>
     <task id="LOCAL-00949" summary="Feature: Directory name will be generated with random length 1 - 64">
       <created>1480919600117</created>
       <option name="number" value="00949" />
@@ -868,7 +854,21 @@
       <option name="project" value="LOCAL" />
       <updated>1481698095353</updated>
     </task>
-    <option name="localTasksCounter" value="996" />
+    <task id="LOCAL-00996" summary="Fix: won't block on get from incoming queue">
+      <created>1481698254941</created>
+      <option name="number" value="00996" />
+      <option name="presentableId" value="LOCAL-00996" />
+      <option name="project" value="LOCAL" />
+      <updated>1481698254941</updated>
+    </task>
+    <task id="LOCAL-00997" summary="Fix: won't block on get from incoming queue">
+      <created>1481698548699</created>
+      <option name="number" value="00997" />
+      <option name="presentableId" value="LOCAL-00997" />
+      <option name="project" value="LOCAL" />
+      <updated>1481698548699</updated>
+    </task>
+    <option name="localTasksCounter" value="998" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1357,8 +1357,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="377">
-          <caret line="124" column="64" lean-forward="false" selection-start-line="124" selection-start-column="64" selection-end-line="124" selection-end-column="64" />
+        <state relative-caret-position="374">
+          <caret line="189" column="50" lean-forward="false" selection-start-line="189" selection-start-column="50" selection-end-line="189" selection-end-column="50" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>
