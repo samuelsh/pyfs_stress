@@ -73,8 +73,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="189" column="50" lean-forward="false" selection-start-line="189" selection-start-column="50" selection-end-line="189" selection-end-column="50" />
+            <state relative-caret-position="510">
+              <caret line="81" column="40" lean-forward="false" selection-start-line="81" selection-start-column="40" selection-end-line="81" selection-end-column="40" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -525,20 +525,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00949" summary="Feature: Directory name will be generated with random length 1 - 64">
-      <created>1480919600117</created>
-      <option name="number" value="00949" />
-      <option name="presentableId" value="LOCAL-00949" />
-      <option name="project" value="LOCAL" />
-      <updated>1480919600117</updated>
-    </task>
-    <task id="LOCAL-00950" summary="Feature: Directory name will be generated with random length 1 - 64">
-      <created>1480931584206</created>
-      <option name="number" value="00950" />
-      <option name="presentableId" value="LOCAL-00950" />
-      <option name="project" value="LOCAL" />
-      <updated>1480931584206</updated>
-    </task>
     <task id="LOCAL-00951" summary="Feature: Implemented data pattern validation immediately after writing to storage">
       <created>1481006822812</created>
       <option name="number" value="00951" />
@@ -868,7 +854,21 @@
       <option name="project" value="LOCAL" />
       <updated>1481698548699</updated>
     </task>
-    <option name="localTasksCounter" value="998" />
+    <task id="LOCAL-00998" summary="Fix: won't block on get from incoming queue">
+      <created>1481698788000</created>
+      <option name="number" value="00998" />
+      <option name="presentableId" value="LOCAL-00998" />
+      <option name="project" value="LOCAL" />
+      <updated>1481698788000</updated>
+    </task>
+    <task id="LOCAL-00999" summary="Fix: cosmetics">
+      <created>1481699188887</created>
+      <option name="number" value="00999" />
+      <option name="presentableId" value="LOCAL-00999" />
+      <option name="project" value="LOCAL" />
+      <updated>1481699188887</updated>
+    </task>
+    <option name="localTasksCounter" value="1000" />
     <servers />
   </component>
   <component name="TodoView">
@@ -955,7 +955,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="false" />
-    <MESSAGE value="Feature: Implementing weighted actions choice" />
     <MESSAGE value="Fix: removed useless 'join' from dynamo methods" />
     <MESSAGE value="Feature: adding truncate method" />
     <MESSAGE value="Working on correct load balancing" />
@@ -980,7 +979,8 @@
     <MESSAGE value="Fix: cleanup on exit won't raise runtime exceptions" />
     <MESSAGE value="Feature: weighted choices will be loaded from config file on start" />
     <MESSAGE value="Fix: won't block on get from incoming queue" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix: won't block on get from incoming queue" />
+    <MESSAGE value="Fix: cosmetics" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix: cosmetics" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1357,8 +1357,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="189" column="50" lean-forward="false" selection-start-line="189" selection-start-column="50" selection-end-line="189" selection-end-column="50" />
+        <state relative-caret-position="510">
+          <caret line="81" column="40" lean-forward="false" selection-start-line="81" selection-start-column="40" selection-end-line="81" selection-end-column="40" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>
