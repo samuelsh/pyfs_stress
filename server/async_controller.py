@@ -120,11 +120,9 @@ class Controller(object):
         # It isn't strictly necessary since we're limiting the amount of work
         # we assign, but just to demonstrate that we're doing our own load
         # balancing we'll find the worker with the least work
-        print("DEBUG: Client workers {0}".format(len(self.client_workers)))
         if self.client_workers:
             worker_id, work = sorted(self.client_workers.items(),
                                      key=lambda x: len(x[1]))[0]
-            print("DEBUG: Num of Jobs {0} Worker ID {1}".format(len(work), worker_id))
             if len(work) < self.max_jobs_per_worker:
                 return worker_id
         # No worker is available. Our caller will have to handle this.
@@ -189,7 +187,6 @@ class Controller(object):
                 # self.logger.debug('sending job %s to worker %s', job.id,
                 #                   next_worker_id)
                 self.client_workers[next_worker_id][job.id] = job
-                print("DEBUG: Sending JOB: {0}".format(job.work))
                 self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
                 # self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
                 #                                                                   self._outgoing_message_queue.qsize()))
