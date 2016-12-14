@@ -120,6 +120,7 @@ class Controller(object):
         # It isn't strictly necessary since we're limiting the amount of work
         # we assign, but just to demonstrate that we're doing our own load
         # balancing we'll find the worker with the least work
+        print("DEBUG: Client workers {0}".format(self.client_workers))
         if self.client_workers:
             worker_id, work = sorted(self.client_workers.items(),
                                      key=lambda x: len(x[1]))[0]
