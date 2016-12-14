@@ -32,8 +32,8 @@ class Mounter:
         else:
             logger = self.logger
         mount_point = MOUNT_BASE + '/' + self.prefix + '_' + self.export + '_' + self.server
-        if self.mount_type == 3:
-            shell_utils.FSUtils.mount_fsd(self.server, '/' + self.export, self.nodes, self.domains, 'nfs3',
+        if self.mount_type == 'nfs3':
+            shell_utils.FSUtils.mount_fsd(self.server, '/' + self.export, self.nodes, self.domains, self.mount_type,
                                           self.prefix, '6')
             for i in range(self.nodes):
                 for j in range(self.domains):
