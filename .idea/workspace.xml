@@ -73,8 +73,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
-              <caret line="126" column="32" lean-forward="false" selection-start-line="126" selection-start-column="32" selection-end-line="126" selection-end-column="32" />
+            <state relative-caret-position="210">
+              <caret line="119" column="76" lean-forward="false" selection-start-line="119" selection-start-column="76" selection-end-line="119" selection-end-column="76" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -525,13 +525,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00944" summary="Fefature: added mount type argument to test runner module">
-      <created>1480409549861</created>
-      <option name="number" value="00944" />
-      <option name="presentableId" value="LOCAL-00944" />
-      <option name="project" value="LOCAL" />
-      <updated>1480409549861</updated>
-    </task>
     <task id="LOCAL-00945" summary="Fefature: Filename will be created with random length 1 - 64">
       <created>1480833007998</created>
       <option name="number" value="00945" />
@@ -868,7 +861,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481697704192</updated>
     </task>
-    <option name="localTasksCounter" value="993" />
+    <task id="LOCAL-00993" summary="Fix: won't block on get from incoming queue">
+      <created>1481697924391</created>
+      <option name="number" value="00993" />
+      <option name="presentableId" value="LOCAL-00993" />
+      <option name="project" value="LOCAL" />
+      <updated>1481697924391</updated>
+    </task>
+    <option name="localTasksCounter" value="994" />
     <servers />
   </component>
   <component name="TodoView">
@@ -887,8 +887,8 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16122234" sideWeight="0.49499285" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32885906" sideWeight="0.49789253" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33173537" sideWeight="0.5590095" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32885906" sideWeight="0.47629082" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33173537" sideWeight="0.4409905" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32885906" sideWeight="0.47629082" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33173537" sideWeight="0.4409905" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32885906" sideWeight="0.49367756" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15964173" sideWeight="0.50500715" order="2" side_tool="true" content_ui="tabs" />
@@ -1357,8 +1357,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="126" column="32" lean-forward="false" selection-start-line="126" selection-start-column="32" selection-end-line="126" selection-end-column="32" />
+        <state relative-caret-position="210">
+          <caret line="119" column="76" lean-forward="false" selection-start-line="119" selection-start-column="76" selection-end-line="119" selection-end-column="76" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>
