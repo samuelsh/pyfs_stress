@@ -79,7 +79,7 @@ class Controller(object):
             self.file_operations = [(k, v) for k, v in fops.items()]
             # We won't assign more than 100 jobs to a worker at a time; this ensures
             # reasonable memory usage, and less shuffling when a worker dies.
-            self.max_jobs_per_worker = 100
+            self.max_jobs_per_worker = 500
             # When/if a client disconnects we'll put any unfinished work in here,
             # get_next_job() will return work from here as well.
             self._work_to_requeue = []
