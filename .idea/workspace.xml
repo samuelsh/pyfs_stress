@@ -73,8 +73,8 @@
       <file leaf-file-name="async_controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/async_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="123" column="22" lean-forward="false" selection-start-line="123" selection-start-column="22" selection-end-line="123" selection-end-column="22" />
+            <state relative-caret-position="340">
+              <caret line="184" column="35" lean-forward="false" selection-start-line="184" selection-start-column="35" selection-end-line="184" selection-end-column="35" />
               <folding>
                 <element signature="e#59#71#0" expanded="true" />
               </folding>
@@ -525,20 +525,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00939" summary="Fefature: added mounter class to handle all mounting routines via various protocols">
-      <created>1480407564155</created>
-      <option name="number" value="00939" />
-      <option name="presentableId" value="LOCAL-00939" />
-      <option name="project" value="LOCAL" />
-      <updated>1480407564155</updated>
-    </task>
-    <task id="LOCAL-00940" summary="Fefature: added mounter class to handle all mounting routines via various protocols">
-      <created>1480407905348</created>
-      <option name="number" value="00940" />
-      <option name="presentableId" value="LOCAL-00940" />
-      <option name="project" value="LOCAL" />
-      <updated>1480407905348</updated>
-    </task>
     <task id="LOCAL-00941" summary="Fefature: added mounter class to handle all mounting routines via various protocols">
       <created>1480408054968</created>
       <option name="number" value="00941" />
@@ -868,7 +854,21 @@
       <option name="project" value="LOCAL" />
       <updated>1481695702545</updated>
     </task>
-    <option name="localTasksCounter" value="988" />
+    <task id="LOCAL-00988" summary="Fix: won't block on get from incoming queue">
+      <created>1481696516868</created>
+      <option name="number" value="00988" />
+      <option name="presentableId" value="LOCAL-00988" />
+      <option name="project" value="LOCAL" />
+      <updated>1481696516868</updated>
+    </task>
+    <task id="LOCAL-00989" summary="Fix: won't block on get from incoming queue">
+      <created>1481696651675</created>
+      <option name="number" value="00989" />
+      <option name="presentableId" value="LOCAL-00989" />
+      <option name="project" value="LOCAL" />
+      <updated>1481696651675</updated>
+    </task>
+    <option name="localTasksCounter" value="990" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1357,8 +1357,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/async_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="123" column="22" lean-forward="false" selection-start-line="123" selection-start-column="22" selection-end-line="123" selection-end-column="22" />
+        <state relative-caret-position="340">
+          <caret line="184" column="35" lean-forward="false" selection-start-line="184" selection-start-column="35" selection-end-line="184" selection-end-column="35" />
           <folding>
             <element signature="e#59#71#0" expanded="true" />
           </folding>
