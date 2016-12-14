@@ -180,6 +180,7 @@ class Controller(object):
                     # If there are no available workers (they all have 50 or
                     # more jobs already) sleep for half a second.
                     next_worker_id = self._get_next_worker_id()
+                    print("DEBUG: Got next worker {0}".format(next_worker_id))
                 # We've got a Job and an available worker_id, all we need to do
                 # is send it. Note that we're now using send_multipart(), the
                 # counterpart to recv_multipart(), to tell the ROUTER where our
