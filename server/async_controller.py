@@ -189,6 +189,7 @@ class Controller(object):
                 # self.logger.debug('sending job %s to worker %s', job.id,
                 #                   next_worker_id)
                 self.client_workers[next_worker_id][job.id] = job
+                print("DEBUG: Sending JOB: {0}".format(job))
                 self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
                 # self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
                 #                                                                   self._outgoing_message_queue.qsize()))
