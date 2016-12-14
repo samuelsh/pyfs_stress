@@ -124,6 +124,7 @@ class Controller(object):
         if self.client_workers:
             worker_id, work = sorted(self.client_workers.items(),
                                      key=lambda x: len(x[1]))[0]
+            print("DEBUG: Num of Jobs {0}".format(work))
             if len(work) < self.max_jobs_per_worker:
                 return worker_id
         # No worker is available. Our caller will have to handle this.
