@@ -120,7 +120,7 @@ class Controller(object):
         # It isn't strictly necessary since we're limiting the amount of work
         # we assign, but just to demonstrate that we're doing our own load
         # balancing we'll find the worker with the least work
-        print("DEBUG: Client workers {0}".format(self.client_workers))
+        # print("DEBUG: Client workers {0}".format(self.client_workers))
         if self.client_workers:
             worker_id, work = sorted(self.client_workers.items(),
                                      key=lambda x: len(x[1]))[0]
@@ -181,7 +181,8 @@ class Controller(object):
                     # If there are no available workers (they all have 50 or
                     # more jobs already) sleep for half a second.
                     next_worker_id = self._get_next_worker_id()
-                    print("DEBUG: Got next worker {0}".format(next_worker_id))
+                    if next_worker_id is None:
+                        time.sleep(0.5)
                 # We've got a Job and an available worker_id, all we need to do
                 # is send it. Note that we're now using send_multipart(), the
                 # counterpart to recv_multipart(), to tell the ROUTER where our
