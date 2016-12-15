@@ -112,13 +112,15 @@ class ShellUtils:
 
     @staticmethod
     def run_shell_remote_command(remote_host, remote_cmd):
-        p = subprocess.Popen([SSH_PATH, '-nx', remote_host, remote_cmd], stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
+        remote_cmd = remote_cmd.split(' ')
+        p = subprocess.Popen([SSH_PATH, '-o ConnectTimeout=30', '-o BatchMode=yes',  '-o StrictHostKeyChecking=no',
+                              remote_host] + remote_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
             raise RuntimeError("%r failed, status code %s stdout %r stderr %r" % (
                 remote_cmd, p.returncode, stdout, stderr))
         return stdout.strip()  # This is the stdout from the shell command
+
 
     @staticmethod
     def run_shell_remote_command_multiline(remote_host, remote_cmd):
