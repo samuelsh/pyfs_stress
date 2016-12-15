@@ -12,8 +12,7 @@ import sys
 from generic_mounter import Mounter
 from dynamo import Dynamo
 from logger import pubsub_logger
-from config import DYNAMO_PATH, MAX_WORKERS_PER_CLIENT, CLIENT_MOUNT_POINT
-from utils import shell_utils
+from config import  MAX_WORKERS_PER_CLIENT
 
 
 def run_worker(event, mounter, controller, server, nodes, domains, proc_id):
