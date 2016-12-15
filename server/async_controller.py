@@ -5,7 +5,7 @@ Asynchronous Server logic is here
 import Queue
 import timeit
 from bisect import bisect
-from random import randint, random
+from random import random
 import json
 import random
 import time

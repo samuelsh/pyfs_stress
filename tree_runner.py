@@ -4,10 +4,8 @@ Directory Tree integrity test runner
 """
 import argparse
 import atexit
-import logging
 import socket
 import sys
-import time
 import traceback
 from multiprocessing import Event
 from multiprocessing import Process
@@ -16,10 +14,8 @@ import errno
 import zmq
 
 import config
-from logger import server_logger
 from logger.pubsub_logger import SUBLogger
 from logger.server_logger import ConsoleLogger
-# from server.controller import Controller
 from server.async_controller import Controller
 from tree import dirtree
 from utils import shell_utils
