@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Directory Tree integrity test runner
 2016 samuelsh (c)
