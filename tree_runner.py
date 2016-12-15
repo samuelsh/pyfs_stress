@@ -104,7 +104,7 @@ def cleanup(logger, clients=None):
     if clients:
         for client in clients:
             try:
-                logger.info("{0}: Killing all workers".format(client))
+                logger.info("{0}: Killing workers".format(client))
                 ShellUtils.run_shell_remote_command(client, 'pkill -f python')
                 logger.info("{0}: Unmounting".format(client))
                 ShellUtils.run_shell_remote_command(client, 'umount -fl /mnt/{0}'.format('DIRSPLIT*'))
