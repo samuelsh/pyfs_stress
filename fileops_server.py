@@ -29,7 +29,7 @@ def get_args():
     """
 
     parser = argparse.ArgumentParser(
-        description='Test Runner script')
+        description='FileOps Server starter - 2016 samuels(c)')
     parser.add_argument('-c', '--cluster', type=str, required=True, help='Cluster name')
     parser.add_argument('--clients', type=str, nargs='+', required=True, help="Space separated list of clients")
     parser.add_argument('-e', '--export', type=str, default="vol0", help="Space separated list of clients")
