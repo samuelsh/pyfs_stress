@@ -138,6 +138,7 @@ def write(mount_point, incoming_data, **kwargs):
     hasher.update(pattern_to_write)
     data_hash = hasher.hexdigest()
     with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
+        print ("DEBUG: Gonna lock {0}".format(incoming_data['target']))
         fcntl.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
         f.seek(offset)
         f.write(pattern_to_write)
@@ -153,6 +154,7 @@ def write(mount_point, incoming_data, **kwargs):
             outgoing_data['dynamo_error'] = error_codes.HASHERR
             outgoing_data['bad_hash'] = read_hash
         fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
+        print ("DEBUG: UNLOCKED {0}".format(incoming_data['target']))
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['repeats'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
