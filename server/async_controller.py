@@ -282,6 +282,7 @@ class AsyncControllerWorker(Thread, object):
             try:
                 #  Sending out messages from outgoing message queue
                 next_worker_id, job_id, job_work = self.outgoing_queue.get()
+                print("DEBUG: Outgoing to {0} - {1}".format(next_worker_id, job_work))
                 self._worker.send_multipart(
                     [next_worker_id, json.dumps((job_id, job_work)).encode('utf8')])
             except Queue.Empty:
