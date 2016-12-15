@@ -4,8 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/server/file_ops.json" line="0" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="Fix: adding .gitignore to repo">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.gitignore" />
+    <list default="true" id="c5f85e7e-6f44-403e-9ed7-0de692b2969a" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/file_scanners.iml" afterPath="" />
@@ -500,13 +499,6 @@
       <option name="presentableId" value="Default" />
       <updated>1456914386166</updated>
     </task>
-    <task id="LOCAL-00964" summary="Fix: minor fixes in generic mounter">
-      <created>1481182012803</created>
-      <option name="number" value="00964" />
-      <option name="presentableId" value="LOCAL-00964" />
-      <option name="project" value="LOCAL" />
-      <updated>1481182012803</updated>
-    </task>
     <task id="LOCAL-00965" summary="Fix: minor fixes in generic mounter">
       <created>1481190241069</created>
       <option name="number" value="00965" />
@@ -843,7 +835,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481794498836</updated>
     </task>
-    <option name="localTasksCounter" value="1013" />
+    <task id="LOCAL-01013" summary="Fix: adding .gitignore to repo">
+      <created>1481794718505</created>
+      <option name="number" value="01013" />
+      <option name="presentableId" value="LOCAL-01013" />
+      <option name="project" value="LOCAL" />
+      <updated>1481794718505</updated>
+    </task>
+    <option name="localTasksCounter" value="1014" />
     <servers />
   </component>
   <component name="TodoView">
@@ -930,7 +929,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="false" />
-    <MESSAGE value="Fefature: added mounter class to handle all mounting routines via various protocols" />
     <MESSAGE value="Fefature: added mount type argument to test runner module" />
     <MESSAGE value="Fefature: Filename will be created with random length 1 - 64" />
     <MESSAGE value="Dynamo starter - refactoring" />
@@ -955,7 +953,8 @@
     <MESSAGE value="Cosmetics: cleaning needles imports" />
     <MESSAGE value="Fix: .idea folder removed from git" />
     <MESSAGE value="Fix: refactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix: refactor" />
+    <MESSAGE value="Fix: adding .gitignore to repo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix: adding .gitignore to repo" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
