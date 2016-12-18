@@ -25,6 +25,7 @@ GB256 = (GB1 * 256)  # level 2 can map up to 256GB
 GB512 = (GB1 * 512)  # level 2 can map up to 256GB
 TB128 = (TB1 * 128)  # level 3 can map up to 128TB
 ZERO_PADDING_START = 128 * MB1  # 128MB
+MAX_FILE_SIZE = TB1 + ZERO_PADDING_START
 DATA_PATTERN_A = {'pattern': 'A', 'repeats': 1}
 DATA_PATTERN_B = {'pattern': 'B', 'repeats': 3}
 DATA_PATTERN_C = {'pattern': 'C', 'repeats': 17}
@@ -132,7 +133,8 @@ def write(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     hasher = hashlib.md5()
     padding = random.choice(PADDING)
-    offset = random.choice(OFFSETS_LIST) + padding
+    base_offset = random.choice(OFFSETS_LIST) + padding
+    offset = base_offset + random.randint(base_offset, MAX_FILE_SIZE)
     data_pattern = random.choice(DATA_PATTERNS_LIST)
     pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
     hasher.update(pattern_to_write)

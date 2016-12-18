@@ -131,6 +131,7 @@ def write_request(logger, dir_tree):
     else:
         return {'target': 'None', 'uuid': None}
     data['target'] = target
+    data['offset'] = wfile.data_pattern_offset
     data['uuid'] = wfile.uuid
     return data
 
