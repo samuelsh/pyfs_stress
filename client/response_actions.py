@@ -132,9 +132,12 @@ def read(mount_point, incoming_data, **kwargs):
 def write(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     hasher = hashlib.md5()
-    padding = random.choice(PADDING)
-    base_offset = random.choice(OFFSETS_LIST) + padding
-    offset = base_offset + random.randint(base_offset, MAX_FILE_SIZE)
+    if incoming_data['io_type'] == 'sequential':
+        offset = incoming_data['offset'] + incoming_data['data_pattern_len']
+    else:
+        padding = random.choice(PADDING)
+        base_offset = random.choice(OFFSETS_LIST) + padding
+        offset = base_offset + random.randint(base_offset, MAX_FILE_SIZE)
     data_pattern = random.choice(DATA_PATTERNS_LIST)
     pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
     hasher.update(pattern_to_write)

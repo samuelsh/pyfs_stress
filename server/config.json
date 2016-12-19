@@ -7,7 +7,7 @@
 	  	"max_dirs":100,
 	  "max_file_size": 549755813888
 	},
-	"io_type": {
+	"io_types": {
 		"random": 50,
 		"sequential": 50
 	},

@@ -71,12 +71,21 @@ class Controller(object):
             self.file_operations = {}  # Contains pre-loaded file operations priorities for weighted choice method
             self.config = test_config
             fops = self.config['file_ops']
+            # Checking if file ops weight are exactly 100%
             weights_total = 0
             for _, v in fops.items():
                 weights_total += v
             if weights_total != 100:
                 raise ValueError("Bad total weight of file operations. Got {0}, 100 is expected".format(weights_total))
             self.file_operations = [(k, v) for k, v in fops.items()]
+            # Checking if io types weight are exactly 100%
+            io_types = self.config['io_types']
+            weights_total = 0
+            for _, v in io_types.items():
+                weights_total += v
+            if weights_total != 100:
+                raise ValueError("Bad total weight of file operations. Got {0}, 100 is expected".format(weights_total))
+            self.io_types = [(k, v) for k, v in io_types.items()]
             # We won't assign more than 100 jobs to a worker at a time; this ensures
             # reasonable memory usage, and less shuffling when a worker dies.
             self.max_jobs_per_worker = 1000
@@ -102,6 +111,7 @@ class Controller(object):
     def get_next_job(self):
         while True:
             action = weighted_choice(self.file_operations)
+            io_type = weighted_choice(self.io_types)
             # if some client disconnected, messages assigned to him won't be lost
             if self._work_to_requeue:
                 yield self._work_to_requeue.pop()
@@ -111,7 +121,7 @@ class Controller(object):
                 self._dir_tree.append_node()
                 target = self._dir_tree.get_last_node_tag()
                 yield Job({'action': action, 'data': {'target': target}})
-            yield Job({'action': action, 'data': request_action(action, self.logger, self._dir_tree)})
+            yield Job({'action': action, 'data': request_action(action, self.logger, self._dir_tree, io_type=io_type)})
 
     def _get_next_worker_id(self):
         """Return the id of the next worker available to process work. Note

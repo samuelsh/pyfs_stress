@@ -3,7 +3,7 @@ from utils import shell_utils
 __author__ = "samuels"
 
 
-def request_action(action, logger, dir_tree):
+def request_action(action, logger, dir_tree, **kwargs):
     return {
         "mkdir": mkdir_request,
         "list": list_request,
@@ -15,10 +15,10 @@ def request_action(action, logger, dir_tree):
         "rename": rename_request,
         "rename_exist": rename_exist_request,
         "truncate": truncate_request
-    }[action](logger, dir_tree)
+    }[action](logger, dir_tree, **kwargs)
 
 
-def mkdir_request(logger, dir_tree):
+def mkdir_request(logger, dir_tree, **kwargs):
     data = {}
     target = 'None'
     if len(dir_tree.nids) < 100:
@@ -34,7 +34,7 @@ def mkdir_request(logger, dir_tree):
     return data
 
 
-def list_request(logger, dir_tree):
+def list_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
@@ -45,7 +45,7 @@ def list_request(logger, dir_tree):
     return data
 
 
-def delete_request(logger, dir_tree):
+def delete_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
@@ -65,7 +65,7 @@ def delete_request(logger, dir_tree):
     return data
 
 
-def touch_request(logger, dir_tree):
+def touch_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
@@ -77,7 +77,7 @@ def touch_request(logger, dir_tree):
     return data
 
 
-def stat_request(logger, dir_tree):
+def stat_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if rdir:
@@ -97,7 +97,7 @@ def stat_request(logger, dir_tree):
     return data
 
 
-def read_request(logger, dir_tree):
+def read_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if rdir:
@@ -118,7 +118,7 @@ def read_request(logger, dir_tree):
     return data
 
 
-def write_request(logger, dir_tree):
+def write_request(logger, dir_tree, **kwargs):
     data = {}
     wdir = dir_tree.get_random_dir_synced()
     if wdir:
@@ -132,11 +132,13 @@ def write_request(logger, dir_tree):
         return {'target': 'None', 'uuid': None}
     data['target'] = target
     data['offset'] = wfile.data_pattern_offset
+    data['data_pattern_len'] = wfile.data_pattern_len
+    data['io_type'] = kwargs['io_type']
     data['uuid'] = wfile.uuid
     return data
 
 
-def rename_request(logger, dir_tree):
+def rename_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
@@ -157,7 +159,7 @@ def rename_request(logger, dir_tree):
     return data
 
 
-def rename_exist_request(logger, dir_tree):
+def rename_exist_request(logger, dir_tree, **kwargs):
     data = {}
     rdir_src = dir_tree.get_random_dir_synced()
     rdir_dst = dir_tree.get_random_dir_synced()
@@ -182,7 +184,7 @@ def rename_exist_request(logger, dir_tree):
     return data
 
 
-def truncate_request(logger, dir_tree):
+def truncate_request(logger, dir_tree, **kwargs):
     data = {}
     file_to_truncate = None
     tdir = dir_tree.get_random_dir_synced()
