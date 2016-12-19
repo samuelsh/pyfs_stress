@@ -155,6 +155,7 @@ def truncate_success(logger, incoming_message, dir_tree):
                 # recalculating the offset after truncate:
                 if wfile.data_pattern_offset > wfile.size:
                     wfile.data_pattern_offset = wfile.size
+                    wfile.data_pattern_len = 0
                 logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
             # In case there is raise and write arrived before touch we'll sync the file here
             elif wfile:
@@ -167,6 +168,7 @@ def truncate_success(logger, incoming_message, dir_tree):
                 # recalculating the offset after truncate:
                 if wfile.data_pattern_offset > wfile.size:
                     wfile.data_pattern_offset = wfile.size
+                    wfile.data_pattern_len = 0
                 logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
@@ -188,7 +190,8 @@ def read_success(logger, incoming_message, dir_tree):
                 read_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if not rfile.data_pattern_hash == incoming_message['data']['hash'] and rfile.data_pattern_offset == \
                         incoming_message['data']['offset'] and rfile.data_pattern_len == \
-                        incoming_message['data']['chunk_size'] and incoming_message['data']['offset'] < rfile.size: #read_time <= rfile.modify_time:
+                        incoming_message['data']['chunk_size'] and incoming_message['data'][
+                    'offset'] < rfile.size:  # read_time <= rfile.modify_time:
                     logger.error(
                         "Hash mismatch on Read! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk "
                         "size: {4} "
