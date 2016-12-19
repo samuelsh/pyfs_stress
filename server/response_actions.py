@@ -152,6 +152,9 @@ def truncate_success(logger, incoming_message, dir_tree):
                 wfile.modify_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                '%Y/%m/%d %H:%M:%S.%f')
                 wfile.size = incoming_message['data']['size']
+                # recalculating the offset after truncate:
+                if wfile.data_pattern_offset > wfile.size:
+                    wfile.data_pattern_offset = wfile.size
                 logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
             # In case there is raise and write arrived before touch we'll sync the file here
             elif wfile:
@@ -161,6 +164,9 @@ def truncate_success(logger, incoming_message, dir_tree):
                                                                  '%Y/%m/%d %H:%M:%S.%f')
                 wfile.modify_time = wfile.creation_time
                 wfile.size = incoming_message['data']['size']
+                # recalculating the offset after truncate:
+                if wfile.data_pattern_offset > wfile.size:
+                    wfile.data_pattern_offset = wfile.size
                 logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
