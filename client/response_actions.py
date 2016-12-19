@@ -163,6 +163,7 @@ def write(mount_point, incoming_data, **kwargs):
     outgoing_data['hash'] = data_hash
     outgoing_data['offset'] = offset
     outgoing_data['uuid'] = incoming_data['uuid']
+    outgoing_data['io_type'] = incoming_data['io_type']
     return outgoing_data
 
 
