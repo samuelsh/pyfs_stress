@@ -10,7 +10,6 @@ import json
 import random
 import time
 import uuid
-
 from threading import Thread
 
 import zmq
@@ -56,7 +55,7 @@ class Job(object):
 
 
 class Controller(object):
-    def __init__(self, stop_event, dir_tree, port=CTRL_MSG_PORT):
+    def __init__(self, stop_event, dir_tree, test_config, port=CTRL_MSG_PORT):
         """
         Args:
             stop_event: Event
@@ -67,10 +66,11 @@ class Controller(object):
             self.stop_event = stop_event
             self.logger = server_logger.Logger().logger
             self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
+            self.config = {}
             self.client_workers = {}
             self.file_operations = {}  # Contains pre-loaded file operations priorities for weighted choice method
-            with open("server/file_ops.json") as f:
-                fops = json.load(f)
+            self.config = test_config
+            fops = self.config['file_ops']
             weights_total = 0
             for _, v in fops.items():
                 weights_total += v

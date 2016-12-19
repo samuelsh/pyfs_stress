@@ -5,6 +5,8 @@ Directory Tree integrity test runner
 """
 import argparse
 import atexit
+import json
+import os
 import socket
 import sys
 import traceback
@@ -37,6 +39,12 @@ def get_args():
                                                                             'smb3'], help='Mount type')
     args = parser.parse_args()
     return args
+
+
+def load_config():
+    with open(os.path.join("server", "config.json")) as f:
+        test_config = json.load(f)
+    return test_config
 
 
 def deploy_clients(clients):
@@ -78,8 +86,8 @@ def run_clients(cluster, clients, export, active_nodes, domains, mtype):
                                                            active_nodes, domains, mtype))
 
 
-def run_controller(event, dir_tree):
-    Controller(event, dir_tree).run()
+def run_controller(event, dir_tree, test_config):
+    Controller(event, dir_tree, test_config).run()
 
 
 def run_sub_logger(ip, event):
@@ -126,6 +134,8 @@ def main():
     logger.debug("{0} Logger initialised {1}".format(__name__, logger))
     atexit.register(cleanup, logger, clients=args.clients)
     clients_list = args.clients
+    logger.info("Loading Test Configuration")
+    test_config = load_config()
     logger.info("Setting passwordless SSH connection")
     shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
     logger.info("Getting cluster params...")
@@ -135,7 +145,7 @@ def main():
     logger.debug("FSD domains: %s" % domains)
     logger.info("loading pregenerated file names...")
     logger.info("Starting controller")
-    controller_process = Process(target=run_controller, args=(stop_event, dir_tree))
+    controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config))
     controller_process.start()
     sub_logger_process = Process(target=run_sub_logger,
                                  args=(socket.gethostbyname(socket.gethostname()), stop_event,))
