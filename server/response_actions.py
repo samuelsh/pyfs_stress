@@ -153,7 +153,7 @@ def truncate_success(logger, incoming_message, dir_tree):
                                                                '%Y/%m/%d %H:%M:%S.%f')
                 wfile.size = incoming_message['data']['size']
                 # recalculating the offset after truncate:
-                if wfile.data_pattern_offset > wfile.size:
+                if wfile.data_pattern_offset + wfile.data_pattern_len >= wfile.size:
                     wfile.data_pattern_offset = wfile.size
                     wfile.data_pattern_hash = 'd41d8cd98f00b204e9800998ecf8427e'
                 logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
@@ -166,7 +166,7 @@ def truncate_success(logger, incoming_message, dir_tree):
                 wfile.modify_time = wfile.creation_time
                 wfile.size = incoming_message['data']['size']
                 # recalculating the offset after truncate:
-                if wfile.data_pattern_offset > wfile.size:
+                if wfile.data_pattern_offset + wfile.data_pattern_len >= wfile.size:
                     wfile.data_pattern_offset = wfile.size
                     wfile.data_pattern_hash = 'd41d8cd98f00b204e9800998ecf8427e'
                 logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
