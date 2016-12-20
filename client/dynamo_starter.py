@@ -30,8 +30,8 @@ def get_args():
     parser.add_argument('-c', '--controller', type=str, required=True, help='Controller host name')
     parser.add_argument('-s', '--server', type=str, required=True, help='Cluster Server hostname')
     parser.add_argument('-e', '--export', type=str, help='NFS Export Name', default="vol0")
-    parser.add_argument('-n', '--nodes', type=int, help='Number of active nodes', required=True)
-    parser.add_argument('-d', '--domains', type=int, help='Number of fs domains', required=True)
+    parser.add_argument('-n', '--nodes', type=int, help='Number of active nodes', default=0)
+    parser.add_argument('-d', '--domains', type=int, help='Number of fs domains', default=0)
     parser.add_argument('-m', '--mtype', type=str, help='Mount Type', choices=['nfs3', 'nfs4', 'nfs4.1', 'smb1', 'smb2',
                                                                                'smb3'], default="nfs3")
     args = parser.parse_args()

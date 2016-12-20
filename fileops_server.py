@@ -35,6 +35,7 @@ def get_args():
     parser.add_argument('-c', '--cluster', type=str, required=True, help='Cluster name')
     parser.add_argument('--clients', type=str, nargs='+', required=True, help="Space separated list of clients")
     parser.add_argument('-e', '--export', type=str, default="vol0", help="Space separated list of clients")
+    parser.add_argument('--tenants', action="store_true", help="Enable MultiTenancy")
     parser.add_argument('-m', '--mtype', type=str, default='nfs3', choices=['nfs3', 'nfs4', 'nfs4.1', 'smb1', 'smb2',
                                                                             'smb3'], help='Mount type')
     args = parser.parse_args()
@@ -121,6 +122,8 @@ def cleanup(logger, clients=None):
 
 def main():
     file_names = None
+    active_nodes = 0
+    domains = 0
     args = get_args()
     stop_event = Event()
     try:
@@ -137,13 +140,13 @@ def main():
     logger.info("Loading Test Configuration")
     test_config = load_config()
     logger.info("Setting passwordless SSH connection")
-    shell_utils.ShellUtils.run_shell_script("/zebra/qa/qa-util-scripts/set-ssh-python", args.cluster, False)
-    logger.info("Getting cluster params...")
-    active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.cluster)
-    logger.debug("Active Nodes: %s" % active_nodes)
-    domains = shell_utils.FSUtils.get_domains_num(args.cluster)
-    logger.debug("FSD domains: %s" % domains)
-    logger.info("loading pregenerated file names...")
+    shell_utils.ShellUtils.run_shell_script("/zebra/qa/AutoWizard/set_ssh.py", args.cluster, False)
+    if not args.tenants:
+        logger.info("Getting cluster params...")
+        active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.cluster)
+        logger.debug("Active Nodes: %s" % active_nodes)
+        domains = shell_utils.FSUtils.get_domains_num(args.cluster)
+        logger.debug("FSD domains: %s" % domains)
     logger.info("Starting controller")
     controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config))
     controller_process.start()
