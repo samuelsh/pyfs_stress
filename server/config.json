@@ -1,7 +1,13 @@
 {
 	"access": {
-		"user": "root",
-		"password": "N@sst0r3"
+      "server": {
+			"user": "root",
+			"password": "N@sst0r3"
+		},
+		"client": {
+			"user": "root",
+			"password": "manager11"
+		}
 	},
 	"test_settings": {
 	  	"max_dirs":100,

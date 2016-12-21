@@ -49,7 +49,7 @@ def load_config():
     return test_config
 
 
-def deploy_clients(clients):
+def deploy_clients(clients, logger, access):
     """
     Args:
         clients: list
@@ -57,8 +57,12 @@ def deploy_clients(clients):
     Returns:
 
     """
+    with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
+        rsa_pub_key = f.read()
     for client in clients:
-        ShellUtils.run_shell_script(config.SET_SSH_PATH, client)
+        # ShellUtils.run_shell_script(config.SET_SSH_PATH, client)
+        ssh_utils.set_key_policy(rsa_pub_key, client, logger, access['user'],
+                                 access['password'])
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {0}'.format(config.DYNAMO_PATH))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '{0}'.format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '{0}'.format(config.DYNAMO_PATH)))
@@ -143,8 +147,8 @@ def main():
     logger.info("Setting passwordless SSH connection")
     with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
         rsa_pub_key = f.read()
-    ssh_utils.set_key_policy(rsa_pub_key, args.cluster, logger, test_config['access']['user'],
-                             test_config['access']['password'])
+    ssh_utils.set_key_policy(rsa_pub_key, args.cluster, logger, test_config['access']['server']['user'],
+                             test_config['access']['server']['password'])
     if not args.tenants:
         logger.info("Getting cluster params...")
         active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.cluster)
@@ -158,7 +162,7 @@ def main():
                                  args=(socket.gethostbyname(socket.gethostname()), stop_event,))
     sub_logger_process.start()
     logger.info("Controller started")
-    deploy_clients(clients_list)
+    deploy_clients(clients_list, logger, test_config['access']['client'])
     logger.info("Done deploying clients: {0}".format(clients_list))
     run_clients(args.cluster, clients_list, args.export, active_nodes, domains, args.mtype)
     logger.info("Dynamo started on all clients ....")
