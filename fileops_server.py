@@ -140,7 +140,11 @@ def main():
     logger.info("Loading Test Configuration")
     test_config = load_config()
     logger.info("Setting passwordless SSH connection")
-    shell_utils.ShellUtils.run_shell_script("/zebra/qa/AutoWizard/set_ssh.py", args.cluster, False)
+    shell_utils.ShellUtils.run_shell_script("utils/ssh_utils.py", "{0} -U {1} -P {2}".format(args.cluster,
+                                                                                             test_config['access'][
+                                                                                                 'user'],
+                                                                                             test_config['access'][
+                                                                                                 'password']), False)
     if not args.tenants:
         logger.info("Getting cluster params...")
         active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.cluster)
