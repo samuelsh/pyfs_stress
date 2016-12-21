@@ -140,7 +140,7 @@ def main():
     logger.info("Loading Test Configuration")
     test_config = load_config()
     logger.info("Setting passwordless SSH connection")
-    shell_utils.ShellUtils.run_shell_script("utils/ssh_utils.py", "{0} -U {1} -P {2}".format(args.cluster,
+    shell_utils.ShellUtils.run_shell_script("python utils/ssh_utils.py", "{0} -U {1} -P {2}".format(args.cluster,
                                                                                              test_config['access'][
                                                                                                  'user'],
                                                                                              test_config['access'][
