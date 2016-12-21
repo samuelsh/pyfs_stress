@@ -52,6 +52,8 @@ def load_config():
 def deploy_clients(clients, logger, access):
     """
     Args:
+        access: dict
+        logger: logger
         clients: list
 
     Returns:
