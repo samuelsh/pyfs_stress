@@ -35,8 +35,6 @@ class StringUtils:
                 yield file_name.rstrip('\n')
 
 
-
-
 class ShellUtils:
     def __init__(self):
         pass
@@ -113,14 +111,13 @@ class ShellUtils:
     @staticmethod
     def run_shell_remote_command(remote_host, remote_cmd):
         remote_cmd = remote_cmd.split(' ')
-        p = subprocess.Popen([SSH_PATH, '-o ConnectTimeout=30', '-o BatchMode=yes',  '-o StrictHostKeyChecking=no',
+        p = subprocess.Popen([SSH_PATH, '-o ConnectTimeout=30', '-o BatchMode=yes', '-o StrictHostKeyChecking=no',
                               remote_host] + remote_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
             raise RuntimeError("%r failed, status code %s stdout %r stderr %r" % (
                 remote_cmd, p.returncode, stdout, stderr))
         return stdout.strip()  # This is the stdout from the shell command
-
 
     @staticmethod
     def run_shell_remote_command_multiline(remote_host, remote_cmd):
@@ -138,7 +135,8 @@ class ShellUtils:
 
     @staticmethod
     def run_shell_remote_command_no_exception(remote_host, remote_cmd):
-        p = subprocess.Popen(['ssh', '-nx', remote_host, remote_cmd], stdout=subprocess.PIPE,
+        p = subprocess.Popen(['ssh', '-o ConnectTimeout=30', '-o BatchMode=yes', '-o StrictHostKeyChecking=no',
+                              remote_host, remote_cmd], stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
