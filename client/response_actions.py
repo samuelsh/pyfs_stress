@@ -98,8 +98,6 @@ def touch(mount_point, incoming_data, **kwargs):
         outgoing_data['target_path'] = incoming_data['target']
         raise DynamoException(error_codes.MAX_DIR_SIZE, "Directory Entry reached {0} size limit".format(MAX_DIR_SIZE),
                               incoming_data['target'])
-    # with open('{0}{1}'.format(mount_point, incoming_data['target']), 'w'):
-    #     pass
     # File will be only created if not exists otherwise EEXIST error returned
     flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
     fd = os.open('{0}{1}'.format(mount_point, incoming_data['target']), flags)
@@ -119,10 +117,6 @@ def stat(mount_point, incoming_data, **kwargs):
 
 def read(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    # if incoming_data['repeats'] == 0:
-    #     raise DynamoException(error_codes.ZERO_SIZE,
-    #                           "File {0} is empty. Nothing to read.".format(incoming_data['target']),
-    #                           incoming_data['target'])
     with open("{0}{1}".format(mount_point, incoming_data['target']), 'r') as f:
         f.seek(incoming_data['offset'])
         buf = f.read(incoming_data['repeats'])
@@ -178,8 +172,6 @@ def rename(mount_point, incoming_data, **kwargs):
     fullpath = incoming_data['target'].split('/')[1:]
     dirpath = fullpath[0]
     fname = fullpath[1]
-    # dst_mount_point = "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
-    #                                                          random.randint(0, kwargs['domains'] - 1))
     dst_mount_point = kwargs['dst_mount_point']
     outgoing_data['rename_dest'] = incoming_data['rename_dest']
     shutil.move("{0}/{1}/{2}".format(mount_point, dirpath, fname),
@@ -198,8 +190,6 @@ def rename_exist(mount_point, incoming_data, **kwargs):
     dst_fname = dst_path.split('/')[2]
     if src_fname == dst_fname:
         raise DynamoException(error_codes.SAMEFILE, "Error: Trying to move file into itself.", src_path)
-    # dst_mount_point = "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, kwargs['nodes'] - 1), kwargs['server'],
-    #                                                          random.randint(0, kwargs['domains'] - 1))
     dst_mount_point = kwargs['dst_mount_point']
     shutil.move("{0}/{1}/{2}".format(mount_point, src_dirpath, src_fname),
                 "{0}/{1}/{2}".format(dst_mount_point, dst_dirpath, dst_fname))
