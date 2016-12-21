@@ -141,12 +141,10 @@ def main():
     logger.info("Loading Test Configuration")
     test_config = load_config()
     logger.info("Setting passwordless SSH connection")
-    ssh_utils.connect(args.cluster, logger, test_config['access']['user'], test_config['access']['password'])
-    # shell_utils.ShellUtils.run_shell_script("utils/ssh_utils.py", "{0} -U {1} -P {2}".format(args.cluster,
-    #                                                                                          test_config['access'][
-    #                                                                                              'user'],
-    #                                                                                          test_config['access'][
-    #                                                                                              'password']), False)
+    with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub'), 'r')) as f:
+        rsa_pub_key = f.read()
+    ssh_utils.set_key_policy(rsa_pub_key, args.cluster, logger, test_config['access']['user'],
+                             test_config['access']['password'])
     if not args.tenants:
         logger.info("Getting cluster params...")
         active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.cluster)
