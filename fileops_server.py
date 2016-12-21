@@ -141,7 +141,7 @@ def main():
     logger.info("Loading Test Configuration")
     test_config = load_config()
     logger.info("Setting passwordless SSH connection")
-    with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub'), 'r')) as f:
+    with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
         rsa_pub_key = f.read()
     ssh_utils.set_key_policy(rsa_pub_key, args.cluster, logger, test_config['access']['user'],
                              test_config['access']['password'])
