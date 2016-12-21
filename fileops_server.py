@@ -62,9 +62,10 @@ def deploy_clients(clients, logger, access):
     with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
         rsa_pub_key = f.read()
     for client in clients:
-        # ShellUtils.run_shell_script(config.SET_SSH_PATH, client)
+        logger.info("Setting SSH connection to {0}".format(client))
         ssh_utils.set_key_policy(rsa_pub_key, client, logger, access['user'],
                                  access['password'])
+        logger.info("Deploying to {0}".format(client))
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {0}'.format(config.DYNAMO_PATH))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '{0}'.format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '{0}'.format(config.DYNAMO_PATH)))
