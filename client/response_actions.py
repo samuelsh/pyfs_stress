@@ -2,6 +2,8 @@ import hashlib
 import os
 import random
 import shutil
+
+import errno
 import fcntl
 # import data_operations.data_generators
 import sys
@@ -96,9 +98,13 @@ def touch(mount_point, incoming_data, **kwargs):
         outgoing_data['target_path'] = incoming_data['target']
         raise DynamoException(error_codes.MAX_DIR_SIZE, "Directory Entry reached {0} size limit".format(MAX_DIR_SIZE),
                               incoming_data['target'])
-    # shell_utils.touch('{0}{1}'.format(mount_point, work['target']))
-    with open('{0}{1}'.format(mount_point, incoming_data['target']), 'w'):
-        pass
+    # with open('{0}{1}'.format(mount_point, incoming_data['target']), 'w'):
+    #     pass
+    # File will be only created if not exists otherwise EEXIST error returned
+    flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
+    fd = os.open('{0}{1}'.format(mount_point, incoming_data['target']), flags)
+    os.fsync(fd)
+    os.close(fd)
     outgoing_data['dirsize'] = os.stat("{0}/{1}".format(mount_point, incoming_data['target'].split('/')[1])).st_size
     # outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
