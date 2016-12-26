@@ -159,7 +159,7 @@ def write(mount_point, incoming_data, **kwargs):
             outgoing_data['bad_hash'] = read_hash
         fcntl.lockf(f.fileno(), fcntl.LOCK_UN)
     outgoing_data['data_pattern'] = data_pattern['pattern']
-    outgoing_data['repeats'] = data_pattern['repeats']
+    outgoing_data['chunk_size'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
     outgoing_data['offset'] = offset
     outgoing_data['uuid'] = incoming_data['uuid']
