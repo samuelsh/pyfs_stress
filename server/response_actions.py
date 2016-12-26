@@ -462,7 +462,7 @@ def stat_fail(logger, incoming_message, dir_tree):
 
 def truncate_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == errno.ESTALE:
+                    incoming_message['error_code'] == errno.ESTALE or incoming_message['error_code'] == errno.EAGAIN:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -529,7 +529,7 @@ def read_fail(logger, incoming_message, dir_tree):
 
 def write_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == errno.ESTALE:
+                    incoming_message['error_code'] == errno.ESTALE or incoming_message['error_code'] == errno.EAGAIN:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
