@@ -228,7 +228,7 @@ def write_success(logger, incoming_message, dir_tree):
                 wfile.modify_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                '%Y/%m/%d %H:%M:%S.%f')
                 wfile.data_pattern = incoming_message['data']['data_pattern']
-                wfile.data_pattern_len = incoming_message['data']['repeats']
+                wfile.data_pattern_len = incoming_message['data']['chunk_size']
                 wfile.data_pattern_hash = incoming_message['data']['hash']
                 wfile.data_pattern_offset = incoming_message['data']['offset']
                 # recalculating file size
@@ -240,7 +240,7 @@ def write_success(logger, incoming_message, dir_tree):
                 logger.debug("File {0}/{1} Write OP arrived before touch, syncing...".format(path[0], path[1]))
                 wfile.ondisk = True
                 wfile.data_pattern = incoming_message['data']['data_pattern']
-                wfile.data_pattern_len = incoming_message['data']['repeats']
+                wfile.data_pattern_len = incoming_message['data']['chunk_size']
                 wfile.data_pattern_hash = incoming_message['data']['hash']
                 wfile.data_pattern_offset = incoming_message['data']['offset']
                 wfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
