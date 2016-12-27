@@ -132,7 +132,7 @@ def read(mount_point, incoming_data, **kwargs):
 def write(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     hasher = hashlib.md5()
-    fd = None
+    fp = None
     if incoming_data['io_type'] == 'sequential':
         offset = incoming_data['offset'] + incoming_data['data_pattern_len']
     else:
@@ -144,26 +144,26 @@ def write(mount_point, incoming_data, **kwargs):
     hasher.update(pattern_to_write)
     data_hash = hasher.hexdigest()
     try:
-        with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
-            fd = f.fileno()
-            fcntl.lockf(fd, fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
-            f.seek(offset)
-            f.write(pattern_to_write)
-            f.flush()
-            os.fsync(fd)
-            #  Checking if original data pattern and pattern on disk are the same
-            f.seek(offset)
-            buf = f.read(data_pattern['repeats'])
-            hasher = hashlib.md5()
-            hasher.update(buf)
-            read_hash = hasher.hexdigest()
-            if read_hash != data_hash:
-                outgoing_data['dynamo_error'] = error_codes.HASHERR
-                outgoing_data['bad_hash'] = read_hash
-            fcntl.lockf(fd, fcntl.LOCK_UN)
+        fp = open("{0}{1}".format(mount_point, incoming_data['target']), 'r+')
+        fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
+        fp.seek(offset)
+        fp.write(pattern_to_write)
+        fp.flush()
+        os.fsync(fp.fileno())
+        #  Checking if original data pattern and pattern on disk are the same
+        fp.seek(offset)
+        buf = fp.read(data_pattern['repeats'])
+        hasher = hashlib.md5()
+        hasher.update(buf)
+        read_hash = hasher.hexdigest()
+        if read_hash != data_hash:
+            outgoing_data['dynamo_error'] = error_codes.HASHERR
+            outgoing_data['bad_hash'] = read_hash
+        fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+        fp.close()
     except (IOError, OSError) as env_error:
-        if fd:
-            fcntl.lockf(fd, fcntl.LOCK_UN)
+        fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+        fp.close()
         raise env_error
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['chunk_size'] = data_pattern['repeats']
@@ -210,18 +210,18 @@ def truncate(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     padding = random.choice(PADDING)
     offset = random.choice(OFFSETS_LIST) + padding
-    fd = None
+    fp = None
     try:
-        with open("{0}{1}".format(mount_point, incoming_data['target']), 'r+') as f:
-            fd = f.fileno()
-            fcntl.lockf(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            f.truncate(offset)
-            f.flush()
-            os.fsync(fd)
-            fcntl.lockf(fd, fcntl.LOCK_UN)
+        fp = open("{0}{1}".format(mount_point, incoming_data['target']), 'r+')
+        fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        fp.truncate(offset)
+        fp.flush()
+        os.fsync(fp.fileno())
+        fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+        fp.close()
     except (IOError, OSError) as env_error:
-        if fd:
-            fcntl.lockf(fd, fcntl.LOCK_UN)
+        fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+        fp.close()
         raise env_error
     outgoing_data['size'] = offset
     outgoing_data['uuid'] = incoming_data['uuid']
