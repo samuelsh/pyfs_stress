@@ -163,7 +163,11 @@ def write(mount_point, incoming_data, **kwargs):
         fp.close()
     except (IOError, OSError) as env_error:
         if fp:
-            fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+            try:
+                fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+            except OSError as os_err:
+                if os_err.errno == errno.ENOLCK:
+                    pass
             fp.close()
         raise env_error
     outgoing_data['data_pattern'] = data_pattern['pattern']
@@ -222,7 +226,11 @@ def truncate(mount_point, incoming_data, **kwargs):
         fp.close()
     except (IOError, OSError) as env_error:
         if fp:
-            fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+            try:
+                fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+            except OSError as os_err:
+                if os_err.errno == errno.ENOLCK:
+                    pass
             fp.close()
         raise env_error
     outgoing_data['size'] = offset
