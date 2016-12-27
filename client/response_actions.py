@@ -162,7 +162,8 @@ def write(mount_point, incoming_data, **kwargs):
                 outgoing_data['bad_hash'] = read_hash
             fcntl.lockf(fd, fcntl.LOCK_UN)
     except (IOError, OSError) as env_error:
-        fcntl.lockf(fd, fcntl.LOCK_UN)
+        if fd:
+            fcntl.lockf(fd, fcntl.LOCK_UN)
         raise env_error
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['chunk_size'] = data_pattern['repeats']
@@ -219,7 +220,8 @@ def truncate(mount_point, incoming_data, **kwargs):
             os.fsync(fd)
             fcntl.lockf(fd, fcntl.LOCK_UN)
     except (IOError, OSError) as env_error:
-        fcntl.lockf(fd, fcntl.LOCK_UN)
+        if fd:
+            fcntl.lockf(fd, fcntl.LOCK_UN)
         raise env_error
     outgoing_data['size'] = offset
     outgoing_data['uuid'] = incoming_data['uuid']
