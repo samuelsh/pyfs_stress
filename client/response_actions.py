@@ -162,8 +162,9 @@ def write(mount_point, incoming_data, **kwargs):
         fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
         fp.close()
     except (IOError, OSError) as env_error:
-        fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
-        fp.close()
+        if fp:
+            fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+            fp.close()
         raise env_error
     outgoing_data['data_pattern'] = data_pattern['pattern']
     outgoing_data['chunk_size'] = data_pattern['repeats']
@@ -220,8 +221,9 @@ def truncate(mount_point, incoming_data, **kwargs):
         fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
         fp.close()
     except (IOError, OSError) as env_error:
-        fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
-        fp.close()
+        if fp:
+            fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+            fp.close()
         raise env_error
     outgoing_data['size'] = offset
     outgoing_data['uuid'] = incoming_data['uuid']
