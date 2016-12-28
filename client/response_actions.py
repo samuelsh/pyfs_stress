@@ -168,6 +168,9 @@ def write(mount_point, incoming_data, **kwargs):
             except OSError as os_err:
                 if os_err.errno == errno.ENOLCK:
                     pass
+                else:
+                    fp.close()
+                    raise os_err
             fp.close()
         raise env_error
     outgoing_data['data_pattern'] = data_pattern['pattern']
@@ -231,6 +234,9 @@ def truncate(mount_point, incoming_data, **kwargs):
             except OSError as os_err:
                 if os_err.errno == errno.ENOLCK:
                     pass
+                else:
+                    fp.close()
+                    raise os_err
             fp.close()
         raise env_error
     outgoing_data['size'] = offset
