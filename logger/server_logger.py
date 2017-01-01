@@ -56,3 +56,27 @@ class ConsoleLogger:
     @property
     def logger(self):
         return self._logger
+
+
+class StatsLogger:
+    def __init__(self, name, output_dir=""):
+        self._logger = logging.getLogger(name)
+        self._logger.setLevel(logging.INFO)
+
+        # create console handler and set level to info
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(logging.INFO)
+        formatter = logging.Formatter("%(asctime)s; - %(message)s")
+        handler.setFormatter(formatter)
+        self._logger.addHandler(handler)
+
+        # create debug file handler and set level to error, file will rotate each 100MB
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "test_stats.log"), "a", 100 * 1024 * 1024, 10)
+        handler.setLevel(logging.INFO)
+        formatter = logging.Formatter("%(asctime)s; - %(message)s")
+        handler.setFormatter(formatter)
+        self._logger.addHandler(handler)
+
+    @property
+    def logger(self):
+        return self._logger

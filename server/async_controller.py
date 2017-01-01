@@ -17,6 +17,7 @@ import zmq
 from config import CTRL_MSG_PORT
 from logger import server_logger
 from server import helpers
+from server.collector import Collector
 from server.request_actions import request_action
 from server.response_actions import response_action
 
@@ -70,6 +71,33 @@ class Controller(object):
             self.client_workers = {}
             self.file_operations = {}  # Contains pre-loaded file operations priorities for weighted choice method
             self.config = test_config
+            self.test_stats = {'total': 0, 'success': {
+                'total': 0,
+                'mkdir': 0,
+                'touch': 0,
+                'list': 0,
+                'stat': 0,
+                'read': 0,
+                'write': 0,
+                'delete': 0,
+                'rename': 0,
+                'rename_exist': 0,
+                'truncate': 0
+
+            }, 'failed': {
+                'total': 0,
+                'mkdir': 0,
+                'touch': 0,
+                'list': 0,
+                'stat': 0,
+                'read': 0,
+                'write': 0,
+                'delete': 0,
+                'rename': 0,
+                'rename_exist': 0,
+                'truncate': 0
+
+            }}
             fops = self.config['file_ops']
             # Checking if file ops weight are exactly 100%
             weights_total = 0
@@ -94,6 +122,10 @@ class Controller(object):
             self._work_to_requeue = []
             self._incoming_message_queue = Queue.PriorityQueue()
             self._outgoing_message_queue = Queue.Queue()
+            self.logger.info("Starting Collector service thread...")
+            collector = Collector(self.test_stats, self.stop_event)
+            collector_thread = Thread(target=collector.run)
+            collector_thread.start()
             self.logger.info("Starting Async Server....")
             proxy_device_thread = AsyncControllerServer(self.logger, self.stop_event, self._incoming_message_queue,
                                                         self._outgoing_message_queue)
@@ -122,6 +154,11 @@ class Controller(object):
                 target = self._dir_tree.get_last_node_tag()
                 yield Job({'action': action, 'data': {'target': target}})
             yield Job({'action': action, 'data': request_action(action, self.logger, self._dir_tree, io_type=io_type)})
+
+    def collect_message_stats(self, incoming_message):
+        self.test_stats['total'] += 1
+        self.test_stats[incoming_message['result']['total']] += 1
+        self.test_stats[incoming_message['result']][incoming_message['action']] += 1
 
     def _get_next_worker_id(self):
         """Return the id of the next worker available to process work. Note
@@ -172,6 +209,7 @@ class Controller(object):
         """
         formatted_message = helpers.message_to_pretty_string(incoming_message)
         self.logger.info('[{0}]: finished {1}, result: {2}'.format(worker_id, job.id, formatted_message))
+        self.collect_message_stats(incoming_message)
         response_action(self.logger, incoming_message, self.dir_tree)
 
     def run(self):
