@@ -23,10 +23,10 @@ class Collector:
                                               .format(self.test_stats['success']['total'])))
             self.logger.info("{0:>40}".format("Total file operations failed {0}"
                                               .format(self.test_stats['failed']['total'])))
-            self.logger.info("{0:>40}".format("=== Successful operations stats ==="))
+            self.logger.info("{0:^80}".format("=== Successful operations stats ==="))
             for k, v in self.test_stats['success'].items():
                 self.logger.info("{0:>40}".format("{0}: {1}".format(k, v)))
-            self.logger.info("{0:>40}".format("=== Failed operations stats ==="))
+            self.logger.info("{0:^80}".format("=== Failed operations stats ==="))
             for k, v in self.test_stats['failed'].items():
                 self.logger.info("{0:>40}".format("{0}: {1}".format(k, v)))
             time.sleep(10)
