@@ -17,7 +17,9 @@ class Collector:
     def run(self):
         time.sleep(10)
         while not self.stop_event.is_set():
+            self.logger.info("{0}".format("############################"))
             self.logger.info("{0}".format("#### Test Runtime Stats ####"))
+            self.logger.info("{0}".format("############################"))
             self.logger.info("{0}".format("Total file operations executed {0}".format(self.test_stats['total'])))
             self.logger.info("{0}".format("Total file operations succeeded {0}"
                                           .format(self.test_stats['success']['total'])))
