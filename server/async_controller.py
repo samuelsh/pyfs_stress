@@ -157,7 +157,7 @@ class Controller(object):
 
     def collect_message_stats(self, incoming_message):
         self.test_stats['total'] += 1
-        self.test_stats[incoming_message['result']['total']] += 1
+        self.test_stats[incoming_message['result']]['total'] += 1
         self.test_stats[incoming_message['result']][incoming_message['action']] += 1
 
     def _get_next_worker_id(self):
