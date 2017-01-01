@@ -95,7 +95,7 @@ def mkdir_success(logger, incoming_message, dir_tree):
     dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name).hexdigest())
     logger.debug(
         "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
-    logger.info(
+    logger.debug(
         'Directory {0} is synced. Size is {1}'.format(syncdir.data.name,
                                                       int(incoming_message['data']['dirsize'])))
 
@@ -121,7 +121,7 @@ def touch_success(logger, incoming_message, dir_tree):
                 f.uuid = uuid.uuid4().hex[-5:]  # Unique session ID, will be modified on each file modify action
                 logger.debug(
                     "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
-                logger.info(
+                logger.debug(
                     'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
                                                                                    int(incoming_message[
                                                                                            'data'][
@@ -157,7 +157,7 @@ def truncate_success(logger, incoming_message, dir_tree):
                     wfile.data_pattern_offset = wfile.size
                     wfile.data_pattern_hash = 'd41d8cd98f00b204e9800998ecf8427e'
                     wfile.data_pattern_len = 0
-                logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
+                logger.debug('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
             # In case there is raise and write arrived before touch we'll sync the file here
             elif wfile:
                 logger.debug("File {0}/{1} Truncate OP arrived before touch, syncing...".format(path[0], path[1]))
@@ -171,7 +171,7 @@ def truncate_success(logger, incoming_message, dir_tree):
                     wfile.data_pattern_offset = wfile.size
                     wfile.data_pattern_hash = 'd41d8cd98f00b204e9800998ecf8427e'
                     wfile.data_pattern_len = 0
-                logger.info('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
+                logger.debug('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
         else:
@@ -234,7 +234,7 @@ def write_success(logger, incoming_message, dir_tree):
                 # recalculating file size
                 if wfile.size < wfile.data_pattern_offset + wfile.data_pattern_len:
                     wfile.size = wfile.data_pattern_offset + wfile.data_pattern_len
-                logger.info('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
+                logger.debug('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
             # In case there is raise and write arrived before touch we'll sync the file here
             elif wfile:
                 logger.debug("File {0}/{1} Write OP arrived before touch, syncing...".format(path[0], path[1]))
@@ -249,7 +249,7 @@ def write_success(logger, incoming_message, dir_tree):
                 # recalculating file size
                 if wfile.size < wfile.data_pattern_offset + wfile.data_pattern_len:
                     wfile.size = wfile.data_pattern_offset + wfile.data_pattern_len
-                logger.info('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
+                logger.debug('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
         else:
@@ -269,7 +269,7 @@ def delete_success(logger, incoming_message, dir_tree):
             if rfile and rfile.ondisk:
                 logger.debug('File {0}/{1} is found, removing'.format(path[0], path[1]))
                 rfile.ondisk = False
-                logger.info('File {0}/{1} is removed form disk'.format(path[0], path[1]))
+                logger.debug('File {0}/{1} is removed form disk'.format(path[0], path[1]))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
         else:
@@ -289,7 +289,7 @@ def rename_success(logger, incoming_message, dir_tree):
             if rfile and rfile.ondisk:
                 logger.debug('File {0}/{1} is found, renaming'.format(path[0], path[1]))
                 rfile.name = incoming_message['data']['rename_dest']
-                logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
+                logger.debug('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
             # In case there is raise and rename arrived before touch we'll sync the file here
             elif rfile:
                 logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(path[0], path[1]))
@@ -297,7 +297,7 @@ def rename_success(logger, incoming_message, dir_tree):
                 rfile.name = incoming_message['data']['rename_dest']
                 rfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                  '%Y/%m/%d %H:%M:%S.%f')
-                logger.info('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
+                logger.debug('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
         else:
@@ -325,7 +325,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
             if file_to_delete and file_to_delete.ondisk:
                 logger.debug('File {0}/{1} is found, removing'.format(src_path[0], src_path[1]))
                 file_to_delete.ondisk = False
-                logger.info('File {0}/{1} is removed form disk'.format(src_path[0], src_path[1]))
+                logger.debug('File {0}/{1} is removed form disk'.format(src_path[0], src_path[1]))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(src_path[0], src_path[1]))
         else:
@@ -344,7 +344,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
             if file_to_rename and file_to_rename.ondisk:
                 logger.debug('File {0}/{1} is found, renaming'.format(dst_path[0], dst_path[1]))
                 file_to_rename.name = src_rename_file  # file_to_delete.name
-                logger.info('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], src_rename_file))
+                logger.debug('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], src_rename_file))
             # In case that destination file wasn't synced to disk for some reason, we'll sync it during rename
             elif file_to_rename:
                 logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(dst_path[0], dst_path[1]))
@@ -352,7 +352,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
                 file_to_rename.name = src_rename_file  # file_to_delete.name
                 file_to_rename.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                           '%Y/%m/%d %H:%M:%S.%f')
-                logger.info('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], src_rename_file))
+                logger.debug('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], src_rename_file))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(dst_path[0], dst_path[1]))
         else:
@@ -387,16 +387,16 @@ def touch_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.MAX_DIR_SIZE:
         rdir_name = incoming_message['target'].split('/')[1]  # get target folder name from path
         try:
-            logger.info("Directory {0} going to be removed from dir tree".format(rdir_name))
+            logger.debug("Directory {0} going to be removed from dir tree".format(rdir_name))
             dir_tree.remove_dir_by_name(rdir_name)
             node_index = dir_tree.synced_nodes.index(hashlib.md5(rdir_name).hexdigest())
             del dir_tree.synced_nodes[node_index]
             node_index = dir_tree.nids.index(hashlib.md5(rdir_name).hexdigest())
             del dir_tree.nids[node_index]
-            logger.info(
+            logger.debug(
                 "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
             dir_tree.append_node()
-            logger.info(
+            logger.debug(
                 "New Directory node appended to tree {0}".format(dir_tree.get_last_node_tag()))
         except NodeIDAbsentError:
             logger.debug(
@@ -413,7 +413,7 @@ def touch_fail(logger, incoming_message, dir_tree):
                     "Result Verify FAILED: Operation {0} failed on {1}/{2} which is on disk".format(
                         incoming_message['action'], rdir_name, rfile_name))
             else:
-                logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+                logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -453,9 +453,9 @@ def stat_fail(logger, incoming_message, dir_tree):
                             incoming_message['action'], rdir_name + "/" + rfile_name))
                     rfile.ondisk = False
             else:
-                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
-            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -486,9 +486,9 @@ def truncate_fail(logger, incoming_message, dir_tree):
                             incoming_message['action'], rdir_name + "/" + rfile_name))
                     rfile.ondisk = False
             else:
-                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
-            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -520,9 +520,9 @@ def read_fail(logger, incoming_message, dir_tree):
                             incoming_message['action'], rdir_name + "/" + rfile_name))
                     rfile.ondisk = False
             else:
-                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
-            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -553,9 +553,9 @@ def write_fail(logger, incoming_message, dir_tree):
                             incoming_message['action'], rdir_name + "/" + rfile_name))
                     rfile.ondisk = False
             else:
-                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
-            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -586,9 +586,9 @@ def delete_fail(logger, incoming_message, dir_tree):
                             incoming_message['action'], rdir_name + "/" + rfile_name))
                     rfile.ondisk = False
             else:
-                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
-            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -619,9 +619,9 @@ def rename_fail(logger, incoming_message, dir_tree):
                             incoming_message['action'], rdir_name + "/" + rfile_name))
                     rfile.ondisk = False
             else:
-                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
-            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -654,8 +654,8 @@ def rename_exist_fail(logger, incoming_message, dir_tree):
                             incoming_message['action'], rdir_name + "/" + rfile_name))
                     rfile.ondisk = False
             else:
-                logger.info('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
         else:
-            logger.info('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
     else:
         generic_error_handler(logger, incoming_message)
