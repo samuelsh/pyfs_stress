@@ -208,7 +208,7 @@ class Controller(object):
          'data{}'}
         """
         formatted_message = helpers.message_to_pretty_string(incoming_message)
-        self.logger.info('[{0}]: finished {1}, result: {2}'.format(worker_id, job.id, formatted_message))
+        self.logger.debug('[{0}]: finished {1}, result: {2}'.format(worker_id, job.id, formatted_message))
         self.collect_message_stats(incoming_message)
         response_action(self.logger, incoming_message, self.dir_tree)
 
