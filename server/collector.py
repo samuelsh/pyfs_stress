@@ -20,10 +20,10 @@ class Collector:
             self.logger.info("{0}".format("############################"))
             self.logger.info("{0}".format("#### Test Runtime Stats ####"))
             self.logger.info("{0}".format("############################"))
-            self.logger.info("{0}".format("Total file operations executed {0}".format(self.test_stats['total'])))
-            self.logger.info("{0}".format("Total file operations succeeded {0}"
+            self.logger.info("{0}".format("Total file operations executed: {0}".format(self.test_stats['total'])))
+            self.logger.info("{0}".format("Total file operations succeeded: {0}"
                                           .format(self.test_stats['success']['total'])))
-            self.logger.info("{0}".format("Total file operations failed {0}"
+            self.logger.info("{0}".format("Total file operations failed: {0}"
                                           .format(self.test_stats['failed']['total'])))
             self.logger.info("{0}".format("=== Successful operations stats ==="))
             for k, v in self.test_stats['success'].items():
