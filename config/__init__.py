@@ -6,6 +6,6 @@ MAX_FILES_PER_DIR = 1000
 SET_SSH_PATH = "/zebra/qa/qa-util-scripts/set-ssh-client"
 DYNAMO_PATH = '/qa/dynamo'
 DYNAMO_BIN_PATH = '/qa/dynamo/client/dynamo_starter.py'
-MAX_WORKERS_PER_CLIENT = 32
+MAX_WORKERS_PER_CLIENT = 16  # previous 32
 CLIENT_MOUNT_POINT = "/mnt/test_workdir"
 FILE_NAMES_PATH = "filenames.dat"
