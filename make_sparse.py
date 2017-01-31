@@ -10,6 +10,8 @@ import argparse
 import sys
 import traceback
 
+import itertools
+
 from logger import server_logger
 from utils import shell_utils
 
@@ -51,7 +53,7 @@ def make_sparse(logger, args, fsize):
     logger.info("Enabling sparse")
     shell_utils.ShellUtils.run_shell_command('fsutil', 'sparse setflag {0}'.format(fpath))
     logger.info("Go make some holes!!!")
-    for _ in range(args.repeat):
+    for _ in itertools.count(args.repeat):
         logger.info("Making hole from {0}KB to {1}KB".format(start_offset / 1024, end_offset / 1024))
         shell_utils.ShellUtils.run_shell_command('fsutil', 'sparse setrange {0} {1} {2}'.format(fpath, start_offset,
                                                                                                 end_offset))
