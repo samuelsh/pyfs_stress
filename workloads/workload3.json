@@ -6,13 +6,13 @@
     "file_ops": {
        "mkdir": 1,
         "list": 1,
-        "delete": 4,
-        "touch": 45,
+        "delete": 1,
+        "touch": 5,
         "stat": 5,
-        "read": 10,
-        "rename": 5,
-        "rename_exist": 5,
-        "write": 19,
+        "read": 40,
+        "rename": 1,
+        "rename_exist": 1,
+        "write": 40,
         "truncate": 5
   }
 }
