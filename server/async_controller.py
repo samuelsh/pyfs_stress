@@ -105,7 +105,7 @@ class Controller(object):
                 'truncate': 0
 
             }}
-            self.logger.info("Loading workload {0}".format(self.config['workload']))
+            self.logger.info("Loading workload: {0}".format(self.config['workload']))
             workload = load_workload(self.config['workload'])
             fops = workload['file_ops']
             # Checking if file ops weight are exactly 100%
