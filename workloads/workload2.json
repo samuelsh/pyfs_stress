@@ -7,7 +7,7 @@
        "mkdir": 1,
         "list": 1,
         "delete": 4,
-        "touch": 44,
+        "touch": 45,
         "stat": 5,
         "read": 10,
         "rename": 5,

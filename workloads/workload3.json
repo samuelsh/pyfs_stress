@@ -1,7 +1,7 @@
 {
   "io_types": {
     "random": 50,
-    "sequential": 51
+    "sequential": 50
   },
     "file_ops": {
        "mkdir": 1,
