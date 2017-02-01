@@ -10,6 +10,7 @@ import json
 import random
 import time
 import uuid
+import os
 from threading import Thread
 
 import zmq
@@ -47,6 +48,12 @@ def weighted_choice(choices):
     x = random.random() * total
     i = bisect(cum_weights, x)
     return values[i]
+
+
+def load_workload(name):
+    with open(os.path.join("workloads", name + ".json")) as f:
+        test_config = json.load(f)
+    return test_config
 
 
 class Job(object):
@@ -98,7 +105,9 @@ class Controller(object):
                 'truncate': 0
 
             }}
-            fops = self.config['file_ops']
+            self.logger.info("Loading workload {0}".format(self.config['workload']))
+            workload = load_workload(self.config['workload'])
+            fops = workload['file_ops']
             # Checking if file ops weight are exactly 100%
             weights_total = 0
             for _, v in fops.items():
@@ -107,7 +116,7 @@ class Controller(object):
                 raise ValueError("Bad total weight of file operations. Got {0}, 100 is expected".format(weights_total))
             self.file_operations = [(k, v) for k, v in fops.items()]
             # Checking if io types weight are exactly 100%
-            io_types = self.config['io_types']
+            io_types = workload['io_types']
             weights_total = 0
             for _, v in io_types.items():
                 weights_total += v

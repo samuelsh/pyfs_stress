@@ -1,0 +1,18 @@
+{
+ "io_types": {
+  "random": 50,
+  "sequential": 50
+ },
+    "file_ops": {
+       "mkdir": 1,
+        "list": 1,
+        "delete": 4,
+        "touch": 45,
+        "stat": 5,
+        "read": 10,
+        "rename": 5,
+        "rename_exist": 5,
+        "write": 19,
+        "truncate": 5
+  }
+}
