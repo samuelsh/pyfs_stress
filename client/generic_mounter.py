@@ -48,7 +48,7 @@ class Mounter:
         if 'nfs' in self.mount_type:
             mtype = self.mount_type.strip('nfs')
             shell_utils.ShellUtils.run_shell_command('mount',
-                                                     '-o nfsvers={0},sync,noac {1}:/{2} {3}'.format(mtype, self.server,
+                                                     '-o nfsvers={0} {1}:/{2} {3}'.format(mtype, self.server,
                                                                                           self.export, mount_point))
         elif 'smb' in self.mount_type:
             with open(DYNAMO_PATH + "/client/smb_params.json") as f:
