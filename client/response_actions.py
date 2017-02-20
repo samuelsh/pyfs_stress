@@ -290,7 +290,7 @@ def write_direct(mount_point, incoming_data, **kwargs):
         aligned_pattern_len = pattern_len if not pattern_len % 2 else pattern_len + 1  # write pattern needs to be
         #  stored in allgned memory buffer
         mmap_buf = mmap.mmap(-1, aligned_pattern_len, prot=mmap.PROT_WRITE)
-        mmap_buf.write(pattern_to_write)
+        mmap_buf.write(data_pattern['pattern'] * aligned_pattern_len)
         os.write(fp, mmap_buf)
         os.fsync(fp)
         #  Checking if original data pattern and pattern on disk are the same
