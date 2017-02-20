@@ -251,7 +251,7 @@ def read_direct(mount_point, incoming_data, **kwargs):
     fp = None
     try:
         fp = os.open("{0}{1}".format(mount_point, incoming_data['target']), os.O_RDONLY | os.O_DIRECT)
-        os.lseek(fp, incoming_data['offset'], os.SEEK_SET)
+        os.lseek(fp, int(incoming_data['offset']), os.SEEK_SET)
         mmap_buf = mmap.mmap(fp, incoming_data['repeats'], prot=mmap.PROT_READ)
         buf = mmap_buf.read(incoming_data['repeats'])
         os.close(fp)
@@ -286,10 +286,10 @@ def write_direct(mount_point, incoming_data, **kwargs):
         fp = os.open("{0}{1}".format(mount_point, incoming_data['target']), os.O_WRONLY | os.O_DIRECT)
         fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
         os.lseek(fp, offset, os.SEEK_SET)
-        pattern_len = len(pattern_to_write)
+        pattern_len = data_pattern['repeats']
         aligned_pattern_len = pattern_len if not pattern_len % 2 else pattern_len + 1  # write pattern needs to be
         #  stored in allgned memory buffer
-        mmap_buf = mmap.mmap(-1, aligned_pattern_len, prot=mmap.PROT_WRITE)
+        mmap_buf = mmap.mmap(-1, int(aligned_pattern_len), prot=mmap.PROT_WRITE)
         mmap_buf.write(data_pattern['pattern'] * aligned_pattern_len)
         os.write(fp, mmap_buf)
         os.fsync(fp)
