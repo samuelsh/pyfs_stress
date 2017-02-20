@@ -259,9 +259,9 @@ def read_direct(mount_point, incoming_data, **kwargs):
         if fp:
             os.close(fp)
         raise env_error
-    hasher = hashlib.md5()
-    hasher.update(str(buf))
-    outgoing_data['hash'] = hasher.hexdigest()
+    # hasher = hashlib.md5()
+    # hasher.update(buf)
+    outgoing_data['hash'] = ""#hasher.hexdigest()
     outgoing_data['offset'] = incoming_data['offset']
     outgoing_data['chunk_size'] = incoming_data['repeats']
     outgoing_data['uuid'] = incoming_data['uuid']
