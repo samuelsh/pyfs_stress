@@ -255,7 +255,7 @@ def read_direct(mount_point, incoming_data, **kwargs):
         mmap_buf = mmap.mmap(fp, int(incoming_data['repeats']), prot=mmap.PROT_READ)
         buf = mmap_buf.read(int(incoming_data['repeats']))
         os.close(fp)
-    except (IOError, OSError) as env_error:
+    except (IOError, OSError, Exception) as env_error:
         if fp:
             os.close(fp)
         print("DEBUG: {0}".format(env_error))
