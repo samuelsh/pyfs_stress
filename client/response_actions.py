@@ -66,8 +66,8 @@ def response_action(action, mount_point, incoming_data, **kwargs):
         "delete": delete,
         "touch": touch,
         "stat": stat,
-        "read": read,
-        "write": write,
+        "read": read_direct,
+        "write": write_direct,
         "rename": rename,
         "rename_exist": rename_exist,
         "truncate": truncate
@@ -287,8 +287,8 @@ def write_direct(mount_point, incoming_data, **kwargs):
         fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
         os.lseek(fp, offset, os.SEEK_SET)
         pattern_len = len(pattern_to_write)
-        aligned_pattern_len = pattern_len if not pattern_len % 2 else pattern_len + 1  # pattern to write needs to be
-        #  store in allgned memory buffer
+        aligned_pattern_len = pattern_len if not pattern_len % 2 else pattern_len + 1  # write pattern needs to be
+        #  stored in allgned memory buffer
         mmap_buf = mmap.mmap(-1, aligned_pattern_len, prot=mmap.PROT_READ)
         mmap_buf.write(pattern_to_write)
         os.write(fp, mmap_buf)
