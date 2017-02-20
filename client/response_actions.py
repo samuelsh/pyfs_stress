@@ -249,7 +249,6 @@ def truncate(mount_point, incoming_data, **kwargs):
 def read_direct(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     fp = None
-    buf = None
     try:
         fp = os.open("{0}{1}".format(mount_point, incoming_data['target']), os.O_RDONLY | os.O_DIRECT)
         os.lseek(fp, int(incoming_data['offset']), os.SEEK_SET)
@@ -258,8 +257,8 @@ def read_direct(mount_point, incoming_data, **kwargs):
         print("DEBUG: SUCCESS READ")
         os.close(fp)
     except (IOError, OSError) as env_error:
-        if fp:
-            os.close(fp)
+        # if fp:
+        #     os.close(fp)
         raise env_error
     hasher = hashlib.md5()
     hasher.update(buf)
