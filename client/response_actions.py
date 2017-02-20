@@ -256,9 +256,9 @@ def read_direct(mount_point, incoming_data, **kwargs):
         buf = mmap_buf.read(int(incoming_data['repeats']))
         os.close(fp)
     except (IOError, OSError, Exception) as env_error:
+        print("DEBUG: {0}".format(env_error))
         if fp:
             os.close(fp)
-        print("DEBUG: {0}".format(env_error))
         raise env_error
     hasher = hashlib.md5()
     hasher.update(buf)
