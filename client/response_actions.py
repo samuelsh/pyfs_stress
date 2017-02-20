@@ -254,9 +254,9 @@ def read_direct(mount_point, incoming_data, **kwargs):
         f_path = "{0}{1}".format(mount_point, incoming_data['target'])
         fp = os.open(f_path, os.O_RDONLY | os.O_DIRECT)
         # os.lseek(fp, incoming_data['offset'], os.SEEK_SET)
-        mmap_buf = mmap.mmap(fp, os.path.getsize(f_path), prot=mmap.PROT_READ)
+        mmap_buf = mmap.mmap(fp, 0, prot=mmap.PROT_READ)
         mmap_buf.seek(incoming_data['offset'])
-        # buf = mmap_buf.read(incoming_data['repeats'])
+        buf = mmap_buf.read(incoming_data['repeats'])
         os.close(fp)
     except (IOError, OSError) as env_error:
         if fp:
