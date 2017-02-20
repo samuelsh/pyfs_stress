@@ -249,12 +249,13 @@ def truncate(mount_point, incoming_data, **kwargs):
 def read_direct(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     fp = None
-    buf = ""
     try:
-        fp = os.open("{0}{1}".format(mount_point, incoming_data['target']), os.O_RDONLY | os.O_DIRECT)
-        os.lseek(fp, incoming_data['offset'], os.SEEK_SET)
-        # mmap_buf = mmap.mmap(fp, incoming_data['repeats'], prot=mmap.PROT_READ)
-        # buf = mmap_buf.read(incoming_data['repeats'])
+        f_path = "{0}{1}".format(mount_point, incoming_data['target'])
+        fp = os.open(f_path, os.O_RDONLY | os.O_DIRECT)
+        # os.lseek(fp, incoming_data['offset'], os.SEEK_SET)
+        mmap_buf = mmap.mmap(fp, length=os.path.getsize(f_path), prot=mmap.PROT_READ)
+        mmap_buf.seek(incoming_data['offset'])
+        buf = mmap_buf.read(incoming_data['repeats'])
         os.close(fp)
     except (IOError, OSError) as env_error:
         if fp:
