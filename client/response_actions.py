@@ -249,19 +249,20 @@ def truncate(mount_point, incoming_data, **kwargs):
 def read_direct(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     fp = None
+    buf = ""
     try:
         fp = os.open("{0}{1}".format(mount_point, incoming_data['target']), os.O_RDONLY | os.O_DIRECT)
         os.lseek(fp, incoming_data['offset'], os.SEEK_SET)
         mmap_buf = mmap.mmap(fp, incoming_data['repeats'], prot=mmap.PROT_READ)
-        buf = mmap_buf.read(incoming_data['repeats'])
+        # buf = mmap_buf.read(incoming_data['repeats'])
         os.close(fp)
     except (IOError, OSError) as env_error:
         if fp:
             os.close(fp)
         raise env_error
-    # hasher = hashlib.md5()
-    # hasher.update(buf)
-    outgoing_data['hash'] = ""#hasher.hexdigest()
+    hasher = hashlib.md5()
+    hasher.update(buf)
+    outgoing_data['hash'] = hasher.hexdigest()
     outgoing_data['offset'] = incoming_data['offset']
     outgoing_data['chunk_size'] = incoming_data['repeats']
     outgoing_data['uuid'] = incoming_data['uuid']
