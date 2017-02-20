@@ -258,6 +258,7 @@ def read_direct(mount_point, incoming_data, **kwargs):
     except (IOError, OSError) as env_error:
         if fp:
             os.close(fp)
+        print("DEBUG: {0}".format(env_error))
         raise env_error
     hasher = hashlib.md5()
     hasher.update(buf)
