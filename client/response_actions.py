@@ -8,6 +8,8 @@ import fcntl
 # import data_operations.data_generators
 import sys
 
+import mmap
+
 from utils import shell_utils
 
 sys.path.append('/qa/dynamo')
@@ -241,4 +243,83 @@ def truncate(mount_point, incoming_data, **kwargs):
         raise env_error
     outgoing_data['size'] = offset
     outgoing_data['uuid'] = incoming_data['uuid']
+    return outgoing_data
+
+
+def read_direct(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
+    fp = None
+    try:
+        fp = os.open("{0}{1}".format(mount_point, incoming_data['target']), os.O_RDONLY | os.O_DIRECT)
+        os.lseek(fp, incoming_data['offset'], os.SEEK_SET)
+        mmap_buf = mmap.mmap(fp, incoming_data['repeats'], prot=mmap.PROT_READ)
+        buf = mmap_buf.read(incoming_data['repeats'])
+        os.close(fp)
+    except (IOError, OSError) as env_error:
+        if fp:
+            os.close(fp)
+        raise env_error
+    hasher = hashlib.md5()
+    hasher.update(buf)
+    outgoing_data['hash'] = hasher.hexdigest()
+    outgoing_data['offset'] = incoming_data['offset']
+    outgoing_data['chunk_size'] = incoming_data['repeats']
+    outgoing_data['uuid'] = incoming_data['uuid']
+    return outgoing_data
+
+
+def write_direct(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
+    hasher = hashlib.md5()
+    fp = None
+    if incoming_data['io_type'] == 'sequential':
+        offset = incoming_data['offset'] + incoming_data['data_pattern_len']
+    else:
+        padding = random.choice(PADDING)
+        base_offset = random.choice(OFFSETS_LIST) + padding
+        offset = base_offset + random.randint(base_offset, MAX_FILE_SIZE)
+    data_pattern = random.choice(DATA_PATTERNS_LIST)
+    pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
+    hasher.update(pattern_to_write)
+    data_hash = hasher.hexdigest()
+    try:
+        fp = os.open("{0}{1}".format(mount_point, incoming_data['target']), os.O_WRONLY | os.O_DIRECT)
+        fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
+        os.lseek(fp, offset, os.SEEK_SET)
+        pattern_len = len(pattern_to_write)
+        aligned_pattern_len = pattern_len if not pattern_len % 2 else pattern_len + 1  # pattern to write needs to be
+        #  store in allgned memory buffer
+        mmap_buf = mmap.mmap(-1, aligned_pattern_len, prot=mmap.PROT_READ)
+        mmap_buf.write(pattern_to_write)
+        os.write(fp, mmap_buf)
+        os.fsync(fp)
+        #  Checking if original data pattern and pattern on disk are the same
+        os.lseek(fp, offset, os.SEEK_SET)
+        buf = os.read(fp, data_pattern['repeats'])
+        hasher = hashlib.md5()
+        hasher.update(buf)
+        read_hash = hasher.hexdigest()
+        if read_hash != data_hash:
+            outgoing_data['dynamo_error'] = error_codes.HASHERR
+            outgoing_data['bad_hash'] = read_hash
+        fcntl.lockf(fp, fcntl.LOCK_UN)
+        os.close(fp)
+    except (IOError, OSError) as env_error:
+        if fp:
+            try:
+                fcntl.lockf(fp, fcntl.LOCK_UN)
+            except OSError as os_err:
+                if os_err.errno == errno.ENOLCK:
+                    pass
+                else:
+                    os.close(fp)
+                    raise os_err
+            os.close(fp)
+        raise env_error
+    outgoing_data['data_pattern'] = data_pattern['pattern']
+    outgoing_data['chunk_size'] = data_pattern['repeats']
+    outgoing_data['hash'] = data_hash
+    outgoing_data['offset'] = offset
+    outgoing_data['uuid'] = incoming_data['uuid']
+    outgoing_data['io_type'] = incoming_data['io_type']
     return outgoing_data
