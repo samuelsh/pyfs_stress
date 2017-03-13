@@ -66,8 +66,8 @@ def response_action(action, mount_point, incoming_data, **kwargs):
         "delete": delete,
         "touch": touch,
         "stat": stat,
-        "read": read_direct,
-        "write": write_direct,
+        "read": read,
+        "write": write,
         "rename": rename,
         "rename_exist": rename_exist,
         "truncate": truncate
