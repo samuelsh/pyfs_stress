@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Inodes space counter per each LUN
 2017 - samuels (c)
