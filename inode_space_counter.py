@@ -31,6 +31,16 @@ class ConsoleLogger:
         return self._logger
 
 
+def execute(cmd):
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+    for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line
+    popen.stdout.close()
+    return_code = popen.wait()
+    if return_code:
+        raise subprocess.CalledProcessError(return_code, cmd, popen.stdout)
+
+
 def get_args():
     """
     Supports the command-line arguments listed below.
@@ -65,12 +75,10 @@ def main():
         inodes_list = [inode.split()[-1] for inode in inodes_list]
         logger.info("Calculating indoes size...")
         for inode in inodes_list:
-            fscat_outp, _ = subprocess.Popen(['fscat', '-M', inode], stdin=subprocess.PIPE, stdout=subprocess.PIPE). \
-                communicate()
-            fscat_outp = [line for line in fscat_outp.splitlines() if "null" not in line]
-            logger.info("Mappings received. Processing...")
-            for mapping in fscat_outp:
-                mapping = mapping.split('->')[-1].lstrip()  # Extracting primary and secondary lun
+            for mapping in execute(['fscat', '-M', inode]):
+                if 'null' in mapping:
+                    continue
+                mapping = mapping.split('->')[-1].lstrip().rstrip()  # Extracting primary and secondary lun
                 logger.debug("Got mapping: {0}".format(mapping))
                 primary_lun = re.search(r"^vol [0-9]+ disk \[\w+-\w+\]", mapping).group(0)
                 secondary_lun = re.search(r"vol-sec [0-9]+ disk-sec \[\w+-\w+\]", mapping).group(0)
