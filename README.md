@@ -1,6 +1,7 @@
 # pyFstress
 Multi-client file system load and stress testing tool based on ZeroMQ.
-It can be useful for anyone, who is developing new file system or testing an existing one.
+
+It could be useful for anyone, who is developing new file system or testing an existing one.
 
 Use cases:
 1. Load & Stress - Imagine 60 clients, each one running 16 io processes vs your file server :)
