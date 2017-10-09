@@ -4,7 +4,7 @@ Multi-client file system load and stress testing tool based on ZeroMQ.
 Use cases:
 1. Load & Stress - Imagine 60 clients, each one running 16 io processes, vs your file server :)
 2. Race Conditions - Client x trying to access file which is removed by client y, while client z reading it
-3. Data Corruptions - Server always "knows" the current status of all files and directories
+3. Data Corruptions - Controller always "knows" the current status of all files and directories
 
 Features:
 * Multiclient load & stress - tested on 60 clients simultaneously ( and it still not the limit :))
@@ -20,9 +20,10 @@ Features:
 
 Linux distributions tested: CentOS 6, CentOS 7, Debian Jessy, Ubuntu 14.04
 
-Requirements:
+System Requirements:
 * File Server under test should support nfs or smb protocol
-* At least 8GB RAM for server machine
+* At least 2 physical machines or VMs for Sever (controller) and one client
+* At least 8GB RAM for server (controller) machine
 * At least 4GB RAM for client machine
 
 Required Python packages:
