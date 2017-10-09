@@ -63,3 +63,6 @@ Feature plans:
 * Performance stats
 * Additional workloads
 * Performance optimisation
+
+### Notes: ###
+This project is still under active development so feel free to test it, open issues or make pull requests.
