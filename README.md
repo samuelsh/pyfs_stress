@@ -1,4 +1,4 @@
-# MultiFileOps
+# pyFstress
 Multi-client file system load and stress testing tool based on ZeroMQ
 
 Usage:
