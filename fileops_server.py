@@ -32,10 +32,10 @@ def get_args():
     """
 
     parser = argparse.ArgumentParser(
-        description='FileOps Server starter - 2016 samuels(c)')
-    parser.add_argument('-c', '--cluster', type=str, required=True, help='Cluster name')
-    parser.add_argument('--clients', type=str, nargs='+', required=True, help="Space separated list of clients")
-    parser.add_argument('-e', '--export', type=str, default="vol0", help="Space separated list of clients")
+        description='pyFstress Server runner')
+    parser.add_argument('cluster', type=str, help='File server name')
+    parser.add_argument('clients', type=str, nargs='+', help="Space separated list of clients")
+    parser.add_argument('-e', '--export', type=str, default="vol0", help="NFS export name")
     parser.add_argument('--tenants', action="store_true", help="Enable MultiTenancy")
     parser.add_argument('-m', '--mtype', type=str, default='nfs3', choices=['nfs3', 'nfs4', 'nfs4.1', 'smb1', 'smb2',
                                                                             'smb3'], help='Mount type')
