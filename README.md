@@ -4,7 +4,7 @@ Multi-client file system load and stress testing tool based on ZeroMQ.
 Use cases:
 1. Load & Stress - Imagine 60 clients, each one running 16 io processes, vs your file server :)
 2. Race Conditions - Client x trying to access file which is removed by client y, while client z reading it
-3. Data Corruptions - Server always "knows" the current status on all files and directories
+3. Data Corruptions - Server always "knows" the current status of all files and directories
 
 Features:
 * Multiclient load & stress - tested on 60 clients simultaneously ( and it still not the limit :))
