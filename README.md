@@ -13,6 +13,7 @@ Features:
 * Following file system operations supported: mkdir, list, remove, touch, stat, read, rename, move,
   write, truncate
 * Random and sequential reads and writes supported
+* NFS advisory file locking
 * Centralised loggin (PUB - SUB) for all clients
 * Configurable workloads (JSON)
 * Flexible configuration (JSON)
