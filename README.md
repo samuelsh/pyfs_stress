@@ -14,7 +14,7 @@ Features:
   write, truncate
 * Random and sequential reads and writes supported
 * NFS advisory file locking
-* Centralised loggin (PUB - SUB) for all clients
+* Centralised logging (PUB - SUB) for all clients
 * Configurable workloads (JSON)
 * Flexible configuration (JSON)
 
