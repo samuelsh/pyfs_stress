@@ -1,5 +1,6 @@
 import os
 import random
+import shlex
 import subprocess
 from string import printable, digits, letters
 
@@ -89,14 +90,14 @@ class ShellUtils:
         return p
 
     @staticmethod
-    def run_shell_command(cmd, params, sep=' ', stdout=subprocess.PIPE):
+    def run_shell_command(cmd, params, stdout=subprocess.PIPE):
         cmdline = [cmd]
-        cmdline = cmdline + params.split(sep)
+        cmdline = cmdline + shlex.split(params)
         p = subprocess.Popen(cmdline, stdout=stdout, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
-            raise RuntimeError("%r failed, status code %s stdout %r stderr %r" % (
-                cmd, p.returncode, stdout, stderr))
+            raise RuntimeError("'%s' failed, error code: %d stdout: '%s' stderr: '%s'" % (
+                ' '.join(cmdline), p.returncode, stdout, stderr.rstrip()))
         return stdout.strip()  # This is the stdout from the shell command
 
     @staticmethod
