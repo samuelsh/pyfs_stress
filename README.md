@@ -1,3 +1,5 @@
+https://travis-ci.org/samuelsh/pyFstress.svg?branch=master
+
 # pyFstress
 Multi-client file system load and stress testing tool based on ZeroMQ.
 
