@@ -1,11 +1,14 @@
 """
 Server logic is here
 2016 samuels (c)
+
+2017 - async_controller module is now a replacement for controller module which is now deprecated
 """
 import json
 import random
 import time
 import uuid
+import warnings
 
 from threading import Thread
 
@@ -36,6 +39,7 @@ class Controller(object):
             port: int
         """
         super(Controller, self).__init__()
+        warnings.warn("Controller class is deprecated and replaced with AsyncController", DeprecationWarning)
         self.stop_event = stop_event
         self.logger = server_logger.Logger().logger
         self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
