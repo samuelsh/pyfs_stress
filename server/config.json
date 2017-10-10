@@ -2,11 +2,11 @@
 	"access": {
       "server": {
 			"user": "root",
-			"password": "N@sst0r3"
+			"password": "qwerty123456"
 		},
 		"client": {
 			"user": "root",
-			"password": "manager11"
+			"password": "qwerty123456"
 		}
 	},
 	"test_settings": {
