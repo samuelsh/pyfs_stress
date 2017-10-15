@@ -49,13 +49,14 @@ class ShellUtils:
 
     @staticmethod
     def run_bash_function(library_path, function_name, params):
-        cmdline = ['bash', '-c', '. %s; %s %s' % (library_path, function_name, params)]
+        params = shlex.split('"source %s; %s %s"' % (library_path, function_name, params))
+        cmdline = ['bash', '-c'] + params
         p = subprocess.Popen(cmdline,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
-            raise RuntimeError("%r failed, status code %s stdout %r stderr %r" % (
-                function_name, p.returncode, stdout, stderr))
+            raise RuntimeError("'%s' failed, error code: '%s', stdout: '%s', stderr: '%s'" % (
+                ' '.join(cmdline), p.returncode, stdout.rstrip(), stderr.rstrip()))
         return stdout.strip()  # This is the stdout from the shell command
 
     @staticmethod
