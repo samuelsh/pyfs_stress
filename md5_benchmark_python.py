@@ -14,7 +14,6 @@ import time
 import xxhash
 from hashlib import md5
 from sys import stdout
-import pyhashxx
 
 WORKERS = 16
 
@@ -33,14 +32,14 @@ class Worker(threading.Thread):
 
     def run(self):
         with open(self.test_file, 'rb') as f:
-            print "Starting Worker ", self.getName()
+            print("Starting Worker ", self.getName())
             # buf = self.test_file.read(self.blocksize)
             buffers = []
             remain_bytes = self.bytes_to_read % self.blocksize
             total_read = 0
             f.seek(self.worker_offset)
 
-            while (True):
+            while True:
                 # f.seek(self.worker_offset + total_read)
                 buf = f.read(self.blocksize)
                 buffers.append(buf)
@@ -51,7 +50,8 @@ class Worker(threading.Thread):
             buf = f.read(remain_bytes)
             buffers.append(buf)
             heapq.heappush(self.heap, (self.pindex, b''.join(buffers)))
-            print "Worker ", self.getName(), " is finished -- ", f.tell(), " -- offset: ", self.worker_offset + self.bytes_to_read
+            print("Worker ", self.getName(), " is finished -- ", f.tell(), " -- offset: ",
+                  self.worker_offset + self.bytes_to_read)
 
 
 def python_hash(afile, hasher, blocksize=65536):
@@ -71,9 +71,9 @@ def init_offsets(filesize):
 
 
 def main():
-    if (platform.system() == "Windows"):
+    if platform.system() == "Windows":
         filepath = "\\\\vip1.f5\\vol0slash\\test.dd"
-    elif (platform.system() == "Linux"):
+    elif platform.system() == "Linux":
         filepath = "/mnt/test/not_aligned"
     else:
         raise Exception("Can't detect your OS!")
@@ -88,7 +88,7 @@ def main():
 
     Workers = [Worker(heap, i, filepath, workers_offsets[i], filesize / WORKERS, hasher, blocksize) for i in
                range(WORKERS)]
-    print Workers
+    print(Workers)
 
     start = time.time()
     for i in range(WORKERS):
@@ -102,16 +102,16 @@ def main():
         hasher.update(data)
 
     end = time.time()
-    print "MD5 took: %s " % str(datetime.timedelta(seconds=int(end - start)))
-    print hasher.hexdigest()
+    print("MD5 took: %s " % str(datetime.timedelta(seconds=int(end - start))))
+    print(hasher.hexdigest())
 
-    print workers_offsets
+    print(workers_offsets)
 
 
 if __name__ == '__main__':
 
     try:
         main()
-    except KeyboardInterrupt, e:
+    except KeyboardInterrupt as e:
         stdout.flush()
-        print 'Bye Bye'
+        print('Bye Bye')

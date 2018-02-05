@@ -26,7 +26,7 @@ def fscat(options, queue, results_q, name, is_multithread=True):
     while not queue.empty():
         try:
             file = queue.get()
-            print name + ": getting %s from queue" % file
+            print(name + ": getting %s from queue" % file)
             if not os.path.isfile(file):
                 continue
             rangeslength = [0, 0, 0]  # Null, oca, disk
@@ -38,13 +38,13 @@ def fscat(options, queue, results_q, name, is_multithread=True):
             c = p.communicate()
             if p.returncode != 0:
                 if options.verbose:
-                    print c[1]
-                    print c[0]
-                print name + ": fscat returned " + str(p.returncode) + " for file " + file + ", skipping."
+                    print(c[1])
+                    print(c[0])
+                print(name + ": fscat returned " + str(p.returncode) + " for file " + file + ", skipping.")
                 continue
             if options.fscatoutput:
-                print c[1]
-                print c[0]
+                print(c[1])
+                print(c[0])
             if len(c[0]) == 0:
                 output += " is inline"
             startofdiskrange = 0
@@ -56,7 +56,7 @@ def fscat(options, queue, results_q, name, is_multithread=True):
                     line[0] = [int(x, 16) for x in line[0]]
                     rangelen = line[0][1] - line[0][0]
                     if "-sec" in line[1]:
-                        print name + ": " + output + " contains redundant data!"
+                        print(name + ": " + output + " contains redundant data!")
                         continue
                     if "oca" in line[1]:
                         rangeslength[1] = rangeslength[1] + rangelen
@@ -74,10 +74,10 @@ def fscat(options, queue, results_q, name, is_multithread=True):
                     elif "shared null" in line[1] or "owned null" in line[1]:  # Skipping "shared null" lines
                         startofdiskrange = line[0][1]
                         if options.verbose:
-                            print name + ": " + output + " null mapping"
+                            print(name + ": " + output + " null mapping")
                     else:
-                        print name + ": " + output + " parsing error!"
-                        print "Parsing error DEBUG: %s \n" % line[1]
+                        print(name + ": " + output + " parsing error!")
+                        print("Parsing error DEBUG: %s \n" % line[1])
                         break
             output = "Null ranges: " + str(rangeslength[0]) + " \tOca ranges: " + str(
                 rangeslength[1]) + " \tDisk ranges: " + str(rangeslength[2]) + " " + output
@@ -100,7 +100,7 @@ def fscat(options, queue, results_q, name, is_multithread=True):
                     else:
                         output += " contains a disk range/s that should have been deduped!"
             if options.verbose or problem or over64KBwithoutOCAorNULL:
-                print name + ": " + output
+                print(name + ": " + output)
 
             if is_multithread is False:  # in case function is called as single execution, we won't loop
                 break
@@ -109,7 +109,7 @@ def fscat(options, queue, results_q, name, is_multithread=True):
             raise e
 
     results_q.put(problem)
-    print name + ": finished"
+    print(name + ": finished")
 
 
 # Driectory tree crawler functions
@@ -120,7 +120,7 @@ def explore_path(path):
         if os.path.isdir(fullname):
             directories.append(fullname)
         else:
-            print "Putting " + fullname + " to files query"
+            print("Putting " + fullname + " to files query")
             files_queue.put(fullname)
     return directories
 
@@ -130,12 +130,12 @@ def dir_scan_worker(task_num):
         try:
             path = unsearched.get_nowait()
             dirs = explore_path(path)
-            print "Task: " + str(task_num) + " >>> Explored path: " + path
+            print("Task: " + str(task_num) + " >>> Explored path: " + path)
             for newdir in dirs:
                 unsearched.put(newdir)
         except Empty:
-            print "Task: " + str(task_num) + " reached end of the queue"
-    print "Done dir_scan_worker " + str(task_num)
+            print("Task: " + str(task_num) + " reached end of the queue")
+    print("Done dir_scan_worker " + str(task_num))
     unsearched.task_done()
 
 
@@ -164,11 +164,11 @@ def fscat_stub(options, lock, name, is_multithread=True):
     me_stopped = False
     while not stop_event.is_set():
         try:
-            print name + ": running fscat_stub on path " + files_queue.get_nowait()
+            print(name + ": running fscat_stub on path " + files_queue.get_nowait())
         except Empty:
-            print name + " reaching empty query"
+            print(name + " reaching empty query")
             if retry_count < 3:
-                print name + " retrying get file"
+                print(name + " retrying get file")
                 time.sleep(1)
                 retry_count += 1
             else:
@@ -177,13 +177,13 @@ def fscat_stub(options, lock, name, is_multithread=True):
                         lock.acquire()
                         stopped_processes_count.value += 1
                         lock.release()
-                        print name + " I'm done, waiting others to complete. counter: " + str(
-                            stopped_processes_count.value)
+                        print(name + " I'm done, waiting others to complete. counter: " + str(
+                            stopped_processes_count.value))
                         me_stopped = True
-                    print " ************** " + name + " is still waiting. Counter: " + str(
-                        stopped_processes_count.value) + "*************************"
+                    print(" ************** " + name + " is still waiting. Counter: " + str(
+                        stopped_processes_count.value) + "*************************")
                 elif stopped_processes_count.value == MAX_PROCESSES:
-                    print name + " timed out. Sending stop event"
+                    print(name + " timed out. Sending stop event")
                     stop_event.set()
 
 
@@ -232,7 +232,7 @@ def run_single_folder_scan(options, queue, results_q):
         process_pool.append(p)
 
     for p in process_pool:
-        print "thread %s started" % p.name
+        print("thread %s started" % p.name)
         p.start()
 
     for p in process_pool:
@@ -249,7 +249,7 @@ def run_single_file_scan(options, queue, results_q):
 
     p = Process(target=fscat, name="process-1", args=(options, queue, results_q, "process-1", False))
 
-    print "thread %s started" % p.name
+    print("thread %s started" % p.name)
     p.start()
     p.join()
 
@@ -281,22 +281,22 @@ def main():
 
     if options.path[0] != "/":
         options.path = os.path.abspath(options.path)
-        print "Using path: " + options.path
+        print("Using path: " + options.path)
     # if options.path[:9] != "/mnt/mgmt":
     #     print "Path should start with /mnt/mgmt"
     #     sys.exit(2)
 
     if os.path.isfile(options.path):
-        print "scanning single file..."
+        print("scanning single file...")
         if run_single_file_scan(options, queue, results_q) is True:
             sys.exit(1)
     elif os.path.isdir(options.path):
         if options.recursive:
-            print "Scanning directory tree..."
+            print("Scanning directory tree...")
             if run_recursive_scan(options, results_q) is True:
                 sys.exit(1)
         else:
-            print "Scanning folder for files..."
+            print("Scanning folder for files...")
             if run_single_folder_scan(options, queue, results_q) is True:
                 sys.exit(1)
 
@@ -304,7 +304,7 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-        print "#### The End ####"
+        print("#### The End ####")
     except Exception as e:
         traceback.print_exc()
         sys.exit(1)

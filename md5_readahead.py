@@ -1,21 +1,20 @@
 #!/usr/bin/python2.6
 
-'''
+"""
 Created on Jan 29, 2015
 
 @author: samuels
-'''
+"""
 from hashlib import md5
 import sys
 import os
 import os.path
 import threading
-import Queue
+import queue
 import logging
 import traceback
 import argparse
 #import hanging_threads
-from __builtin__ import str
 
 WORKERS = 1
 MAX_HASH_WORKER_THREADS = 25
@@ -140,7 +139,7 @@ class FileHasherWorker(threading.Thread):
                                      self.getName(), self.data_queue.qsize())
                     self.data_queue.task_done()
 
-                except Queue.Empty:
+                except queue.Empty:
                     pass
 
         self.logger.debug("%s is finished", self.getName())
@@ -279,7 +278,7 @@ class FileHasherCheckerWorker(threading.Thread):
                                      self.getName(), self.data_queue.qsize())
                     self.data_queue.task_done()
 
-                except Queue.Empty:
+                except queue.Empty:
                     pass
 
         self.logger.debug("%s::%s is finished", self.__class__.__name__, self.getName())
@@ -319,8 +318,8 @@ def main():
     if not os.path.isdir(filepath):
         raise Exception("Path %s not found", filepath)
 
-    data_queue = Queue.Queue()  # queue for passing data from DirectoryTreeWorker thread to FileHasherWorker threads
-    status_queue = Queue.Queue()  # queue for passing statuses form FileHasherWorker to DirectoryTreeWorker
+    data_queue = queue.Queue()  # queue for passing data from DirectoryTreeWorker thread to FileHasherWorker threads
+    status_queue = queue.Queue()  # queue for passing statuses form FileHasherWorker to DirectoryTreeWorker
 
     # Find floders in path and push 'em to queue
     tree_walker = DirectoryTreeWorker(stop_event, data_queue, status_queue, filepath, logger)
@@ -345,8 +344,8 @@ def main():
         data_queue.join()
 
         for i in range(status_queue.qsize()):
-            e = status_queue.get()
-            logger.exception(e)
+            error_status = status_queue.get()
+            logger.exception(error_status)
             if e:
                 raise e
 
@@ -378,5 +377,5 @@ if __name__ == '__main__':
         main()
         print("Test completed")
     except Exception as e:
-        print e
+        print(e)
         sys.exit(1)

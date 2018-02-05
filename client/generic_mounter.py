@@ -14,7 +14,7 @@ from config import DYNAMO_PATH
 
 __author__ = "samuels"
 
-MOUNT_BASE = "/mnt"
+MOUNT_BASE = "/home"
 
 
 class Mounter:
@@ -32,9 +32,9 @@ class Mounter:
             self.logger = server_logger.ConsoleLogger(socket.gethostname()).logger
 
     def mount(self):
-        mount_point = MOUNT_BASE + '/' + self.prefix + '_' + self.export + '_' + self.server
+        mount_point = MOUNT_BASE + '/' + self.prefix + '_' + self.server
         try:
-            os.makedirs('{0}'.format(mount_point))
+            os.makedirs('{}'.format(mount_point))
         except OSError as os_error:
             if os_error.errno == errno.EEXIST:
                 pass
@@ -42,14 +42,14 @@ class Mounter:
                 self.logger.error(os_error)
                 raise os_error
         try:
-            shell_utils.ShellUtils.run_shell_command('umount', '-fl {0}'.format(mount_point))
+            shell_utils.ShellUtils.run_shell_command('umount', '{}'.format(mount_point))
         except RuntimeError as e:
             self.logger.warn(e)
         if 'nfs' in self.mount_type:
             mtype = self.mount_type.strip('nfs')
             shell_utils.ShellUtils.run_shell_command('mount',
-                                                     '-o nfsvers={0} {1}:/{2} {3}'.format(mtype, self.server,
-                                                                                          self.export, mount_point))
+                                                     '{}:/{} {}'.format(self.server,
+                                                                        self.export, mount_point))
         elif 'smb' in self.mount_type:
             with open(DYNAMO_PATH + "/client/smb_params.json") as f:
                 smb_params = json.load(f)
@@ -60,10 +60,8 @@ class Mounter:
                                                             smb_params['password']))
         self.mount_points.append(mount_point)
         if not os.path.ismount(mount_point):
-            self.logger.error('mount failed! type: {0} server: {1} export: {2} mount point: {3}'.format(self.mount_type,
-                                                                                                        self.server,
-                                                                                                        self.export,
-                                                                                                        mount_point))
+            self.logger.error('mount failed! type: {0} server: {1} export: {2} mount point: {3}'.
+                              format(self.mount_type, self.server, self.export, mount_point))
             raise RuntimeError
 
     def get_random_mountpoint(self):

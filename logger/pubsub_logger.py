@@ -2,7 +2,6 @@ import logging
 from logging import handlers
 import os
 import zmq
-import sys
 import socket
 from zmq.log.handlers import PUBHandler
 

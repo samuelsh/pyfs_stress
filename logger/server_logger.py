@@ -3,7 +3,6 @@ from logging import handlers
 import os
 import sys
 
-import multiprocessing
 
 __author__ = 'samuels'
 

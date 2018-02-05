@@ -76,7 +76,7 @@ def key_monitor(logger):
                 break
             time.sleep(1)
 
-    except Exception, e:
+    except Exception as e:
         if stop_event.is_set():
             return 0
         logger.exception(e)

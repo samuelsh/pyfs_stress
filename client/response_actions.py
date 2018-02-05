@@ -10,7 +10,6 @@ import sys
 
 import mmap
 
-from utils import shell_utils
 
 sys.path.append('/qa/dynamo')
 from config import error_codes
@@ -82,7 +81,7 @@ def mkdir(mount_point, incoming_data, **kwargs):
 
 
 def list_dir(mount_point, incoming_data, **kwargs):
-    os.listdir('{0}/{1}'.format(mount_point, incoming_data['target']))
+    os.listdir('{0}{1}'.format(mount_point, incoming_data['target']))
 
 
 def delete(mount_point, incoming_data, **kwargs):
@@ -147,7 +146,7 @@ def write(mount_point, incoming_data, **kwargs):
     data_hash = hasher.hexdigest()
     try:
         fp = open("{0}{1}".format(mount_point, incoming_data['target']), 'r+')
-        fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
+        # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
         fp.seek(offset)
         fp.write(pattern_to_write)
         fp.flush()
@@ -161,7 +160,7 @@ def write(mount_point, incoming_data, **kwargs):
         if read_hash != data_hash:
             outgoing_data['dynamo_error'] = error_codes.HASHERR
             outgoing_data['bad_hash'] = read_hash
-        fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+        # fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
         fp.close()
     except (IOError, OSError) as env_error:
         if fp:
@@ -223,11 +222,11 @@ def truncate(mount_point, incoming_data, **kwargs):
     fp = None
     try:
         fp = open("{0}{1}".format(mount_point, incoming_data['target']), 'r+')
-        fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         fp.truncate(offset)
         fp.flush()
         os.fsync(fp.fileno())
-        fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+        # fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
         fp.close()
     except (IOError, OSError) as env_error:
         if fp:

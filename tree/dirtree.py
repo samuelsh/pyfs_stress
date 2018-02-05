@@ -1,7 +1,6 @@
 import hashlib
 import random
 
-import itertools
 import uuid
 
 import treelib
@@ -143,7 +142,7 @@ def build_recursive_tree(tree, base, depth, width):
     """
     if depth >= 0:
         depth -= 1
-        for i in xrange(width):
+        for _ in range(width):
             directory = Directory(None)
             tree.create_node("{0}".format(directory.name), "{0}".format(hashlib.md5(directory.name)),
                              parent=base.identifier, data=directory)

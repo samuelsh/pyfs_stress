@@ -105,7 +105,7 @@ def print_frame_list(frame_list, frame_id):
 
 
 def start_monitoring():
-    '''After hanging SECONDS_FROZEN the stack trace of the deadlock is printed automatically.'''
+    """After hanging SECONDS_FROZEN the stack trace of the deadlock is printed automatically."""
     thread = threading.Thread(target=monitor)
     thread.daemon = True
     thread.start()

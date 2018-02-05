@@ -62,7 +62,7 @@ class SemiRandom(IDataGenerator, object):
         self.block_size = block_size
         assert block_size <= 1024 * 1024
 
-        for i in xrange(nblocks):
+        for _ in range(nblocks):
             self.blocks.append(os.urandom(self.block_size))
 
     def __xor_str_and_int(self, block, value):

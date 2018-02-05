@@ -20,7 +20,7 @@ def explore_path():
 def parallel_worker(task_num):
     while True:
         dirpath = unsearched.get()
-        print "Task: " + str(task_num) + " >>> Explored path: " + dirpath
+        print("Task: " + str(task_num) + " >>> Explored path: " + dirpath)
         dirpath_queue.put(dirpath)
         dirs = explore_path()
         for newdir in dirs:
@@ -50,4 +50,4 @@ args = parser.parse_args()
 
 run_crawler(args.path)
 
-print 'Done'
+print('Done')

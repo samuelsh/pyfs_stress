@@ -1,12 +1,12 @@
 {
 	"access": {
       "server": {
-			"user": "root",
-			"password": "qwerty123456"
+			"user": "vastdata",
+			"password": "vastdata"
 		},
 		"client": {
 			"user": "root",
-			"password": "qwerty123456"
+			"password": "rootvastdata"
 		}
 	},
 	"test_settings": {

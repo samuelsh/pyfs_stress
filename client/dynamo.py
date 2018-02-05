@@ -2,8 +2,6 @@
 Client load generator
 2016 samules (c)
 """
-import random
-import traceback
 
 import zmq
 import sys
@@ -16,7 +14,7 @@ timer = timeit.default_timer
 sys.path.append('/qa/dynamo')
 from logger import pubsub_logger
 from config import CTRL_MSG_PORT
-from response_actions import response_action, DynamoException
+from .response_actions import response_action, DynamoException
 from config import error_codes
 
 

@@ -1,3 +1,5 @@
+import os
+
 from utils import shell_utils
 
 __author__ = "samuels"
@@ -41,7 +43,7 @@ def list_request(logger, dir_tree, **kwargs):
         target = 'None'
     else:
         target = rdir.data.name
-    data['target'] = target
+    data['target'] = os.sep + target
     return data
 
 

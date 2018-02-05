@@ -2,7 +2,11 @@ import os
 import random
 import shlex
 import subprocess
-from string import printable, digits, letters
+try:
+    from string import printable, digits, letters
+except ImportError:
+    from string import printable, digits, ascii_letters
+
 
 __author__ = 'samuels'
 
@@ -72,20 +76,20 @@ class ShellUtils:
 
     @staticmethod
     def run_shell_script(script, params, stdout=True):
-        FNULL = open(os.devnull, 'w')
+        f_null = open(os.devnull, 'w')
         cmdline = [script]
         cmdline = cmdline + params.split(' ')
         if not stdout:
-            p = subprocess.call(cmdline, stdout=FNULL)
+            p = subprocess.call(cmdline, stdout=f_null)
         else:
             p = subprocess.call(cmdline)
         return p
 
     @staticmethod
     def run_shell_script_remote(remote_host, script, params, stdout=True):
-        FNULL = open(os.devnull, 'w')
+        f_null = open(os.devnull, 'w')
         if not stdout:
-            p = subprocess.call(['ssh', '-nx', remote_host, script, params], stdout=FNULL)
+            p = subprocess.call(['ssh', '-nx', remote_host, script, params], stdout=f_null)
         else:
             p = subprocess.call(['ssh', '-nx', remote_host, script, params])
         return p
@@ -140,7 +144,7 @@ class ShellUtils:
         p = subprocess.Popen(['ssh', '-o ConnectTimeout=30', '-o BatchMode=yes', '-o StrictHostKeyChecking=no',
                               remote_host, remote_cmd], stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate()
+        p.communicate()
         if p.returncode != 0:
             return False  # This is the stdout from the shell command
         return True
@@ -249,8 +253,7 @@ class FSUtils:
 
 def mount(server, export, mount_point, mtype):
     try:
-        ShellUtils.run_shell_command("mount", "-o,nfsvers={0},{1}:/{2},{3}".format(mtype, server, export, mount_point),
-                                     sep=',')
+        ShellUtils.run_shell_command("mount", "-o,nfsvers={0},{1}:/{2},{3}".format(mtype, server, export, mount_point))
     except OSError:
         return False
     return True

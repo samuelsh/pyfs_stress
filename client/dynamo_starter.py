@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import argparse
 import os
 import traceback
@@ -9,8 +9,8 @@ import time
 
 import sys
 
-from generic_mounter import Mounter
-from dynamo import Dynamo
+from .generic_mounter import Mounter
+from .dynamo import Dynamo
 from logger import pubsub_logger
 from config import MAX_WORKERS_PER_CLIENT
 
@@ -48,7 +48,7 @@ def run():
         os.chdir('/qa/dynamo/client')
         logger.info("Mounting work path...")
         mounter = Mounter(args.server, args.export, args.mtype, 'DIRSPLIT', logger=logger, nodes=args.nodes,
-                          domains=args.domains)
+                          domains=args.domains, sudo=True)
         mounter.mount()
     except Exception as error_on_init:
         logger.error(str(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
@@ -70,7 +70,7 @@ def run():
         stop_event.set()
     else:
         logger.exception()
-        raise
+        raise Exception
     logger.info('waiting for processes to die...')
     for p in processes:
         p.join()

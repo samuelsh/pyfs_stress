@@ -2,14 +2,14 @@
 Thread safe priority queue
 samuels(c) 2016
 """
-import Queue
+import queue
 
 import datetime
 
 
 class PriorityQueue(object):
     def __init__(self):
-        self.__rcv_messages_buffer = Queue.PriorityQueue()
+        self.__rcv_messages_buffer = queue.PriorityQueue()
 
     def put(self, message):
         """

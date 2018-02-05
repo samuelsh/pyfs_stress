@@ -19,7 +19,7 @@ stop_event = None
 
 
 def store_console(string):
-    print string
+    print(string)
 
 
 def store_file(string):

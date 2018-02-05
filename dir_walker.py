@@ -39,7 +39,7 @@ class TreeCrawler(object):
     def parallel_worker(self, task_num):
         while True:
             dirpath = self.unsearched.get()
-            print "Task: " + str(task_num) + " >>> Explored path: " + dirpath
+            print("Task: " + str(task_num) + " >>> Explored path: " + dirpath)
             self.dirpath_queue.put(dirpath)
             dirs = self.__explore_path()
             for newdir in dirs:
@@ -54,4 +54,4 @@ args = parser.parse_args()
 crawler = TreeCrawler(args.path)
 crawler.run_crawler()
 
-print 'Done'
+print('Done')

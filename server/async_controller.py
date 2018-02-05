@@ -2,7 +2,7 @@
 Asynchronous Server logic is here
 2016 samuels (c)
 """
-import Queue
+import queue
 import timeit
 from bisect import bisect
 from random import random
@@ -129,8 +129,8 @@ class Controller(object):
             # When/if a client disconnects we'll put any unfinished work in here,
             # get_next_job() will return work from here as well.
             self._work_to_requeue = []
-            self._incoming_message_queue = Queue.PriorityQueue()
-            self._outgoing_message_queue = Queue.Queue()
+            self._incoming_message_queue = queue.PriorityQueue()
+            self._outgoing_message_queue = queue.Queue()
             self.logger.info("Starting Collector service thread...")
             collector = Collector(self.test_stats, self.stop_event)
             collector_thread = Thread(target=collector.run)
@@ -245,8 +245,8 @@ class Controller(object):
                 #                   next_worker_id)
                 self.client_workers[next_worker_id][job.id] = job
                 self._outgoing_message_queue.put((next_worker_id, job.id, job.work))
-                # self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(self._incoming_message_queue.qsize(),
-                #                                                                   self._outgoing_message_queue.qsize()))
+                # self.logger.info("Incoming Queue: {0} Outgoing Queue: {1}".format(
+                # self._incoming_message_queue.qsize(), self._outgoing_message_queue.qsize()))
                 if self.stop_event.is_set():
                     break
         except KeyboardInterrupt:
@@ -341,7 +341,7 @@ class AsyncControllerWorker(Thread, object):
                 next_worker_id, job_id, job_work = self.outgoing_queue.get()
                 self._worker.send_multipart(
                     [next_worker_id, json.dumps((job_id, job_work)).encode('utf8')])
-            except Queue.Empty:
+            except queue.Empty:
                 pass
             except zmq.ZMQError as zmq_error:
                 if zmq_error.errno == zmq.EAGAIN:

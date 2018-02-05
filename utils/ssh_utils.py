@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
 SSH Utils Helper module
 
@@ -11,7 +11,6 @@ import socket
 import pexpect
 import sys
 import warnings
-import pexpect.pxssh
 import argparse
 import logging
 import time
@@ -106,14 +105,13 @@ def set_ssh_pexpect(host, logger, username, password, timeout=30, port=22):
         if match == 2:
             logger.info("RSA key confirmation")
             time.sleep(5)
-            returnCode = p.sendline('yes')
-            print returnCode
+            return_code = p.sendline('yes')
+            print(return_code)
             # p.expect([ssh_newkey, '#'])
-            if returnCode != 4:
-                logger.error("ssh-copy-id failed!")
-                raise
+            if return_code != 4:
+                raise RuntimeError("ssh-copy-id failed!")
             elif ssh_error in p.before.strip() in ssh_error:
-                raise (ssh_error)
+                raise ssh_error
         logger.debug("expect output: %s" % p.before)
         # Last check if SSH is actually working at the end
         (outp, rc) = pexpect.run("ssh -nx -6 " + host + " ls", timeout=timeout, withexitstatus=True)
@@ -124,9 +122,9 @@ def set_ssh_pexpect(host, logger, username, password, timeout=30, port=22):
     except pexpect.EOF:
         logger.debug("EOF raised")
         pass
-    except Exception as e:
+    except Exception as pexpect_err:
         logger.exception("set_ssh_pexpect error!")
-        raise e
+        raise pexpect_err
 
 
 def connect(host, logger, username, password, timeout=30, port=22):

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Directory Tree integrity test runner
 2016 samuelsh (c)
@@ -21,7 +21,6 @@ from logger.pubsub_logger import SUBLogger
 from logger.server_logger import ConsoleLogger
 from server.async_controller import Controller
 from tree import dirtree
-from utils import shell_utils
 from utils import ssh_utils
 from utils.shell_utils import ShellUtils
 
@@ -67,7 +66,8 @@ def deploy_clients(clients, logger, access):
                                  access['password'])
         logger.info("Deploying to {0}".format(client))
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {0}'.format(config.DYNAMO_PATH))
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('client', client, '{0}'.format(config.DYNAMO_PATH)))
+        ShellUtils.run_shell_command('scp', '-p -r {0} {1}:{2}'.format('client', client, '{0}'.
+                                                                       format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '{0}'.format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('logger', client, '{0}'.format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('utils', client, '{0}'.format(config.DYNAMO_PATH)))
@@ -77,6 +77,7 @@ def run_clients(cluster, clients, export, active_nodes, domains, mtype):
     """
 
     Args:
+        mtype: str
         domains: int
         active_nodes: int
         export: str
@@ -152,12 +153,12 @@ def main():
         rsa_pub_key = f.read()
     ssh_utils.set_key_policy(rsa_pub_key, args.cluster, logger, test_config['access']['server']['user'],
                              test_config['access']['server']['password'])
-    if not args.tenants:
-        logger.info("Getting cluster params...")
-        active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.cluster)
-        logger.debug("Active Nodes: %s" % active_nodes)
-        domains = shell_utils.FSUtils.get_domains_num(args.cluster)
-        logger.debug("FSD domains: %s" % domains)
+    # if not args.tenants:
+    #     logger.info("Getting cluster params...")
+    #     active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.cluster)
+    #     logger.debug("Active Nodes: %s" % active_nodes)
+    #     domains = shell_utils.FSUtils.get_domains_num(args.cluster)
+    #     logger.debug("FSD domains: %s" % domains)
     logger.info("Starting controller")
     controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config))
     controller_process.start()
@@ -167,7 +168,7 @@ def main():
     logger.info("Controller started")
     deploy_clients(clients_list, logger, test_config['access']['client'])
     logger.info("Done deploying clients: {0}".format(clients_list))
-    run_clients(args.cluster, clients_list, args.export, active_nodes, domains, args.mtype)
+    run_clients(args.cluster, clients_list, args.export, 2, 8, args.mtype)
     logger.info("Dynamo started on all clients ....")
     controller_process.join()
     print('All done')
