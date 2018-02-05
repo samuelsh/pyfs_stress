@@ -2,10 +2,7 @@ import os
 import random
 import shlex
 import subprocess
-try:
-    from string import printable, digits, letters
-except ImportError:
-    from string import printable, digits, ascii_letters
+from string import printable, digits, ascii_letters
 
 
 __author__ = 'samuels'
@@ -26,12 +23,12 @@ class StringUtils:
 
     @staticmethod
     def get_random_string_nospec(length):
-        return ''.join(random.choice(digits + letters) for _ in range(length))
+        return ''.join(random.choice(digits + ascii_letters) for _ in range(length))
 
     @staticmethod
     def random_string_generator():
         while 1:
-            yield ''.join(random.choice(digits + letters) for _ in range(random.randint(1, 64)))
+            yield ''.join(random.choice(digits + ascii_letters) for _ in range(random.randint(1, 64)))
 
     @staticmethod
     def string_from_file_generator(file_names):

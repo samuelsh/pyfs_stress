@@ -23,7 +23,7 @@ class DirTree(object):
     def append_node(self):
         directory = Directory(self.file_names)
         name = directory.name
-        nid = hashlib.md5(name).hexdigest()
+        nid = hashlib.md5(name.encode()).hexdigest()
         self._nids.append(nid)
         new_node = self._dir_tree.create_node(name, nid, parent=self._tree_base.identifier, data=directory)
         self._last_node = new_node
@@ -47,11 +47,11 @@ class DirTree(object):
         return self._last_node.tag
 
     def get_dir_by_name(self, name):
-        return self._dir_tree.get_node(hashlib.md5(name).hexdigest())
+        return self._dir_tree.get_node(hashlib.md5(name.encode()).hexdigest())
 
     def remove_dir_by_name(self, name):
         try:
-            cnt = self._dir_tree.remove_node(hashlib.md5(name).hexdigest())
+            cnt = self._dir_tree.remove_node(hashlib.md5(name.encode()).hexdigest())
         except Exception:
             raise
         return cnt

@@ -9,8 +9,8 @@ import time
 
 import sys
 
-from .generic_mounter import Mounter
-from .dynamo import Dynamo
+from generic_mounter import Mounter
+from dynamo import Dynamo
 from logger import pubsub_logger
 from config import MAX_WORKERS_PER_CLIENT
 

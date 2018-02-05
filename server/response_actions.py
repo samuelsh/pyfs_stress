@@ -92,7 +92,7 @@ def mkdir_success(logger, incoming_message, dir_tree):
     syncdir.data.ondisk = True
     syncdir.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                        '%Y/%m/%d %H:%M:%S.%f')
-    dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name).hexdigest())
+    dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name.encode()).hexdigest())
     logger.debug(
         "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
     logger.debug(

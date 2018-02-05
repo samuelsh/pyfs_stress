@@ -29,16 +29,16 @@ GB512 = (GB1 * 512)  # level 2 can map up to 256GB
 TB128 = (TB1 * 128)  # level 3 can map up to 128TB
 ZERO_PADDING_START = 128 * MB1  # 128MB
 MAX_FILE_SIZE = TB1 + ZERO_PADDING_START
-DATA_PATTERN_A = {'pattern': 'A', 'repeats': 1}
-DATA_PATTERN_B = {'pattern': 'B', 'repeats': 3}
-DATA_PATTERN_C = {'pattern': 'C', 'repeats': 17}
-DATA_PATTERN_D = {'pattern': 'D', 'repeats': 33}
-DATA_PATTERN_E = {'pattern': 'E', 'repeats': 65}
-DATA_PATTERN_F = {'pattern': 'F', 'repeats': 129}
-DATA_PATTERN_G = {'pattern': 'G', 'repeats': 257}
-DATA_PATTERN_H = {'pattern': 'H', 'repeats': 1025}
-DATA_PATTERN_I = {'pattern': 'I', 'repeats': 128 * KB1 + 1}
-DATA_PATTERN_J = {'pattern': 'J', 'repeats': 64 * KB1 + 1}
+DATA_PATTERN_A = {'pattern': b'A', 'repeats': 1}
+DATA_PATTERN_B = {'pattern': b'B', 'repeats': 3}
+DATA_PATTERN_C = {'pattern': b'C', 'repeats': 17}
+DATA_PATTERN_D = {'pattern': b'D', 'repeats': 33}
+DATA_PATTERN_E = {'pattern': b'E', 'repeats': 65}
+DATA_PATTERN_F = {'pattern': b'F', 'repeats': 129}
+DATA_PATTERN_G = {'pattern': b'G', 'repeats': 257}
+DATA_PATTERN_H = {'pattern': b'H', 'repeats': 1025}
+DATA_PATTERN_I = {'pattern': b'I', 'repeats': 128 * KB1 + 1}
+DATA_PATTERN_J = {'pattern': b'J', 'repeats': 64 * KB1 + 1}
 
 PADDING = [0, ZERO_PADDING_START]
 OFFSETS_LIST = [0, INLINE, KB1, KB4, MB1, MB512, GB1, GB256, GB512, TB1]
@@ -118,7 +118,7 @@ def stat(mount_point, incoming_data, **kwargs):
 
 def read(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    with open("{0}{1}".format(mount_point, incoming_data['target']), 'r') as f:
+    with open("{0}{1}".format(mount_point, incoming_data['target']), 'rb') as f:
         f.seek(incoming_data['offset'])
         buf = f.read(incoming_data['repeats'])
         hasher = hashlib.md5()
@@ -145,7 +145,7 @@ def write(mount_point, incoming_data, **kwargs):
     hasher.update(pattern_to_write)
     data_hash = hasher.hexdigest()
     try:
-        fp = open("{0}{1}".format(mount_point, incoming_data['target']), 'r+')
+        fp = open("{0}{1}".format(mount_point, incoming_data['target']), 'rb+')
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
         fp.seek(offset)
         fp.write(pattern_to_write)

@@ -14,7 +14,7 @@ timer = timeit.default_timer
 sys.path.append('/qa/dynamo')
 from logger import pubsub_logger
 from config import CTRL_MSG_PORT
-from .response_actions import response_action, DynamoException
+from response_actions import response_action, DynamoException
 from config import error_codes
 
 
@@ -57,7 +57,7 @@ class Dynamo(object):
         # We don't need to store the id anymore, the socket will handle it
         # all for us.
         # We'll use client host name + process ID to identify the socket
-        self._socket.identity = "{0}:0x{1:x}".format(socket.gethostname(), proc_id)
+        self._socket.identity = "{0}:0x{1:x}".format(socket.gethostname(), proc_id).encode()
         self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
         self.logger.info("Dynamo {0} init done".format(self._socket.identity))
 
