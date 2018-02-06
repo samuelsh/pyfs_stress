@@ -34,7 +34,9 @@ def get_args():
         description='pyFstress Server runner')
     parser.add_argument('cluster', type=str, help='File server name')
     parser.add_argument('clients', type=str, nargs='+', help="Space separated list of clients")
-    parser.add_argument('-e', '--export', type=str, default="vol0", help="NFS export name")
+    parser.add_argument('-e', '--export', type=str, default="/", help="NFS export name")
+    parser.add_argument('--start_vip', type=str, help="Start VIP address range")
+    parser.add_argument('--end_vip', type=str, help="End VIP address range")
     parser.add_argument('--tenants', action="store_true", help="Enable MultiTenancy")
     parser.add_argument('-m', '--mtype', type=str, default='nfs3', choices=['nfs3', 'nfs4', 'nfs4.1', 'smb1', 'smb2',
                                                                             'smb3'], help='Mount type')
@@ -66,14 +68,14 @@ def deploy_clients(clients, logger, access):
                                  access['password'])
         logger.info("Deploying to {0}".format(client))
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {0}'.format(config.DYNAMO_PATH))
-        ShellUtils.run_shell_command('scp', '-p -r {0} {1}:{2}'.format('client', client, '{0}'.
-                                                                       format(config.DYNAMO_PATH)))
+        ShellUtils.run_shell_command('scp', '-pr {0} {1}:{2}'.format('client', client, '{0}'.
+                                                                     format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '{0}'.format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('logger', client, '{0}'.format(config.DYNAMO_PATH)))
         ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('utils', client, '{0}'.format(config.DYNAMO_PATH)))
 
 
-def run_clients(cluster, clients, export, active_nodes, domains, mtype):
+def run_clients(cluster, clients, export, active_nodes, domains, mtype, start_vip, end_vip):
     """
 
     Args:
@@ -83,6 +85,8 @@ def run_clients(cluster, clients, export, active_nodes, domains, mtype):
         export: str
         cluster: str
         clients: list
+        start_vip: str
+        end_vip: str
 
     Returns:
 
@@ -90,10 +94,12 @@ def run_clients(cluster, clients, export, active_nodes, domains, mtype):
     controller = socket.gethostname()
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client,
-                                                       'python {0} --controller {1} --server {2} --export {3}'
-                                                       ' --nodes {4} --domains {5} --mtype {6} &'.format(
+                                                       'python {} --controller {} --server {} --export {}'
+                                                       ' --nodes {} --domains {} --mtype {} --start_vip {}'
+                                                       ' --end_vip &'.
+                                                       format(
                                                            config.DYNAMO_BIN_PATH, controller, cluster, export,
-                                                           active_nodes, domains, mtype))
+                                                           active_nodes, domains, mtype, start_vip, end_vip))
 
 
 def run_controller(event, dir_tree, test_config):
@@ -168,7 +174,7 @@ def main():
     logger.info("Controller started")
     deploy_clients(clients_list, logger, test_config['access']['client'])
     logger.info("Done deploying clients: {0}".format(clients_list))
-    run_clients(args.cluster, clients_list, args.export, 2, 8, args.mtype)
+    run_clients(args.cluster, clients_list, args.export, 2, 8, args.mtype, args.start_vip, args.end_vip)
     logger.info("Dynamo started on all clients ....")
     controller_process.join()
     print('All done')

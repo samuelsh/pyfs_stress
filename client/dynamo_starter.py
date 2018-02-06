@@ -29,11 +29,13 @@ def get_args():
         description='Test Runner script')
     parser.add_argument('-c', '--controller', type=str, required=True, help='Controller host name')
     parser.add_argument('-s', '--server', type=str, required=True, help='Cluster Server hostname')
-    parser.add_argument('-e', '--export', type=str, help='NFS Export Name', default="vol0")
+    parser.add_argument('-e', '--export', type=str, help='NFS Export Name', default="/")
     parser.add_argument('-n', '--nodes', type=int, help='Number of active nodes', default=0)
     parser.add_argument('-d', '--domains', type=int, help='Number of fs domains', default=0)
     parser.add_argument('-m', '--mtype', type=str, help='Mount Type', choices=['nfs3', 'nfs4', 'nfs4.1', 'smb1', 'smb2',
                                                                                'smb3'], default="nfs3")
+    parser.add_argument('--start_vip', type=str, help="Start VIP address range")
+    parser.add_argument('--end_vip', type=str, help="End VIP address range")
     args = parser.parse_args()
     return args
 
@@ -48,8 +50,12 @@ def run():
         os.chdir('/qa/dynamo/client')
         logger.info("Mounting work path...")
         mounter = Mounter(args.server, args.export, args.mtype, 'DIRSPLIT', logger=logger, nodes=args.nodes,
-                          domains=args.domains, sudo=True)
-        mounter.mount()
+                          domains=args.domains, sudo=True, start_vip=args.start_vip, end_vip=args.end_vip)
+        try:
+            mounter.mount_all_vips()
+        except AttributeError:
+            logger.warn("VIP range is bad or None. Filing back to mounting storage server IP")
+            mounter.mount()
     except Exception as error_on_init:
         logger.error(str(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
         raise
