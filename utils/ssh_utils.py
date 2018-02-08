@@ -61,7 +61,7 @@ def is_hostname(hostname):
         return False
 
 
-def set_key_policy(key, host, logger, username, password, port=22):
+def set_key_policy(key, host, username, password, port=22):
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -71,16 +71,13 @@ def set_key_policy(key, host, logger, username, password, port=22):
         ssh.exec_command('chmod 644 ~/.ssh/authorized_keys')
         ssh.exec_command('chmod 700 ~/.ssh/')
         ssh.close()
-    except socket_error as serr:
-        if serr.errno == errno.ECONNREFUSED:
-            logger.exception("")
-            raise serr
+    except socket_error as sock_err:
+        if sock_err.errno == errno.ECONNREFUSED:
+            raise sock_err
     except paramiko.BadAuthenticationType as authtype_err:
-        logger.exception("")
         raise authtype_err
     except Exception as general_paramiko_ex:
-        logger.exception("")
-        return False
+        raise general_paramiko_ex
 
     return True
 

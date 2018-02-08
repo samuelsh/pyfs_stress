@@ -4,7 +4,6 @@ import shlex
 import subprocess
 from string import printable, digits, ascii_letters
 
-
 __author__ = 'samuels'
 
 QA_BASHLIB_PATH = "/zebra/qa/qa-bashlib/qa-bashlib.sh"
@@ -134,7 +133,9 @@ class ShellUtils:
 
     @staticmethod
     def run_shell_remote_command_background(remote_host, remote_cmd):
-        subprocess.Popen(['ssh', '-nx', remote_host, remote_cmd])
+        full_remote_cmd = [SSH_PATH, '-o ConnectTimeout=30', '-o BatchMode=yes', '-o StrictHostKeyChecking=no',
+                           remote_host, remote_cmd]
+        subprocess.Popen(full_remote_cmd)
 
     @staticmethod
     def run_shell_remote_command_no_exception(remote_host, remote_cmd):

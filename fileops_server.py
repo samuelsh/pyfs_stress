@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.6
 """
 Directory Tree integrity test runner
-2016 samuelsh (c)
+2016 samuel (c)
 """
 import argparse
 import atexit
@@ -9,20 +9,21 @@ import json
 import os
 import socket
 import sys
-import traceback
+import errno
+import zmq
+import config
 from multiprocessing import Event
 from multiprocessing import Process
 
-import errno
-import zmq
-
-import config
 from logger.pubsub_logger import SUBLogger
 from logger.server_logger import ConsoleLogger
 from server.async_controller import Controller
 from tree import dirtree
 from utils import ssh_utils
 from utils.shell_utils import ShellUtils
+
+stop_event = Event()
+logger = ConsoleLogger(__name__).logger
 
 
 def get_args():
@@ -50,14 +51,13 @@ def load_config():
     return test_config
 
 
-def deploy_clients(clients, logger, access):
+def deploy_clients(clients, access):
     """
     Args:
         access: dict
-        logger: logger
         clients: list
 
-    Returns:
+    Returns: None
 
     """
     with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
@@ -67,15 +67,19 @@ def deploy_clients(clients, logger, access):
         ssh_utils.set_key_policy(rsa_pub_key, client, logger, access['user'],
                                  access['password'])
         logger.info("Deploying to {0}".format(client))
-        ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {0}'.format(config.DYNAMO_PATH))
-        ShellUtils.run_shell_command('scp', '-pr {0} {1}:{2}'.format('client', client, '{0}'.
-                                                                     format(config.DYNAMO_PATH)))
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('config', client, '{0}'.format(config.DYNAMO_PATH)))
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('logger', client, '{0}'.format(config.DYNAMO_PATH)))
-        ShellUtils.run_shell_command('scp', '-r {0} {1}:{2}'.format('utils', client, '{0}'.format(config.DYNAMO_PATH)))
+        ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {}'.format(config.DYNAMO_PATH))
+        ShellUtils.run_shell_command('rsync',
+                                     '-avz {} {}:{}'.format('client', client, config.DYNAMO_PATH))
+        ShellUtils.run_shell_command('rsync',
+                                     '-avz {} {}:{}'.format('config', client, config.DYNAMO_PATH))
+        ShellUtils.run_shell_command('rsync',
+                                     '-avz {} {}:{}'.format('logger', client, config.DYNAMO_PATH))
+        ShellUtils.run_shell_command('rsync',
+                                     '-avz {} {}:{}'.format('utils', client, config.DYNAMO_PATH))
+        ShellUtils.run_shell_remote_command_no_exception(client, 'chmod +x {}'.format(config.DYNAMO_BIN_PATH))
 
 
-def run_clients(cluster, clients, export, active_nodes, domains, mtype, start_vip, end_vip):
+def run_clients(cluster, clients, export, mtype, start_vip, end_vip):
     """
 
     Args:
@@ -91,24 +95,21 @@ def run_clients(cluster, clients, export, active_nodes, domains, mtype, start_vi
     Returns:
 
     """
-    controller = socket.gethostname()
+    #  Will explicitly pass public IP of the controller to clients since we won't rely on DNS existence
+    controller = socket.gethostbyname(socket.gethostname())
+    dynamo_cmd_line = "{} --controller {} --server {} --export {} --mtype {} --start_vip {} --end_vip {}". \
+        format(config.DYNAMO_BIN_PATH, controller, cluster, export, mtype, start_vip, end_vip)
     for client in clients:
-        ShellUtils.run_shell_remote_command_background(client,
-                                                       'python {} --controller {} --server {} --export {}'
-                                                       ' --nodes {} --domains {} --mtype {} --start_vip {}'
-                                                       ' --end_vip &'.
-                                                       format(
-                                                           config.DYNAMO_BIN_PATH, controller, cluster, export,
-                                                           active_nodes, domains, mtype, start_vip, end_vip))
+        ShellUtils.run_shell_remote_command_background(client, dynamo_cmd_line)
 
 
 def run_controller(event, dir_tree, test_config):
     Controller(event, dir_tree, test_config).run()
 
 
-def run_sub_logger(ip, event):
+def run_sub_logger(ip):
     sub_logger = SUBLogger(ip)
-    while not event.is_set():
+    while not stop_event.is_set():
         try:
             topic, message = sub_logger.sub.recv_multipart(flags=zmq.NOBLOCK)
             log_msg = getattr(sub_logger.logger, topic.lower().decode())
@@ -117,30 +118,24 @@ def run_sub_logger(ip, event):
             if zmq_error.errno == zmq.EAGAIN:
                 pass
         except KeyboardInterrupt:
-            event.set()
+            pass
 
 
-def cleanup(logger, clients=None):
+def cleanup(clients=None):
     logger.info("Cleaning up on exit....")
     if clients:
         for client in clients:
-            try:
-                logger.info("{0}: Killing workers".format(client))
-                ShellUtils.run_shell_remote_command(client, 'pkill -f python')
-                logger.info("{0}: Unmounting".format(client))
-                ShellUtils.run_shell_remote_command(client, 'umount -fl /mnt/{0}'.format('DIRSPLIT*'))
-                logger.info("{0}: Removing mountpoint folder/s".format(client))
-                ShellUtils.run_shell_remote_command(client, 'rm -fr /mnt/{0}'.format('DIRSPLIT*'))
-            except RuntimeError:
-                pass
+            logger.info("{}: Killing workers".format(client))
+            ShellUtils.run_shell_remote_command_no_exception(client, 'pkill -9 -f python')
+            logger.info("{}: Unmounting".format(client))
+            ShellUtils.run_shell_remote_command_no_exception(client, 'umount -fl /home/{}'.format('DIRSPLIT*'))
+            logger.info("{}: Removing mountpoint folder/s".format(client))
+            ShellUtils.run_shell_remote_command_no_exception(client, 'rm -fr /home/{}'.format('DIRSPLIT*'))
 
 
 def main():
     file_names = None
-    active_nodes = 0
-    domains = 0
     args = get_args()
-    stop_event = Event()
     try:
         with open(config.FILE_NAMES_PATH, 'r') as f:  # If file with names isn't exists, we'll just create random files
             file_names = f.readlines()
@@ -148,33 +143,26 @@ def main():
         if io_error.errno == errno.ENOENT:
             pass
     dir_tree = dirtree.DirTree(file_names)
-    logger = ConsoleLogger(__name__).logger
     logger.debug("{0} Logger initialised {1}".format(__name__, logger))
-    atexit.register(cleanup, logger, clients=args.clients)
+    atexit.register(cleanup, clients=args.clients)
     clients_list = args.clients
     logger.info("Loading Test Configuration")
     test_config = load_config()
     logger.info("Setting passwordless SSH connection")
     with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
         rsa_pub_key = f.read()
-    ssh_utils.set_key_policy(rsa_pub_key, args.cluster, logger, test_config['access']['server']['user'],
+    ssh_utils.set_key_policy(rsa_pub_key, args.cluster, test_config['access']['server']['user'],
                              test_config['access']['server']['password'])
-    # if not args.tenants:
-    #     logger.info("Getting cluster params...")
-    #     active_nodes = shell_utils.FSUtils.get_active_nodes_num(args.cluster)
-    #     logger.debug("Active Nodes: %s" % active_nodes)
-    #     domains = shell_utils.FSUtils.get_domains_num(args.cluster)
-    #     logger.debug("FSD domains: %s" % domains)
     logger.info("Starting controller")
     controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config))
     controller_process.start()
     sub_logger_process = Process(target=run_sub_logger,
-                                 args=(socket.gethostbyname(socket.gethostname()), stop_event,))
+                                 args=(socket.gethostbyname(socket.gethostname()),))
     sub_logger_process.start()
     logger.info("Controller started")
-    deploy_clients(clients_list, logger, test_config['access']['client'])
+    deploy_clients(clients_list, test_config['access']['client'])
     logger.info("Done deploying clients: {0}".format(clients_list))
-    run_clients(args.cluster, clients_list, args.export, 2, 8, args.mtype, args.start_vip, args.end_vip)
+    run_clients(args.cluster, clients_list, args.export, args.mtype, args.start_vip, args.end_vip)
     logger.info("Dynamo started on all clients ....")
     controller_process.join()
     print('All done')
@@ -186,6 +174,7 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         print('CTRL + C was pressed. Waiting for Controller to stop...')
+        stop_event.set()
     except Exception as e:
-        traceback.print_exc()
+        logger.exception(e)
         sys.exit(1)

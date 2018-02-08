@@ -317,7 +317,7 @@ class AsyncControllerWorker(Thread, object):
             raise zmq_error
 
     def run(self):
-        self._logger.info("Controller incoming/outgoing messages worker thread {0} started".format(self.name))
+        self._logger.info("Controller incoming/outgoing messages worker {0} started".format(self.name))
         while not self.stop_event.is_set():
             try:
                 worker_id, message = self._worker.recv_multipart()  # flags=zmq.NOBLOCK)

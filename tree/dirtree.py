@@ -1,4 +1,4 @@
-import hashlib
+import xxhash
 import random
 
 import uuid
@@ -23,7 +23,7 @@ class DirTree(object):
     def append_node(self):
         directory = Directory(self.file_names)
         name = directory.name
-        nid = hashlib.md5(name.encode()).hexdigest()
+        nid = xxhash.xxh64(name).hexdigest()
         self._nids.append(nid)
         new_node = self._dir_tree.create_node(name, nid, parent=self._tree_base.identifier, data=directory)
         self._last_node = new_node
@@ -47,11 +47,11 @@ class DirTree(object):
         return self._last_node.tag
 
     def get_dir_by_name(self, name):
-        return self._dir_tree.get_node(hashlib.md5(name.encode()).hexdigest())
+        return self._dir_tree.get_node(xxhash.xxh64(name).hexdigest())
 
     def remove_dir_by_name(self, name):
         try:
-            cnt = self._dir_tree.remove_node(hashlib.md5(name.encode()).hexdigest())
+            cnt = self._dir_tree.remove_node(xxhash.xxh64(name).hexdigest())
         except Exception:
             raise
         return cnt
@@ -144,7 +144,7 @@ def build_recursive_tree(tree, base, depth, width):
         depth -= 1
         for _ in range(width):
             directory = Directory(None)
-            tree.create_node("{0}".format(directory.name), "{0}".format(hashlib.md5(directory.name)),
+            tree.create_node("{0}".format(directory.name), "{0}".format(xxhash.xxh64(directory.name)),
                              parent=base.identifier, data=directory)
         dirs_nodes = tree.children(base.identifier)
         for dir_node in dirs_nodes:
@@ -161,8 +161,9 @@ class Directory(object):
         self.ondisk = False
         self.checksum = 0
         self.creation_time = None
-        self.size = None
+        self.size = None  # Size of dir entry
         self.files = []
+        self.files_dict = {}
 
     @property
     def name(self):
@@ -174,12 +175,16 @@ class Directory(object):
         Returns: list
 
         """
-        self.files.append(File(self.file_names_generator))
-        return self.files[-1].name
+        # self.files.append(File(self.file_names_generator))
+        # return self.files[-1].name
+        new_file = File(self.file_names_generator)
+        self.files_dict[xxhash.xxh64(new_file.name).hexdigest()] = new_file
+        return new_file.name
 
     def get_file_by_name(self, name):
         try:
-            return next((thefile for thefile in self.files if thefile.name == name), None)
+            # return next((thefile for thefile in self.files if thefile.name == name), None)
+            return self.files_dict[xxhash.xxh64(name).hexdigest()]
         except ValueError:
             return None
 
@@ -190,7 +195,8 @@ class Directory(object):
 
         """
         try:
-            return random.choice(self.files)
+            # return random.choice(self.files)
+            return random.choice(list(self.files_dict.values()))
         except IndexError:
             return None
 
@@ -204,18 +210,22 @@ class Directory(object):
 
         """
         try:
-            return random.sample(set(self.files), f_number)
+            # return random.sample(set(self.files), f_number)
+            return random.sample(set(self.files_dict.values()), f_number)
         except IndexError:
             return None
 
     def delete_random_file(self):
-        index = self.files.index(random.choice(self.files))
-        del self.files[index]
+        # index = self.files.index(random.choice(self.files))
+        # del self.files[index]
+        del self.files_dict[random.choice(list(self.files_dict.keys()))]
 
     def delete_random_files(self, f_number):
-        for f in random.sample(set(self.files), f_number):
-            index = self.files.index(f)
-            del self.files[index]
+        # for f in random.sample(set(self.files), f_number):
+        # index = self.files.index(f)
+        # del self.files[index]
+        for f in random.sample(set(self.files_dict.keys()), f_number):
+            del self.files_dict[f]
 
 
 class File(object):

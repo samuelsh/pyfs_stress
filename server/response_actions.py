@@ -1,12 +1,12 @@
 import datetime
-import hashlib
+import xxhash
 
 import errno
 import uuid
 
 from treelib.tree import NodeIDAbsentError
 
-from config import error_codes
+from config import error_codes, MAX_FILES_PER_DIR
 
 __author__ = "samuels"
 
@@ -88,11 +88,11 @@ def success_response_actions(action):
 
 def mkdir_success(logger, incoming_message, dir_tree):
     syncdir = dir_tree.get_dir_by_name(incoming_message['target'])
-    syncdir.data.size = int(incoming_message['data']['dirsize'])
+    syncdir.data.size = 0  # int(incoming_message['data']['dirsize'])
     syncdir.data.ondisk = True
     syncdir.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                        '%Y/%m/%d %H:%M:%S.%f')
-    dir_tree.synced_nodes.append(hashlib.md5(syncdir.data.name.encode()).hexdigest())
+    dir_tree.synced_nodes.append(xxhash.xxh64(syncdir.data.name).hexdigest())
     logger.debug(
         "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
     logger.debug(
@@ -108,25 +108,46 @@ def touch_success(logger, incoming_message, dir_tree):
         logger.debug(
             "Directory {0} already removed from active dirs list, dropping touch {1}".format(path[0],
                                                                                              path[1]))
+        return
     # There might be a raise when successful mkdir message will arrive after successful touch message
     # So we won't check here if dir is already synced
-    else:
-        for f in syncdir.data.files:
-            if f.name == path[1]:  # Now, when we got reply from client that file was created,
-                #  we can mark it as synced
-                syncdir.data.size = int(incoming_message['data']['dirsize'])
-                f.ondisk = True
-                f.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-                                                             '%Y/%m/%d %H:%M:%S.%f')
-                f.uuid = uuid.uuid4().hex[-5:]  # Unique session ID, will be modified on each file modify action
-                logger.debug(
-                    "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
-                logger.debug(
-                    'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
-                                                                                   int(incoming_message[
-                                                                                           'data'][
-                                                                                           'dirsize'])))
-                break
+
+    # for f in syncdir.data.files:
+    #    if f.name == path[1]:
+    # syncdir.data.files_dict
+    f = syncdir.data.get_file_by_name(path[1])
+    #  Now, when we got reply from client that file was created,
+    #  we can mark it as synced
+    #  syncdir.data.size = int(incoming_message['data']['dirsize'])
+    syncdir.data.size += 1
+    f.ondisk = True
+    f.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                 '%Y/%m/%d %H:%M:%S.%f')
+    f.uuid = uuid.uuid4().hex[-5:]  # Unique session ID, will be modified on each file modify action
+    logger.debug(
+        "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
+    logger.debug(
+        'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
+                                                                       int(incoming_message[
+                                                                               'data'][
+                                                                               'dirsize'])))
+    if syncdir.data.size > MAX_FILES_PER_DIR:
+        dir_index = xxhash.xxh64(path[0]).hexdigest()
+        try:
+            logger.debug("Directory {0} going to be removed from dir tree".format(path[0]))
+            dir_tree.remove_dir_by_name(path[0])
+            node_index = dir_tree.synced_nodes.index(dir_index)
+            del dir_tree.synced_nodes[node_index]
+            node_index = dir_tree.nids.index(dir_index)
+            del dir_tree.nids[node_index]
+            logger.debug(
+                "Directory {0} is reached its size limit and removed from active dirs list".format(path[0]))
+            dir_tree.append_node()
+            logger.debug(
+                "New Directory node appended to tree {0}".format(dir_tree.get_last_node_tag()))
+        except NodeIDAbsentError:
+            logger.debug(
+                "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
 
 
 def list_success(logger, incoming_message, dir_tree):
@@ -384,22 +405,23 @@ def touch_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST:
         return
     if incoming_message['error_code'] == error_codes.MAX_DIR_SIZE:
-        rdir_name = incoming_message['target'].split('/')[1]  # get target folder name from path
-        try:
-            logger.debug("Directory {0} going to be removed from dir tree".format(rdir_name))
-            dir_tree.remove_dir_by_name(rdir_name)
-            node_index = dir_tree.synced_nodes.index(hashlib.md5(rdir_name).hexdigest())
-            del dir_tree.synced_nodes[node_index]
-            node_index = dir_tree.nids.index(hashlib.md5(rdir_name).hexdigest())
-            del dir_tree.nids[node_index]
-            logger.debug(
-                "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
-            dir_tree.append_node()
-            logger.debug(
-                "New Directory node appended to tree {0}".format(dir_tree.get_last_node_tag()))
-        except NodeIDAbsentError:
-            logger.debug(
-                "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
+        pass
+        # rdir_name = incoming_message['target'].split('/')[1]  # get target folder name from path
+        # try:
+        #     logger.debug("Directory {0} going to be removed from dir tree".format(rdir_name))
+        #     dir_tree.remove_dir_by_name(rdir_name)
+        #     node_index = dir_tree.synced_nodes.index(hashlib.md5(rdir_name).hexdigest())
+        #     del dir_tree.synced_nodes[node_index]
+        #     node_index = dir_tree.nids.index(hashlib.md5(rdir_name).hexdigest())
+        #     del dir_tree.nids[node_index]
+        #     logger.debug(
+        #         "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
+        #     dir_tree.append_node()
+        #     logger.debug(
+        #         "New Directory node appended to tree {0}".format(dir_tree.get_last_node_tag()))
+        # except NodeIDAbsentError:
+        #     logger.debug(
+        #         "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
 
     elif incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path

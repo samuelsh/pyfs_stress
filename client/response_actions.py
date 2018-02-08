@@ -1,4 +1,4 @@
-import hashlib
+import xxhash
 import os
 import random
 import shutil
@@ -75,53 +75,54 @@ def response_action(action, mount_point, incoming_data, **kwargs):
 
 def mkdir(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    os.mkdir("{0}/{1}".format(mount_point, incoming_data['target']))
-    outgoing_data['dirsize'] = os.stat("{0}/{1}".format(mount_point, incoming_data['target'])).st_size
+    os.mkdir('/'.join([mount_point, incoming_data['target']]))
+    outgoing_data['dirsize'] = os.stat('/'.join([mount_point, incoming_data['target']])).st_size
     return outgoing_data
 
 
 def list_dir(mount_point, incoming_data, **kwargs):
-    os.listdir('{0}{1}'.format(mount_point, incoming_data['target']))
+    os.listdir(''.join([mount_point, incoming_data['target']]))
 
 
 def delete(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     dirpath = incoming_data['target'].split('/')[1]
     fname = incoming_data['target'].split('/')[2]
-    os.remove('{0}/{1}/{2}'.format(mount_point, dirpath, fname))
+    os.remove('/'.join([mount_point, dirpath, fname]))
     outgoing_data['uuid'] = incoming_data['uuid']
 
 
 def touch(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    dirsize = os.stat("{0}/{1}".format(mount_point, incoming_data['target'].split('/')[1])).st_size
+    dest_dir_name = incoming_data['target'].split('/')[1]
+    dirsize = os.stat('/'.join([mount_point, dest_dir_name])).st_size
     if dirsize > MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
         outgoing_data['target_path'] = incoming_data['target']
         raise DynamoException(error_codes.MAX_DIR_SIZE, "Directory Entry reached {0} size limit".format(MAX_DIR_SIZE),
                               incoming_data['target'])
     # File will be only created if not exists otherwise EEXIST error returned
     flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
-    fd = os.open('{0}{1}'.format(mount_point, incoming_data['target']), flags)
+    fd = os.open(''.join([mount_point, incoming_data['target']]), flags)
     os.fsync(fd)
     os.close(fd)
-    outgoing_data['dirsize'] = os.stat("{0}/{1}".format(mount_point, incoming_data['target'].split('/')[1])).st_size
+    outgoing_data['dirsize'] = os.stat('/'.join([mount_point, dest_dir_name])).st_size
     # outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 
 
 def stat(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    os.stat("{0}{1}".format(mount_point, incoming_data['target']))
+    os.stat(''.join([mount_point, incoming_data['target']]))
     outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 
 
 def read(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    with open("{0}{1}".format(mount_point, incoming_data['target']), 'rb') as f:
+    with open(''.join([mount_point, incoming_data['target']]), 'rb') as f:
         f.seek(incoming_data['offset'])
         buf = f.read(incoming_data['repeats'])
-        hasher = hashlib.md5()
+        hasher = xxhash.xxh64()
         hasher.update(buf)
         outgoing_data['hash'] = hasher.hexdigest()
         outgoing_data['offset'] = incoming_data['offset']
@@ -132,7 +133,7 @@ def read(mount_point, incoming_data, **kwargs):
 
 def write(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    hasher = hashlib.md5()
+    hasher = xxhash.xxh64()
     fp = None
     if incoming_data['io_type'] == 'sequential':
         offset = incoming_data['offset'] + incoming_data['data_pattern_len']
@@ -145,7 +146,7 @@ def write(mount_point, incoming_data, **kwargs):
     hasher.update(pattern_to_write)
     data_hash = hasher.hexdigest()
     try:
-        fp = open("{0}{1}".format(mount_point, incoming_data['target']), 'rb+')
+        fp = open(''.join([mount_point, incoming_data['target']]), 'rb+')
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
         fp.seek(offset)
         fp.write(pattern_to_write)
@@ -154,7 +155,7 @@ def write(mount_point, incoming_data, **kwargs):
         #  Checking if original data pattern and pattern on disk are the same
         fp.seek(offset)
         buf = fp.read(data_pattern['repeats'])
-        hasher = hashlib.md5()
+        hasher = xxhash.xxh64()
         hasher.update(buf)
         read_hash = hasher.hexdigest()
         if read_hash != data_hash:
@@ -190,8 +191,8 @@ def rename(mount_point, incoming_data, **kwargs):
     fname = fullpath[1]
     dst_mount_point = kwargs['dst_mount_point']
     outgoing_data['rename_dest'] = incoming_data['rename_dest']
-    shutil.move("{0}/{1}/{2}".format(mount_point, dirpath, fname),
-                "{0}/{1}/{2}".format(dst_mount_point, dirpath, incoming_data['rename_dest']))
+    shutil.move('/'.join([mount_point, dirpath, fname]),
+                '/'.join([dst_mount_point, dirpath, incoming_data['rename_dest']]))
     outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 
@@ -207,8 +208,8 @@ def rename_exist(mount_point, incoming_data, **kwargs):
     if src_fname == dst_fname:
         raise DynamoException(error_codes.SAMEFILE, "Error: Trying to move file into itself.", src_path)
     dst_mount_point = kwargs['dst_mount_point']
-    shutil.move("{0}/{1}/{2}".format(mount_point, src_dirpath, src_fname),
-                "{0}/{1}/{2}".format(dst_mount_point, dst_dirpath, dst_fname))
+    shutil.move('/'.join([mount_point, src_dirpath, src_fname]),
+                '/'.join([dst_mount_point, dst_dirpath, dst_fname]))
     outgoing_data['rename_source'] = src_path
     outgoing_data['rename_dest'] = dst_path
     outgoing_data['uuid'] = incoming_data['uuid']
@@ -221,7 +222,7 @@ def truncate(mount_point, incoming_data, **kwargs):
     offset = random.choice(OFFSETS_LIST) + padding
     fp = None
     try:
-        fp = open("{0}{1}".format(mount_point, incoming_data['target']), 'r+')
+        fp = open(''.join([mount_point, incoming_data['target']]), 'r+')
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         fp.truncate(offset)
         fp.flush()
@@ -261,7 +262,7 @@ def read_direct(mount_point, incoming_data, **kwargs):
         if fp:
             os.close(fp)
         raise env_error
-    hasher = hashlib.md5()
+    hasher = xxhash.xxh64()
     hasher.update(buf)
     outgoing_data['hash'] = hasher.hexdigest()
     outgoing_data['offset'] = incoming_data['offset']
@@ -272,7 +273,7 @@ def read_direct(mount_point, incoming_data, **kwargs):
 
 def write_direct(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    hasher = hashlib.md5()
+    hasher = xxhash.xxh64()
     fp = None
     if incoming_data['io_type'] == 'sequential':
         offset = incoming_data['offset'] + incoming_data['data_pattern_len']
@@ -298,7 +299,7 @@ def write_direct(mount_point, incoming_data, **kwargs):
         #  Checking if original data pattern and pattern on disk are the same
         os.lseek(fp, offset, os.SEEK_SET)
         buf = os.read(fp, data_pattern['repeats'])
-        hasher = hashlib.md5()
+        hasher = xxhash.xxh64()
         hasher.update(buf)
         read_hash = hasher.hexdigest()
         if read_hash != data_hash:

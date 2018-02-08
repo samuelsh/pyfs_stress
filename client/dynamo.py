@@ -28,9 +28,9 @@ def timestamp(now=None):
 
 def build_message(result, action, data, time_stamp, error_code=None, error_message=None, path=None, line=None):
     """
-    Result message format:
-    Success message format: {'result', 'action', 'target', 'data:{'dirsize, }', 'timestamp'}
-    Failure message format: {'result', 'action', 'error_code', 'error_message', 'path', 'linenumber', 'timestamp', 'data:{}'}
+    Result message format: Success message format: {'result', 'action', 'target', 'data:{'dirsize, }', 'timestamp'}
+    Failure message format: {'result', 'action', 'error_code', 'error_message', 'path', 'linenumber', 'timestamp',
+    'data:{}'}
     """
     if result == 'success':
         message = {'result': result, 'action': action, 'target': path,
@@ -128,12 +128,12 @@ class Dynamo(object):
         except OSError as os_error:
             return build_message('failed', action, data, timestamp(), error_code=os_error.errno,
                                  error_message=os_error.strerror,
-                                 path='{0}{1}'.format(mount_point, work['data']['target']),
+                                 path=''.join([mount_point, work['data']['target']]),
                                  line=sys.exc_info()[-1].tb_lineno)
         except IOError as io_error:
             return build_message('failed', action, data, timestamp(), error_code=io_error.errno,
                                  error_message=io_error.strerror,
-                                 path='{0}{1}'.format(mount_point, work['data']['target']),
+                                 path=''.join([mount_point, work['data']['target']]),
                                  line=sys.exc_info()[-1].tb_lineno)
         except DynamoException as dynamo_error:
             return build_message('failed', action, data, timestamp(), error_code=dynamo_error.errno,
@@ -141,6 +141,6 @@ class Dynamo(object):
                                  line=sys.exc_info()[-1].tb_lineno)
         except Exception as unhandled_error:
             return build_message('failed', action, data, timestamp(), error_message=unhandled_error.args[0],
-                                 path='{0}{1}'.format(mount_point, work['data']['target']),
+                                 path=''.join([mount_point, work['data']['target']]),
                                  line=sys.exc_info()[-1].tb_lineno)
         return build_message('success', action, data, timestamp(), path=work['data']['target'])

@@ -13,7 +13,7 @@ from utils import shell_utils
 from utils import ip_utils
 from config import DYNAMO_PATH
 
-__author__ = "samuels"
+__author__ = "samuel (c)"
 
 MOUNT_BASE = "/home"
 
