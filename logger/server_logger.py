@@ -1,8 +1,12 @@
+import gzip
 import logging
 from logging import handlers
 import os
 import sys
 
+import zlib
+
+import shutil
 
 __author__ = 'samuels'
 
@@ -21,19 +25,23 @@ class Logger:
         self._logger.addHandler(handler)
 
         # create debug file handler and set level to debug, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "controller_debug.log"), "a", 100 * 1024 * 1024,
-                                               10)
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "logs/controller_debug.log"), "a",
+                                               100 * 1024 * 1024, 10)
         handler.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
+        handler.rotator = zip_rotator
+        handler.namer = zip_namer
         self._logger.addHandler(handler)
 
         # create debug file handler and set level to error, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "controller_error.log"), "a", 100 * 1024 * 1024,
-                                               10)
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "logs/controller_error.log"), "a",
+                                               100 * 1024 * 1024, 10)
         handler.setLevel(logging.WARNING)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
+        handler.rotator = zip_rotator
+        handler.namer = zip_namer
         self._logger.addHandler(handler)
 
     @property
@@ -67,15 +75,31 @@ class StatsLogger:
         handler.setLevel(logging.INFO)
         formatter = logging.Formatter("%(asctime)s; - %(message)s")
         handler.setFormatter(formatter)
+        handler.rotator = zip_rotator
+        handler.namer = zip_namer
         self._logger.addHandler(handler)
 
         # create debug file handler and set level to error, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "test_stats.log"), "a", 100 * 1024 * 1024, 10)
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "logs/test_stats.log"),
+                                               "a", 100 * 1024 * 1024, 10)
         handler.setLevel(logging.INFO)
         formatter = logging.Formatter("%(asctime)s; - %(message)s")
         handler.setFormatter(formatter)
+        handler.rotator = zip_rotator
+        handler.namer = zip_namer
         self._logger.addHandler(handler)
 
     @property
     def logger(self):
         return self._logger
+
+
+def zip_namer(name):
+    return name + ".gz"
+
+
+def zip_rotator(source, dest):
+    with open(source, 'rb') as f_in:
+        with gzip.open(dest, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+    os.remove(source)

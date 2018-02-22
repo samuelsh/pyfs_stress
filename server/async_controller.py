@@ -156,12 +156,6 @@ class Controller(object):
             # if some client disconnected, messages assigned to him won't be lost
             if self._work_to_requeue:
                 yield self._work_to_requeue.pop()
-            # The very first event must be mkdir
-            if self._dir_tree.get_last_node_tag() == 'Root':
-                action = "mkdir"
-                self._dir_tree.append_node()
-                target = self._dir_tree.get_last_node_tag()
-                yield Job({'action': action, 'data': {'target': target}})
             yield Job({'action': action, 'data': request_action(action, self.logger, self._dir_tree, io_type=io_type)})
 
     def collect_message_stats(self, incoming_message):
@@ -231,11 +225,11 @@ class Controller(object):
                     # do this while checking for the next available worker so that
                     # if it takes a while to find one we're still processing
                     # incoming messages.
-                    if not self._incoming_message_queue.empty():
-                        _, (worker_id, message) = self._incoming_message_queue.get()
+                    try:
+                        _, (worker_id, message) = self._incoming_message_queue.get_nowait()
                         self._handle_worker_message(worker_id, message)
-                    # If there are no available workers (they all have 50 or
-                    # more jobs already) sleep for half a second.
+                    except queue.Empty:
+                        pass
                     next_worker_id = self._get_next_worker_id()
                 # We've got a Job and an available worker_id, all we need to do
                 # is send it. Note that we're now using send_multipart(), the
@@ -252,7 +246,7 @@ class Controller(object):
         except KeyboardInterrupt:
             pass
         except Exception as generic_error:
-            self.logger.exception(generic_error)
+            self.logger.error(generic_error)
             raise generic_error
         finally:
             self.stop_event.set()
@@ -333,7 +327,7 @@ class AsyncControllerWorker(Thread, object):
                 self.stop_event.set()
                 raise zmq_error
             except Exception as generic_error:
-                self._logger.exception("Unhandled exception {0}".format(generic_error))
+                self._logger.error("Unhandled exception {0}".format(generic_error))
                 self.stop_event.set()
                 raise
             try:
@@ -351,7 +345,7 @@ class AsyncControllerWorker(Thread, object):
                     self.stop_event.set()
                     raise
             except Exception as generic_error:
-                self._logger.exception("Unhandled exception {0}".format(generic_error))
+                self._logger.error("Unhandled exception {0}".format(generic_error))
                 self.stop_event.set()
                 raise
 

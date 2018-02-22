@@ -86,8 +86,11 @@ def list_dir(mount_point, incoming_data, **kwargs):
 
 def delete(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
+    flock = kwargs['flock']
     dirpath = incoming_data['target'].split('/')[1]
     fname = incoming_data['target'].split('/')[2]
+    with open(''.join([mount_point, incoming_data['target']]), 'rb') as fp:
+        flock.release(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
     os.remove('/'.join([mount_point, dirpath, fname]))
     outgoing_data['uuid'] = incoming_data['uuid']
 
@@ -119,21 +122,26 @@ def stat(mount_point, incoming_data, **kwargs):
 
 def read(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
+    flock = kwargs['flock']
     with open(''.join([mount_point, incoming_data['target']]), 'rb') as f:
         f.seek(incoming_data['offset'])
+        #flock.lock(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
         buf = f.read(incoming_data['repeats'])
+        #flock.release(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
         hasher = xxhash.xxh64()
         hasher.update(buf)
         outgoing_data['hash'] = hasher.hexdigest()
         outgoing_data['offset'] = incoming_data['offset']
         outgoing_data['chunk_size'] = incoming_data['repeats']
         outgoing_data['uuid'] = incoming_data['uuid']
+        #outgoing_data['buffer'] = buf[:256].decode()
         return outgoing_data
 
 
 def write(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     hasher = xxhash.xxh64()
+    flock = kwargs['flock']
     fp = None
     if incoming_data['io_type'] == 'sequential':
         offset = incoming_data['offset'] + incoming_data['data_pattern_len']
@@ -148,6 +156,7 @@ def write(mount_point, incoming_data, **kwargs):
     try:
         fp = open(''.join([mount_point, incoming_data['target']]), 'rb+')
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
+        flock.lock(fp.fileno(), offset, data_pattern['repeats'])
         fp.seek(offset)
         fp.write(pattern_to_write)
         fp.flush()
@@ -162,6 +171,7 @@ def write(mount_point, incoming_data, **kwargs):
             outgoing_data['dynamo_error'] = error_codes.HASHERR
             outgoing_data['bad_hash'] = read_hash
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+        flock.release(fp.fileno(), offset, data_pattern['repeats'])
         fp.close()
     except (IOError, OSError) as env_error:
         if fp:
@@ -218,16 +228,19 @@ def rename_exist(mount_point, incoming_data, **kwargs):
 
 def truncate(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
+    flock = kwargs['flock']
     padding = random.choice(PADDING)
     offset = random.choice(OFFSETS_LIST) + padding
     fp = None
     try:
         fp = open(''.join([mount_point, incoming_data['target']]), 'r+')
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        #flock.lock(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
         fp.truncate(offset)
         fp.flush()
         os.fsync(fp.fileno())
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
+        #flock.release(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
         fp.close()
     except (IOError, OSError) as env_error:
         if fp:

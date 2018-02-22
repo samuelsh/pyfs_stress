@@ -175,17 +175,14 @@ class Directory(object):
         Returns: list
 
         """
-        # self.files.append(File(self.file_names_generator))
-        # return self.files[-1].name
         new_file = File(self.file_names_generator)
         self.files_dict[xxhash.xxh64(new_file.name).hexdigest()] = new_file
         return new_file.name
 
     def get_file_by_name(self, name):
         try:
-            # return next((thefile for thefile in self.files if thefile.name == name), None)
             return self.files_dict[xxhash.xxh64(name).hexdigest()]
-        except ValueError:
+        except KeyError:
             return None
 
     def get_random_file(self):
@@ -195,7 +192,6 @@ class Directory(object):
 
         """
         try:
-            # return random.choice(self.files)
             return random.choice(list(self.files_dict.values()))
         except IndexError:
             return None
@@ -210,31 +206,34 @@ class Directory(object):
 
         """
         try:
-            # return random.sample(set(self.files), f_number)
             return random.sample(set(self.files_dict.values()), f_number)
         except IndexError:
             return None
 
+    def delete_file_by_name(self, name):
+        del self.files_dict[xxhash.xxh64(name).hexdigest()]
+
+    def rename_file(self, source_name, dest_name):
+        new_file = File(name=dest_name)
+        self.files_dict[xxhash.xxh64(new_file.name).hexdigest()] = new_file
+        self.files_dict[xxhash.xxh64(source_name).hexdigest()].ondisk = False
+        return new_file
+
     def delete_random_file(self):
-        # index = self.files.index(random.choice(self.files))
-        # del self.files[index]
         del self.files_dict[random.choice(list(self.files_dict.keys()))]
 
     def delete_random_files(self, f_number):
-        # for f in random.sample(set(self.files), f_number):
-        # index = self.files.index(f)
-        # del self.files[index]
         for f in random.sample(set(self.files_dict.keys()), f_number):
             del self.files_dict[f]
 
 
 class File(object):
-    def __init__(self, file_name_generator):
+    def __init__(self, file_name_generator=None, name=None):
         # self._name = StringUtils.get_random_string_nospec(64)
-        self._name = next(file_name_generator)
+        self._name = next(file_name_generator) if file_name_generator else name
         self.data_pattern = 0
         self.data_pattern_len = 0
-        self.data_pattern_hash = 'd41d8cd98f00b204e9800998ecf8427e'  # zero md5 hash
+        self.data_pattern_hash = 'ef46db3751d8e999'  # zero xxhash hash
         self.data_pattern_offset = 0
         self.uuid = uuid.uuid4().hex[-5:]  # Unique session ID, will be modified on each file modify action
         self.last_action = None

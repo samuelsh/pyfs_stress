@@ -10,11 +10,14 @@ import os
 import socket
 import sys
 import errno
+
+import redis
 import zmq
 import config
 from multiprocessing import Event
 from multiprocessing import Process
 
+from config.redis_config import redis_config
 from logger.pubsub_logger import SUBLogger
 from logger.server_logger import ConsoleLogger
 from server.async_controller import Controller
@@ -153,6 +156,10 @@ def main():
         rsa_pub_key = f.read()
     ssh_utils.set_key_policy(rsa_pub_key, args.cluster, test_config['access']['server']['user'],
                              test_config['access']['server']['password'])
+
+    logger.info("Flushing locking DB")
+    locking_db = redis.StrictRedis(**redis_config)
+    locking_db.flushdb()
     logger.info("Starting controller")
     controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config))
     controller_process.start()

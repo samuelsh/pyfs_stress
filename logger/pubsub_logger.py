@@ -1,6 +1,10 @@
 import logging
 from logging import handlers
 import os
+
+import gzip
+
+import shutil
 import zmq
 import socket
 from zmq.log.handlers import PUBHandler
@@ -62,17 +66,24 @@ class SUBLogger:
         # self._logger.addHandler(handler)
 
         # create debug file handler and set level to debug, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "client_debug.log"), "w", 100 * 1024 * 1024, 10)
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "logs/client_debug.log"), "w",
+                                               100 * 1024 * 1024, 10)
         handler.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
+        handler.rotator = zip_rotator
+        handler.namer = zip_namer
+
         self._logger.addHandler(handler)
 
         # create debug file handler and set level to error, file will rotate each 100MB
-        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "client_error.log"), "w", 100 * 1024 * 1024, 10)
+        handler = handlers.RotatingFileHandler(os.path.join(output_dir, "logs/client_error.log"), "w",
+                                               100 * 1024 * 1024, 10)
         handler.setLevel(logging.WARNING)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
+        handler.rotator = zip_rotator
+        handler.namer = zip_namer
         self._logger.addHandler(handler)
 
     @property
@@ -82,3 +93,14 @@ class SUBLogger:
     @property
     def logger(self):
         return self._logger
+
+
+def zip_namer(name):
+    return name + ".gz"
+
+
+def zip_rotator(source, dest):
+    with open(source, 'rb') as f_in:
+        with gzip.open(dest, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+    os.remove(source)

@@ -2,14 +2,15 @@
 Client load generator
 2016 samules (c)
 """
+from datetime import datetime
 
 import zmq
 import sys
 import socket
-import time
-import timeit
+import redis
 
-timer = timeit.default_timer
+from config.redis_config import redis_config
+from locking import FLock
 
 sys.path.append('/qa/dynamo')
 from logger import pubsub_logger
@@ -18,12 +19,8 @@ from response_actions import response_action, DynamoException
 from config import error_codes
 
 
-def timestamp(now=None):
-    if now is None:
-        now = timer()
-    time_stamp = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(now))
-    millisecs = "%.6f" % (now % 1.0,)
-    return time_stamp + millisecs[1:]
+def timestamp():
+    return datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S.%f')
 
 
 def build_message(result, action, data, time_stamp, error_code=None, error_message=None, path=None, line=None):
@@ -34,11 +31,11 @@ def build_message(result, action, data, time_stamp, error_code=None, error_messa
     """
     if result == 'success':
         message = {'result': result, 'action': action, 'target': path,
-                   'timestamp': str(time_stamp), 'data': data}
+                   'timestamp': time_stamp, 'data': data}
     else:
         message = {'result': result, 'action': action, 'error_code': error_code, 'error_message': error_message,
                    'target': path, 'linenum': line,
-                   'timestamp': str(time_stamp), 'data': data}
+                   'timestamp': time_stamp, 'data': data}
     return message
 
 
@@ -59,6 +56,10 @@ class Dynamo(object):
         # We'll use client host name + process ID to identify the socket
         self._socket.identity = "{0}:0x{1:x}".format(socket.gethostname(), proc_id).encode()
         self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
+        # Initialising connection to Redis (our byte-range locking DB)
+        self.logger.info("Setting up Redis connection...")
+        self.locking_db = redis.StrictRedis(**redis_config)
+        self.flock = FLock(self.locking_db)
         self.logger.info("Dynamo {0} init done".format(self._socket.identity))
 
     def run(self):
@@ -76,7 +77,7 @@ class Dynamo(object):
                     # Note that we can still use send_json()/recv_json() here,
                     # the DEALER socket ensures we don't have to deal with
                     # client ids at all.
-                    job_id, work = self._socket.recv_json(zmq.NOBLOCK)
+                    job_id, work = self._socket.recv_json()
                     msg = self._do_work(work)
                     self.logger.debug("Going to send {0}".format(msg))
                     self._socket.send_json(
@@ -84,10 +85,12 @@ class Dynamo(object):
                          'result': msg,
                          'job_id': job_id})
                 except zmq.ZMQError as zmq_error:
-                    if zmq_error.errno == zmq.EAGAIN:
-                        pass
-                    else:
+                    # if zmq_error.errno == zmq.EAGAIN:
+                    #     pass
+                    # else:
                         self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
+                except TypeError:
+                    self.logger.error("JSON Serialisation error: msg: {}".format(msg))
         except KeyboardInterrupt:
             pass
         except Exception as e:
@@ -122,7 +125,7 @@ class Dynamo(object):
                 raise DynamoException(error_codes.NO_TARGET,
                                       "{0}".format("Target not specified", work['data']['target']))
             response = response_action(action, mount_point, work['data'],
-                                       dst_mount_point=self.mounter.get_random_mountpoint())
+                                       dst_mount_point=mount_point, flock=self.flock)
             if response:
                 data = response
         except OSError as os_error:
