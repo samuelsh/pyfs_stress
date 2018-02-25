@@ -36,8 +36,8 @@ def get_args():
 
     parser = argparse.ArgumentParser(
         description='pyFstress Server runner')
-    parser.add_argument('cluster', type=str, help='File server name')
-    parser.add_argument('clients', type=str, nargs='+', help="Space separated list of clients")
+    parser.add_argument('cluster', type=str, help='File server name or IP')
+    parser.add_argument('-c', '--clients', type=str, nargs='+', help="Space separated list of clients")
     parser.add_argument('-e', '--export', type=str, default="/", help="NFS export name")
     parser.add_argument('--start_vip', type=str, help="Start VIP address range")
     parser.add_argument('--end_vip', type=str, help="End VIP address range")
