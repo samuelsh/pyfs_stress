@@ -67,7 +67,7 @@ class SUBLogger:
 
         # create debug file handler and set level to debug, file will rotate each 100MB
         handler = handlers.RotatingFileHandler(os.path.join(output_dir, "logs/client_debug.log"), "w",
-                                               100 * 1024 * 1024, 10)
+                                               100 * 1024 * 1024, 100)
         handler.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)
@@ -78,7 +78,7 @@ class SUBLogger:
 
         # create debug file handler and set level to error, file will rotate each 100MB
         handler = handlers.RotatingFileHandler(os.path.join(output_dir, "logs/client_error.log"), "w",
-                                               100 * 1024 * 1024, 10)
+                                               100 * 1024 * 1024, 100)
         handler.setLevel(logging.WARNING)
         formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
         handler.setFormatter(formatter)

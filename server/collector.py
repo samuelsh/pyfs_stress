@@ -9,10 +9,11 @@ from logger import server_logger
 
 
 class Collector:
-    def __init__(self, test_stats, stop_event):
+    def __init__(self, test_stats, dir_tree, stop_event):
         self.logger = server_logger.StatsLogger('__Collector__').logger
         self.test_stats = test_stats
         self.stop_event = stop_event
+        self.dir_tree = dir_tree
 
     def run(self):
         time.sleep(60)
@@ -33,4 +34,9 @@ class Collector:
             for k, v in self.test_stats['failed'].items():
                 if k != 'total':
                     self.logger.info("{0}".format("{0}: {1}".format(k, v)))
+            self.logger.info("{0}".format("############################"))
+            self.logger.info("{0}".format("#### Dir Tree Stats     ####"))
+            self.logger.info("{0}".format("############################"))
+            self.logger.info("NIDs: {} SYNCED_DIRS: {}".format(len(self.dir_tree.nids),
+                                                               len(self.dir_tree.synced_nodes)))
             time.sleep(60)

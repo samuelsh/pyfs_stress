@@ -10,7 +10,6 @@ import sys
 
 import mmap
 
-
 sys.path.append('/qa/dynamo')
 from config import error_codes
 
@@ -29,21 +28,25 @@ GB512 = (GB1 * 512)  # level 2 can map up to 256GB
 TB128 = (TB1 * 128)  # level 3 can map up to 128TB
 ZERO_PADDING_START = 128 * MB1  # 128MB
 MAX_FILE_SIZE = TB1 + ZERO_PADDING_START
-DATA_PATTERN_A = {'pattern': b'A', 'repeats': 1}
-DATA_PATTERN_B = {'pattern': b'B', 'repeats': 3}
-DATA_PATTERN_C = {'pattern': b'C', 'repeats': 17}
-DATA_PATTERN_D = {'pattern': b'D', 'repeats': 33}
-DATA_PATTERN_E = {'pattern': b'E', 'repeats': 65}
-DATA_PATTERN_F = {'pattern': b'F', 'repeats': 129}
-DATA_PATTERN_G = {'pattern': b'G', 'repeats': 257}
-DATA_PATTERN_H = {'pattern': b'H', 'repeats': 1025}
-DATA_PATTERN_I = {'pattern': b'I', 'repeats': 128 * KB1 + 1}
-DATA_PATTERN_J = {'pattern': b'J', 'repeats': 64 * KB1 + 1}
+DATA_PATTERN_A = {'pattern': b'A', 'repeats': 1, 'checksum': xxhash.xxh64(b'A' * 1).hexdigest()}
+DATA_PATTERN_B = {'pattern': b'B', 'repeats': 3, 'checksum': xxhash.xxh64(b'B' * 3).hexdigest()}
+DATA_PATTERN_C = {'pattern': b'C', 'repeats': 17, 'checksum': xxhash.xxh64(b'C' * 17).hexdigest()}
+DATA_PATTERN_D = {'pattern': b'D', 'repeats': 33, 'checksum': xxhash.xxh64(b'D' * 33).hexdigest()}
+DATA_PATTERN_E = {'pattern': b'E', 'repeats': 65, 'checksum': xxhash.xxh64(b'E' * 65).hexdigest()}
+DATA_PATTERN_F = {'pattern': b'F', 'repeats': 129, 'checksum': xxhash.xxh64(b'F' * 129).hexdigest()}
+DATA_PATTERN_G = {'pattern': b'G', 'repeats': 257, 'checksum': xxhash.xxh64(b'G' * 257).hexdigest()}
+DATA_PATTERN_H = {'pattern': b'H', 'repeats': 1025, 'checksum': xxhash.xxh64(b'H' * 1025).hexdigest()}
+DATA_PATTERN_J = {'pattern': b'J', 'repeats': 64 * KB1 + 1, 'checksum': xxhash.xxh64(b'J' * (64 * KB1 + 1)).hexdigest()}
+DATA_PATTERN_I = {'pattern': b'I', 'repeats': 128 * KB1 + 1, 'checksum': xxhash.xxh64(b'I' * (128 * KB1 + 1)).hexdigest()}
+DATA_PATTERN_K = {'pattern': b'K', 'repeats': 256 * KB1 + 1, 'checksum': xxhash.xxh64(b'K' * (256 * KB1 + 1)).hexdigest()}
+DATA_PATTERN_L = {'pattern': b'L', 'repeats': 512 * KB1 + 1, 'checksum': xxhash.xxh64(b'L' * (512 * KB1 + 1)).hexdigest()}
+DATA_PATTERN_M = {'pattern': b'M', 'repeats': MB1 + 1, 'checksum': xxhash.xxh64(b'M' * (MB1 + 1)).hexdigest()}
 
 PADDING = [0, ZERO_PADDING_START]
 OFFSETS_LIST = [0, INLINE, KB1, KB4, MB1, MB512, GB1, GB256, GB512, TB1]
 DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
-                      DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_I, DATA_PATTERN_J]
+                      DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_I, DATA_PATTERN_J, DATA_PATTERN_K, DATA_PATTERN_L,
+                      DATA_PATTERN_M]
 
 
 class DynamoException(EnvironmentError):
@@ -76,7 +79,7 @@ def response_action(action, mount_point, incoming_data, **kwargs):
 def mkdir(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     os.mkdir('/'.join([mount_point, incoming_data['target']]))
-    outgoing_data['dirsize'] = os.stat('/'.join([mount_point, incoming_data['target']])).st_size
+    outgoing_data['dirsize'] = 0  # os.stat('/'.join([mount_point, incoming_data['target']])).st_size
     return outgoing_data
 
 
@@ -125,22 +128,22 @@ def read(mount_point, incoming_data, **kwargs):
     flock = kwargs['flock']
     with open(''.join([mount_point, incoming_data['target']]), 'rb') as f:
         f.seek(incoming_data['offset'])
-        #flock.lock(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
+        # flock.lock(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
         buf = f.read(incoming_data['repeats'])
-        #flock.release(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
+        # flock.release(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
         hasher = xxhash.xxh64()
         hasher.update(buf)
         outgoing_data['hash'] = hasher.hexdigest()
         outgoing_data['offset'] = incoming_data['offset']
         outgoing_data['chunk_size'] = incoming_data['repeats']
         outgoing_data['uuid'] = incoming_data['uuid']
-        #outgoing_data['buffer'] = buf[:256].decode()
+        # outgoing_data['buffer'] = buf[:256].decode()
         return outgoing_data
 
 
 def write(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    hasher = xxhash.xxh64()
+    io_mode = 'rb+'
     flock = kwargs['flock']
     fp = None
     if incoming_data['io_type'] == 'sequential':
@@ -151,10 +154,12 @@ def write(mount_point, incoming_data, **kwargs):
         offset = base_offset + random.randint(base_offset, MAX_FILE_SIZE)
     data_pattern = random.choice(DATA_PATTERNS_LIST)
     pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
-    hasher.update(pattern_to_write)
-    data_hash = hasher.hexdigest()
+    data_hash = data_pattern['checksum']
+    file_path = ''.join([mount_point, incoming_data['target']])
+    if not os.path.exists(file_path):
+        io_mode = 'w+b'
     try:
-        fp = open(''.join([mount_point, incoming_data['target']]), 'rb+')
+        fp = open(file_path, io_mode)
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
         flock.lock(fp.fileno(), offset, data_pattern['repeats'])
         fp.seek(offset)
@@ -201,8 +206,8 @@ def rename(mount_point, incoming_data, **kwargs):
     fname = fullpath[1]
     dst_mount_point = kwargs['dst_mount_point']
     outgoing_data['rename_dest'] = incoming_data['rename_dest']
-    shutil.move('/'.join([mount_point, dirpath, fname]),
-                '/'.join([dst_mount_point, dirpath, incoming_data['rename_dest']]))
+    os.rename('/'.join([mount_point, dirpath, fname]),
+              '/'.join([dst_mount_point, dirpath, incoming_data['rename_dest']]))
     outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 
@@ -233,14 +238,14 @@ def truncate(mount_point, incoming_data, **kwargs):
     offset = random.choice(OFFSETS_LIST) + padding
     fp = None
     try:
-        fp = open(''.join([mount_point, incoming_data['target']]), 'r+')
+        fp = open(''.join([mount_point, incoming_data['target']]), 'r+b')
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        #flock.lock(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
+        # flock.lock(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
         fp.truncate(offset)
         fp.flush()
         os.fsync(fp.fileno())
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
-        #flock.release(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
+        # flock.release(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
         fp.close()
     except (IOError, OSError) as env_error:
         if fp:

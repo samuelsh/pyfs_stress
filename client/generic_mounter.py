@@ -89,10 +89,13 @@ class Mounter:
                 self.logger.warn(e)
             if 'nfs' in self.mount_type:
                 mtype = self.mount_type.strip('nfs')
-                shell_utils.ShellUtils.run_shell_command('mount',
-                                                         '{}:/{} {}'.format(vip,
-                                                                            "" if self.export == '/' else self.export,
-                                                                            mount_point))
+                export = "" if self.export == '/' else self.export
+                try:
+                    shell_utils.ShellUtils.run_shell_command('mount',
+                                                             '{}:/{} {}'.format(vip, export, mount_point))
+                except RuntimeError as e:
+                    self.logger.error("Mount error {} {}".format(socket.gethostname(), e))
+
             elif 'smb' in self.mount_type:
                 with open(DYNAMO_PATH + "/client/smb_params.json") as f:
                     smb_params = json.load(f)
@@ -103,6 +106,6 @@ class Mounter:
                                                                 smb_params['password']))
             self.mount_points.append(mount_point)
             if not os.path.ismount(mount_point):
-                self.logger.error('mount failed! type: {0} server: {1} export: {2} mount point: {3}'.
+                self.logger.error('mount failed! type: {} server: {} export: {} mount point: {}'.
                                   format(self.mount_type, self.server, self.export, mount_point))
                 raise RuntimeError

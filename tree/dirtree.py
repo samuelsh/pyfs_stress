@@ -17,14 +17,14 @@ class DirTree(object):
             self.file_names = StringUtils.string_from_file_generator(file_names)  # pre-generated file_names iterator
         else:
             self.file_names = StringUtils.random_string_generator()
-        self._nids = []  # Nodes IDs pool for easy random sampling
-        self.synced_nodes = []  # Nodes IDs list which already Synced with storage
+        self._nids = {}  # Nodes IDs pool for easy random sampling
+        self.synced_nodes = {}  # Nodes IDs list which already Synced with storage
 
     def append_node(self):
         directory = Directory(self.file_names)
         name = directory.name
         nid = xxhash.xxh64(name).hexdigest()
-        self._nids.append(nid)
+        self._nids[nid] = name
         new_node = self._dir_tree.create_node(name, nid, parent=self._tree_base.identifier, data=directory)
         self._last_node = new_node
 
@@ -71,7 +71,7 @@ class DirTree(object):
 
         """
         try:
-            return self._dir_tree.get_node(random.choice(self.nids))
+            return self._dir_tree.get_node(random.choice(list(self._nids.keys())))
         except IndexError:
             return None
 
@@ -82,7 +82,7 @@ class DirTree(object):
 
         """
         try:
-            return self._dir_tree.get_node(random.choice(self.synced_nodes))
+            return self._dir_tree.get_node(random.choice(list(self.synced_nodes.keys())))
         except IndexError:
             return None
 
@@ -93,9 +93,8 @@ class DirTree(object):
 
         """
         try:
-            not_synced_dirs = [d for d in self.nids if d not in self.synced_nodes]
-            return self._dir_tree.get_node(random.choice(not_synced_dirs))
-        except IndexError:
+            return self._dir_tree.get_node(self._nids.popitem()[0])
+        except KeyError:
             return None
 
     def get_random_dir_name(self):
@@ -104,7 +103,7 @@ class DirTree(object):
         Returns: str
 
         """
-        return self._dir_tree.get_node(random.choice(self.nids)).tag
+        return self._dir_tree.get_node(random.choice(list(self._nids.keys()))).tag
 
     def get_random_dir_files(self):
         """
@@ -161,7 +160,7 @@ class Directory(object):
         self.ondisk = False
         self.checksum = 0
         self.creation_time = None
-        self.size = None  # Size of dir entry
+        self.size = 0  # Size of dir entry
         self.files = []
         self.files_dict = {}
 

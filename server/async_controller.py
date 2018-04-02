@@ -132,7 +132,7 @@ class Controller(object):
             self._incoming_message_queue = queue.PriorityQueue()
             self._outgoing_message_queue = queue.Queue()
             self.logger.info("Starting Collector service thread...")
-            collector = Collector(self.test_stats, self.stop_event)
+            collector = Collector(self.test_stats, self.dir_tree, self.stop_event)
             collector_thread = Thread(target=collector.run)
             collector_thread.start()
             self.logger.info("Starting Async Server....")
@@ -156,7 +156,10 @@ class Controller(object):
             # if some client disconnected, messages assigned to him won't be lost
             if self._work_to_requeue:
                 yield self._work_to_requeue.pop()
-            yield Job({'action': action, 'data': request_action(action, self.logger, self._dir_tree, io_type=io_type)})
+            request_data = request_action(action, self.logger, self._dir_tree, io_type=io_type)
+            if not request_data:
+                continue  # there is no data to send, retrying
+            yield Job({'action': action, 'data': request_data})
 
     def collect_message_stats(self, incoming_message):
         self.test_stats['total'] += 1

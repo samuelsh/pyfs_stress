@@ -23,15 +23,18 @@ def request_action(action, logger, dir_tree, **kwargs):
 def mkdir_request(logger, dir_tree, **kwargs):
     data = {}
     target = 'None'
-    if len(dir_tree.nids) < 100:
-        dir_tree.append_node()
+    if len(dir_tree.synced_nodes) > 10 or len(dir_tree.nids) > 10:
+        return None
+    logger.debug("DEBUG NIDS: {}".format(dir_tree.nids))
+    logger.debug("DEBUG SYNCED_DIRS: {}".format(dir_tree.synced_nodes))
+    dir_tree.append_node()
     logger.debug(
         "Controller: New dir appended to list {0}".format(dir_tree.get_last_node_tag()))
     target_dir = dir_tree.get_random_dir_not_synced()
     if target_dir:
         target = target_dir.data.name
-    logger.debug(
-        "Controller: Dir {0} current size is {1}".format(target, dir_tree.get_last_node_data().size))
+        logger.debug(
+            "Controller: Dir {0} current size is {1}".format(target, dir_tree.get_last_node_data().size))
     data['target'] = target
     return data
 
@@ -40,10 +43,9 @@ def list_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
-        target = 'None'
-    else:
-        target = rdir.data.name
-    data['target'] = os.sep + target
+        return None
+    target = rdir.data.name
+    data['target'] = "/".join(['', target])
     return data
 
 
@@ -51,17 +53,13 @@ def delete_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
-        target = 'None'
-        uuid = None
-    else:
-        file_to_delete = rdir.data.get_random_file()
-        if not file_to_delete:
-            target = 'None'
-            uuid = None
-        else:
-            fname = file_to_delete.name
-            target = "/{0}/{1}".format(rdir.tag, fname)
-            uuid = file_to_delete.uuid
+        return None
+    file_to_delete = rdir.data.get_random_file()
+    if not file_to_delete:
+        return None
+    fname = file_to_delete.name
+    target = "/".join(['', rdir.tag, fname])
+    uuid = file_to_delete.uuid
     data['target'] = target
     data['uuid'] = uuid
     return data
@@ -71,10 +69,9 @@ def touch_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
-        target = 'None'
-    else:
-        fname = rdir.data.touch()
-        target = "/{0}/{1}".format(rdir.tag, fname)
+        return None
+    fname = rdir.data.touch()
+    target = "/".join(['', rdir.tag, fname])
     data['target'] = target
     return data
 
@@ -82,18 +79,14 @@ def touch_request(logger, dir_tree, **kwargs):
 def stat_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
-    if rdir:
-        rfile = rdir.data.get_random_file()
-        if not rfile:
-            target = 'None'
-            uuid = None
-        else:
-            fname = rfile.name
-            target = "/{0}/{1}".format(rdir.tag, fname)
-            uuid = rfile.uuid
-    else:
-        target = 'None'
-        uuid = None
+    if not rdir:
+        return None
+    rfile = rdir.data.get_random_file()
+    if not rfile:
+        return None
+    fname = rfile.name
+    target = "/".join(['', rdir.tag, fname])
+    uuid = rfile.uuid
     data['target'] = target
     data['uuid'] = uuid
     return data
@@ -102,15 +95,13 @@ def stat_request(logger, dir_tree, **kwargs):
 def read_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
-    if rdir:
-        rfile = rdir.data.get_random_file()
-        if not rfile:
-            return {'target': 'None', 'uuid': None}
-        else:
-            fname = rfile.name
-            target = "/{0}/{1}".format(rdir.tag, fname)
-    else:
-        return {'target': 'None', 'uuid': None}
+    if not rdir:
+        return None
+    rfile = rdir.data.get_random_file()
+    if not rfile:
+        return None
+    fname = rfile.name
+    target = "/".join(['', rdir.tag, fname])
     data['target'] = target
     data['data_pattern'] = rfile.data_pattern
     data['repeats'] = rfile.data_pattern_len
@@ -123,15 +114,13 @@ def read_request(logger, dir_tree, **kwargs):
 def write_request(logger, dir_tree, **kwargs):
     data = {}
     wdir = dir_tree.get_random_dir_synced()
-    if wdir:
-        wfile = wdir.data.get_random_file()
-        if not wfile:
-            return {'target': 'None', 'uuid': None}
-        else:
-            fname = wfile.name
-            target = "/{0}/{1}".format(wdir.tag, fname)
-    else:
-        return {'target': 'None', 'uuid': None}
+    if not wdir:
+        return None
+    wfile = wdir.data.get_random_file()
+    if not wfile:
+        return None
+    fname = wfile.name
+    target = "/".join(['', wdir.tag, fname])
     data['target'] = target
     data['offset'] = wfile.data_pattern_offset
     data['data_pattern_len'] = wfile.data_pattern_len
@@ -144,17 +133,13 @@ def rename_request(logger, dir_tree, **kwargs):
     data = {}
     rdir = dir_tree.get_random_dir_synced()
     if not rdir:
-        target = 'None'
-        uuid = None
-    else:
-        file_to_rename = rdir.data.get_random_file()
-        if not file_to_rename:
-            target = 'None'
-            uuid = None
-        else:
-            fname = file_to_rename.name
-            target = "/{0}/{1}".format(rdir.tag, fname)
-            uuid = file_to_rename.uuid
+        return None
+    file_to_rename = rdir.data.get_random_file()
+    if not file_to_rename:
+        return None
+    fname = file_to_rename.name
+    target = "/".join(['', rdir.tag, fname])
+    uuid = file_to_rename.uuid
     data['target'] = target
     data['uuid'] = uuid
     data['rename_dest'] = shell_utils.StringUtils.get_random_string_nospec(64)
@@ -166,20 +151,16 @@ def rename_exist_request(logger, dir_tree, **kwargs):
     rdir_src = dir_tree.get_random_dir_synced()
     rdir_dst = dir_tree.get_random_dir_synced()
     if not rdir_src or not rdir_dst:
-        target = 'None'
-        uuid = None
-    else:
-        src_file_to_rename = rdir_src.data.get_random_file()
-        dst_file = rdir_src.data.get_random_file()
-        if not src_file_to_rename or not dst_file:
-            target = 'None'
-            uuid = None
-        else:
-            src_fname = src_file_to_rename.name
-            dst_fname = dst_file.name
-            target = "/{0}/{1}".format(rdir_src.tag, src_fname)
-            data['rename_dest'] = "/{0}/{1}".format(rdir_dst.tag, dst_fname)
-            uuid = src_file_to_rename.uuid
+        return None
+    src_file_to_rename = rdir_src.data.get_random_file()
+    dst_file = rdir_src.data.get_random_file()
+    if not src_file_to_rename or not dst_file:
+        return None
+    src_fname = src_file_to_rename.name
+    dst_fname = dst_file.name
+    target = "/".join(['', rdir_src.tag, src_fname])
+    data['rename_dest'] = "/".join(['', rdir_dst.tag, dst_fname])
+    uuid = src_file_to_rename.uuid
     data['target'] = target
     data['uuid'] = uuid
     data['rename_source'] = target
@@ -188,20 +169,15 @@ def rename_exist_request(logger, dir_tree, **kwargs):
 
 def truncate_request(logger, dir_tree, **kwargs):
     data = {}
-    file_to_truncate = None
     tdir = dir_tree.get_random_dir_synced()
     if not tdir:
-        target = 'None'
-        uuid = None
-    else:
-        file_to_truncate = tdir.data.get_random_file()
-        if not file_to_truncate:
-            target = 'None'
-            uuid = None
-        else:
-            fname = file_to_truncate.name
-            target = "/{0}/{1}".format(tdir.tag, fname)
-            uuid = file_to_truncate.uuid
+        return None
+    file_to_truncate = tdir.data.get_random_file()
+    if not file_to_truncate:
+        return None
+    fname = file_to_truncate.name
+    target = "/".join(['', tdir.tag, fname])
+    uuid = file_to_truncate.uuid
     data['target'] = target
     data['uuid'] = uuid
     return data

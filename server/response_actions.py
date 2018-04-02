@@ -88,11 +88,12 @@ def success_response_actions(action):
 
 def mkdir_success(logger, incoming_message, dir_tree):
     syncdir = dir_tree.get_dir_by_name(incoming_message['target'])
-    syncdir.data.size = 0  # int(incoming_message['data']['dirsize'])
+    syncdir.data.size = int(incoming_message['data']['dirsize'])
     syncdir.data.ondisk = True
     syncdir.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                        '%Y/%m/%d %H:%M:%S.%f')
-    dir_tree.synced_nodes.append(xxhash.xxh64(syncdir.data.name).hexdigest())
+    dir_hash = xxhash.xxh64(syncdir.data.name).hexdigest()
+    dir_tree.synced_nodes[dir_hash] = syncdir.data.name
     logger.debug(
         "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
     logger.debug(
@@ -104,6 +105,7 @@ def touch_success(logger, incoming_message, dir_tree):
     logger.debug("Successfull touch arrived {0}".format(incoming_message['target']))
     path = incoming_message['target'].split('/')[1:]  # folder:file
     syncdir = dir_tree.get_dir_by_name(path[0])
+    dir_index = xxhash.xxh64(path[0]).hexdigest()
     if not syncdir:
         logger.debug(
             "Directory {0} already removed from active dirs list, dropping touch {1}".format(path[0],
@@ -112,9 +114,6 @@ def touch_success(logger, incoming_message, dir_tree):
     # There might be a raise when successful mkdir message will arrive after successful touch message
     # So we won't check here if dir is already synced
 
-    # for f in syncdir.data.files:
-    #    if f.name == path[1]:
-    # syncdir.data.files_dict
     f = syncdir.data.get_file_by_name(path[1])
     #  Now, when we got reply from client that file was created,
     #  we can mark it as synced
@@ -127,25 +126,16 @@ def touch_success(logger, incoming_message, dir_tree):
     logger.debug(
         "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
     logger.debug(
-        'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1],
-                                                                       int(incoming_message[
-                                                                               'data'][
-                                                                               'dirsize'])))
+        'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1], syncdir.data.size))
     if syncdir.data.size > MAX_FILES_PER_DIR:
-        dir_index = xxhash.xxh64(path[0]).hexdigest()
         try:
             logger.debug("Directory {0} going to be removed from dir tree".format(path[0]))
             dir_tree.remove_dir_by_name(path[0])
-            node_index = dir_tree.synced_nodes.index(dir_index)
-            del dir_tree.synced_nodes[node_index]
-            node_index = dir_tree.nids.index(dir_index)
-            del dir_tree.nids[node_index]
+            del dir_tree.synced_nodes[dir_index]
+            del dir_tree._nids[dir_index]
             logger.debug(
                 "Directory {0} is reached its size limit and removed from active dirs list".format(path[0]))
-            dir_tree.append_node()
-            logger.debug(
-                "New Directory node appended to tree {0}".format(dir_tree.get_last_node_tag()))
-        except NodeIDAbsentError:
+        except (NodeIDAbsentError, KeyError):
             logger.debug(
                 "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
 
@@ -256,19 +246,19 @@ def write_success(logger, incoming_message, dir_tree):
                     wfile.size = wfile.data_pattern_offset + wfile.data_pattern_len
                 logger.debug('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
             # In case there is raise and write arrived before touch we'll sync the file here
-            # elif wfile:
-            #     logger.debug("File {0}/{1} Write OP arrived before touch, syncing...".format(path[0], path[1]))
-            #     wfile.ondisk = True
-            #     wfile.data_pattern = incoming_message['data']['data_pattern']
-            #     wfile.data_pattern_len = incoming_message['data']['chunk_size']
-            #     wfile.data_pattern_hash = incoming_message['data']['hash']
-            #     wfile.data_pattern_offset = incoming_message['data']['offset']
-            #     wfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-            #                                                      '%Y/%m/%d %H:%M:%S.%f')
-            #     wfile.modify_time = wfile.creation_time
-            #     # recalculating file size
-            #     if wfile.size < wfile.data_pattern_offset + wfile.data_pattern_len:
-            #         wfile.size = wfile.data_pattern_offset + wfile.data_pattern_len
+            elif wfile:
+                logger.debug("File {0}/{1} Write OP arrived before touch, syncing...".format(path[0], path[1]))
+                wfile.ondisk = True
+                wfile.data_pattern = incoming_message['data']['data_pattern']
+                wfile.data_pattern_len = incoming_message['data']['chunk_size']
+                wfile.data_pattern_hash = incoming_message['data']['hash']
+                wfile.data_pattern_offset = incoming_message['data']['offset']
+                wfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
+                                                                 '%Y/%m/%d %H:%M:%S.%f')
+                wfile.modify_time = wfile.creation_time
+                # recalculating file size
+                if wfile.size < wfile.data_pattern_offset + wfile.data_pattern_len:
+                    wfile.size = wfile.data_pattern_offset + wfile.data_pattern_len
                 logger.debug('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
