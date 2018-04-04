@@ -1,3 +1,5 @@
+from timeit import default_timer as timer
+
 import xxhash
 import os
 import random
@@ -37,9 +39,12 @@ DATA_PATTERN_F = {'pattern': b'F', 'repeats': 129, 'checksum': xxhash.xxh64(b'F'
 DATA_PATTERN_G = {'pattern': b'G', 'repeats': 257, 'checksum': xxhash.xxh64(b'G' * 257).hexdigest()}
 DATA_PATTERN_H = {'pattern': b'H', 'repeats': 1025, 'checksum': xxhash.xxh64(b'H' * 1025).hexdigest()}
 DATA_PATTERN_J = {'pattern': b'J', 'repeats': 64 * KB1 + 1, 'checksum': xxhash.xxh64(b'J' * (64 * KB1 + 1)).hexdigest()}
-DATA_PATTERN_I = {'pattern': b'I', 'repeats': 128 * KB1 + 1, 'checksum': xxhash.xxh64(b'I' * (128 * KB1 + 1)).hexdigest()}
-DATA_PATTERN_K = {'pattern': b'K', 'repeats': 256 * KB1 + 1, 'checksum': xxhash.xxh64(b'K' * (256 * KB1 + 1)).hexdigest()}
-DATA_PATTERN_L = {'pattern': b'L', 'repeats': 512 * KB1 + 1, 'checksum': xxhash.xxh64(b'L' * (512 * KB1 + 1)).hexdigest()}
+DATA_PATTERN_I = {'pattern': b'I', 'repeats': 128 * KB1 + 1,
+                  'checksum': xxhash.xxh64(b'I' * (128 * KB1 + 1)).hexdigest()}
+DATA_PATTERN_K = {'pattern': b'K', 'repeats': 256 * KB1 + 1,
+                  'checksum': xxhash.xxh64(b'K' * (256 * KB1 + 1)).hexdigest()}
+DATA_PATTERN_L = {'pattern': b'L', 'repeats': 512 * KB1 + 1,
+                  'checksum': xxhash.xxh64(b'L' * (512 * KB1 + 1)).hexdigest()}
 DATA_PATTERN_M = {'pattern': b'M', 'repeats': MB1 + 1, 'checksum': xxhash.xxh64(b'M' * (MB1 + 1)).hexdigest()}
 
 PADDING = [0, ZERO_PADDING_START]
@@ -61,6 +66,22 @@ class DataPatterns:
             pass
 
 
+def profiler(f):
+    """
+    Profiler decorator ot measure duration of file operations
+    """
+
+    def wrapper(action, mount_point, incoming_data, **kwargs):
+        start = timer()
+        response = f(action, mount_point, incoming_data, **kwargs)
+        end = timer()
+        response['duration'] = end - start
+        return response
+
+    return wrapper
+
+
+@profiler
 def response_action(action, mount_point, incoming_data, **kwargs):
     return {
         "mkdir": mkdir,
@@ -101,17 +122,12 @@ def delete(mount_point, incoming_data, **kwargs):
 def touch(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     dest_dir_name = incoming_data['target'].split('/')[1]
-    dirsize = os.stat('/'.join([mount_point, dest_dir_name])).st_size
-    if dirsize > MAX_DIR_SIZE:  # if Directory entry size > 128K, we'll stop writing new files
-        outgoing_data['target_path'] = incoming_data['target']
-        raise DynamoException(error_codes.MAX_DIR_SIZE, "Directory Entry reached {0} size limit".format(MAX_DIR_SIZE),
-                              incoming_data['target'])
     # File will be only created if not exists otherwise EEXIST error returned
     flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
     fd = os.open(''.join([mount_point, incoming_data['target']]), flags)
     os.fsync(fd)
     os.close(fd)
-    outgoing_data['dirsize'] = os.stat('/'.join([mount_point, dest_dir_name])).st_size
+    outgoing_data['dirsize'] = 4096  # This field is deprecated since we're counting dir size on server side
     # outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 

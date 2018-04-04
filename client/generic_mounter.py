@@ -7,6 +7,8 @@ import socket
 
 import sys
 
+import time
+
 sys.path.append('/qa/dynamo')
 from logger import server_logger
 from utils import shell_utils
@@ -16,6 +18,7 @@ from config import DYNAMO_PATH
 __author__ = "samuel (c)"
 
 MOUNT_BASE = "/home"
+NUMBER_OF_RETRIES = 3
 
 
 class Mounter:
@@ -26,6 +29,7 @@ class Mounter:
         self.export = export
         self.mount_points = []
         self.logger = None
+        self.num_of_retries = NUMBER_OF_RETRIES
 
         if 'logger' in kwargs:
             self.logger = kwargs['logger']
@@ -91,8 +95,10 @@ class Mounter:
                 mtype = self.mount_type.strip('nfs')
                 export = "" if self.export == '/' else self.export
                 try:
-                    shell_utils.ShellUtils.run_shell_command('mount',
-                                                             '{}:/{} {}'.format(vip, export, mount_point))
+                    # shell_utils.ShellUtils.run_shell_command('mount',
+                    #                                          '{}:/{} {}'.format(vip, export, mount_point))
+                    self.retry_method(shell_utils.ShellUtils.run_shell_command, 'mount',
+                                      '{}:/{} {}'.format(vip, export, mount_point))
                 except RuntimeError as e:
                     self.logger.error("Mount error {} {}".format(socket.gethostname(), e))
 
@@ -109,3 +115,17 @@ class Mounter:
                 self.logger.error('mount failed! type: {} server: {} export: {} mount point: {}'.
                                   format(self.mount_type, self.server, self.export, mount_point))
                 raise RuntimeError
+
+    def retry_method(self, callback, command, params):
+        for retry in range(self.num_of_retries):
+            try:
+                callback(command, params)
+            except RuntimeError as e:
+                if retry < self.num_of_retries:
+                    self.logger.warn("Command failed, waiting 5 sec before retry ...")
+                    time.sleep(5)
+                else:
+                    self.logger.error("Number of retries exceeded {} due to {}. "
+                                      "{} failed".format(self.num_of_retries, e, callback.__name__))
+            else:
+                break

@@ -1,3 +1,4 @@
+import concurrent
 import gzip
 import logging
 from logging import handlers
@@ -98,8 +99,12 @@ def zip_namer(name):
     return name + ".gz"
 
 
-def zip_rotator(source, dest):
+def _gzip_file(source, dest):
     with open(source, 'rb') as f_in:
         with gzip.open(dest, 'wb') as f_out:
-            shutil.copyfileobj(f_in, f_out)
+            shutil.copyfileobj(f_in, f_out, length=1024 * 1024)
     os.remove(source)
+
+
+def zip_rotator(source, dest):
+    _gzip_file(source, dest)
