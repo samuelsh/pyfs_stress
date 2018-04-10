@@ -148,12 +148,12 @@ def read(mount_point, incoming_data, **kwargs):
     f_path = ''.join([mount_point, incoming_data['target']])
     with open(f_path, 'rb') as f:
         f.seek(offset)
-        flock.lock(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
+        flock.lock(f.fileno(), offset, chunk_size)
         buf = f.read(chunk_size)
-        flock.release(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
+        flock.release(f.fileno(), offset, chunk_size)
         outgoing_data['hash'] = xxhash.xxh64(buf).hexdigest()
         outgoing_data['offset'] = offset
-        outgoing_data['chunk_size'] = incoming_data['repeats']
+        outgoing_data['chunk_size'] = chunk_size
         outgoing_data['uuid'] = incoming_data['uuid']
         # outgoing_data['buffer'] = buf[:256].decode()
         return outgoing_data
@@ -278,9 +278,9 @@ def read_direct(mount_point, incoming_data, **kwargs):
         offset = incoming_data['offset']
         chunk_size = incoming_data['repeats']
         mmap_buf.seek(offset)
-        flock.lock(fd, incoming_data['offset'], incoming_data['repeats'])
+        flock.lock(fd, offset, chunk_size)
         buf = mmap_buf.read(chunk_size)
-        flock.release(fd, incoming_data['offset'], incoming_data['repeats'])
+        flock.release(fd, offset, chunk_size)
         os.close(fd)
     except (IOError, OSError) as env_error:
         if fd:
@@ -289,8 +289,8 @@ def read_direct(mount_point, incoming_data, **kwargs):
     hasher = xxhash.xxh64()
     hasher.update(buf)
     outgoing_data['hash'] = hasher.hexdigest()
-    outgoing_data['offset'] = incoming_data['offset']
-    outgoing_data['chunk_size'] = incoming_data['repeats']
+    outgoing_data['offset'] = offset
+    outgoing_data['chunk_size'] = chunk_size
     outgoing_data['uuid'] = incoming_data['uuid']
     return outgoing_data
 

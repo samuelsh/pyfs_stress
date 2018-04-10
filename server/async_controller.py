@@ -284,8 +284,12 @@ class AsyncControllerServer(Thread, object):
         try:
             workers = []
             for _ in range(MAX_CONTROLLER_WORKERS):
-                worker = AsyncControllerWorker(self._logger, self._context, self._incoming_queue, self._outgoing_queue,
-                                               self._stop_event)
+                worker = IncomingAsyncControllerWorker(self._logger, self._context, self._incoming_queue,
+                                                       self._stop_event)
+                workers.append(worker)
+                worker.start()
+                worker = OutgoingAsyncControllerWorker(self._logger, self._context, self._outgoing_queue,
+                                                       self._stop_event)
                 workers.append(worker)
                 worker.start()
             self._logger.info("Starting Proxy Device...")
@@ -307,14 +311,11 @@ class AsyncControllerServer(Thread, object):
 
 
 class AsyncControllerWorker(Thread, object):
-    def __init__(self, logger, context, incoming_queue, outgoing_queue, stop_event):
+    def __init__(self, logger, context, stop_event):
         super(AsyncControllerWorker, self).__init__()
         self._logger = logger
         self._context = context
         self.stop_event = stop_event
-        self.incoming_queue = incoming_queue
-        self.outgoing_queue = outgoing_queue
-        self.max_jobs_per_worker = 1000
         try:
             self._worker = self._context.socket(zmq.DEALER)
             self._worker.connect('inproc://backend')
@@ -323,8 +324,14 @@ class AsyncControllerWorker(Thread, object):
             self.stop_event.set()
             raise zmq_error
 
+
+class IncomingAsyncControllerWorker(AsyncControllerWorker, object):
+    def __init__(self, logger, context, incoming_queue, stop_event):
+        super().__init__(logger, context, stop_event)
+        self.incoming_queue = incoming_queue
+
     def run(self):
-        self._logger.info("Controller incoming/outgoing messages worker {0} started".format(self.name))
+        self._logger.info("Async Controller: incoming messages worker {0} started".format(self.name))
         while not self.stop_event.is_set():
             try:
                 worker_id, message = self._worker.recv_multipart()  # flags=zmq.NOBLOCK)
@@ -336,19 +343,32 @@ class AsyncControllerWorker(Thread, object):
                 self.incoming_queue.put(
                     (time_stamp, (worker_id, message)))  # Putting messages to queue by timestamp priority
             except zmq.ZMQError as zmq_error:
-                if zmq_error.errno == zmq.EAGAIN:
-                    pass
-                else:
-                    self._logger.exception("ZMQ Error {0}".format(zmq_error))
-                    self.stop_event.set()
-                    raise zmq_error
+                self._logger.exception("ZMQ Error {0}".format(zmq_error))
+                self.stop_event.set()
+                raise zmq_error
             except Exception as generic_error:
                 self._logger.error("Unhandled exception {0}".format(generic_error))
                 self.stop_event.set()
-                raise
+                raise generic_error
+
+    def __del__(self):
+        self._logger.info("Closing sockets...")
+        self._context.close()
+        self._worker.close()
+        self._context.term()
+
+
+class OutgoingAsyncControllerWorker(AsyncControllerWorker, object):
+    def __init__(self, logger, context, outgoing_queue, stop_event):
+        super().__init__(logger, context, stop_event)
+        self.outgoing_queue = outgoing_queue
+
+    def run(self):
+        self._logger.info("Async Controller: outgoing messages worker {0} started".format(self.name))
+        while not self.stop_event.is_set():
             try:
                 #  Sending out messages from outgoing message queue
-                next_worker_id, job_id, job_work = self.outgoing_queue.get()
+                next_worker_id, job_id, job_work = self.outgoing_queue.get(timeout=0.1)
                 self._worker.send_multipart(
                     [next_worker_id, json.dumps((job_id, job_work)).encode('utf8')])
             except queue.Empty:
