@@ -113,18 +113,19 @@ def delete(mount_point, incoming_data, **kwargs):
     flock = kwargs['flock']
     dirpath = incoming_data['target'].split('/')[1]
     fname = incoming_data['target'].split('/')[2]
-    with open(''.join([mount_point, incoming_data['target']]), 'rb') as fp:
-        flock.release(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
+    f_path = ''.join([mount_point, incoming_data['target']])
+    with open(f_path, 'rb') as fp:
+        flock.release(fp.fileno(), 0, os.path.getsize(f_path))
     os.remove('/'.join([mount_point, dirpath, fname]))
     outgoing_data['uuid'] = incoming_data['uuid']
 
 
 def touch(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    dest_dir_name = incoming_data['target'].split('/')[1]
     # File will be only created if not exists otherwise EEXIST error returned
     flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
     fd = os.open(''.join([mount_point, incoming_data['target']]), flags)
+    os.write(fd, b'\0')
     os.fsync(fd)
     os.close(fd)
     outgoing_data['dirsize'] = 4096  # This field is deprecated since we're counting dir size on server side
@@ -142,15 +143,16 @@ def stat(mount_point, incoming_data, **kwargs):
 def read(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     flock = kwargs['flock']
-    with open(''.join([mount_point, incoming_data['target']]), 'rb') as f:
-        f.seek(incoming_data['offset'])
-        # flock.lock(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
-        buf = f.read(incoming_data['repeats'])
-        # flock.release(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
-        hasher = xxhash.xxh64()
-        hasher.update(buf)
-        outgoing_data['hash'] = hasher.hexdigest()
-        outgoing_data['offset'] = incoming_data['offset']
+    offset = incoming_data['offset']
+    chunk_size = incoming_data['repeats']
+    f_path = ''.join([mount_point, incoming_data['target']])
+    with open(f_path, 'rb') as f:
+        f.seek(offset)
+        flock.lock(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
+        buf = f.read(chunk_size)
+        flock.release(f.fileno(), incoming_data['offset'], incoming_data['repeats'])
+        outgoing_data['hash'] = xxhash.xxh64(buf).hexdigest()
+        outgoing_data['offset'] = offset
         outgoing_data['chunk_size'] = incoming_data['repeats']
         outgoing_data['uuid'] = incoming_data['uuid']
         # outgoing_data['buffer'] = buf[:256].decode()
@@ -161,7 +163,6 @@ def write(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     io_mode = 'rb+'
     flock = kwargs['flock']
-    fp = None
     if incoming_data['io_type'] == 'sequential':
         offset = incoming_data['offset'] + incoming_data['data_pattern_len']
     else:
@@ -174,17 +175,16 @@ def write(mount_point, incoming_data, **kwargs):
     file_path = ''.join([mount_point, incoming_data['target']])
     if not os.path.exists(file_path):
         io_mode = 'w+b'
-    try:
-        fp = open(file_path, io_mode)
+    with open(file_path, io_mode) as f:
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
-        flock.lock(fp.fileno(), offset, data_pattern['repeats'])
-        fp.seek(offset)
-        fp.write(pattern_to_write)
-        fp.flush()
-        os.fsync(fp.fileno())
+        flock.lock(f.fileno(), offset, data_pattern['repeats'])
+        f.seek(offset)
+        f.write(pattern_to_write)
+        f.flush()
+        os.fsync(f.fileno())
         #  Checking if original data pattern and pattern on disk are the same
-        fp.seek(offset)
-        buf = fp.read(data_pattern['repeats'])
+        f.seek(offset)
+        buf = f.read(data_pattern['repeats'])
         hasher = xxhash.xxh64()
         hasher.update(buf)
         read_hash = hasher.hexdigest()
@@ -192,20 +192,7 @@ def write(mount_point, incoming_data, **kwargs):
             outgoing_data['dynamo_error'] = error_codes.HASHERR
             outgoing_data['bad_hash'] = read_hash
         # fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
-        flock.release(fp.fileno(), offset, data_pattern['repeats'])
-        fp.close()
-    except (IOError, OSError) as env_error:
-        if fp:
-            try:
-                fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
-            except OSError as os_err:
-                if os_err.errno == errno.ENOLCK:
-                    pass
-                else:
-                    fp.close()
-                    raise os_err
-            fp.close()
-        raise env_error
+        flock.release(f.fileno(), offset, data_pattern['repeats'])
     outgoing_data['data_pattern'] = data_pattern['pattern'].decode()
     outgoing_data['chunk_size'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
@@ -282,19 +269,22 @@ def truncate(mount_point, incoming_data, **kwargs):
 
 def read_direct(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    fp = None
-    buf = ""
+    flock = kwargs['flock']
+    fd = None
     try:
         f_path = "{0}{1}".format(mount_point, incoming_data['target'])
-        fp = os.open(f_path, os.O_RDONLY | os.O_DIRECT)
-        # os.lseek(fp, incoming_data['offset'], os.SEEK_SET)
-        mmap_buf = mmap.mmap(fp, 0, prot=mmap.PROT_READ)
-        mmap_buf.seek(incoming_data['offset'])
-        buf = mmap_buf.read(incoming_data['repeats'])
-        os.close(fp)
+        fd = os.open(f_path, os.O_RDONLY | os.O_DIRECT)
+        mmap_buf = mmap.mmap(fd, 0, prot=mmap.PROT_READ)
+        offset = incoming_data['offset']
+        chunk_size = incoming_data['repeats']
+        mmap_buf.seek(offset)
+        flock.lock(fd, incoming_data['offset'], incoming_data['repeats'])
+        buf = mmap_buf.read(chunk_size)
+        flock.release(fd, incoming_data['offset'], incoming_data['repeats'])
+        os.close(fd)
     except (IOError, OSError) as env_error:
-        if fp:
-            os.close(fp)
+        if fd:
+            os.close(fd)
         raise env_error
     hasher = xxhash.xxh64()
     hasher.update(buf)

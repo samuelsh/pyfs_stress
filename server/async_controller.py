@@ -2,9 +2,11 @@
 Asynchronous Server logic is here
 2016 samuels (c)
 """
+import multiprocessing
 import queue
 import timeit
 from bisect import bisect
+from multiprocessing import Process
 from random import random
 import json
 import random
@@ -18,6 +20,7 @@ import zmq
 from config import CTRL_MSG_PORT
 from logger import server_logger
 from server import helpers
+from server.CSVWriter import CSVWriter
 from server.collector import Collector
 from server.request_actions import request_action
 from server.response_actions import response_action
@@ -131,10 +134,15 @@ class Controller(object):
             self._work_to_requeue = []
             self._incoming_message_queue = queue.PriorityQueue()
             self._outgoing_message_queue = queue.Queue()
+            self._csv_writer_queue = multiprocessing.Queue()
             self.logger.info("Starting Collector service thread...")
             collector = Collector(self.test_stats, self.dir_tree, self.stop_event)
             collector_thread = Thread(target=collector.run)
             collector_thread.start()
+            self.logger.info("Starting CSV writer process...")
+            csv_writer = CSVWriter(self._csv_writer_queue, self.stop_event)
+            csv_writer = Process(target=csv_writer.run)
+            csv_writer.start()
             self.logger.info("Starting Async Server....")
             proxy_device_thread = AsyncControllerServer(self.logger, self.stop_event, self._incoming_message_queue,
                                                         self._outgoing_message_queue)
@@ -143,6 +151,7 @@ class Controller(object):
             stop_event.set()
         except Exception as e:
             self.logger.exception(e)
+            stop_event.set()
 
     @property
     def dir_tree(self):
@@ -216,6 +225,7 @@ class Controller(object):
         formatted_message = helpers.message_to_pretty_string(incoming_message)
         self.logger.debug('[{0}]: finished {1}, result: {2}'.format(worker_id, job.id, formatted_message))
         self.collect_message_stats(incoming_message)
+        self._csv_writer_queue.put((worker_id, incoming_message))
         response_action(self.logger, incoming_message, self.dir_tree)
 
     def run(self):
@@ -247,7 +257,7 @@ class Controller(object):
                 if self.stop_event.is_set():
                     break
         except KeyboardInterrupt:
-            pass
+            self.stop_event.set()
         except Exception as generic_error:
             self.logger.error(generic_error)
             raise generic_error
@@ -326,9 +336,12 @@ class AsyncControllerWorker(Thread, object):
                 self.incoming_queue.put(
                     (time_stamp, (worker_id, message)))  # Putting messages to queue by timestamp priority
             except zmq.ZMQError as zmq_error:
-                self._logger.exception("ZMQ Error {0}".format(zmq_error))
-                self.stop_event.set()
-                raise zmq_error
+                if zmq_error.errno == zmq.EAGAIN:
+                    pass
+                else:
+                    self._logger.exception("ZMQ Error {0}".format(zmq_error))
+                    self.stop_event.set()
+                    raise zmq_error
             except Exception as generic_error:
                 self._logger.error("Unhandled exception {0}".format(generic_error))
                 self.stop_event.set()
