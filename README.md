@@ -8,13 +8,13 @@ It could be useful for anyone, who is developing new file system or testing an e
 Use cases:
 1. Load & Stress - Imagine 60 clients, each one running 16 io processes vs your file server :)
 2. Race Conditions - Client x trying to access file which is removed by client y, while client z reading it
-3. Data Corruptions - Controller always "knows" the current status of all files and directories
+3. Data corruptions detection - Controller always "knows" the current status of all files and directories
 
 Features:
 * Multi-client load & stress - tested on 60 clients simultaneously ( and it's still not the limit :))
 * Data integrity & corruptions monitoring - able to detect lost files or file chunks, containing wrong data
 * NFS and SMB mounts are supported
-* Following file system operations supported: mkdir, list, remove, touch, stat, read, rename, move,
+* Following file system operations supported: mkdir, list, remove, touch, stat, read, direct read, rename, move,
   write, truncate
 * Random and sequential reads and writes supported
 * NFS advisory file locking
@@ -35,24 +35,30 @@ Required Python packages:
 * paramiko
 * treelib
 * argparse
+* xxHash
 
 Usage:
 ```bash
-$ ./fileops_server.py -h
-usage: fileops_server.py [-h] [-e EXPORT] [--tenants]
-                         [-m {nfs3,nfs4,nfs4.1,smb1,smb2,smb3}]
-                         cluster clients [clients ...]
+]# ./fileops_server.py --help
+usage: fileops_server.py [-h] [-c CLIENTS [CLIENTS ...]] [-e EXPORT]
+                         [--start_vip START_VIP] [--end_vip END_VIP]
+                         [--tenants] [-m {nfs3,nfs4,nfs4.1,smb1,smb2,smb3}]
+                         cluster
 
 pyFstress Server runner
 
 positional arguments:
-  cluster               File server name
-  clients               Space separated list of clients
+  cluster               File server name or IP
 
 optional arguments:
   -h, --help            show this help message and exit
+  -c CLIENTS [CLIENTS ...], --clients CLIENTS [CLIENTS ...]
+                        Space separated list of clients
   -e EXPORT, --export EXPORT
                         NFS export name
+  --start_vip START_VIP
+                        Start VIP address range
+  --end_vip END_VIP     End VIP address range
   --tenants             Enable MultiTenancy
   -m {nfs3,nfs4,nfs4.1,smb1,smb2,smb3}, --mtype {nfs3,nfs4,nfs4.1,smb1,smb2,smb3}
                         Mount type

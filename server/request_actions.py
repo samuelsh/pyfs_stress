@@ -60,6 +60,8 @@ def delete_request(logger, dir_tree, **kwargs):
     fname = file_to_delete.name
     target = "/".join(['', rdir.tag, fname])
     uuid = file_to_delete.uuid
+    file_to_delete.tid += 1
+    data['tid'] = file_to_delete.tid
     data['target'] = target
     data['uuid'] = uuid
     return data
@@ -87,6 +89,8 @@ def stat_request(logger, dir_tree, **kwargs):
     fname = rfile.name
     target = "/".join(['', rdir.tag, fname])
     uuid = rfile.uuid
+    rfile.tid += 1
+    data['tid'] = rfile.tid
     data['target'] = target
     data['uuid'] = uuid
     return data
@@ -102,6 +106,8 @@ def read_request(logger, dir_tree, **kwargs):
         return None
     fname = rfile.name
     target = "/".join(['', rdir.tag, fname])
+    rfile.tid += 1
+    data['tid'] = rfile.tid
     data['target'] = target
     data['data_pattern'] = rfile.data_pattern
     data['repeats'] = rfile.data_pattern_len
@@ -121,6 +127,8 @@ def write_request(logger, dir_tree, **kwargs):
         return None
     fname = wfile.name
     target = "/".join(['', wdir.tag, fname])
+    wfile.tid += 1
+    data['tid'] = wfile.tid
     data['target'] = target
     data['offset'] = wfile.data_pattern_offset
     data['data_pattern_len'] = wfile.data_pattern_len
@@ -140,6 +148,8 @@ def rename_request(logger, dir_tree, **kwargs):
     fname = file_to_rename.name
     target = "/".join(['', rdir.tag, fname])
     uuid = file_to_rename.uuid
+    file_to_rename.tid += 1
+    data['tid'] = file_to_rename.tid
     data['target'] = target
     data['uuid'] = uuid
     data['rename_dest'] = shell_utils.StringUtils.get_random_string_nospec(64)
@@ -161,6 +171,8 @@ def rename_exist_request(logger, dir_tree, **kwargs):
     target = "/".join(['', rdir_src.tag, src_fname])
     data['rename_dest'] = "/".join(['', rdir_dst.tag, dst_fname])
     uuid = src_file_to_rename.uuid
+    src_file_to_rename.tid += 1
+    data['tid'] = src_file_to_rename.tid
     data['target'] = target
     data['uuid'] = uuid
     data['rename_source'] = target
@@ -178,6 +190,8 @@ def truncate_request(logger, dir_tree, **kwargs):
     fname = file_to_truncate.name
     target = "/".join(['', tdir.tag, fname])
     uuid = file_to_truncate.uuid
+    file_to_truncate.tid += 1
+    data['tid'] = file_to_truncate.tid
     data['target'] = target
     data['uuid'] = uuid
     return data

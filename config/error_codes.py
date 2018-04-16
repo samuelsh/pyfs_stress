@@ -9,3 +9,7 @@ NO_TARGET = 0x101  # Target not specified
 MAX_DIR_SIZE = 0x102  # Directory entry reached max size limit
 ZERO_SIZE = 0x103  # Empty file. Can happen due to raise, when process trying to read file, which is still empty
 HASHERR = 0x104  # Data pattern validation after writing on disk failed
+TIDERR = 0x105  # TID mismatch
+ENOTONDISK = 0x106   # Not on disk when expected
+DIR_NOTONDISK_OK = 0x107
+FILE_NOTONDISK_OK = 0x108

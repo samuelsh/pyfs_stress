@@ -235,7 +235,8 @@ class File(object):
         self.data_pattern_hash = 'ef46db3751d8e999'  # zero xxhash hash
         self.data_pattern_offset = 0
         self.uuid = uuid.uuid4().hex[-5:]  # Unique session ID, will be modified on each file modify action
-        self.last_action = None
+        self.tid = 0  # incremental transaction id for each file
+        self.last_actions = []
         self.creation_time = None
         self.modify_time = None
         self.ondisk = False

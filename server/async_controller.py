@@ -132,7 +132,7 @@ class Controller(object):
             # When/if a client disconnects we'll put any unfinished work in here,
             # get_next_job() will return work from here as well.
             self._work_to_requeue = []
-            self._incoming_message_queue = queue.PriorityQueue()
+            self._incoming_message_queue = queue.Queue()
             self._outgoing_message_queue = queue.Queue()
             self._csv_writer_queue = multiprocessing.Queue()
             self.logger.info("Starting Collector service thread...")
@@ -346,6 +346,8 @@ class IncomingAsyncControllerWorker(AsyncControllerWorker, object):
                 self._logger.exception("ZMQ Error {0}".format(zmq_error))
                 self.stop_event.set()
                 raise zmq_error
+            except KeyboardInterrupt:
+                self.stop_event.set()
             except Exception as generic_error:
                 self._logger.error("Unhandled exception {0}".format(generic_error))
                 self.stop_event.set()
@@ -380,6 +382,8 @@ class OutgoingAsyncControllerWorker(AsyncControllerWorker, object):
                     self._logger.error("ZMQ Error: {0}".format(zmq_error))
                     self.stop_event.set()
                     raise
+            except KeyboardInterrupt:
+                self.stop_event.set()
             except Exception as generic_error:
                 self._logger.error("Unhandled exception {0}".format(generic_error))
                 self.stop_event.set()

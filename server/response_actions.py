@@ -1,4 +1,6 @@
 import datetime
+import logging
+
 import xxhash
 
 import errno
@@ -169,20 +171,6 @@ def truncate_success(logger, incoming_message, dir_tree):
                     wfile.data_pattern_hash = 'ef46db3751d8e999'
                     wfile.data_pattern_len = 0
                 logger.debug('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
-            # In case there is raise and write arrived before touch we'll sync the file here
-            # elif wfile:
-            #     logger.debug("File {0}/{1} Truncate OP arrived before touch, syncing...".format(path[0], path[1]))
-            #     wfile.ondisk = True
-            #     wfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-            #                                                      '%Y/%m/%d %H:%M:%S.%f')
-            #     wfile.modify_time = wfile.creation_time
-            #     wfile.size = incoming_message['data']['size']
-            #     # recalculating the offset after truncate:
-            #     if wfile.data_pattern_offset + wfile.data_pattern_len >= wfile.size:
-            #         wfile.data_pattern_offset = wfile.size
-            #         wfile.data_pattern_hash = 'd41d8cd98f00b204e9800998ecf8427e'
-            #         wfile.data_pattern_len = 0
-            #     logger.debug('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
             else:
                 logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
         else:
@@ -339,7 +327,7 @@ def rename_exist_success(logger, incoming_message, dir_tree):
         if file_to_delete and file_to_delete.ondisk:
             logger.debug('File {0}/{1} is found, removing'.format(src_path[0], src_path[1]))
             file_to_delete.ondisk = False
-            #src_rename_dir.data.delete_file_by_name(src_path[1])
+            # src_rename_dir.data.delete_file_by_name(src_path[1])
             logger.debug('File {0}/{1} is removed form disk'.format(src_path[0], src_path[1]))
         else:
             logger.debug("File {0}/{1} is not on disk, nothing to update".format(src_path[0], src_path[1]))
@@ -405,23 +393,6 @@ def touch_fail(logger, incoming_message, dir_tree):
         return
     if incoming_message['error_code'] == error_codes.MAX_DIR_SIZE:
         pass
-        # rdir_name = incoming_message['target'].split('/')[1]  # get target folder name from path
-        # try:
-        #     logger.debug("Directory {0} going to be removed from dir tree".format(rdir_name))
-        #     dir_tree.remove_dir_by_name(rdir_name)
-        #     node_index = dir_tree.synced_nodes.index(hashlib.md5(rdir_name).hexdigest())
-        #     del dir_tree.synced_nodes[node_index]
-        #     node_index = dir_tree.nids.index(hashlib.md5(rdir_name).hexdigest())
-        #     del dir_tree.nids[node_index]
-        #     logger.debug(
-        #         "Directory {0} is reached its size limit and removed from active dirs list".format(rdir_name))
-        #     dir_tree.append_node()
-        #     logger.debug(
-        #         "New Directory node appended to tree {0}".format(dir_tree.get_last_node_tag()))
-        # except NodeIDAbsentError:
-        #     logger.debug(
-        #         "Directory {0} already removed from active dirs list, skipping....".format(rdir_name))
-
     elif incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
         rfile_name = incoming_message['target'].split('/')[4]  # get target file name from path
@@ -449,7 +420,7 @@ def list_fail(logger, incoming_message, dir_tree):
 
 def stat_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == errno.ESTALE:
+            incoming_message['error_code'] == errno.ESTALE:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -459,10 +430,6 @@ def stat_fail(logger, incoming_message, dir_tree):
         if rdir:
             rfile = rdir.data.get_file_by_name(rfile_name)
             if rfile and rfile.ondisk:
-                if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
-                    logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.
-                                 format(rfile.name, rfile.uuid, incoming_message['data']['uuid']))
-                    return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
@@ -479,7 +446,7 @@ def stat_fail(logger, incoming_message, dir_tree):
 
 def truncate_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == errno.ESTALE or incoming_message['error_code'] == errno.EAGAIN:
+            incoming_message['error_code'] == errno.ESTALE or incoming_message['error_code'] == errno.EAGAIN:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -489,10 +456,6 @@ def truncate_fail(logger, incoming_message, dir_tree):
         if rdir:
             rfile = rdir.data.get_file_by_name(rfile_name)
             if rfile and rfile.ondisk:
-                if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
-                    logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.
-                                 format(rfile.name, rfile.uuid, incoming_message['data']['uuid']))
-                    return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
@@ -509,8 +472,8 @@ def truncate_fail(logger, incoming_message, dir_tree):
 
 def read_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == error_codes.ZERO_SIZE or \
-                    incoming_message['error_code'] == errno.ESTALE:
+            incoming_message['error_code'] == error_codes.ZERO_SIZE or \
+            incoming_message['error_code'] == errno.ESTALE:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -520,10 +483,6 @@ def read_fail(logger, incoming_message, dir_tree):
         if rdir:
             rfile = rdir.data.get_file_by_name(rfile_name)
             if rfile and rfile.ondisk:
-                if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
-                    logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.
-                                 format(rfile.name, rfile.uuid, incoming_message['data']['uuid']))
-                    return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
@@ -540,7 +499,7 @@ def read_fail(logger, incoming_message, dir_tree):
 
 def write_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == errno.ESTALE or incoming_message['error_code'] == errno.EAGAIN:
+            incoming_message['error_code'] == errno.ESTALE or incoming_message['error_code'] == errno.EAGAIN:
         return
 
     if incoming_message['error_code'] == errno.ENOENT:
@@ -551,10 +510,6 @@ def write_fail(logger, incoming_message, dir_tree):
         if rdir:
             rfile = rdir.data.get_file_by_name(rfile_name)
             if rfile and rfile.ondisk:
-                if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
-                    logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.
-                                 format(rfile.name, rfile.uuid, incoming_message['data']['uuid']))
-                    return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
@@ -571,7 +526,7 @@ def write_fail(logger, incoming_message, dir_tree):
 
 def delete_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == errno.ESTALE:
+            incoming_message['error_code'] == errno.ESTALE:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -581,10 +536,6 @@ def delete_fail(logger, incoming_message, dir_tree):
         if rdir:
             rfile = rdir.data.get_file_by_name(rfile_name)
             if rfile and rfile.ondisk:
-                if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
-                    logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.
-                                 format(rfile.name, rfile.uuid, incoming_message['data']['uuid']))
-                    return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
@@ -601,7 +552,7 @@ def delete_fail(logger, incoming_message, dir_tree):
 
 def rename_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == errno.ESTALE:
+            incoming_message['error_code'] == errno.ESTALE:
         return
     if incoming_message['error_code'] == errno.ENOENT:
         rdir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
@@ -611,10 +562,6 @@ def rename_fail(logger, incoming_message, dir_tree):
         if rdir:
             rfile = rdir.data.get_file_by_name(rfile_name)
             if rfile and rfile.ondisk:
-                if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
-                    logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.
-                                 format(rfile.name, rfile.uuid, incoming_message['data']['uuid']))
-                    return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
@@ -631,7 +578,7 @@ def rename_fail(logger, incoming_message, dir_tree):
 
 def rename_exist_fail(logger, incoming_message, dir_tree):
     if incoming_message['error_code'] == error_codes.NO_TARGET or incoming_message['error_code'] == errno.EEXIST or \
-                    incoming_message['error_code'] == errno.ESTALE:
+            incoming_message['error_code'] == errno.ESTALE:
         return
     if incoming_message['error_code'] == error_codes.SAMEFILE:
         return
@@ -643,10 +590,6 @@ def rename_exist_fail(logger, incoming_message, dir_tree):
         if rdir:
             rfile = rdir.data.get_file_by_name(rfile_name)
             if rfile and rfile.ondisk:
-                if 'uuid' in incoming_message['data'] and rfile.uuid != incoming_message['data']['uuid']:
-                    logger.debug('File {0} UUID mismatch - stored {1} incoming {2}. Dropping...'.
-                                 format(rfile.name, rfile.uuid, incoming_message['data']['uuid']))
-                    return
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
@@ -659,3 +602,39 @@ def rename_exist_fail(logger, incoming_message, dir_tree):
             logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
     else:
         generic_error_handler(logger, incoming_message)
+
+
+def handle_noent(dir_name, file_name, incoming_tid, timestamp, dir_tree):
+    dir_entry = dir_tree.get_dir_by_name(dir_name)
+    if dir_entry:
+        file_entry = dir_entry.data.get_file_by_name(file_name)
+        if file_entry and file_entry.ondisk:
+            if file_entry.tid > incoming_tid:
+                return error_codes.TIDERR
+            error_time = datetime.datetime.strptime(timestamp, '%Y/%m/%d %H:%M:%S.%f')
+            if error_time > file_entry.creation_time:
+                return error_codes.ENOTONDISK
+        else:
+            return error_codes.FILE_NOTONDISK_OK
+    else:
+        return error_codes.DIR_NOTONDISK_OK
+
+
+def method_fail(logger, incoming_message, dir_tree):
+    if incoming_message['error_code'] == errno.ENOENT:
+        dir_name = incoming_message['target'].split('/')[3]  # get target folder name from path
+        file_name = incoming_message['target'].split('/')[4]  # get target file name from path
+        notondisk_error_mgs = "Result Verify FAILED: " \
+                              "Operation {0} failed on file {1} which is on disk. Invalidating".format(
+                                incoming_message['action'], dir_name + "/" + file_name)
+        tid_error_msg = "Incoming tid: {} < current tid. "
+        file_ok_msg = "Result verify OK: File {0} is not on disk".format(file_name)
+        dir_ok_msg = "Result verify OK: Directory {0} is not on disk".format(dir_name)
+        error_code = handle_noent(dir_name, file_name, incoming_message['tid'], incoming_message['timestamp'], dir_tree)
+        error = {
+            error_codes.TIDERR: {"severity": logging.WARN, "message": tid_error_msg},
+            error_codes.ENOTONDISK: {"severity": logging.ERROR, "message": notondisk_error_mgs},
+            error_codes.FILE_NOTONDISK_OK: {"severity": logging.DEBUG, "message": file_ok_msg},
+            error_codes.DIR_NOTONDISK_OK: {"severity": logging.DEBUG, "message": dir_ok_msg},
+        }[error_code]
+        logger.log(error['severity'], error['message'])

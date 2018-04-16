@@ -89,7 +89,7 @@ def response_action(action, mount_point, incoming_data, **kwargs):
         "delete": delete,
         "touch": touch,
         "stat": stat,
-        "read": read,
+        "read": read_direct,
         "write": write,
         "rename": rename,
         "rename_exist": rename_exist,
@@ -116,8 +116,10 @@ def delete(mount_point, incoming_data, **kwargs):
     f_path = ''.join([mount_point, incoming_data['target']])
     with open(f_path, 'rb') as fp:
         flock.release(fp.fileno(), 0, os.path.getsize(f_path))
-    os.remove('/'.join([mount_point, dirpath, fname]))
+    os.remove(f_path)
     outgoing_data['uuid'] = incoming_data['uuid']
+    outgoing_data['tid'] = incoming_data['tid']
+    return outgoing_data
 
 
 def touch(mount_point, incoming_data, **kwargs):
@@ -137,6 +139,7 @@ def stat(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     os.stat(''.join([mount_point, incoming_data['target']]))
     outgoing_data['uuid'] = incoming_data['uuid']
+    outgoing_data['tid'] = incoming_data['tid']
     return outgoing_data
 
 
@@ -155,6 +158,7 @@ def read(mount_point, incoming_data, **kwargs):
         outgoing_data['offset'] = offset
         outgoing_data['chunk_size'] = chunk_size
         outgoing_data['uuid'] = incoming_data['uuid']
+        outgoing_data['tid'] = incoming_data['tid']
         # outgoing_data['buffer'] = buf[:256].decode()
         return outgoing_data
 
@@ -199,6 +203,7 @@ def write(mount_point, incoming_data, **kwargs):
     outgoing_data['offset'] = offset
     outgoing_data['uuid'] = incoming_data['uuid']
     outgoing_data['io_type'] = incoming_data['io_type']
+    outgoing_data['tid'] = incoming_data['tid']
     return outgoing_data
 
 
@@ -212,6 +217,7 @@ def rename(mount_point, incoming_data, **kwargs):
     os.rename('/'.join([mount_point, dirpath, fname]),
               '/'.join([dst_mount_point, dirpath, incoming_data['rename_dest']]))
     outgoing_data['uuid'] = incoming_data['uuid']
+    outgoing_data['tid'] = incoming_data['tid']
     return outgoing_data
 
 
@@ -231,6 +237,7 @@ def rename_exist(mount_point, incoming_data, **kwargs):
     outgoing_data['rename_source'] = src_path
     outgoing_data['rename_dest'] = dst_path
     outgoing_data['uuid'] = incoming_data['uuid']
+    outgoing_data['tid'] = incoming_data['tid']
     return outgoing_data
 
 
@@ -264,6 +271,7 @@ def truncate(mount_point, incoming_data, **kwargs):
         raise env_error
     outgoing_data['size'] = offset
     outgoing_data['uuid'] = incoming_data['uuid']
+    outgoing_data['tid'] = incoming_data['tid']
     return outgoing_data
 
 
@@ -292,6 +300,7 @@ def read_direct(mount_point, incoming_data, **kwargs):
     outgoing_data['offset'] = offset
     outgoing_data['chunk_size'] = chunk_size
     outgoing_data['uuid'] = incoming_data['uuid']
+    outgoing_data['tid'] = incoming_data['tid']
     return outgoing_data
 
 
@@ -349,4 +358,5 @@ def write_direct(mount_point, incoming_data, **kwargs):
     outgoing_data['offset'] = offset
     outgoing_data['uuid'] = incoming_data['uuid']
     outgoing_data['io_type'] = incoming_data['io_type']
+    outgoing_data['tid'] = incoming_data['tid']
     return outgoing_data

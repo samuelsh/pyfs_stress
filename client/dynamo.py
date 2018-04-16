@@ -88,7 +88,7 @@ class Dynamo(object):
                     # if zmq_error.errno == zmq.EAGAIN:
                     #     pass
                     # else:
-                        self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
+                    self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
                 except TypeError:
                     self.logger.error("JSON Serialisation error: msg: {}".format(msg))
         except KeyboardInterrupt:
@@ -115,11 +115,9 @@ class Dynamo(object):
         """
         action = work['action']
         data = {}
-        # mount_point = "".join(
-        #     "/mnt/DIRSPLIT-node{0}.{1}-{2}".format(random.randint(0, self.nodes - 1), self._server,
-        #                                            random.randint(0, self.domains - 1)))
         mount_point = self.mounter.get_random_mountpoint()
-        self.logger.debug('Incoming job: \'{0}\' on \'{1}\''.format(work['action'], work['data']['target']))
+        self.logger.debug('Incoming job: \'{}\' on \'{}\' data: {}'.format(work['action'], work['data']['target'],
+                                                                           work['data']))
         try:
             if 'None' in work['data']['target']:
                 raise DynamoException(error_codes.NO_TARGET,
