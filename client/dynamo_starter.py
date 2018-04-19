@@ -54,7 +54,7 @@ def run():
         try:
             mounter.mount_all_vips()
         except AttributeError:
-            logger.warn("VIP range is bad or None. Filing back to mounting storage server IP")
+            logger.warn("VIP range is bad or None. Falling back to mounting storage server IP")
             mounter.mount()
     except Exception as error_on_init:
         logger.error(str(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
