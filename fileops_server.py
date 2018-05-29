@@ -129,11 +129,11 @@ def cleanup(clients=None):
     if clients:
         for client in clients:
             logger.info("{}: Killing workers".format(client))
-            ShellUtils.run_shell_remote_command_no_exception(client, 'pkill -9 -f python')
+            ShellUtils.run_shell_remote_command_no_exception(client, 'pkill -9 -f dynamo')
             logger.info("{}: Unmounting".format(client))
-            ShellUtils.run_shell_remote_command_no_exception(client, 'umount -fl /home/{}'.format('DIRSPLIT*'))
+            ShellUtils.run_shell_remote_command_no_exception(client, 'sudo umount -fl /mnt/{}'.format('FSTRESS*'))
             logger.info("{}: Removing mountpoint folder/s".format(client))
-            ShellUtils.run_shell_remote_command_no_exception(client, 'rm -fr /home/{}'.format('DIRSPLIT*'))
+            ShellUtils.run_shell_remote_command_no_exception(client, 'sudo rm -fr /mnt/{}'.format('FSTRESS*'))
 
 
 def main():

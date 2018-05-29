@@ -5,8 +5,8 @@
 			"password": "vastdata"
 		},
 		"client": {
-			"user": "root",
-			"password": "rootvastdata"
+			"user": "vastdata",
+			"password": "vastdata"
 		}
 	},
 	"test_settings": {

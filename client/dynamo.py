@@ -2,6 +2,7 @@
 Client load generator
 2016 samules (c)
 """
+import os
 from datetime import datetime
 
 import zmq
@@ -12,7 +13,7 @@ import redis
 from config.redis_config import redis_config
 from locking import FLock
 
-sys.path.append('/qa/dynamo')
+sys.path.append(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo'))
 from logger import pubsub_logger
 from config import CTRL_MSG_PORT
 from response_actions import response_action, DynamoException
@@ -129,12 +130,12 @@ class Dynamo(object):
         except OSError as os_error:
             return build_message('failed', action, data, timestamp(), error_code=os_error.errno,
                                  error_message=os_error.strerror,
-                                 path=''.join([mount_point, work['data']['target']]),
+                                 path='/'.join([mount_point, work['data']['target']]),
                                  line=sys.exc_info()[-1].tb_lineno)
         except IOError as io_error:
             return build_message('failed', action, data, timestamp(), error_code=io_error.errno,
                                  error_message=io_error.strerror,
-                                 path=''.join([mount_point, work['data']['target']]),
+                                 path='/'.join([mount_point, work['data']['target']]),
                                  line=sys.exc_info()[-1].tb_lineno)
         except DynamoException as dynamo_error:
             self.logger.exception(dynamo_error)

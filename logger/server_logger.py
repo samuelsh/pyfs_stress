@@ -1,12 +1,8 @@
-import concurrent
 import gzip
 import logging
 from logging import handlers
 import os
 import sys
-
-import zlib
-
 import shutil
 
 __author__ = 'samuels'

@@ -91,9 +91,9 @@ class ShellUtils:
         return p
 
     @staticmethod
-    def run_shell_command(cmd, params, stdout=subprocess.PIPE):
-        cmdline = [cmd]
-        cmdline = cmdline + shlex.split(params)
+    def run_shell_command(cmd, params, stdout=subprocess.PIPE, sudo=False):
+        cmdline = ("sudo " if sudo else "") + cmd + " " + params
+        cmdline = shlex.split(cmdline)
         p = subprocess.Popen(cmdline, stdout=stdout, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:

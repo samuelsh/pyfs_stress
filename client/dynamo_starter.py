@@ -47,9 +47,9 @@ def run():
     logger = pubsub_logger.PUBLogger(args.controller).logger
     time.sleep(10)
     try:
-        os.chdir('/qa/dynamo/client')
+        os.chdir(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo', 'client'))
         logger.info("Mounting work path...")
-        mounter = Mounter(args.server, args.export, args.mtype, 'DIRSPLIT', logger=logger, nodes=args.nodes,
+        mounter = Mounter(args.server, args.export, args.mtype, 'FSTRESS', logger=logger, nodes=args.nodes,
                           domains=args.domains, sudo=True, start_vip=args.start_vip, end_vip=args.end_vip)
         try:
             mounter.mount_all_vips()

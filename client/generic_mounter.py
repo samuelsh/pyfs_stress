@@ -9,7 +9,7 @@ import sys
 
 import time
 
-sys.path.append('/qa/dynamo')
+sys.path.append(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo'))
 from logger import server_logger
 from utils import shell_utils
 from utils import ip_utils
@@ -17,7 +17,7 @@ from config import DYNAMO_PATH
 
 __author__ = "samuel (c)"
 
-MOUNT_BASE = "/home"
+MOUNT_BASE = "/mnt"
 NUMBER_OF_RETRIES = 3
 
 
@@ -30,7 +30,10 @@ class Mounter:
         self.mount_points = []
         self.logger = None
         self.num_of_retries = NUMBER_OF_RETRIES
+        self.sudo = True
 
+        if 'sudo' in kwargs:
+            self.sudo = kwargs['sudo']
         if 'logger' in kwargs:
             self.logger = kwargs['logger']
         else:
@@ -48,17 +51,20 @@ class Mounter:
         except OSError as os_error:
             if os_error.errno == errno.EEXIST:
                 pass
+            elif os_error.errno == errno.EACCES:
+                shell_utils.ShellUtils.run_shell_command('mkdir', '-p {}'.format(mount_point), sudo=self.sudo)
             else:
                 self.logger.error(os_error)
                 raise os_error
         try:
-            shell_utils.ShellUtils.run_shell_command('umount', '-fl {}'.format(mount_point))
+            shell_utils.ShellUtils.run_shell_command('umount', '-fl {}'.format(mount_point), sudo=self.sudo)
         except RuntimeError as e:
             self.logger.warn(e)
         if 'nfs' in self.mount_type:
             mtype = self.mount_type.strip('nfs')
             shell_utils.ShellUtils.run_shell_command('mount',
-                                                     '{}:/{} {}'.format(self.server, self.export, mount_point))
+                                                     '{}:/{} {}'.format(self.server, self.export, mount_point),
+                                                     sudo=self.sudo)
         elif 'smb' in self.mount_type:
             with open(DYNAMO_PATH + "/client/smb_params.json") as f:
                 smb_params = json.load(f)
@@ -84,11 +90,13 @@ class Mounter:
             except OSError as os_error:
                 if os_error.errno == errno.EEXIST:
                     pass
+                elif os_error.errno == errno.EACCES:
+                    shell_utils.ShellUtils.run_shell_command('mkdir', '-p {}'.format(mount_point), sudo=self.sudo)
                 else:
                     self.logger.error(os_error)
                     raise os_error
             try:
-                shell_utils.ShellUtils.run_shell_command('umount', '-fl {}'.format(mount_point))
+                shell_utils.ShellUtils.run_shell_command('umount', '-fl {}'.format(mount_point), sudo=self.sudo)
             except RuntimeError as e:
                 self.logger.warn(e)
             if 'nfs' in self.mount_type:
@@ -98,7 +106,7 @@ class Mounter:
                     # shell_utils.ShellUtils.run_shell_command('mount',
                     #                                          '{}:/{} {}'.format(vip, export, mount_point))
                     self.retry_method(shell_utils.ShellUtils.run_shell_command, 'mount',
-                                      '{}:/{} {}'.format(vip, export, mount_point))
+                                      '-o nfsvers={} {}:/{} {}'.format(mtype, vip, export, mount_point), sudo=True)
                 except RuntimeError as e:
                     self.logger.error("Mount error {} {}".format(socket.gethostname(), e))
 
@@ -116,10 +124,10 @@ class Mounter:
                                   format(self.mount_type, self.server, self.export, mount_point))
                 raise RuntimeError
 
-    def retry_method(self, callback, command, params):
+    def retry_method(self, callback, command, params, sudo=False):
         for retry in range(self.num_of_retries):
             try:
-                callback(command, params)
+                callback(command, params, sudo=sudo)
             except RuntimeError as e:
                 if retry < self.num_of_retries:
                     self.logger.warn("Command failed, waiting 5 sec before retry ...")
