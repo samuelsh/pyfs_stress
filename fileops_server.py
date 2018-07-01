@@ -35,7 +35,7 @@ def get_args():
     """
 
     parser = argparse.ArgumentParser(
-        description='pyFstress Server runner')
+        description='vfs_stress Server runner')
     parser.add_argument('cluster', type=str, help='File server name or IP')
     parser.add_argument('-c', '--clients', type=str, nargs='+', help="Space separated list of clients")
     parser.add_argument('-e', '--export', type=str, default="/", help="NFS export name")

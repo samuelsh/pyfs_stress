@@ -1,5 +1,5 @@
 """
-Byte range locking implementation for pyFstress test suite - 2018 (c) samuel
+Byte range locking implementation for vfs_stress test suite - 2018 (c) samuel
 """
 import json
 import os

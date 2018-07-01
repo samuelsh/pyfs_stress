@@ -22,7 +22,7 @@ NUMBER_OF_RETRIES = 3
 
 
 class Mounter:
-    def __init__(self, server, export, mount_type, prefix, **kwargs):
+    def __init__(self, server, export, mount_type, prefix, do_umount=False, **kwargs):
         self.prefix = prefix
         self.mount_type = mount_type
         self.server = server
@@ -31,13 +31,16 @@ class Mounter:
         self.logger = None
         self.num_of_retries = NUMBER_OF_RETRIES
         self.sudo = True
+        self.do_umount = do_umount
 
-        if 'sudo' in kwargs:
-            self.sudo = kwargs['sudo']
         if 'logger' in kwargs:
             self.logger = kwargs['logger']
         else:
             self.logger = server_logger.ConsoleLogger(socket.gethostname()).logger
+
+        self.sudo = kwargs['sudo'] if 'sudo' in kwargs else True
+        self.retrans = kwargs['retrans'] if 'retrans' in kwargs else 3
+        self.timeout = kwargs['timeout'] if 'timeout' in kwargs else 600
 
         try:
             self.vip_range = [ip for ip in ip_utils.range_ipv4(kwargs['start_vip'], kwargs['end_vip'])]
@@ -96,17 +99,19 @@ class Mounter:
                     self.logger.error(os_error)
                     raise os_error
             try:
-                shell_utils.ShellUtils.run_shell_command('umount', '-fl {}'.format(mount_point), sudo=self.sudo)
+                if self.do_umount:
+                    shell_utils.ShellUtils.run_shell_command('umount', '-fl {}'.format(mount_point), sudo=self.sudo)
             except RuntimeError as e:
                 self.logger.warn(e)
             if 'nfs' in self.mount_type:
                 mtype = self.mount_type.strip('nfs')
                 export = "" if self.export == '/' else self.export
                 try:
-                    # shell_utils.ShellUtils.run_shell_command('mount',
-                    #                                          '{}:/{} {}'.format(vip, export, mount_point))
-                    self.retry_method(shell_utils.ShellUtils.run_shell_command, 'mount',
-                                      '-o nfsvers={} {}:/{} {}'.format(mtype, vip, export, mount_point), sudo=True)
+                    if not os.path.ismount(mount_point):
+                        self.retry_method(shell_utils.ShellUtils.run_shell_command, 'mount',
+                                          '-o nfsvers={},timeo={},retrans={} {}:/{} {}'
+                                          .format(mtype, self.timeout, self.retrans, vip, export, mount_point),
+                                          sudo=True)
                 except RuntimeError as e:
                     self.logger.error("Mount error {} {}".format(socket.gethostname(), e))
 
