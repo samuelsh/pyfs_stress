@@ -17,8 +17,8 @@ from utils.shell_utils import StringUtils
 
 logger = None
 stop_event = None
-files_counter = None
-dir_counter = None
+files_counter = 0
+dir_counter = 0
 
 
 class StatsCollector(threading.Timer):
@@ -70,7 +70,10 @@ def dir_producer_worker(mounter, test_dir, num_dirs, dirs_queue):
             i = dirs_queue.get_nowait()
             mp = mounter.get_random_mountpoint()
             dir_path = os.path.join(mp, test_dir, "dir-{}".format(i))
-            os.mkdir(dir_path)
+            try:
+                os.mkdir(dir_path)
+            except FileExistsError:
+                pass
             with lock:
                 dir_counter += 1
     except (IOError, OSError) as err:
@@ -125,11 +128,14 @@ def main():
     try:
         mounter.mount_all_vips()
     except AttributeError:
-        logger.warn("VIP range is bad or None. Falling back to mounting storage server IP")
+        logger.warn("VIP range is bad or None. Falling back to single mount")
         mounter.mount()
     for i in range(dirs_num):
         dirs_queue.put(str(i))
-    os.mkdir(os.path.join(mounter.get_random_mountpoint(), test_dir))
+    try:
+        os.mkdir(os.path.join(mounter.get_random_mountpoint(), test_dir))
+    except FileExistsError as e:
+        logger.warn("{}".format(e))
     logger.info("Test directory created on {}".format(mounter.get_random_mountpoint(), test_dir))
     stats_collector.start()
 

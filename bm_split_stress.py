@@ -128,9 +128,9 @@ def main():
     futures = []
     stopper_thread.start()
     with ThreadPoolExecutor() as executor:
-        for _ in range(16):
+        for _ in range(64):
             futures.append(executor.submit(dir_producer_worker, mounter, dirs_queue, dirs_to_delete))
-        for _ in range(16):
+        for _ in range(64):
             futures.append(executor.submit(files_producer_worker, dirs_queue))
     futures_validator(futures)
     logger.info("#### Totally created >>> Directories: {} Files: {}".format(dirs_counter, files_counter))
@@ -138,7 +138,7 @@ def main():
     stop_event = Event()
     futures = []
     with ThreadPoolExecutor() as executor:
-        for _ in range(16):
+        for _ in range(64):
             futures.append(executor.submit(dirs_delete_worker, dirs_to_delete))
     futures_validator(futures)
     logger.info("#### Totally deleted directories: {}".format(delete_counter))
