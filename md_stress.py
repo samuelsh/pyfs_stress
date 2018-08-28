@@ -7,6 +7,8 @@ import os
 import queue
 import sys
 import time
+
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event
 
@@ -33,8 +35,11 @@ def dir_scanner_worker(dirs_queue, test_dir):
     global stop_event
     try:
         for dir_path, _, file_names in os.walk(test_dir):
+            logger.info(f"Dir scanner worker {threading.get_ident()}: Scanning dir {dir_path}")
             for f in file_names:
+                # logger.info(f"Dir scanner worker {threading.get_ident()}: found file {f} in {dir_path}")
                 full_path = "/".join([dir_path, f])
+                # logger.info(f"Dir scanner worker {threading.get_ident()}: pushing {full_path} to queue")
                 dirs_queue.put(full_path)
         logger.info("Done Directory Scan. ")
     except Exception as e:
@@ -47,7 +52,7 @@ def rename_worker(dirs_queue):
     timeout_counter = 0
     while not stop_event.is_set():
         try:
-            full_path = dirs_queue.get(timeout=0.1)
+            full_path = dirs_queue.get(timeout=60 * 10)
             try:
                 os.rename(full_path, "/".join([os.path.dirname(full_path), "".join(["renamed_", str(time.time())])]))
             except Exception as e:
@@ -65,7 +70,7 @@ def delete_worker(dirs_queue):
     timeout_counter = 0
     while not stop_event.is_set():
         try:
-            full_path = dirs_queue.get(timeout=0.1)
+            full_path = dirs_queue.get(60 * 10)
             try:
                 os.remove(full_path)
             except Exception as e:
@@ -102,10 +107,10 @@ def main():
     with ThreadPoolExecutor() as executor:
         results.append(executor.submit(dir_scanner_worker, dirs_queue, test_dir))
         if args.action == "all" or args.action == "rename":
-            for _ in range(16):
+            for _ in range(100):
                 results.append(executor.submit(rename_worker, dirs_queue))
         if args.action == "all" or args.action == "delete":
-            for _ in range(16):
+            for _ in range(100):
                 results.append(executor.submit(delete_worker, dirs_queue))
     for result in results:
         try:
