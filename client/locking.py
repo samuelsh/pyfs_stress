@@ -3,8 +3,8 @@ Byte range locking implementation for vfs_stress test suite - 2018 (c) samuel
 """
 import json
 import os
-
 import errno
+import socket
 import xxhash
 
 
@@ -16,6 +16,7 @@ class FLock(object):
     def __init__(self, locking_db):
         self.locking_db = locking_db
         self.pid = os.getpid()
+        self.host = socket.gethostname()
 
     def lock(self, fid, offset, length, flags=None, expiration=None):
         """
@@ -40,9 +41,10 @@ class FLock(object):
                 if is_overlap(offset, length, lock['offset'], lock['length']):
                     raise LockException(errno.EAGAIN, "Resource temporarily unavailable")
         # No overlapping locks found. Locking the file
-        lock_id = xxhash.xxh64("".join(map(str, [fid, self.pid, offset, length]))).hexdigest()
+        lock_id = xxhash.xxh64("".join(map(str, [fid, self.host, self.pid, offset, length]))).hexdigest()
         self.locking_db.hmset(file_handle, {
             lock_id: json.dumps({
+                "host": self.host,
                 "pid": self.pid,
                 "offset": offset,
                 "length": length,
@@ -59,7 +61,7 @@ class FLock(object):
         :param length: int
         :return:
         """
-        lock_id = xxhash.xxh64("".join(map(str, [fid, self.pid, offset, length]))).hexdigest()
+        lock_id = xxhash.xxh64("".join(map(str, [fid, self.host, self.pid, offset, length]))).hexdigest()
         self.locking_db.hdel(os.fstat(fid).st_ino, lock_id)
 
 

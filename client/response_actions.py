@@ -68,7 +68,7 @@ class DataPatterns:
 
 def profiler(f):
     """
-    Profiler decorator ot measure duration of file operations
+    Profiler decorator to measure duration of file operations
     """
 
     def wrapper(action, mount_point, incoming_data, **kwargs):
@@ -105,7 +105,9 @@ def mkdir(mount_point, incoming_data, **kwargs):
 
 
 def list_dir(mount_point, incoming_data, **kwargs):
+    outgoing_data = {}
     os.listdir(''.join([mount_point, incoming_data['target']]))
+    return outgoing_data
 
 
 def delete(mount_point, incoming_data, **kwargs):
