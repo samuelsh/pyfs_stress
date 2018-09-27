@@ -29,29 +29,31 @@ GB256 = (GB1 * 256)  # level 2 can map up to 256GB
 GB512 = (GB1 * 512)  # level 2 can map up to 256GB
 TB128 = (TB1 * 128)  # level 3 can map up to 128TB
 ZERO_PADDING_START = 128 * MB1  # 128MB
-MAX_FILE_SIZE = TB1 + ZERO_PADDING_START
-DATA_PATTERN_A = {'pattern': b'A', 'repeats': 1, 'checksum': xxhash.xxh64(b'A' * 1).hexdigest()}
-DATA_PATTERN_B = {'pattern': b'B', 'repeats': 3, 'checksum': xxhash.xxh64(b'B' * 3).hexdigest()}
-DATA_PATTERN_C = {'pattern': b'C', 'repeats': 17, 'checksum': xxhash.xxh64(b'C' * 17).hexdigest()}
-DATA_PATTERN_D = {'pattern': b'D', 'repeats': 33, 'checksum': xxhash.xxh64(b'D' * 33).hexdigest()}
-DATA_PATTERN_E = {'pattern': b'E', 'repeats': 65, 'checksum': xxhash.xxh64(b'E' * 65).hexdigest()}
-DATA_PATTERN_F = {'pattern': b'F', 'repeats': 129, 'checksum': xxhash.xxh64(b'F' * 129).hexdigest()}
-DATA_PATTERN_G = {'pattern': b'G', 'repeats': 257, 'checksum': xxhash.xxh64(b'G' * 257).hexdigest()}
-DATA_PATTERN_H = {'pattern': b'H', 'repeats': 1025, 'checksum': xxhash.xxh64(b'H' * 1025).hexdigest()}
-DATA_PATTERN_J = {'pattern': b'J', 'repeats': 64 * KB1 + 1, 'checksum': xxhash.xxh64(b'J' * (64 * KB1 + 1)).hexdigest()}
+MAX_FILE_SIZE = TB1 + MB1
+DATA_PATTERN_A = {'pattern': b'A', 'repeats': 1, 'checksum': xxhash.xxh64(b'A' * 1).intdigest()}
+DATA_PATTERN_B = {'pattern': b'B', 'repeats': 3, 'checksum': xxhash.xxh64(b'B' * 3).intdigest()}
+DATA_PATTERN_C = {'pattern': b'C', 'repeats': 17, 'checksum': xxhash.xxh64(b'C' * 17).intdigest()}
+DATA_PATTERN_D = {'pattern': b'D', 'repeats': 33, 'checksum': xxhash.xxh64(b'D' * 33).intdigest()}
+DATA_PATTERN_E = {'pattern': b'E', 'repeats': 65, 'checksum': xxhash.xxh64(b'E' * 65).intdigest()}
+DATA_PATTERN_F = {'pattern': b'F', 'repeats': 129, 'checksum': xxhash.xxh64(b'F' * 129).intdigest()}
+DATA_PATTERN_G = {'pattern': b'G', 'repeats': 257, 'checksum': xxhash.xxh64(b'G' * 257).intdigest()}
+DATA_PATTERN_H = {'pattern': b'H', 'repeats': 1025, 'checksum': xxhash.xxh64(b'H' * 1025).intdigest()}
+DATA_PATTERN_J = {'pattern': b'J', 'repeats': 64 * KB1 + 1, 'checksum': xxhash.xxh64(b'J' * (64 * KB1 + 1)).intdigest()}
 DATA_PATTERN_I = {'pattern': b'I', 'repeats': 128 * KB1 + 1,
-                  'checksum': xxhash.xxh64(b'I' * (128 * KB1 + 1)).hexdigest()}
+                  'checksum': xxhash.xxh64(b'I' * (128 * KB1 + 1)).intdigest()}
 DATA_PATTERN_K = {'pattern': b'K', 'repeats': 256 * KB1 + 1,
-                  'checksum': xxhash.xxh64(b'K' * (256 * KB1 + 1)).hexdigest()}
+                  'checksum': xxhash.xxh64(b'K' * (256 * KB1 + 1)).intdigest()}
 DATA_PATTERN_L = {'pattern': b'L', 'repeats': 512 * KB1 + 1,
-                  'checksum': xxhash.xxh64(b'L' * (512 * KB1 + 1)).hexdigest()}
-DATA_PATTERN_M = {'pattern': b'M', 'repeats': MB1 + 1, 'checksum': xxhash.xxh64(b'M' * (MB1 + 1)).hexdigest()}
+                  'checksum': xxhash.xxh64(b'L' * (512 * KB1 + 1)).intdigest()}
+DATA_PATTERN_M = {'pattern': b'M', 'repeats': MB1 + 1, 'checksum': xxhash.xxh64(b'M' * (MB1 + 1)).intdigest()}
+DATA_PATTERN_X = {'pattern': b'M', 'repeats': MB1, 'checksum': xxhash.xxh64(b'M' * MB1).intdigest()}
 
 PADDING = [0, ZERO_PADDING_START]
 OFFSETS_LIST = [0, INLINE, KB1, KB4, MB1, MB512, GB1, GB256, GB512, TB1]
 DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
                       DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_I, DATA_PATTERN_J, DATA_PATTERN_K, DATA_PATTERN_L,
                       DATA_PATTERN_M]
+# DATA_PATTERNS_LIST = [DATA_PATTERN_X]
 
 
 class DynamoException(EnvironmentError):
@@ -89,7 +91,7 @@ def response_action(action, mount_point, incoming_data, **kwargs):
         "delete": delete,
         "touch": touch,
         "stat": stat,
-        "read": read_direct,
+        "read": read,
         "write": write,
         "rename": rename,
         "rename_exist": rename_exist,
@@ -113,8 +115,6 @@ def list_dir(mount_point, incoming_data, **kwargs):
 def delete(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     flock = kwargs['flock']
-    dirpath = incoming_data['target'].split('/')[1]
-    fname = incoming_data['target'].split('/')[2]
     f_path = ''.join([mount_point, incoming_data['target']])
     with open(f_path, 'rb') as fp:
         flock.release(fp.fileno(), 0, os.path.getsize(f_path))
@@ -130,7 +130,6 @@ def touch(mount_point, incoming_data, **kwargs):
     flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
     fd = os.open(''.join([mount_point, incoming_data['target']]), flags)
     os.write(fd, b'\0')
-    os.fsync(fd)
     os.close(fd)
     outgoing_data['dirsize'] = 4096  # This field is deprecated since we're counting dir size on server side
     # outgoing_data['uuid'] = incoming_data['uuid']
@@ -153,10 +152,10 @@ def read(mount_point, incoming_data, **kwargs):
     f_path = ''.join([mount_point, incoming_data['target']])
     with open(f_path, 'rb') as f:
         f.seek(offset)
-        flock.lock(f.fileno(), offset, chunk_size)
+        flock.lockf(f.fileno(), fcntl.LOCK_SH | fcntl.LOCK_NB, chunk_size, offset, 0)
         buf = f.read(chunk_size)
-        flock.release(f.fileno(), offset, chunk_size)
-        outgoing_data['hash'] = xxhash.xxh64(buf).hexdigest()
+        flock.lockf(f.fileno(), fcntl.LOCK_UN, chunk_size, offset)
+        outgoing_data['hash'] = xxhash.xxh64(buf).intdigest()
         outgoing_data['offset'] = offset
         outgoing_data['chunk_size'] = chunk_size
         outgoing_data['uuid'] = incoming_data['uuid']
@@ -167,38 +166,36 @@ def read(mount_point, incoming_data, **kwargs):
 
 def write(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
-    io_mode = 'rb+'
     flock = kwargs['flock']
+    io_mode = 'rb+'
     if incoming_data['io_type'] == 'sequential':
         offset = incoming_data['offset'] + incoming_data['data_pattern_len']
     else:
-        padding = random.choice(PADDING)
-        base_offset = random.choice(OFFSETS_LIST) + padding
-        offset = base_offset + random.randint(base_offset, MAX_FILE_SIZE)
-    data_pattern = random.choice(DATA_PATTERNS_LIST)
+        # speed up thing by replacing python's slow randint():
+        # https://eli.thegreenplace.net/2018/slow-and-fast-methods-for-generating-random-integers-in-python/
+        offset = int(random.random() * MAX_FILE_SIZE)
+    pattern_index = int(random.random() * len(DATA_PATTERNS_LIST))
+    data_pattern = DATA_PATTERNS_LIST[pattern_index]
     pattern_to_write = data_pattern['pattern'] * data_pattern['repeats']
     data_hash = data_pattern['checksum']
     file_path = ''.join([mount_point, incoming_data['target']])
     if not os.path.exists(file_path):
         io_mode = 'w+b'
     with open(file_path, io_mode) as f:
-        # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
-        flock.lock(f.fileno(), offset, data_pattern['repeats'])
+        flock.lockf(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB, data_pattern['repeats'], offset, 0)
         f.seek(offset)
         f.write(pattern_to_write)
-        f.flush()
-        os.fsync(f.fileno())
+        # f.flush()
+        # os.fsync(f.fileno())
+        flock.lockf(f.fileno(), fcntl.LOCK_UN, data_pattern['repeats'], offset)
         #  Checking if original data pattern and pattern on disk are the same
-        f.seek(offset)
-        buf = f.read(data_pattern['repeats'])
-        hasher = xxhash.xxh64()
-        hasher.update(buf)
-        read_hash = hasher.hexdigest()
-        if read_hash != data_hash:
-            outgoing_data['dynamo_error'] = error_codes.HASHERR
-            outgoing_data['bad_hash'] = read_hash
-        # fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
-        flock.release(f.fileno(), offset, data_pattern['repeats'])
+        # f.seek(offset)
+        # buf = f.read(len(pattern_to_write))
+        # read_hash = xxhash.xxh64(buf).intdigest()
+        # if read_hash != data_hash:
+        #     outgoing_data['dynamo_error'] = error_codes.HASHERR
+        #     outgoing_data['bad_hash'] = read_hash
+        # fcntl.lockf(f.fileno(), fcntl.LOCK_UN, data_pattern['repeats'], offset)
     outgoing_data['data_pattern'] = data_pattern['pattern'].decode()
     outgoing_data['chunk_size'] = data_pattern['repeats']
     outgoing_data['hash'] = data_hash
@@ -251,13 +248,11 @@ def truncate(mount_point, incoming_data, **kwargs):
     fp = None
     try:
         fp = open(''.join([mount_point, incoming_data['target']]), 'r+b')
-        # fcntl.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        # flock.lock(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
+        flock.lockf(fp.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         fp.truncate(offset)
         fp.flush()
         os.fsync(fp.fileno())
-        # fcntl.lockf(fp.fileno(), fcntl.LOCK_UN)
-        # flock.release(fp.fileno(), 0, os.fstat(fp.fileno()).st_size)
+        flock.lockf(fp.fileno(), fcntl.LOCK_UN)
         fp.close()
     except (IOError, OSError) as env_error:
         if fp:
@@ -288,9 +283,9 @@ def read_direct(mount_point, incoming_data, **kwargs):
         offset = incoming_data['offset']
         chunk_size = incoming_data['repeats']
         mmap_buf.seek(offset)
-        flock.lock(fd, offset, chunk_size)
+        flock.lockf(fd, fcntl.LOCK_EX | fcntl.LOCK_NB, chunk_size, offset)
         buf = mmap_buf.read(chunk_size)
-        flock.release(fd, offset, chunk_size)
+        flock.lockf(fd, fcntl.LOCK_UN)
         os.close(fd)
     except (IOError, OSError) as env_error:
         if fd:

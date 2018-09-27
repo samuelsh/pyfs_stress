@@ -44,6 +44,8 @@ def get_args():
     parser.add_argument('--tenants', action="store_true", help="Enable MultiTenancy")
     parser.add_argument('-m', '--mtype', type=str, default='nfs3', choices=['nfs3', 'nfs4', 'nfs4.1', 'smb1', 'smb2',
                                                                             'smb3'], help='Mount type')
+    parser.add_argument('-l', '--locking', type=str, help='Locking Type', choices=['native', 'application', 'off'],
+                        default="native")
     args = parser.parse_args()
     return args
 
@@ -82,7 +84,7 @@ def deploy_clients(clients, access):
         ShellUtils.run_shell_remote_command_no_exception(client, 'chmod +x {}'.format(config.DYNAMO_BIN_PATH))
 
 
-def run_clients(cluster, clients, export, mtype, start_vip, end_vip):
+def run_clients(cluster, clients, export, mtype, start_vip, end_vip, locking_type):
     """
 
     Args:
@@ -100,8 +102,9 @@ def run_clients(cluster, clients, export, mtype, start_vip, end_vip):
     """
     #  Will explicitly pass public IP of the controller to clients since we won't rely on DNS existence
     controller = socket.gethostbyname(socket.gethostname())
-    dynamo_cmd_line = "{} --controller {} --server {} --export {} --mtype {} --start_vip {} --end_vip {}". \
-        format(config.DYNAMO_BIN_PATH, controller, cluster, export, mtype, start_vip, end_vip)
+    dynamo_cmd_line = "/opt/pypy3.5/bin/pypy3.5 {} --controller {} --server {} --export {} --mtype {} --start_vip {} --end_vip {} " \
+                      "--locking {}".format(config.DYNAMO_BIN_PATH, controller, cluster, export, mtype, start_vip,
+                                                 end_vip, locking_type)
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client, dynamo_cmd_line)
 
@@ -169,7 +172,7 @@ def main():
     logger.info("Controller started")
     deploy_clients(clients_list, test_config['access']['client'])
     logger.info("Done deploying clients: {0}".format(clients_list))
-    run_clients(args.cluster, clients_list, args.export, args.mtype, args.start_vip, args.end_vip)
+    run_clients(args.cluster, clients_list, args.export, args.mtype, args.start_vip, args.end_vip, args.locking)
     logger.info("Dynamo started on all clients ....")
     controller_process.join()
     print('All done')

@@ -1,0 +1,296 @@
+"""
+Client load generator
+2016 samules (c)
+"""
+import json
+import os
+import queue
+from datetime import datetime
+
+import zmq
+import sys
+import socket
+import redis
+from threading import Thread
+
+from config.redis_config import redis_config
+from locking import FLock
+
+sys.path.append(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo'))
+from logger import pubsub_logger
+from config import CTRL_MSG_PORT, CLIENT_MSG_PORT, CLIENT_PROXY_FRONTEND
+from response_actions import response_action, DynamoException
+from config import error_codes
+
+MAX_CLIENT_WORKERS = 8
+
+
+def timestamp():
+    return datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S.%f')
+
+
+def build_message(result, action, data, time_stamp, error_code=None, error_message=None, path=None, line=None):
+    """
+    Result message format: Success message format: {'result', 'action', 'target', 'data:{'dirsize, }', 'timestamp'}
+    Failure message format: {'result', 'action', 'error_code', 'error_message', 'path', 'linenumber', 'timestamp',
+    'data:{}'}
+    """
+    if result == 'success':
+        message = {'result': result, 'action': action, 'target': path,
+                   'timestamp': time_stamp, 'data': data}
+    else:
+        message = {'result': result, 'action': action, 'error_code': error_code, 'error_message': error_message,
+                   'target': path, 'linenum': line,
+                   'timestamp': time_stamp, 'data': data}
+    return message
+
+
+class Dynamo(object):
+    def __init__(self, stop_event, mounter, controller, server, nodes, domains, proc_id=None, **kwargs):
+        self.stop_event = stop_event
+        self.logger = pubsub_logger.PUBLogger(controller).logger
+        self.mounter = mounter
+        self._server = server  # Server Cluster hostname
+        self.nodes = nodes
+        self.domains = domains
+        self._context = zmq.Context()
+        self._controller_ip = socket.gethostbyname(controller)
+        # Socket to send messages on by client
+        self._socket = self._context.socket(zmq.DEALER)
+        # We don't need to store the id anymore, the socket will handle it
+        # all for us.
+        # We'll use client host name + process ID to identify the socket
+        self._socket.identity = "{0}:0x{1:x}".format(socket.gethostname(), proc_id).encode()
+        self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
+        self._incoming_message_queue = queue.Queue()
+        self._outgoing_message_queue = queue.Queue()
+        # Initialising connection to Redis (our byte-range locking DB)
+        self.logger.info("Setting up Redis connection...")
+        self.locking_db = redis.StrictRedis(**redis_config)
+        self.flock = FLock(self.locking_db, locking_type=kwargs.get('locking_type', 'native'))
+        self.logger.info("Starting Async Client Proxy....")
+        proxy_device_thread = AsyncClientProxy(self.logger, self.stop_event, self._incoming_message_queue,
+                                               self._outgoing_message_queue, self._controller_ip, CLIENT_MSG_PORT)
+        proxy_device_thread.start()
+        self.logger.info("Dynamo {0} init done".format(self._socket.identity))
+
+    def run(self):
+        self.logger.info("Dynamo {0} started".format(self._socket.identity))
+        try:
+            msg = None
+            job_id = None
+            # Send a connect message
+            self._socket.send_json({'message': 'connect'})
+            # Poll the socket for incoming messages. This will wait up to
+            # 0.1 seconds before returning False. The other way to do this
+            # is is to use zmq.NOBLOCK when reading from the socket,
+            # catching zmq.AGAIN and sleeping for 0.1.
+            while not self.stop_event.is_set():
+                try:
+                    # Note that we can still use send_json()/recv_json() here,
+                    # the DEALER socket ensures we don't have to deal with
+                    # client ids at all.
+                    # job_id, work = self._socket.recv_json()
+                    while not job_id:
+                        try:
+                            job_id, work = self._incoming_message_queue.get(timeout=0.1)
+                            msg = self._do_work(work)
+                        except queue.Empty:
+                            pass
+                    self._outgoing_message_queue.put((job_id, msg))
+                    self.logger.debug("Going to send {0}".format(msg))
+                    self._socket.send_json(
+                        {'message': 'job_done',
+                         'result': msg,
+                         'job_id': job_id})
+                except zmq.ZMQError as zmq_error:
+                    # if zmq_error.errno == zmq.EAGAIN:
+                    #     pass
+                    # else:
+                    self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
+                except TypeError:
+                    self.logger.error("JSON Serialisation error: msg: {}".format(msg))
+        except KeyboardInterrupt:
+            pass
+        except Exception as e:
+            self.logger.exception(e)
+        finally:
+            self._disconnect()
+
+    def _disconnect(self):
+        """
+        Send the Controller a disconnect message and end the run loop
+        """
+        self.stop_event.set()
+        self._socket.send_json({'message': 'disconnect'})
+
+    def _do_work(self, work):
+        """
+        Args:
+            work: dict
+
+        Returns: str
+
+        """
+        action = work['action']
+        data = {}
+        mount_point = self.mounter.get_random_mountpoint()
+        self.logger.debug('Incoming job: \'{}\' on \'{}\' data: {}'.format(work['action'], work['data']['target'],
+                                                                           work['data']))
+        try:
+            if 'None' in work['data']['target']:
+                raise DynamoException(error_codes.NO_TARGET,
+                                      "{0}".format("Target not specified", work['data']['target']))
+            response = response_action(action, mount_point, work['data'],
+                                       dst_mount_point=mount_point, flock=self.flock)
+            if response:
+                data = response
+        except OSError as os_error:
+            return build_message('failed', action, data, timestamp(), error_code=os_error.errno,
+                                 error_message=os_error.strerror,
+                                 path='/'.join([mount_point, work['data']['target']]),
+                                 line=sys.exc_info()[-1].tb_lineno)
+        # except IOError as io_error:
+        #     return build_message('failed', action, data, timestamp(), error_code=io_error.errno,
+        #                          error_message=io_error.strerror,
+        #                          path='/'.join([mount_point, work['data']['target']]),
+        #                          line=sys.exc_info()[-1].tb_lineno)
+        # except DynamoException as dynamo_error:
+        #     self.logger.exception(dynamo_error)
+        #     return build_message('failed', action, data, timestamp(), error_code=dynamo_error.errno,
+        #                          error_message=dynamo_error.strerror, path=work['data']['target'],
+        #                          line=sys.exc_info()[-1].tb_lineno)
+        except Exception as unhandled_error:
+            self.logger.exception(unhandled_error)
+            return build_message('failed', action, data, timestamp(), error_message=unhandled_error.args[0],
+                                 path=''.join([mount_point, work['data']['target']]),
+                                 line=sys.exc_info()[-1].tb_lineno)
+        return build_message('success', action, data, timestamp(), path=work['data']['target'])
+
+
+class AsyncClientProxy(Thread, object):
+    def __init__(self, logger, stop_event, incoming_queue, outgoing_queue, ip, port):
+        super(AsyncClientProxy, self).__init__()
+        self._stop_event = stop_event
+        self._logger = logger
+        self._incoming_queue = incoming_queue
+        self._outgoing_queue = outgoing_queue
+        self._context = zmq.Context()
+        self._frontend = self._context.socket(zmq.ROUTER)
+        self._frontend.connect("tcp://{0}:{1}".format(ip, port))
+        # self._frontend.bind("tcp://*:{0}".format(CLIENT_PROXY_FRONTEND))
+        self._backend = self._context.socket(zmq.DEALER)
+        self._backend.bind('inproc://backend')
+
+    def run(self):
+        self._logger.info(
+            "Async Controller Server thread {0} started".format(self.name))
+        try:
+            workers = []
+            for _ in range(MAX_CLIENT_WORKERS):
+                worker = IncomingAsyncClientWorker(self._logger, self._context, self._incoming_queue,
+                                                   self._stop_event)
+                workers.append(worker)
+                worker.start()
+                worker = OutgoingAsyncClientWorker(self._logger, self._context, self._outgoing_queue,
+                                                   self._stop_event)
+                workers.append(worker)
+                worker.start()
+            self._logger.info("Starting Proxy Device...")
+            zmq.proxy(self._frontend, self._backend)
+        except zmq.ZMQError as zmq_error:
+            self._logger.exception(zmq_error)
+            self._stop_event.set()
+            raise zmq_error
+        except Exception as generic_error:
+            self._logger.exception("Unhandled exception {0}".format(generic_error))
+            self._stop_event.set()
+            raise generic_error
+
+    def __del__(self):
+        self._logger.info("Closing sockets...")
+        self._context.close()
+        self._backend.close()
+        self._context.term()
+
+
+class AsyncControllerWorker(Thread, object):
+    def __init__(self, logger, context, stop_event):
+        super(AsyncControllerWorker, self).__init__()
+        self._logger = logger
+        self._context = context
+        self.stop_event = stop_event
+        try:
+            self._worker = self._context.socket(zmq.DEALER)
+            self._worker.connect('inproc://backend')
+        except zmq.ZMQError as zmq_error:
+            self._logger.exception(zmq_error)
+            self.stop_event.set()
+            raise zmq_error
+
+
+class IncomingAsyncClientWorker(AsyncControllerWorker, object):
+    def __init__(self, logger, context, incoming_queue, stop_event):
+        super().__init__(logger, context, stop_event)
+        self.incoming_queue = incoming_queue
+
+    def run(self):
+        self._logger.info("Async Controller: incoming messages worker {0} started".format(self.name))
+        while not self.stop_event.is_set():
+            try:
+                job_id, work = self._worker.recv_json()
+                self.incoming_queue.put(job_id, work)  # Putting messages to queue by timestamp priority
+            except zmq.ZMQError as zmq_error:
+                self._logger.exception("ZMQ Error {0}".format(zmq_error))
+                self.stop_event.set()
+                raise zmq_error
+            except KeyboardInterrupt:
+                self.stop_event.set()
+            except Exception as generic_error:
+                self._logger.error("Unhandled exception {0}".format(generic_error))
+                self.stop_event.set()
+                raise generic_error
+
+    def __del__(self):
+        self._logger.info("Closing sockets...")
+        self._context.close()
+        self._worker.close()
+        self._context.term()
+
+
+class OutgoingAsyncClientWorker(AsyncControllerWorker, object):
+    def __init__(self, logger, context, outgoing_queue, stop_event):
+        super().__init__(logger, context, stop_event)
+        self.outgoing_queue = outgoing_queue
+
+    def run(self):
+        self._logger.info("Async Controller: outgoing messages worker {0} started".format(self.name))
+        while not self.stop_event.is_set():
+            try:
+                #  Sending out messages from outgoing message queue
+                job_id, msg = self.outgoing_queue.get(timeout=0.1)
+                self._worker.send_json(
+                    {'message': 'job_done',
+                     'result': msg,
+                     'job_id': job_id})
+            except queue.Empty:
+                pass
+            except zmq.ZMQError as zmq_error:
+                if zmq_error.errno == zmq.EAGAIN:
+                    pass
+                else:
+                    self._logger.error("ZMQ Error: {0}".format(zmq_error))
+                    self.stop_event.set()
+                    raise
+            except KeyboardInterrupt:
+                self.stop_event.set()
+            except Exception as generic_error:
+                self._logger.error("Unhandled exception {0}".format(generic_error))
+                self.stop_event.set()
+                raise
+
+    def __del__(self):
+        self._logger.info("Closing sockets...")
+        self._context.close()
+        self._worker.close()
+        self._context.term()

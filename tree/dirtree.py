@@ -8,9 +8,42 @@ import treelib
 from utils.shell_utils import StringUtils
 
 
+class TreeNode:
+    def __init__(self, tag, identifier, data, parent=None):
+        self.tag = tag
+        self.identifier = identifier
+        self.data = data
+        self.parent = parent
+
+
+class Tree:
+    def __init__(self):
+        self._nodes = {}
+
+    def create_node(self, tag, identifier, parent=None, data=None):
+        self._nodes[identifier] = TreeNode(tag, identifier, data, parent=parent)
+        return self._nodes[identifier]
+
+    def get_node(self, identifier):
+        try:
+            return self._nodes[identifier]
+        except KeyError:
+            return None
+
+    def remove_node(self, identifier):
+        try:
+            del self._nodes[identifier]
+        except KeyError:
+            return 0
+        return 1
+
+    def size(self):
+        return len(self._nodes)
+
+
 class DirTree(object):
     def __init__(self, file_names=None):
-        self._dir_tree = treelib.Tree()
+        self._dir_tree = Tree()#treelib.Tree()
         self._tree_base = self._dir_tree.create_node('Root', 'root')
         self._last_node = self._tree_base
         if file_names:

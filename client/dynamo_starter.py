@@ -15,8 +15,8 @@ from logger import pubsub_logger
 from config import MAX_WORKERS_PER_CLIENT
 
 
-def run_worker(event, mounter, controller, server, nodes, domains, proc_id):
-    worker = Dynamo(event, mounter, controller, server, nodes, domains, proc_id)
+def run_worker(event, mounter, controller, server, nodes, domains, proc_id, **kwargs):
+    worker = Dynamo(event, mounter, controller, server, nodes, domains, proc_id, **kwargs)
     worker.run()
 
 
@@ -36,6 +36,8 @@ def get_args():
                                                                                'smb3'], default="nfs3")
     parser.add_argument('--start_vip', type=str, help="Start VIP address range")
     parser.add_argument('--end_vip', type=str, help="End VIP address range")
+    parser.add_argument('-l', '--locking', type=str, help='Locking Type', choices=['native', 'application', 'off'],
+                        default="native")
     args = parser.parse_args()
     return args
 
@@ -63,7 +65,7 @@ def run():
     for i in range(MAX_WORKERS_PER_CLIENT):
         processes.append(Process(target=run_worker,
                                  args=(stop_event, mounter, args.controller, args.server, args.nodes,
-                                       args.domains, i,)))
+                                       args.domains, i,), kwargs=dict(locking_type=args.locking)))
     for p in processes:
         p.start()
     try:

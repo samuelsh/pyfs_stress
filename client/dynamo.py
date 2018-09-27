@@ -41,7 +41,7 @@ def build_message(result, action, data, time_stamp, error_code=None, error_messa
 
 
 class Dynamo(object):
-    def __init__(self, stop_event, mounter, controller, server, nodes, domains, proc_id=None):
+    def __init__(self, stop_event, mounter, controller, server, nodes, domains, proc_id=None, **kwargs):
         self.stop_event = stop_event
         self.logger = pubsub_logger.PUBLogger(controller).logger
         self.mounter = mounter
@@ -60,7 +60,7 @@ class Dynamo(object):
         # Initialising connection to Redis (our byte-range locking DB)
         self.logger.info("Setting up Redis connection...")
         self.locking_db = redis.StrictRedis(**redis_config)
-        self.flock = FLock(self.locking_db)
+        self.flock = FLock(self.locking_db, kwargs.get('locking_type'))
         self.logger.info("Dynamo {0} init done".format(self._socket.identity))
 
     def run(self):
