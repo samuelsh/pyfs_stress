@@ -142,9 +142,9 @@ class Controller(object):
             collector_thread = Thread(target=collector.run)
             collector_thread.start()
             self.logger.info("Starting CSV writer process...")
-            csv_writer = CSVWriter(self._csv_writer_queue, self.stop_event)
-            csv_writer = Process(target=csv_writer.run)
-            csv_writer.start()
+            # csv_writer = CSVWriter(self._csv_writer_queue, self.stop_event)
+            # csv_writer = Process(target=csv_writer.run)
+            # csv_writer.start()
             self.logger.info("Starting Async Server....")
             proxy_device_thread = AsyncControllerServer(self.logger, self.stop_event, self._incoming_message_queue,
                                                         self._outgoing_message_queue)
@@ -243,12 +243,12 @@ class Controller(object):
                     # do this while checking for the next available worker so that
                     # if it takes a while to find one we're still processing
                     # incoming messages.
-                    try:
-                        _, (worker_id, message) = self._incoming_message_queue.get_nowait()
+                    while not self._incoming_message_queue.empty():
+                        _, (worker_id, message) = self._incoming_message_queue.get()
                         self._handle_worker_message(worker_id, message)
-                    except queue.Empty:
-                        pass
                     next_worker_id = self._get_next_worker_id()
+                    if not next_worker_id:
+                        time.sleep(0.1)
                 # We've got a Job and an available worker_id, all we need to do
                 # is send it. Note that we're now using send_multipart(), the
                 # counterpart to recv_multipart(), to tell the ROUTER where our
@@ -279,10 +279,8 @@ class AsyncControllerServer(Thread, object):
         self._outgoing_queue = outgoing_queue
         self._context = zmq.Context()
         self._frontend = self._context.socket(zmq.ROUTER)
-        self._frontend.set_hwm(0)
         self._frontend.bind("tcp://*:{0}".format(CTRL_MSG_PORT))
         self._backend = self._context.socket(zmq.DEALER)
-        self._backend.set_hwm(0)
         self._backend.bind('inproc://backend')
 
     def run(self):
@@ -325,7 +323,6 @@ class AsyncControllerWorker(Thread, object):
         self.stop_event = stop_event
         try:
             self._worker = self._context.socket(zmq.DEALER)
-            self._worker.set_hwm(0)
             self._worker.connect('inproc://backend')
         except zmq.ZMQError as zmq_error:
             self._logger.exception(zmq_error)

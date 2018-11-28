@@ -60,7 +60,6 @@ class Dynamo(object):
             # all for us.
             # We'll use client host name + process ID to identify the socket
             self._socket.identity = "{0}:0x{1:x}".format(socket.gethostname(), os.getpid()).encode()
-            self._socket.set_hwm(0)
             self.logger.info("Setting up connection to Controller Server...")
             self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
             # Initialising connection to Redis (our byte-range locking DB)

@@ -50,10 +50,10 @@ DATA_PATTERN_X = {'pattern': b'M', 'repeats': MB1, 'checksum': xxhash.xxh64(b'M'
 
 PADDING = [0, ZERO_PADDING_START]
 OFFSETS_LIST = [0, INLINE, KB1, KB4, MB1, MB512, GB1, GB256, GB512, TB1]
-# DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
-#                       DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_I, DATA_PATTERN_J, DATA_PATTERN_K, DATA_PATTERN_L,
-#                       DATA_PATTERN_M]
-DATA_PATTERNS_LIST = [DATA_PATTERN_X]
+DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
+                      DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_I, DATA_PATTERN_J, DATA_PATTERN_K, DATA_PATTERN_L,
+                      DATA_PATTERN_M]
+# DATA_PATTERNS_LIST = [DATA_PATTERN_X]
 
 
 class DynamoException(EnvironmentError):
@@ -102,7 +102,7 @@ def response_action(action, mount_point, incoming_data, **kwargs):
 def mkdir(mount_point, incoming_data, **kwargs):
     outgoing_data = {}
     os.mkdir('/'.join([mount_point, incoming_data['target']]))
-    outgoing_data['dirsize'] = 0  # os.stat('/'.join([mount_point, incoming_data['target']])).st_size
+    outgoing_data['dirsize'] = 0
     return outgoing_data
 
 

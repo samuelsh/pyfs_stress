@@ -13,5 +13,5 @@
 	  	"max_dirs":100,
 	  "max_file_size": 549755813888
 	},
-	"workload": "iops_rw"
+	"workload": "iops_rw_2"
 }
