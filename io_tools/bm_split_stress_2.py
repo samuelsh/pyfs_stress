@@ -7,9 +7,9 @@ import argparse
 import os
 import queue
 import sys
-
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event
+sys.path.append(os.path.join(os.path.join('../')))
 from client.generic_mounter import Mounter
 from logger.server_logger import ConsoleLogger
 from utils.shell_utils import StringUtils

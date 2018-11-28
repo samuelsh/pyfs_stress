@@ -2,7 +2,10 @@
 Client load generator
 2016 samules (c)
 """
+import multiprocessing
+
 import os
+import random
 from datetime import datetime
 
 import zmq
@@ -41,55 +44,62 @@ def build_message(result, action, data, time_stamp, error_code=None, error_messa
 
 
 class Dynamo(object):
-    def __init__(self, stop_event, mounter, controller, server, nodes, domains, proc_id=None, **kwargs):
-        self.stop_event = stop_event
-        self.logger = pubsub_logger.PUBLogger(controller).logger
-        self.mounter = mounter
-        self._server = server  # Server Cluster hostname
-        self.nodes = nodes
-        self.domains = domains
-        self._context = zmq.Context()
-        self._controller_ip = socket.gethostbyname(controller)
-        # Socket to send messages on by client
-        self._socket = self._context.socket(zmq.DEALER)
-        # We don't need to store the id anymore, the socket will handle it
-        # all for us.
-        # We'll use client host name + process ID to identify the socket
-        self._socket.identity = "{0}:0x{1:x}".format(socket.gethostname(), proc_id).encode()
-        self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
-        # Initialising connection to Redis (our byte-range locking DB)
-        self.logger.info("Setting up Redis connection...")
-        self.locking_db = redis.StrictRedis(**redis_config)
-        self.flock = FLock(self.locking_db, kwargs.get('locking_type'))
-        self.logger.info("Dynamo {0} init done".format(self._socket.identity))
+    def __init__(self, mount_points, controller, server, nodes, domains, **kwargs):
+        try:
+            self.logger = pubsub_logger.PUBLogger(controller).logger
+            self.logger.info(f"PUB Logger {self.logger} is started")
+            self.mount_points = mount_points
+            self._server = server  # Server Cluster hostname
+            self.nodes = nodes
+            self.domains = domains
+            self._context = zmq.Context()
+            self._controller_ip = socket.gethostbyname(controller)
+            # Socket to send messages on by client
+            self._socket = self._context.socket(zmq.DEALER)
+            # We don't need to store the id anymore, the socket will handle it
+            # all for us.
+            # We'll use client host name + process ID to identify the socket
+            self._socket.identity = "{0}:0x{1:x}".format(socket.gethostname(), os.getpid()).encode()
+            self._socket.set_hwm(0)
+            self.logger.info("Setting up connection to Controller Server...")
+            self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
+            # Initialising connection to Redis (our byte-range locking DB)
+            self.logger.info("Setting up Redis connection...")
+            self.locking_db = redis.StrictRedis(**redis_config)
+            self.flock = FLock(self.locking_db, kwargs.get('locking_type'))
+            self.logger.info("Dynamo {0} init done".format(self._socket.identity))
+        except Exception as e:
+            self.logger.error(f"Connection error: {e}")
 
     def run(self):
         self.logger.info("Dynamo {0} started".format(self._socket.identity))
         try:
             msg = None
+            job_id = None
             # Send a connect message
             self._socket.send_json({'message': 'connect'})
+            self.logger.debug(f"Client {self._socket.identity} sent back 'connect' message.")
             # Poll the socket for incoming messages. This will wait up to
             # 0.1 seconds before returning False. The other way to do this
             # is is to use zmq.NOBLOCK when reading from the socket,
             # catching zmq.AGAIN and sleeping for 0.1.
-            while not self.stop_event.is_set():
+            while True:
                 try:
                     # Note that we can still use send_json()/recv_json() here,
                     # the DEALER socket ensures we don't have to deal with
                     # client ids at all.
+                    # self.logger.debug(f"Blocking waiting for response form socket {self._socket.identity}")
                     job_id, work = self._socket.recv_json()
+                    # self.logger.debug(f"Job: {job_id} received from socket {self._socket.identity}")
                     msg = self._do_work(work)
-                    self.logger.debug("Going to send {0}".format(msg))
+                    self.logger.debug(f"Going to send {job_id}: {msg}")
                     self._socket.send_json(
                         {'message': 'job_done',
                          'result': msg,
                          'job_id': job_id})
+                    self.logger.debug(f"{job_id} sent")
                 except zmq.ZMQError as zmq_error:
-                    # if zmq_error.errno == zmq.EAGAIN:
-                    #     pass
-                    # else:
-                    self.logger.error("ZMQ Error. Message {0} lost!".format(msg))
+                    self.logger.warn(f"Failed to send message due to: {zmq_error}. Message {job_id} lost!")
                 except TypeError:
                     self.logger.error("JSON Serialisation error: msg: {}".format(msg))
         except KeyboardInterrupt:
@@ -103,7 +113,6 @@ class Dynamo(object):
         """
         Send the Controller a disconnect message and end the run loop
         """
-        self.stop_event.set()
         self._socket.send_json({'message': 'disconnect'})
 
     def _do_work(self, work):
@@ -116,7 +125,7 @@ class Dynamo(object):
         """
         action = work['action']
         data = {}
-        mount_point = self.mounter.get_random_mountpoint()
+        mount_point = random.choice(self.mount_points)
         self.logger.debug('Incoming job: \'{}\' on \'{}\' data: {}'.format(work['action'], work['data']['target'],
                                                                            work['data']))
         try:

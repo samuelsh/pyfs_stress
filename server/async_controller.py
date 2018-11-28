@@ -28,7 +28,7 @@ from server.response_actions import response_action
 timer = timeit.default_timer
 
 MAX_DIR_SIZE = 128 * 1024
-MAX_CONTROLLER_WORKERS = 16
+MAX_CONTROLLER_WORKERS = 2
 
 __author__ = 'samuels'
 
@@ -66,7 +66,7 @@ class Job(object):
 
 
 class Controller(object):
-    def __init__(self, stop_event, dir_tree, test_config, port=CTRL_MSG_PORT):
+    def __init__(self, stop_event, dir_tree, test_config, clients_ready_event, port=CTRL_MSG_PORT):
         """
         Args:
             stop_event: Event
@@ -75,6 +75,7 @@ class Controller(object):
         """
         try:
             self.stop_event = stop_event
+            self.clients_ready_event = clients_ready_event
             self.logger = server_logger.Logger().logger
             self._dir_tree = dir_tree  # Controlled going to manage directory tree structure
             self.config = {}
@@ -128,7 +129,7 @@ class Controller(object):
             self.io_types = [(k, v) for k, v in io_types.items()]
             # We won't assign more than 100 jobs to a worker at a time; this ensures
             # reasonable memory usage, and less shuffling when a worker dies.
-            self.max_jobs_per_worker = 1000
+            self.max_jobs_per_worker = 100000
             # When/if a client disconnects we'll put any unfinished work in here,
             # get_next_job() will return work from here as well.
             self._work_to_requeue = []
@@ -136,7 +137,8 @@ class Controller(object):
             self._outgoing_message_queue = queue.Queue()
             self._csv_writer_queue = multiprocessing.Queue()
             self.logger.info("Starting Collector service thread...")
-            collector = Collector(self.test_stats, self.dir_tree, self.stop_event)
+            collector = Collector(self.test_stats, self.dir_tree, self.stop_event, workers=self.client_workers,
+                                  in_queue=self._incoming_message_queue, out_queue=self._outgoing_message_queue)
             collector_thread = Thread(target=collector.run)
             collector_thread.start()
             self.logger.info("Starting CSV writer process...")
@@ -200,20 +202,19 @@ class Controller(object):
         if message['message'] == 'connect':
             assert worker_id not in self.client_workers
             self.client_workers[worker_id] = {}
-            self.logger.info('[%s]: connect', worker_id)
+            self.logger.info(f'[{worker_id}]: connect')
         elif message['message'] == 'disconnect':
             # Remove the worker so no more work gets added, and put any
             # remaining work into _work_to_requeue
             remaining_work = self.client_workers.pop(worker_id)
             self._work_to_requeue.extend(remaining_work.values())
-            self.logger.info('[%s]: disconnect, %s jobs requeued', worker_id,
-                             len(remaining_work))
+            self.logger.info(f'[{worker_id}]: disconnect, {len(remaining_work)} jobs re-queued')
         elif message['message'] == 'job_done':
             result = message['result']
             job = self.client_workers[worker_id].pop(message['job_id'])
             self._process_results(worker_id, job, result)
         else:
-            raise Exception('unknown message: %s' % message['message'])
+            raise Exception(f"Unknown message: {message['message']}")
 
     def _process_results(self, worker_id, job, incoming_message):
         """
@@ -223,12 +224,16 @@ class Controller(object):
          'data{}'}
         """
         formatted_message = helpers.message_to_pretty_string(incoming_message)
-        self.logger.debug('[{0}]: finished {1}, result: {2}'.format(worker_id, job.id, formatted_message))
+        self.logger.debug(f'[{worker_id}]: finished {job.id}, result: {formatted_message}')
         self.collect_message_stats(incoming_message)
         self._csv_writer_queue.put((worker_id, incoming_message))
         response_action(self.logger, incoming_message, self.dir_tree)
 
     def run(self):
+        while not self.clients_ready_event.is_set():
+            self.logger.info("Waiting for all clients to start...")
+            time.sleep(1)
+
         try:
             for job in self.get_next_job:
                 next_worker_id = None
@@ -274,8 +279,10 @@ class AsyncControllerServer(Thread, object):
         self._outgoing_queue = outgoing_queue
         self._context = zmq.Context()
         self._frontend = self._context.socket(zmq.ROUTER)
+        self._frontend.set_hwm(0)
         self._frontend.bind("tcp://*:{0}".format(CTRL_MSG_PORT))
         self._backend = self._context.socket(zmq.DEALER)
+        self._backend.set_hwm(0)
         self._backend.bind('inproc://backend')
 
     def run(self):
@@ -318,6 +325,7 @@ class AsyncControllerWorker(Thread, object):
         self.stop_event = stop_event
         try:
             self._worker = self._context.socket(zmq.DEALER)
+            self._worker.set_hwm(0)
             self._worker.connect('inproc://backend')
         except zmq.ZMQError as zmq_error:
             self._logger.exception(zmq_error)
@@ -334,7 +342,9 @@ class IncomingAsyncControllerWorker(AsyncControllerWorker, object):
         self._logger.info("Async Controller: incoming messages worker {0} started".format(self.name))
         while not self.stop_event.is_set():
             try:
+                # self._logger.debug("Waiting Incoming job...")
                 worker_id, message = self._worker.recv_multipart()  # flags=zmq.NOBLOCK)
+                # self._logger.debug(f"Incoming job received: {worker_id}")
                 message = json.loads(message.decode('utf8'))
                 if message['message'] == 'connect' or message['message'] == 'disconnect':
                     time_stamp = timestamp()
@@ -342,6 +352,7 @@ class IncomingAsyncControllerWorker(AsyncControllerWorker, object):
                     time_stamp = message['result']['timestamp']
                 self.incoming_queue.put(
                     (time_stamp, (worker_id, message)))  # Putting messages to queue by timestamp priority
+                # self._logger.debug(f"Putting incoming job {worker_id} to queue")
             except zmq.ZMQError as zmq_error:
                 self._logger.exception("ZMQ Error {0}".format(zmq_error))
                 self.stop_event.set()
@@ -370,9 +381,12 @@ class OutgoingAsyncControllerWorker(AsyncControllerWorker, object):
         while not self.stop_event.is_set():
             try:
                 #  Sending out messages from outgoing message queue
-                next_worker_id, job_id, job_work = self.outgoing_queue.get(timeout=0.1)
+                # self._logger.debug("Going to get outgoing job from queue...")
+                next_worker_id, job_id, job_work = self.outgoing_queue.get()
+                # self._logger.debug(f"Going to send outgoing job {job_id}")
                 self._worker.send_multipart(
                     [next_worker_id, json.dumps((job_id, job_work)).encode('utf8')])
+                # self._logger.debug(f"Outgoing job {job_id} is sent")
             except queue.Empty:
                 pass
             except zmq.ZMQError as zmq_error:

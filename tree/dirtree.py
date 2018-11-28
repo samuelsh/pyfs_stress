@@ -1,3 +1,4 @@
+import datetime
 import xxhash
 import random
 
@@ -271,7 +272,7 @@ class File(object):
         self.tid = 0  # incremental transaction id for each file
         self.last_actions = []
         self.creation_time = None
-        self.modify_time = None
+        self.modify_time = datetime.datetime.now()
         self.ondisk = False
         self.size = 0
 

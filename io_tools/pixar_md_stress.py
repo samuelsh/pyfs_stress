@@ -7,8 +7,8 @@ import argparse
 import os
 import queue
 import sys
-
 import threading
+sys.path.append(os.path.join(os.path.join('../')))
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event
 from client.generic_mounter import Mounter

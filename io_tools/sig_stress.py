@@ -3,12 +3,12 @@
 author: samuels (c) 2018
 """
 import argparse
-from queue import Queue
-from threading import Thread
 import time
 import os
 import sys
-
+from queue import Queue
+from threading import Thread
+sys.path.append(os.path.join(os.path.join('../')))
 from client.generic_mounter import Mounter
 from logger.server_logger import ConsoleLogger
 

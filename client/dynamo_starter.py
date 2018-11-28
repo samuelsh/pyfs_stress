@@ -1,22 +1,34 @@
 #!/usr/bin/env python3.6
+
 import argparse
 import os
 import traceback
-from multiprocessing import Event
-from multiprocessing import Process
-
 import time
-
 import sys
-
+from concurrent.futures import ProcessPoolExecutor
 from generic_mounter import Mounter
 from dynamo import Dynamo
 from logger import pubsub_logger
 from config import MAX_WORKERS_PER_CLIENT
 
 
-def run_worker(event, mounter, controller, server, nodes, domains, proc_id, **kwargs):
-    worker = Dynamo(event, mounter, controller, server, nodes, domains, proc_id, **kwargs)
+def futures_validator(futures, logger):
+    """
+
+    :param logger:
+    :param futures: list
+    :return: None
+    """
+    for future in futures:
+        try:
+            future.result()
+        except Exception as e:
+            logger.error(f"Future raised exception: {e}")
+            raise e
+
+
+def run_worker(mount_points, controller, server, nodes, domains, **kwargs):
+    worker = Dynamo(mount_points, controller, server, nodes, domains, **kwargs)
     worker.run()
 
 
@@ -43,15 +55,13 @@ def get_args():
 
 
 def run():
-    stop_event = Event()
-    processes = []
     args = get_args()
     logger = pubsub_logger.PUBLogger(args.controller).logger
     time.sleep(10)
     try:
         os.chdir(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo', 'client'))
         logger.info("Mounting work path...")
-        mounter = Mounter(args.server, args.export, args.mtype, 'FSTRESS', logger=logger, nodes=args.nodes,
+        mounter = Mounter(args.server, args.export, args.mtype, 'VFS_STRESS', logger=logger, nodes=args.nodes,
                           domains=args.domains, sudo=True, start_vip=args.start_vip, end_vip=args.end_vip)
         try:
             mounter.mount_all_vips()
@@ -62,32 +72,18 @@ def run():
         logger.error(str(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
         raise
     # Start a few worker processes
-    for i in range(MAX_WORKERS_PER_CLIENT):
-        processes.append(Process(target=run_worker,
-                                 args=(stop_event, mounter, args.controller, args.server, args.nodes,
-                                       args.domains, i,), kwargs=dict(locking_type=args.locking)))
-    for p in processes:
-        p.start()
-    try:
-        time.sleep(5)
-        # The controller will set the stop event when it's finished, just
-        # idle until then
-        while not stop_event.is_set():
-            time.sleep(1)
-    except KeyboardInterrupt:
-        stop_event.set()
-    else:
-        logger.exception()
-        raise Exception
-    logger.info('waiting for processes to die...')
-    for p in processes:
-        p.join()
+    futures = []
+    with ProcessPoolExecutor(MAX_WORKERS_PER_CLIENT) as executor:
+        for i in range(MAX_WORKERS_PER_CLIENT):
+            futures.append(executor.submit(run_worker, mounter.mount_points, args.controller, args.server, args.nodes,
+                                           args.domains, **dict(locking_type=args.locking)))
+    futures_validator(futures, logger)
     logger.info('all done')
 
 
 if __name__ == '__main__':
     try:
         run()
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         sys.exit(1)

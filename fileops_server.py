@@ -3,6 +3,9 @@
 Directory Tree integrity test runner
 2016 samuel (c)
 """
+import multiprocessing
+import time
+
 import argparse
 import atexit
 import json
@@ -56,6 +59,21 @@ def load_config():
     return test_config
 
 
+def wait_clients_to_start(clients):
+    cmd_line = "ps aux | grep dynamo | grep -v grep | wc -l"
+    while True:
+        total_processes = 0
+        for client in clients:
+            outp = ShellUtils.run_shell_remote_command(client, cmd_line)
+            logger.info(f"SSH command response with {int(outp)} processes on client {client}")
+            num_processes_per_client = int(outp)
+            total_processes += num_processes_per_client
+        if total_processes >= config.MAX_WORKERS_PER_CLIENT * len(clients):
+            break
+        time.sleep(1)
+    logger.info(f"All {len(clients)} clients started. {total_processes // len(clients)} processes per client")
+
+
 def deploy_clients(clients, access):
     """
     Args:
@@ -98,31 +116,30 @@ def run_clients(cluster, clients, export, mtype, start_vip, end_vip, locking_typ
         end_vip: str
 
     Returns:
+    :param locking_type:
 
     """
     #  Will explicitly pass public IP of the controller to clients since we won't rely on DNS existence
     controller = socket.gethostbyname(socket.gethostname())
-    dynamo_cmd_line = "/opt/pypy3.5/bin/pypy3.5 {} --controller {} --server {} --export {} --mtype {} --start_vip {} --end_vip {} " \
+    dynamo_cmd_line = "{} --controller {} --server {} --export {} --mtype {} --start_vip {} --end_vip {} " \
                       "--locking {}".format(config.DYNAMO_BIN_PATH, controller, cluster, export, mtype, start_vip,
-                                                 end_vip, locking_type)
+                                            end_vip, locking_type)
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client, dynamo_cmd_line)
+    wait_clients_to_start(clients)
 
 
-def run_controller(event, dir_tree, test_config):
-    Controller(event, dir_tree, test_config).run()
+def run_controller(event, dir_tree, test_config, clients_ready_event):
+    Controller(event, dir_tree, test_config, clients_ready_event).run()
 
 
 def run_sub_logger(ip):
     sub_logger = SUBLogger(ip)
     while not stop_event.is_set():
         try:
-            topic, message = sub_logger.sub.recv_multipart(flags=zmq.NOBLOCK)
+            topic, message = sub_logger.sub.recv_multipart()
             log_msg = getattr(sub_logger.logger, topic.lower().decode())
             log_msg(message)
-        except zmq.ZMQError as zmq_error:
-            if zmq_error.errno == zmq.EAGAIN:
-                pass
         except KeyboardInterrupt:
             pass
 
@@ -134,13 +151,14 @@ def cleanup(clients=None):
             logger.info("{}: Killing workers".format(client))
             ShellUtils.run_shell_remote_command_no_exception(client, 'pkill -9 -f dynamo')
             logger.info("{}: Unmounting".format(client))
-            ShellUtils.run_shell_remote_command_no_exception(client, 'sudo umount -fl /mnt/{}'.format('FSTRESS*'))
+            ShellUtils.run_shell_remote_command_no_exception(client, 'sudo umount -fl /mnt/{}'.format('VFS*'))
             logger.info("{}: Removing mountpoint folder/s".format(client))
-            ShellUtils.run_shell_remote_command_no_exception(client, 'sudo rm -fr /mnt/{}'.format('FSTRESS*'))
+            ShellUtils.run_shell_remote_command_no_exception(client, 'sudo rm -fr /mnt/{}'.format('VFS*'))
 
 
 def main():
     file_names = None
+    clients_ready_event = multiprocessing.Manager().Event()
     args = get_args()
     try:
         with open(config.FILE_NAMES_PATH, 'r') as f:  # If file with names isn't exists, we'll just create random files
@@ -163,19 +181,22 @@ def main():
     logger.info("Flushing locking DB")
     locking_db = redis.StrictRedis(**redis_config)
     locking_db.flushdb()
-    logger.info("Starting controller")
-    controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config))
-    controller_process.start()
+    logger.info("Starting SUB Logger process")
     sub_logger_process = Process(target=run_sub_logger,
                                  args=(socket.gethostbyname(socket.gethostname()),))
     sub_logger_process.start()
     logger.info("Controller started")
+    time.sleep(10)
     deploy_clients(clients_list, test_config['access']['client'])
     logger.info("Done deploying clients: {0}".format(clients_list))
     run_clients(args.cluster, clients_list, args.export, args.mtype, args.start_vip, args.end_vip, args.locking)
+    clients_ready_event.set()
     logger.info("Dynamo started on all clients ....")
+    logger.info("Starting controller")
+    controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config, clients_ready_event))
+    controller_process.start()
     controller_process.join()
-    print('All done')
+    logger.info('All done')
 
 
 # Start program

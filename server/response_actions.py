@@ -187,9 +187,9 @@ def read_success(logger, incoming_message, dir_tree):
         logger.debug('Directory exists {0}, going to check file {1} integrity'.format(readdir.data.name, path[1]))
         if readdir.data.ondisk:
             rfile = readdir.data.get_file_by_name(path[1])
-            if rfile:
+            if rfile and rfile.ondisk:
                 read_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
-                if rfile.data_pattern_hash != incoming_message['data']['hash']:
+                if rfile.data_pattern_hash != incoming_message['data']['hash'] and read_time < rfile.modify_time:
                     logger.error(
                         "Hash mismatch on Read! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk "
                         "size: {4} ".format(rfile.name, rfile.data_pattern_hash, incoming_message['data']['hash'],

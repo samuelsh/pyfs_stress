@@ -15,7 +15,7 @@ import threading
 import time
 import traceback
 from random import choice
-
+sys.path.append(os.path.join(os.path.join('../')))
 from client.generic_mounter import Mounter
 from logger.server_logger import Logger
 

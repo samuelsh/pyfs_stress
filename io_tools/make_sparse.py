@@ -6,12 +6,10 @@ import atexit
 import os
 import subprocess
 import argparse
-
 import sys
 import traceback
-
 import itertools
-
+sys.path.append(os.path.join(os.path.join('../')))
 from logger import server_logger
 from utils import shell_utils
 

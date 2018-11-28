@@ -9,11 +9,12 @@ from logger import server_logger
 
 
 class Collector:
-    def __init__(self, test_stats, dir_tree, stop_event):
+    def __init__(self, test_stats, dir_tree, stop_event, **kwargs):
         self.logger = server_logger.StatsLogger('__Collector__').logger
         self.test_stats = test_stats
         self.stop_event = stop_event
         self.dir_tree = dir_tree
+        self.kwargs = kwargs
 
     def run(self):
         time.sleep(60)
@@ -39,4 +40,11 @@ class Collector:
             self.logger.info("{0}".format("############################"))
             self.logger.info("NIDs: {} SYNCED_DIRS: {}".format(len(self.dir_tree.nids),
                                                                len(self.dir_tree.synced_nodes)))
+            self.logger.info(f"Incoming messages queue: {self.kwargs.get('in_queue').qsize()}")
+            self.logger.info(f"Outgoing messages queue: {self.kwargs.get('out_queue').qsize()}")
+            self.logger.info(f"Total workers: {len(self.kwargs.get('workers', {}))}")
+            total_work = 0
+            for worker_id, work in self.kwargs.get('workers', {}).items():
+                total_work += len(work)
+            self.logger.info(f"Total work items: {total_work}")
             time.sleep(60)
