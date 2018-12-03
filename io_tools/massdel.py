@@ -89,7 +89,7 @@ def dir_scanner(files_queue, root_dir):
         if threads_count <= 0:
             logger.info(f"Scanner Worker {threading.get_ident()}: Spawned threads {threads_count}. "
                         f"Done scanning, waiting for all worker threads to complete")
-    except (IOError, OSError) as e:
+    except OSError as e:
         if e.errno == errno.EACCES:
             logger.warn(f"Scanner Woker {threading.get_ident()} failed due to {e} and will be stopped")
         else:
@@ -106,7 +106,7 @@ def rename_worker(dirs_queue):
             os.rename(full_path, "/".join([os.path.dirname(full_path), "".join(["renamed_", str(time.time())])]))
             with lock:
                 renamed_files += 1
-        except (IOError, OSError) as e:
+        except OSError as e:
             logger.error(f"Renamer Worker {threading.get_ident()} Error: {e}")
         except queue.Empty:
             return
@@ -121,7 +121,7 @@ def delete_worker(dirs_queue):
             os.remove(full_path)
             with lock:
                 deleted_files += 1
-        except (IOError, OSError) as e:
+        except OSError as e:
             logger.error(f"Deleter Worker {threading.get_ident()} Error: {e}")
         except queue.Empty:
             return
