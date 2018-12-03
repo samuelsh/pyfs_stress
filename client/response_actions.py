@@ -1,26 +1,32 @@
-from timeit import default_timer as timer
-
 import xxhash
 import os
 import random
 import shutil
-
 import errno
 import fcntl
 # import data_operations.data_generators
 import sys
-
 import mmap
+from timeit import default_timer as timer
 
 sys.path.append('/qa/dynamo')
 from config import error_codes
 
 __author__ = "samuels"
 
+PATTERN_2 = b'0123456789ABCDEF'
+PATTERN = b'1234999988884321'
 MAX_DIR_SIZE = 128 * 1024
 INLINE = INLINE_MAX_SIZE = 3499
 KB1 = 1024
 KB4 = KB1 * 4
+KB8 = KB1 * 8
+KB16 = KB1 * 16
+KB32 = KB1 * 32
+KB64 = KB1 * 64
+KB128 = KB1 * 128
+KB256 = KB1 * 256
+KB512 = KB1 * 512
 MB1 = (1024 * 1024)
 GB1 = (1024 * 1024 * 1024)
 TB1 = (1024 * 1024 * 1024 * 1024)
@@ -30,30 +36,30 @@ GB512 = (GB1 * 512)  # level 2 can map up to 256GB
 TB128 = (TB1 * 128)  # level 3 can map up to 128TB
 ZERO_PADDING_START = 128 * MB1  # 128MB
 MAX_FILE_SIZE = TB1 + MB1
-DATA_PATTERN_A = {'pattern': b'A', 'repeats': 1, 'checksum': xxhash.xxh64(b'A' * 1).intdigest()}
-DATA_PATTERN_B = {'pattern': b'B', 'repeats': 3, 'checksum': xxhash.xxh64(b'B' * 3).intdigest()}
-DATA_PATTERN_C = {'pattern': b'C', 'repeats': 17, 'checksum': xxhash.xxh64(b'C' * 17).intdigest()}
-DATA_PATTERN_D = {'pattern': b'D', 'repeats': 33, 'checksum': xxhash.xxh64(b'D' * 33).intdigest()}
-DATA_PATTERN_E = {'pattern': b'E', 'repeats': 65, 'checksum': xxhash.xxh64(b'E' * 65).intdigest()}
-DATA_PATTERN_F = {'pattern': b'F', 'repeats': 129, 'checksum': xxhash.xxh64(b'F' * 129).intdigest()}
-DATA_PATTERN_G = {'pattern': b'G', 'repeats': 257, 'checksum': xxhash.xxh64(b'G' * 257).intdigest()}
-DATA_PATTERN_H = {'pattern': b'H', 'repeats': 1025, 'checksum': xxhash.xxh64(b'H' * 1025).intdigest()}
-DATA_PATTERN_J = {'pattern': b'J', 'repeats': 64 * KB1 + 1, 'checksum': xxhash.xxh64(b'J' * (64 * KB1 + 1)).intdigest()}
-DATA_PATTERN_I = {'pattern': b'I', 'repeats': 128 * KB1 + 1,
-                  'checksum': xxhash.xxh64(b'I' * (128 * KB1 + 1)).intdigest()}
-DATA_PATTERN_K = {'pattern': b'K', 'repeats': 256 * KB1 + 1,
-                  'checksum': xxhash.xxh64(b'K' * (256 * KB1 + 1)).intdigest()}
-DATA_PATTERN_L = {'pattern': b'L', 'repeats': 512 * KB1 + 1,
-                  'checksum': xxhash.xxh64(b'L' * (512 * KB1 + 1)).intdigest()}
-DATA_PATTERN_M = {'pattern': b'M', 'repeats': MB1 + 1, 'checksum': xxhash.xxh64(b'M' * (MB1 + 1)).intdigest()}
-DATA_PATTERN_X = {'pattern': b'M', 'repeats': MB1, 'checksum': xxhash.xxh64(b'M' * MB1).intdigest()}
+DATA_PATTERN_A = {'pattern': PATTERN, 'repeats': KB4 // len(PATTERN),
+                  'checksum': xxhash.xxh64(PATTERN * (KB4 // len(PATTERN))).intdigest()}
+DATA_PATTERN_B = {'pattern': PATTERN, 'repeats': KB8 // len(PATTERN),
+                  'checksum': xxhash.xxh64(PATTERN * (KB8 // len(PATTERN))).intdigest()}
+DATA_PATTERN_C = {'pattern': PATTERN, 'repeats': KB16 // len(PATTERN),
+                  'checksum': xxhash.xxh64(PATTERN * (KB16 // len(PATTERN))).intdigest()}
+DATA_PATTERN_D = {'pattern': PATTERN, 'repeats': KB32 // len(PATTERN),
+                  'checksum': xxhash.xxh64(PATTERN * (KB32 // len(PATTERN))).intdigest()}
+DATA_PATTERN_E = {'pattern': PATTERN, 'repeats': KB64 // len(PATTERN),
+                  'checksum': xxhash.xxh64(PATTERN * (KB64 // len(PATTERN))).intdigest()}
+DATA_PATTERN_F = {'pattern': PATTERN, 'repeats': KB128 // len(PATTERN),
+                  'checksum': xxhash.xxh64(PATTERN * (KB128 // len(PATTERN))).intdigest()}
+DATA_PATTERN_G = {'pattern': PATTERN, 'repeats': KB256 // len(PATTERN),
+                  'checksum': xxhash.xxh64(PATTERN * (KB256 // len(PATTERN))).intdigest()}
+DATA_PATTERN_H = {'pattern': PATTERN, 'repeats': KB512 // len(PATTERN),
+                  'checksum': xxhash.xxh64(PATTERN * (KB512 // len(PATTERN))).intdigest()}
+DATA_PATTERN_I = {'pattern': PATTERN, 'repeats': MB1 // len(PATTERN),
+                  'checksum': xxhash.xxh64(PATTERN * (MB1 // len(PATTERN))).intdigest()}
 
 PADDING = [0, ZERO_PADDING_START]
 OFFSETS_LIST = [0, INLINE, KB1, KB4, MB1, MB512, GB1, GB256, GB512, TB1]
 DATA_PATTERNS_LIST = [DATA_PATTERN_A, DATA_PATTERN_B, DATA_PATTERN_C, DATA_PATTERN_D, DATA_PATTERN_E, DATA_PATTERN_F,
-                      DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_I, DATA_PATTERN_J, DATA_PATTERN_K, DATA_PATTERN_L,
-                      DATA_PATTERN_M]
-# DATA_PATTERNS_LIST = [DATA_PATTERN_X]
+                      DATA_PATTERN_G, DATA_PATTERN_H, DATA_PATTERN_I]
+# DATA_PATTERNS_LIST = [DATA_PATTERN_I]
 
 
 class DynamoException(EnvironmentError):

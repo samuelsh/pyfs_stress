@@ -5,18 +5,14 @@ Asynchronous Server logic is here
 import multiprocessing
 import queue
 import timeit
-from bisect import bisect
-from multiprocessing import Process
-from random import random
 import json
 import random
 import time
 import uuid
 import os
-from threading import Thread
-
 import zmq
-
+from threading import Thread
+from bisect import bisect
 from config import CTRL_MSG_PORT
 from logger import server_logger
 from server import helpers
@@ -28,7 +24,9 @@ from server.response_actions import response_action
 timer = timeit.default_timer
 
 MAX_DIR_SIZE = 128 * 1024
-MAX_CONTROLLER_WORKERS = 2
+MAX_CONTROLLER_OUTGOING_WORKERS = 4
+MAX_CONTROLLER_INCOMING_WORKERS = 16
+
 
 __author__ = 'samuels'
 
@@ -109,7 +107,7 @@ class Controller(object):
                 'truncate': 0
 
             }}
-            self.logger.info("Loading workload: {0}".format(self.config['workload']))
+            self.logger.info(f"Loading workload: {self.config['workload']}")
             workload = load_workload(self.config['workload'])
             fops = workload['file_ops']
             # Checking if file ops weight are exactly 100%
@@ -117,7 +115,7 @@ class Controller(object):
             for _, v in fops.items():
                 weights_total += v
             if weights_total != 100:
-                raise ValueError("Bad total weight of file operations. Got {0}, 100 is expected".format(weights_total))
+                raise ValueError(f"Bad total weight of file operations. Got {weights_total}, 100 is expected")
             self.file_operations = [(k, v) for k, v in fops.items()]
             # Checking if io types weight are exactly 100%
             io_types = workload['io_types']
@@ -125,7 +123,7 @@ class Controller(object):
             for _, v in io_types.items():
                 weights_total += v
             if weights_total != 100:
-                raise ValueError("Bad total weight of file operations. Got {0}, 100 is expected".format(weights_total))
+                raise ValueError(f"Bad total weight of file operations. Got {weights_total}, 100 is expected")
             self.io_types = [(k, v) for k, v in io_types.items()]
             # We won't assign more than 100 jobs to a worker at a time; this ensures
             # reasonable memory usage, and less shuffling when a worker dies.
@@ -288,11 +286,12 @@ class AsyncControllerServer(Thread, object):
             "Async Controller Server thread {0} started".format(self.name))
         try:
             workers = []
-            for _ in range(MAX_CONTROLLER_WORKERS):
+            for _ in range(MAX_CONTROLLER_INCOMING_WORKERS):
                 worker = IncomingAsyncControllerWorker(self._logger, self._context, self._incoming_queue,
                                                        self._stop_event)
                 workers.append(worker)
                 worker.start()
+            for _ in range(MAX_CONTROLLER_OUTGOING_WORKERS):
                 worker = OutgoingAsyncControllerWorker(self._logger, self._context, self._outgoing_queue,
                                                        self._stop_event)
                 workers.append(worker)
@@ -307,12 +306,11 @@ class AsyncControllerServer(Thread, object):
             self._logger.exception("Unhandled exception {0}".format(generic_error))
             self._stop_event.set()
             raise generic_error
-
-    def __del__(self):
-        self._logger.info("Closing sockets...")
-        self._context.close()
-        self._backend.close()
-        self._context.term()
+        finally:
+            self._logger.info("Closing sockets...")
+            self._context.close()
+            self._backend.close()
+            self._context.term()
 
 
 class AsyncControllerWorker(Thread, object):
@@ -361,7 +359,6 @@ class IncomingAsyncControllerWorker(AsyncControllerWorker, object):
                 self.stop_event.set()
                 raise generic_error
 
-    def __del__(self):
         self._logger.info("Closing sockets...")
         self._context.close()
         self._worker.close()
@@ -400,7 +397,6 @@ class OutgoingAsyncControllerWorker(AsyncControllerWorker, object):
                 self.stop_event.set()
                 raise
 
-    def __del__(self):
         self._logger.info("Closing sockets...")
         self._context.close()
         self._worker.close()

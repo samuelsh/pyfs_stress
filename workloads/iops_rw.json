@@ -11,8 +11,8 @@
         "stat": 1,
         "read": 20,
         "rename": 5,
-        "rename_exist": 0,
-        "write": 52,
-        "truncate": 0
+        "rename_exist": 2,
+        "write": 45,
+        "truncate": 5
   }
 }

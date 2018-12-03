@@ -25,16 +25,16 @@ def mkdir_request(logger, dir_tree, **kwargs):
     target = 'None'
     if len(dir_tree.synced_nodes) > 10 or len(dir_tree.nids) > 10:
         return None
-    logger.debug("DEBUG NIDS: {}".format(dir_tree.nids))
-    logger.debug("DEBUG SYNCED_DIRS: {}".format(dir_tree.synced_nodes))
+    logger.debug(f"DEBUG NIDS: dir_tree.nids")
+    logger.debug(f"DEBUG SYNCED_DIRS: {dir_tree.synced_nodes}")
     dir_tree.append_node()
     logger.debug(
-        "Controller: New dir appended to list {0}".format(dir_tree.get_last_node_tag()))
+        f"Controller: New dir appended to list {dir_tree.get_last_node_tag()}")
     target_dir = dir_tree.get_random_dir_not_synced()
     if target_dir:
         target = target_dir.data.name
         logger.debug(
-            "Controller: Dir {0} current size is {1}".format(target, dir_tree.get_last_node_data().size))
+            f"Controller: Dir {target} current size is {dir_tree.get_last_node_data().size}")
     data['target'] = target
     return data
 

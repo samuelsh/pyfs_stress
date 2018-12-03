@@ -5,7 +5,6 @@ Directory Tree integrity test runner
 """
 import multiprocessing
 import time
-
 import argparse
 import atexit
 import json
@@ -13,13 +12,10 @@ import os
 import socket
 import sys
 import errno
-
 import redis
-import zmq
 import config
 from multiprocessing import Event
 from multiprocessing import Process
-
 from config.redis_config import redis_config
 from logger.pubsub_logger import SUBLogger
 from logger.server_logger import ConsoleLogger
@@ -86,10 +82,10 @@ def deploy_clients(clients, access):
     with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
         rsa_pub_key = f.read()
     for client in clients:
-        logger.info("Setting SSH connection to {0}".format(client))
+        logger.info(f"Setting SSH connection to {client}")
         ssh_utils.set_key_policy(rsa_pub_key, client, logger, access['user'],
                                  access['password'])
-        logger.info("Deploying to {0}".format(client))
+        logger.info(f"Deploying to {client}")
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {}'.format(config.DYNAMO_PATH))
         ShellUtils.run_shell_command('rsync',
                                      '-avz {} {}:{}'.format('client', client, config.DYNAMO_PATH))
@@ -103,22 +99,6 @@ def deploy_clients(clients, access):
 
 
 def run_clients(cluster, clients, export, mtype, start_vip, end_vip, locking_type):
-    """
-
-    Args:
-        mtype: str
-        domains: int
-        active_nodes: int
-        export: str
-        cluster: str
-        clients: list
-        start_vip: str
-        end_vip: str
-
-    Returns:
-    :param locking_type:
-
-    """
     #  Will explicitly pass public IP of the controller to clients since we won't rely on DNS existence
     controller = socket.gethostbyname(socket.gethostname())
     dynamo_cmd_line = "{} --controller {} --server {} --export {} --mtype {} --start_vip {} --end_vip {} " \
@@ -148,11 +128,11 @@ def cleanup(clients=None):
     logger.info("Cleaning up on exit....")
     if clients:
         for client in clients:
-            logger.info("{}: Killing workers".format(client))
+            logger.info(f"{client}: Killing workers")
             ShellUtils.run_shell_remote_command_no_exception(client, 'pkill -9 -f dynamo')
-            logger.info("{}: Unmounting".format(client))
+            logger.info(f"{client}: Unmounting")
             ShellUtils.run_shell_remote_command_no_exception(client, 'sudo umount -fl /mnt/{}'.format('VFS*'))
-            logger.info("{}: Removing mountpoint folder/s".format(client))
+            logger.info(f"{client}: Removing mountpoint folder/s")
             ShellUtils.run_shell_remote_command_no_exception(client, 'sudo rm -fr /mnt/{}'.format('VFS*'))
 
 
@@ -167,7 +147,7 @@ def main():
         if io_error.errno == errno.ENOENT:
             pass
     dir_tree = dirtree.DirTree(file_names)
-    logger.debug("{0} Logger initialised {1}".format(__name__, logger))
+    logger.debug(f"{__name__} Logger initialised {logger}")
     atexit.register(cleanup, clients=args.clients)
     clients_list = args.clients
     logger.info("Loading Test Configuration")
@@ -188,7 +168,7 @@ def main():
     logger.info("Controller started")
     time.sleep(10)
     deploy_clients(clients_list, test_config['access']['client'])
-    logger.info("Done deploying clients: {0}".format(clients_list))
+    logger.info(f"Done deploying clients: {clients_list}")
     run_clients(args.cluster, clients_list, args.export, args.mtype, args.start_vip, args.end_vip, args.locking)
     clients_ready_event.set()
     logger.info("Dynamo started on all clients ....")

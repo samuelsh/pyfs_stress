@@ -25,6 +25,8 @@ total_scanned_files = 0
 deleted_files = 0
 renamed_files = 0
 
+lock = threading.Lock()
+
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -60,7 +62,6 @@ def print_stats(dirs_queue):
 
 def dir_scanner(files_queue, root_dir):
     global stop_event, threads_count, total_scanned_files
-    lock = threading.Lock()
     try:
         logger.debug(f"Scanner Worker {threading.get_ident()}: Scanning {root_dir}")
         with lock:
@@ -86,8 +87,8 @@ def dir_scanner(files_queue, root_dir):
             with lock:
                 threads_count -= 1
         if threads_count <= 0:
-            logger.info(f"Scanner Worker {threading.get_ident()}: Spawned threads {threads_count}. Signalling shutdown")
-            stop_event.set()
+            logger.info(f"Scanner Worker {threading.get_ident()}: Spawned threads {threads_count}. "
+                        f"Done scanning, waiting for all worker threads to complete")
     except (IOError, OSError) as e:
         if e.errno == errno.EACCES:
             logger.warn(f"Scanner Woker {threading.get_ident()} failed due to {e} and will be stopped")
@@ -98,34 +99,32 @@ def dir_scanner(files_queue, root_dir):
 
 def rename_worker(dirs_queue):
     global stop_event, renamed_files
-    lock = threading.Lock()
     logger.info(f"Renamer Worker {threading.get_ident()} started...")
     while not stop_event.is_set():
         try:
-            full_path = dirs_queue.get(timeout=1)
+            full_path = dirs_queue.get(timeout=10)
             os.rename(full_path, "/".join([os.path.dirname(full_path), "".join(["renamed_", str(time.time())])]))
             with lock:
                 renamed_files += 1
         except (IOError, OSError) as e:
             logger.error(f"Renamer Worker {threading.get_ident()} Error: {e}")
         except queue.Empty:
-            time.sleep(0.1)
+            return
 
 
 def delete_worker(dirs_queue):
     global stop_event, deleted_files
-    lock = threading.Lock()
     logger.info(f"Deleter Worker {threading.get_ident()} started...")
     while not stop_event.is_set():
         try:
-            full_path = dirs_queue.get(timeout=1)
+            full_path = dirs_queue.get(timeout=10)
             os.remove(full_path)
             with lock:
                 deleted_files += 1
         except (IOError, OSError) as e:
             logger.error(f"Deleter Worker {threading.get_ident()} Error: {e}")
         except queue.Empty:
-            time.sleep(0.1)
+            return
 
 
 def main():
@@ -161,9 +160,9 @@ def main():
                 futures.append(executor.submit(delete_worker, dirs_queue))
     for future in futures:
         try:
-            logger.info("{}".format("Job Done OK" if not future.result() else ""))
+            logger.info(f'{"Job Done OK" if not future.result() else ""}')
         except Exception as e:
-            logger.error("ThreadPool raised exception {}".format(e))
+            logger.error(f"ThreadPool raised exception: {e}")
             raise e
     stats_collector.cancel()
 

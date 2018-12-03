@@ -2,17 +2,15 @@
 Client load generator
 2016 samules (c)
 """
-import multiprocessing
 
 import os
 import random
-from datetime import datetime
-
 import zmq
 import sys
 import socket
 import redis
 
+from datetime import datetime
 from config.redis_config import redis_config
 from locking import FLock
 
@@ -66,12 +64,12 @@ class Dynamo(object):
             self.logger.info("Setting up Redis connection...")
             self.locking_db = redis.StrictRedis(**redis_config)
             self.flock = FLock(self.locking_db, kwargs.get('locking_type'))
-            self.logger.info("Dynamo {0} init done".format(self._socket.identity))
+            self.logger.info(f"Dynamo {self._socket.identity} init done")
         except Exception as e:
             self.logger.error(f"Connection error: {e}")
 
     def run(self):
-        self.logger.info("Dynamo {0} started".format(self._socket.identity))
+        self.logger.info(f"Dynamo {self._socket.identity} started")
         try:
             msg = None
             job_id = None
@@ -100,7 +98,7 @@ class Dynamo(object):
                 except zmq.ZMQError as zmq_error:
                     self.logger.warn(f"Failed to send message due to: {zmq_error}. Message {job_id} lost!")
                 except TypeError:
-                    self.logger.error("JSON Serialisation error: msg: {}".format(msg))
+                    self.logger.error(f"JSON Serialisation error: msg: {msg}")
         except KeyboardInterrupt:
             pass
         except Exception as e:
@@ -125,8 +123,7 @@ class Dynamo(object):
         action = work['action']
         data = {}
         mount_point = random.choice(self.mount_points)
-        self.logger.debug('Incoming job: \'{}\' on \'{}\' data: {}'.format(work['action'], work['data']['target'],
-                                                                           work['data']))
+        self.logger.debug(f"Incoming job: '{work['action']}' on '{work['data']['target']}' data: {work['data']}")
         try:
             if 'None' in work['data']['target']:
                 raise DynamoException(error_codes.NO_TARGET,
@@ -139,16 +136,6 @@ class Dynamo(object):
             return build_message('failed', action, data, timestamp(), error_code=os_error.errno,
                                  error_message=os_error.strerror,
                                  path='/'.join([mount_point, work['data']['target']]),
-                                 line=sys.exc_info()[-1].tb_lineno)
-        except IOError as io_error:
-            return build_message('failed', action, data, timestamp(), error_code=io_error.errno,
-                                 error_message=io_error.strerror,
-                                 path='/'.join([mount_point, work['data']['target']]),
-                                 line=sys.exc_info()[-1].tb_lineno)
-        except DynamoException as dynamo_error:
-            self.logger.exception(dynamo_error)
-            return build_message('failed', action, data, timestamp(), error_code=dynamo_error.errno,
-                                 error_message=dynamo_error.strerror, path=work['data']['target'],
                                  line=sys.exc_info()[-1].tb_lineno)
         except Exception as unhandled_error:
             self.logger.exception(unhandled_error)

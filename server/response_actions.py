@@ -1,3 +1,5 @@
+import os
+
 import datetime
 import logging
 
@@ -97,21 +99,19 @@ def mkdir_success(logger, incoming_message, dir_tree):
     dir_hash = xxhash.xxh64(syncdir.data.name).hexdigest()
     dir_tree.synced_nodes[dir_hash] = syncdir.data.name
     logger.debug(
-        "Directory {0} was created at: {1}".format(syncdir.data.name, syncdir.creation_time))
+        f"Directory {syncdir.data.name} was created at: {syncdir.creation_time}")
     logger.debug(
-        'Directory {0} is synced. Size is {1}'.format(syncdir.data.name,
-                                                      int(incoming_message['data']['dirsize'])))
+        f"Directory {syncdir.data.name} is synced. Size is {int(incoming_message['data']['dirsize'])} bytes")
 
 
 def touch_success(logger, incoming_message, dir_tree):
-    logger.debug("Successfull touch arrived {0}".format(incoming_message['target']))
+    logger.debug(f"Successful touch arrived incoming_message['target']")
     path = incoming_message['target'].split('/')[1:]  # folder:file
     syncdir = dir_tree.get_dir_by_name(path[0])
     dir_index = xxhash.xxh64(path[0]).hexdigest()
     if not syncdir:
         logger.debug(
-            "Directory {0} already removed from active dirs list, dropping touch {1}".format(path[0],
-                                                                                             path[1]))
+            f"Directory {path[0]} already removed from active dirs list, dropping touch {path[1]}")
         return
     # There might be a raise when successful mkdir message will arrive after successful touch message
     # So we won't check here if dir is already synced
@@ -119,27 +119,26 @@ def touch_success(logger, incoming_message, dir_tree):
     f = syncdir.data.get_file_by_name(path[1])
     #  Now, when we got reply from client that file was created,
     #  we can mark it as synced
-    #  syncdir.data.size = int(incoming_message['data']['dirsize'])
     syncdir.data.size += 1
     f.ondisk = True
     f.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                  '%Y/%m/%d %H:%M:%S.%f')
     f.uuid = uuid.uuid4().hex[-5:]  # Unique session ID, will be modified on each file modify action
     logger.debug(
-        "File {0}/{1} was created at: {2}".format(path[0], path[1], f.creation_time))
+        f"File {path[0]}/{path[1]} was created at: {f.creation_time}")
     logger.debug(
-        'File {0}/{1} is synced. Directory size updated to {2}'.format(path[0], path[1], syncdir.data.size))
+        f"File {path[0]}/{path[1]} is synced. Directory size updated to {syncdir.data.size} bytes")
     if syncdir.data.size > MAX_FILES_PER_DIR:
         try:
-            logger.debug("Directory {0} going to be removed from dir tree".format(path[0]))
+            logger.debug(f"Directory {path[0]} going to be removed from dir tree")
             dir_tree.remove_dir_by_name(path[0])
             del dir_tree.synced_nodes[dir_index]
-            del dir_tree._nids[dir_index]
+            del dir_tree.nids[dir_index]
             logger.debug(
-                "Directory {0} is reached its size limit and removed from active dirs list".format(path[0]))
+                f"Directory {path[0]} is reached its size limit and removed from active dirs list")
         except (NodeIDAbsentError, KeyError):
             logger.debug(
-                "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+                f"Directory {path[0]} already removed from active dirs list, skipping....")
 
 
 def list_success(logger, incoming_message, dir_tree):
@@ -155,13 +154,13 @@ def truncate_success(logger, incoming_message, dir_tree):
     writedir = dir_tree.get_dir_by_name(path[0])
     if not writedir:
         logger.debug(
-            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+            f"Directory {path[0]} already removed from active dirs list, skipping....")
     else:
-        logger.debug('Directory exists {0}, going to truncate file {1}'.format(writedir.data.name, path[1]))
+        logger.debug(f"Directory exists {writedir.data.name}, going to truncate file {path[1]}")
         if writedir.data.ondisk:
             wfile = writedir.data.get_file_by_name(path[1])
             if wfile and wfile.ondisk:
-                logger.debug('File {0}/{1} is found, truncating'.format(path[0], path[1]))
+                logger.debug(f"File {path[0]}/{path[1]} is found, truncating")
                 wfile.modify_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                '%Y/%m/%d %H:%M:%S.%f')
                 wfile.size = incoming_message['data']['size']
@@ -170,11 +169,11 @@ def truncate_success(logger, incoming_message, dir_tree):
                     wfile.data_pattern_offset = wfile.size
                     wfile.data_pattern_hash = 'ef46db3751d8e999'
                     wfile.data_pattern_len = 0
-                logger.debug('Truncating file {0}/{1} to {2}'.format(path[0], path[1], wfile.size))
+                logger.debug(f"Truncating file {path[0]}/{path[1]} to {wfile.size} bytes")
             else:
-                logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+                logger.debug(f"File {path[0]}/{path[1]} is not on disk, nothing to update")
         else:
-            logger.debug("Directory {0} is not on disk, nothing to update".format(writedir.data.name))
+            logger.debug(f"Directory {writedir.data.name} is not on disk, nothing to update")
 
 
 def read_success(logger, incoming_message, dir_tree):
@@ -182,43 +181,38 @@ def read_success(logger, incoming_message, dir_tree):
     readdir = dir_tree.get_dir_by_name(path[0])
     if not readdir:
         logger.debug(
-            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+            f"Directory {path[0]} already removed from active dirs list, skipping....")
     else:
-        logger.debug('Directory exists {0}, going to check file {1} integrity'.format(readdir.data.name, path[1]))
+        logger.debug(f"Directory exists {readdir.data.name}, going to check file {path[1]} integrity")
         if readdir.data.ondisk:
             rfile = readdir.data.get_file_by_name(path[1])
             if rfile and rfile.ondisk:
                 read_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if rfile.data_pattern_hash != incoming_message['data']['hash'] and read_time < rfile.modify_time:
                     logger.error(
-                        "Hash mismatch on Read! File {0} - stored hash: {1} incoming hash: {2} offset: {3} chunk "
-                        "size: {4} ".format(rfile.name, rfile.data_pattern_hash, incoming_message['data']['hash'],
-                                            incoming_message['data']['offset'], incoming_message['data']['chunk_size']))
+                        f"Hash mismatch on Read! File {rfile.name} - "
+                        f"stored hash: {rfile.data_pattern_hash} "
+                        f"incoming hash: {incoming_message['data']['hash']} "
+                        f"offset: {incoming_message['data']['offset']} "
+                        f"chunk size: {incoming_message['data']['chunk_size']} ")
             else:
-                logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+                logger.debug(f"File {path[0]}/{path[1]} is not on disk, nothing to update")
         else:
-            logger.debug("Directory {0} is not on disk, nothing to update".format(readdir.data.name))
+            logger.debug(f"Directory {readdir.data.name} is not on disk, nothing to update")
 
 
 def write_success(logger, incoming_message, dir_tree):
     path = incoming_message['target'].split('/')[1:]  # folder:file
     writedir = dir_tree.get_dir_by_name(path[0])
-    if 'dynamo_error' in incoming_message['data']:
-        if incoming_message['data']['dynamo_error'] == error_codes.HASHERR:
-            logger.error(
-                "Hash mismatch on write pattern verify! File {0} - good hash: {1} bad hash: {2} offset: {3} chunk "
-                "size: {4}".format(incoming_message['target'], incoming_message['data']['hash'],
-                                   incoming_message['data']['bad_hash'],
-                                   incoming_message['data']['offset'], incoming_message['data']['chunk_size']))
     if not writedir:
         logger.debug(
-            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+            f"Directory {path[0]} already removed from active dirs list, skipping....")
     else:
-        logger.debug('Directory exists {0}, going to update file {1}'.format(writedir.data.name, path[1]))
+        logger.debug(f"Directory exists {writedir.data.name}, going to update file {path[1]}")
         if writedir.data.ondisk:
             wfile = writedir.data.get_file_by_name(path[1])
             if wfile and wfile.ondisk:
-                logger.debug('File {0}/{1} is found, writing'.format(path[0], path[1]))
+                logger.debug(f"File {path[0]}/{path[1]} is found, writing")
                 wfile.ondisk = True
                 wfile.modify_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                '%Y/%m/%d %H:%M:%S.%f')
@@ -229,10 +223,10 @@ def write_success(logger, incoming_message, dir_tree):
                 # recalculating file size
                 if wfile.size < wfile.data_pattern_offset + wfile.data_pattern_len:
                     wfile.size = wfile.data_pattern_offset + wfile.data_pattern_len
-                logger.debug('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
+                logger.debug(f"Write to file {path[0]}/{path[1]} at {wfile.data_pattern_offset}")
             # In case there is raise and write arrived before touch we'll sync the file here
             elif wfile:
-                logger.debug("File {0}/{1} Write OP arrived before touch, syncing...".format(path[0], path[1]))
+                logger.debug(f"File {path[0]}/{path[1]} Write OP arrived before touch, syncing...")
                 wfile.ondisk = True
                 wfile.data_pattern = incoming_message['data']['data_pattern']
                 wfile.data_pattern_len = incoming_message['data']['chunk_size']
@@ -244,11 +238,11 @@ def write_success(logger, incoming_message, dir_tree):
                 # recalculating file size
                 if wfile.size < wfile.data_pattern_offset + wfile.data_pattern_len:
                     wfile.size = wfile.data_pattern_offset + wfile.data_pattern_len
-                logger.debug('Write to file {0}/{1} at {2}'.format(path[0], path[1], wfile.data_pattern_offset))
+                logger.debug(f"Write to file {path[0]}/{path[1]} at {wfile.data_pattern_offset}")
             else:
-                logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+                logger.debug(f"File {path[0]}/{path[1]} is not on disk, nothing to update")
         else:
-            logger.debug("Directory {0} is not on disk, nothing to update".format(writedir.data.name))
+            logger.debug(f"Directory {writedir.data.name} is not on disk, nothing to update")
 
 
 def delete_success(logger, incoming_message, dir_tree):
@@ -256,19 +250,19 @@ def delete_success(logger, incoming_message, dir_tree):
     deldir = dir_tree.get_dir_by_name(path[0])
     if not deldir:
         logger.debug(
-            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+            f"Directory {path[0]} already removed from active dirs list, skipping....")
     else:
-        logger.debug('Directory exists {0}, going to delete {1}'.format(deldir.data.name, path[1]))
+        logger.debug(f"Directory exists {deldir.data.name}, going to delete {path[1]}")
         if deldir.data.ondisk:
             rfile = deldir.data.get_file_by_name(path[1])
             if rfile and rfile.ondisk:
-                logger.debug('File {0}/{1} is found, removing'.format(path[0], path[1]))
+                logger.debug(f"File {path[0]}/{path[1]} is found, removing")
                 rfile.ondisk = False
-                logger.debug('File {0}/{1} is removed form disk'.format(path[0], path[1]))
+                logger.debug(f"File {path[0]}/{path[1]} is removed form disk")
             else:
-                logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+                logger.debug(f"File {path[0]}/{path[1]} is not on disk, nothing to update")
         else:
-            logger.debug("Directory {0} is not on disk, nothing to update".format(deldir.data.name))
+            logger.debug(f"Directory {deldir.data.name} is not on disk, nothing to update")
 
 
 def rename_success(logger, incoming_message, dir_tree):
@@ -276,33 +270,24 @@ def rename_success(logger, incoming_message, dir_tree):
     rename_dir = dir_tree.get_dir_by_name(path[0])
     if not rename_dir:
         logger.debug(
-            "Directory {0} already removed from active dirs list, skipping....".format(path[0]))
+            f"Directory {path[0]} already removed from active dirs list, skipping....")
         return
 
-    logger.debug('Directory exists {0}, going to rename {1}'.format(rename_dir.data.name, path[1]))
+    logger.debug(f"Directory exists {path[0]}, going to rename {path[1]}")
     if rename_dir.data.ondisk:
         rfile = rename_dir.data.get_file_by_name(path[1])
         if rfile:
-            logger.debug('File {0}/{1} is found, renaming'.format(path[0], path[1]))
+            logger.debug(f"File {path[0]}/{path[1]} is found, renaming")
             rfile = rename_dir.data.rename_file(rfile.name, incoming_message['data']['rename_dest'])
             rfile.ondisk = True
             rfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                              '%Y/%m/%d %H:%M:%S.%f')
-            # rfile.name = incoming_message['data']['rename_dest']
-            logger.debug('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
-        # In case there is raise and rename arrived before touch we'll sync the file here
-        # elif rfile:
-        #     logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(path[0], path[1]))
-        #     rfile.ondisk = True
-        #     rfile.name = incoming_message['data']['rename_dest']
-        #     rfile.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-        #                                                      '%Y/%m/%d %H:%M:%S.%f')
-        #     logger.debug('File {0}/{1} is renamed to {2}'.format(path[0], path[1], rfile.name))
+            logger.debug(f"File {path[0]}/{path[1]} is renamed to {rfile.name}")
         else:
-            logger.debug("File {0}/{1} is not on disk, nothing to update".format(path[0], path[1]))
+            logger.debug(f"File {path[0]}/{path[1]} is not on disk, nothing to update")
     else:
         logger.debug(
-            "Directory {0} is not on disk, nothing to update".format(rename_dir.data.name))
+            f"Directory {rename_dir.data.name} is not on disk, nothing to update")
 
 
 def rename_exist_success(logger, incoming_message, dir_tree):
@@ -310,58 +295,46 @@ def rename_exist_success(logger, incoming_message, dir_tree):
     dst_path = incoming_message['data']['rename_dest'].split('/')[1:]  # folder:file
     src_rename_dir = dir_tree.get_dir_by_name(src_path[0])
     dst_rename_dir = dir_tree.get_dir_by_name(dst_path[0])
-    src_rename_file = dir_tree.get_dir_by_name(src_path[1])
     if not src_rename_dir:
         logger.debug(
-            "Source directory {0} already removed from active dirs list, skipping....".format(src_path[0]))
+            f"Source directory {src_path[0]} already removed from active dirs list, skipping....")
         return
     logger.debug(
-        'Directory exists {0}, going to delete renamed file {1} from directory'.format(src_rename_dir.data.name,
-                                                                                       src_path[1]))
+        f"Directory exists {src_path[0]}, going to delete renamed file {src_path[1]} from directory")
     #  Firs we delete the source file
     if src_rename_dir.data.ondisk:
         file_to_delete = src_rename_dir.data.get_file_by_name(src_path[1])
         if file_to_delete and file_to_delete.ondisk:
-            logger.debug('File {0}/{1} is found, removing'.format(src_path[0], src_path[1]))
+            logger.debug(f"File {src_path[0]}/{src_path[1]} is found, removing")
             file_to_delete.ondisk = False
-            # src_rename_dir.data.delete_file_by_name(src_path[1])
-            logger.debug('File {0}/{1} is removed form disk'.format(src_path[0], src_path[1]))
+            logger.debug(f"File {src_path[0]}/{src_path[1]} is removed form disk")
         else:
-            logger.debug("File {0}/{1} is not on disk, nothing to update".format(src_path[0], src_path[1]))
+            logger.debug(f"File {src_path[0]}/{src_path[1]} is not on disk, nothing to update")
     else:
         logger.debug(
-            "Directory {0} is not on disk, nothing to update".format(src_rename_dir.data.name))
+            f"Directory {src_path[0]} is not on disk, nothing to update")
 
     # Actual rename of destination file
     if not dst_rename_dir:
         logger.debug(
-            "Directory {0} already removed from active dirs list, skipping....".format(dst_path[0]))
+            f"Directory {dst_path[0]} already removed from active dirs list, skipping....")
         return
 
-    logger.debug('Directory exists {0}, going to rename {1} to {2}'.format(dst_rename_dir.data.name, src_path[1],
-                                                                           dst_path[1]))
+    logger.debug(f"Directory exists {dst_path[0]}, going to rename {src_path[1]} to {dst_path[1]}")
     if dst_rename_dir.data.ondisk:
         file_to_rename = dst_rename_dir.data.get_file_by_name(dst_path[1])
         if file_to_rename:
-            logger.debug('File {0}/{1} is found, renaming'.format(dst_path[0], dst_path[1]))
+            logger.debug(f"File {dst_path[0]}/{dst_path[1]} is found, renaming")
             file_to_rename = dst_rename_dir.data.rename_file(file_to_rename.name, dst_path[1])
             file_to_rename.ondisk = True
             file_to_rename.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
                                                                       '%Y/%m/%d %H:%M:%S.%f')
-            logger.debug('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], dst_path[1]))
-        # In case that destination file wasn't synced to disk for some reason, we'll sync it during rename
-        # elif file_to_rename:
-        #     logger.debug("File {0}/{1} rename OP arrived before touch, syncing...".format(dst_path[0], dst_path[1]))
-        #     file_to_rename.ondisk = True
-        #     file_to_rename.name = src_rename_file  # file_to_delete.name
-        #     file_to_rename.creation_time = datetime.datetime.strptime(incoming_message['timestamp'],
-        #                                                               '%Y/%m/%d %H:%M:%S.%f')
-        #     logger.debug('File {0}/{1} is renamed to {2}'.format(src_path[0], src_path[1], src_rename_file))
+            logger.debug(f"File {src_path[0]}/{src_path[1]} is renamed to {dst_path[1]}")
         else:
-            logger.debug("File {0}/{1} is not on disk, nothing to update".format(dst_path[0], dst_path[1]))
+            logger.debug(f"File {dst_path[0]}/{dst_path[1]} is not on disk, nothing to update")
     else:
         logger.debug(
-            "Directory {0} is not on disk, nothing to update".format(dst_rename_dir.data.name))
+            f"Directory {dst_path[0]} is not on disk, nothing to update")
 
 
 def failed_response_actions(action):
@@ -398,10 +371,10 @@ def touch_fail(logger, incoming_message, dir_tree):
             error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
             if error_time > rdir.creation_time:
                 logger.error(
-                    "Result Verify FAILED: Operation {0} failed on {1}/{2} which is on disk".format(
-                        incoming_message['action'], rdir_name, rfile_name))
+                    f"Result Verify FAILED: Operation {incoming_message['action']} "
+                    f"failed on {rdir_name}/{rfile_name} which is on disk")
             else:
-                logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+                logger.debug(f"Result verify OK: Directory {rdir_name} is not on disk")
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -430,13 +403,13 @@ def stat_fail(logger, incoming_message, dir_tree):
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
-                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
-                            incoming_message['action'], rdir_name + "/" + rfile_name))
+                        f"Result Verify FAILED: Operation {incoming_message['action']} "
+                        f"failed on file {rdir_name}{os.path.sep}{rfile_name} which is on disk. Invalidating")
                     rfile.ondisk = False
             else:
-                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug(f"Result verify OK: File {rfile_name} is not on disk")
         else:
-            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug(f"Result verify OK: Directory {rdir_name} is not on disk")
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -456,13 +429,13 @@ def truncate_fail(logger, incoming_message, dir_tree):
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
-                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
-                            incoming_message['action'], rdir_name + "/" + rfile_name))
+                        f"Result Verify FAILED: Operation {incoming_message['action']} "
+                        f"failed on file {rdir_name}{os.path.sep}{rfile_name} which is on disk. Invalidating")
                     rfile.ondisk = False
             else:
-                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug(f"Result verify OK: File {rfile_name} is not on disk")
         else:
-            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug(f"Result verify OK: Directory {rdir_name} is not on disk")
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -562,13 +535,13 @@ def rename_fail(logger, incoming_message, dir_tree):
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
-                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
-                            incoming_message['action'], rdir_name + "/" + rfile_name))
+                        f"Result Verify FAILED: Operation {incoming_message['action']} "
+                        f"failed on file {rdir_name}{os.path.sep}{rfile_name} which is on disk. Invalidating")
                     rfile.ondisk = False
             else:
-                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug(f"Result verify OK: File {rfile_name} is not on disk")
         else:
-            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug(f"Result verify OK: Directory {rdir_name} is not on disk")
     else:
         generic_error_handler(logger, incoming_message)
 
@@ -590,13 +563,13 @@ def rename_exist_fail(logger, incoming_message, dir_tree):
                 error_time = datetime.datetime.strptime(incoming_message['timestamp'], '%Y/%m/%d %H:%M:%S.%f')
                 if error_time > rfile.creation_time:
                     logger.error(
-                        "Result Verify FAILED: Operation {0} failed on file {1} which is on disk. Invalidating".format(
-                            incoming_message['action'], rdir_name + "/" + rfile_name))
+                        f"Result Verify FAILED: Operation {incoming_message['action']} "
+                        f"failed on file {rdir_name}{os.path.sep}{rfile_name} which is on disk. Invalidating")
                     rfile.ondisk = False
             else:
-                logger.debug('Result verify OK: File {0} is not on disk'.format(rfile_name))
+                logger.debug(f"Result verify OK: File {rfile_name} is not on disk")
         else:
-            logger.debug('Result verify OK: Directory {0} is not on disk'.format(rdir_name))
+            logger.debug(f"Result verify OK: Directory {rdir_name} is not on disk")
     else:
         generic_error_handler(logger, incoming_message)
 
