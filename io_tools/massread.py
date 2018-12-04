@@ -27,6 +27,9 @@ threads_count = 0
 total_scanned_files = 0
 read_files = 0
 
+scan_lock = threading.Lock()
+read_lock = threading.Lock()
+
 
 class TestStatsCollector(threading.Timer):
     def __init__(self, func, args=None, interval=60):
@@ -68,10 +71,9 @@ def print_stats(dirs_queue):
 
 def dir_scanner(files_queue, root_dir):
     global stop_event, threads_count, total_scanned_files
-    lock = threading.Lock()
     try:
         logger.debug(f"Scanner Worker {threading.get_ident()}: Scanning {root_dir}")
-        with lock:
+        with scan_lock:
             threads_count += 1
         with os.scandir(root_dir) as dirs_iterator:
             for entry in dirs_iterator:
@@ -88,17 +90,17 @@ def dir_scanner(files_queue, root_dir):
                     scan_thread.start()
                 else:
                     files_queue.put(entry.path)
-                    with lock:
+                    with scan_lock:
                         total_scanned_files += 1
             logger.debug(f"Scanner Worker {threading.get_ident()}: Done Scanning {root_dir}")
-            with lock:
+            with scan_lock:
                 threads_count -= 1
         if threads_count <= 0:
-            logger.info(f"Scanner Worker {threading.get_ident()}: Spawned threads {threads_count}. Signalling shutdown")
-            stop_event.set()
-    except (IOError, OSError) as e:
+            logger.info(f"Scanner Worker {threading.get_ident()}: Spawned threads {threads_count}. "
+                        f"Done scanning, waiting for all worker threads to complete")
+    except OSError as e:
         if e.errno == errno.EACCES:
-            logger.warn(f"Scanner Woker {threading.get_ident()} failed due to {e} and will be stopped")
+            logger.warn(f"Scanner Worker {threading.get_ident()} failed due to {e} and will be stopped")
         else:
             logger.exception(f"Scanner Worker {threading.get_ident()} Error: {e}. Shutting down...")
             stop_event.set()
@@ -106,18 +108,19 @@ def dir_scanner(files_queue, root_dir):
 
 def reader_worker(dirs_queue):
     global stop_event, read_files
-    lock = threading.Lock()
+    full_path = ""
     logger.info(f"Reader Worker {threading.get_ident()} started...")
     while not stop_event.is_set():
         try:
-            full_path = dirs_queue.get(timeout=1)
+            full_path = dirs_queue.get(timeout=10)
             read_file(full_path)
-            with lock:
+            with read_lock:
                 read_files += 1
-        except (IOError, OSError) as e:
-            logger.error(f"Reader Worker {threading.get_ident()} Error: {e}")
+        except OSError as e:
+            logger.error(f"Reader Worker {threading.get_ident()} Error: {e}, Path: {full_path}")
         except queue.Empty:
-            time.sleep(0.1)
+            logger.error(f"Empty queue: Reader Worker {threading.get_ident()} done and exits.")
+            return
 
 
 def main():
@@ -139,7 +142,7 @@ def main():
     futures = []
     mp = mounter.get_random_mountpoint()
     test_dir = os.path.join(mp, args.test_dir)
-    logger.info("Selected mountpoint to be scanned: {}".format(test_dir))
+    logger.info(f"Selected mountpoint to be scanned: {test_dir}")
     stats_collector = TestStatsCollector(print_stats, args=[dirs_queue, ])
     stats_collector.start()
     logger.info("Workers ThreadPool started")
@@ -151,7 +154,7 @@ def main():
         try:
             logger.info("{}".format("Job Done OK" if not future.result() else ""))
         except Exception as e:
-            logger.error("ThreadPool raised exception {}".format(e))
+            logger.error(f"ThreadPool raised exception {e}")
             raise e
     stats_collector.cancel()
 
