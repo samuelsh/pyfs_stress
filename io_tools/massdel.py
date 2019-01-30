@@ -66,28 +66,29 @@ def dir_scanner(files_queue, root_dir):
     global stop_event, threads_count, total_scanned_files
     try:
         logger.debug(f"Scanner Worker {threading.get_ident()}: Scanning {root_dir}")
-        with scan_lock:
-            threads_count += 1
         with os.scandir(root_dir) as dirs_iterator:
             for entry in dirs_iterator:
                 if stop_event.is_set():
                     return
                 if entry.is_dir():
+                    logger.info(f"Entry {entry.name} is Directory. Spawning new thread...")
+                    scan_thread = threading.Thread(target=dir_scanner, args=(files_queue, entry.path))
+                    scan_thread.start()
+                    with scan_lock:
+                        threads_count += 1
                     if threads_count >= MAX_SCANNING_THREADS:
                         logger.info(f"Number of threads reached {MAX_SCANNING_THREADS}. "
                                     f"Waiting any thread to finish...")
-                        while threads_count >= MAX_SCANNING_THREADS:
-                            time.sleep(0.1)
-                    logger.debug(f"Entry {entry.name} is Directory. Spawning new thread...")
-                    scan_thread = threading.Thread(target=dir_scanner, args=(files_queue, entry.path))
-                    scan_thread.start()
+                        scan_thread.join()
+                        with scan_lock:
+                            threads_count -= 1
                 else:
+                    logger.debug(f"Entry {entry.name} is File. Putting {entry.path}")
                     files_queue.put(entry.path)
                     with scan_lock:
                         total_scanned_files += 1
+                    # logger.info(f"thread {threading.get_ident()} decreasing thread_count: {threads_count}")
             logger.debug(f"Scanner Worker {threading.get_ident()}: Done Scanning {root_dir}")
-            with scan_lock:
-                threads_count -= 1
         if threads_count <= 0:
             logger.info(f"Scanner Worker {threading.get_ident()}: Spawned threads {threads_count}. "
                         f"Done scanning, waiting for all worker threads to complete")
@@ -124,7 +125,7 @@ def delete_worker(dirs_queue):
     logger.info(f"Deleter Worker {threading.get_ident()} started...")
     while not stop_event.is_set():
         try:
-            full_path = dirs_queue.get(timeout=10)
+            full_path = dirs_queue.get(timeout=60)
             os.remove(full_path)
             with delete_lock:
                 deleted_files += 1
@@ -136,7 +137,7 @@ def delete_worker(dirs_queue):
 
 
 def main():
-    global logger, stop_event
+    global logger, stop_event, threads_count
     logger = ConsoleLogger('md_massdel').logger
     stop_event = Event()
     dirs_queue = queue.Queue()
@@ -166,6 +167,10 @@ def main():
         if args.action == "all" or args.action == "delete":
             for _ in range(100):
                 futures.append(executor.submit(delete_worker, dirs_queue))
+    logger.info("Waiting for all threads to complete...")
+    while threads_count >= 0:
+        time.sleep(0.1)
+    logger.info("All scanning threads completed...")
     for future in futures:
         try:
             logger.info(f'{"Job Done OK" if not future.result() else ""}')
