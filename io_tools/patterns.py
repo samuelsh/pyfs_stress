@@ -136,22 +136,23 @@ def main():
     file_name = f"hhmi_tstfile-{uuid.uuid4()}"
     with open(os.path.join(mount_point, test_dir, file_name), "wb") as f, \
             open(os.path.join('/vast', file_name), "wb") as f2:
-        for i in range(1024 * 1):
+        for i in range(1024 * 128):
             if round(random.random() * 10) % 2:
                 buf_size = KB1 * 4 - 2
                 hole_size = 2
             else:
                 buf_size = KB1 * 4 - 1
                 hole_size = 1
-            skip_size = hole_size + random.choice([0, KB1 * 4, KB1 * 8, KB1 * 16])
+            skip_size = hole_size + random.choice([0, KB1 * 4, KB1 * 8, KB1 * 16, KB1 * 32, KB1 * 64, KB1 * 128,
+                                                   KB1 * 256, KB1 * 512, KB1 * 1024])
             buf = get_random_buf(buf_size)
             f.write(buf)
             f2.write(buf)
             offset = f.tell()
-            logger.info(f"Going to write buf_size={buf_size} at offset={offset}")
+            logger.debug(f"Going to write buf_size={buf_size} at offset={offset}")
             f.seek(offset + skip_size)
             f2.seek(offset + skip_size)
-            logger.info(f"Offset after seek={f.tell()}")
+            logger.debug(f"Offset after seek={f.tell()}")
 
     logger.info("Comparing VAST vs Local client before fsync:")
     with open(os.path.join(mount_point, test_dir, file_name), "rb") as f:
@@ -166,6 +167,7 @@ def main():
         local_checksum = local_checksum.hexdigest()
     logger.info(f"Local checksum={local_checksum}, Vast checksum={vast_checksum}")
     assert vast_checksum == local_checksum
+    os.remove(os.path.join('/vast', file_name))
     logger.info("### Workload is Done. Come back tomorrow.")
 
 
