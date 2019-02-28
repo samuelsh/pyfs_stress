@@ -139,23 +139,27 @@ def main():
     logger.info("Test directory created on {}".format(mounter.get_random_mountpoint(), test_dir))
     stats_collector.start()
 
-    futures = []
-    logger.info("Going to produce {} Directories".format(dirs_num))
-    with ThreadPoolExecutor() as executor:
-        for _ in range(16):
-            futures.append(executor.submit(dir_producer_worker, mounter, test_dir, dirs_num, dirs_queue))
-    futures_validator(futures, True)
+    try:
+        futures = []
+        logger.info("Going to produce {} Directories".format(dirs_num))
+        with ThreadPoolExecutor() as executor:
+            for _ in range(16):
+                futures.append(executor.submit(dir_producer_worker, mounter, test_dir, dirs_num, dirs_queue))
+        futures_validator(futures, True)
 
-    for i in range(dirs_num):
-        dirs_queue.put(str(i))
-    stop_event = Event()
-    logger.info("Starting Producing Files...")
-    with ThreadPoolExecutor() as executor:
-        for _ in range(args.threads):
-            futures.append(executor.submit(files_producer_worker, mounter, dirs_queue, test_dir, files_num))
-    futures_validator(futures)
-    logger.info("### Workload is Done. Come back tomorrow.")
-    stats_collector.cancel()
+        for i in range(dirs_num):
+            dirs_queue.put(str(i))
+        stop_event = Event()
+        logger.info("Starting Producing Files...")
+        with ThreadPoolExecutor() as executor:
+            for _ in range(args.threads):
+                futures.append(executor.submit(files_producer_worker, mounter, dirs_queue, test_dir, files_num))
+        futures_validator(futures)
+        logger.info("### Workload is Done. Come back tomorrow.")
+    except OSError:
+        raise
+    finally:
+        stats_collector.cancel()
 
 
 if __name__ == '__main__':
