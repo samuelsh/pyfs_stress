@@ -22,7 +22,7 @@ NUMBER_OF_RETRIES = 3
 
 
 class Mounter:
-    def __init__(self, server, export, mount_type, prefix, do_umount=False, **kwargs):
+    def __init__(self, server, export, mount_type, prefix, do_umount=True, **kwargs):
         self.prefix = prefix
         self.mount_type = mount_type
         self.server = server
