@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.6
 import argparse
 import hashlib
 import os
@@ -87,7 +88,7 @@ def get_args():
 def main():
     args = get_args()
     try:
-        build_recursive_tree(args, args.depth, args.width)
+        build_recursive_tree(args.path, args.depth, args.width)
     except Exception as e:
         print(f"{e}")
 

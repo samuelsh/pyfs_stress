@@ -18,16 +18,20 @@ from logger.server_logger import ConsoleLogger
 
 logger = None
 stop_event = None
+scan_threads_semaphore = threading.Semaphore(64)
 
-MAX_SCANNING_THREADS = 100
+MAX_SCANNING_THREADS = 64
 KB1 = 1024
 MB1 = KB1 * 1024
 
 threads_count = 0
 total_scanned_files = 0
+total_scanned_dirs = 0
 read_files = 0
 
 scan_lock = threading.Lock()
+dirs_cnt_lock = threading.Lock()
+files_cnt_lock = threading.Lock()
 read_lock = threading.Lock()
 
 
@@ -52,27 +56,34 @@ def read_file(path, chunk_size=MB1):
             pass
 
 
+def open_file(path):
+    with open(path, 'rb'):
+        pass
+
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--cluster", help="Cluster Name", required=True, type=str)
     parser.add_argument("-e", "--export", help="NFS Export", default="/", type=str)
     parser.add_argument("-d", "--test_dir", help="Directory under test", default="", type=str)
+    parser.add_argument("-s", "--skipread", help="Skip read. Open only", action="store_true")
     parser.add_argument('--start_vip', type=str, help="Start VIP address range")
     parser.add_argument('--end_vip', type=str, help="End VIP address range")
-    parser.add_argument('--action', type=str, choices=['rename', 'delete', 'all'], help="Action to select",
-                        default="all")
     return parser.parse_args()
 
 
 def print_stats(dirs_queue):
     logger.info(f"### Total spawned workers: {threads_count} Queue depth: {dirs_queue.qsize()} ###")
     logger.info(f"### Total Read Files: {read_files}")
+    logger.info(f"### Total Scanned Files: {total_scanned_files}")
+    logger.info(f"### Total Scanned Dirs: {total_scanned_dirs}")
 
 
 def dir_scanner(files_queue, root_dir):
-    global stop_event, threads_count, total_scanned_files
+    global stop_event, threads_count, total_scanned_files, total_scanned_dirs
+    ident = threading.get_ident()
     try:
-        logger.debug(f"Scanner Worker {threading.get_ident()}: Scanning {root_dir}")
+        logger.info(f"Scanner Worker {ident}: Scanning {root_dir}")
         with scan_lock:
             threads_count += 1
         with os.scandir(root_dir) as dirs_iterator:
@@ -80,51 +91,57 @@ def dir_scanner(files_queue, root_dir):
                 if stop_event.is_set():
                     return
                 if entry.is_dir():
+                    with dirs_cnt_lock:
+                        total_scanned_dirs += 1
                     if threads_count >= MAX_SCANNING_THREADS:
                         logger.info(f"Number of threads reached {MAX_SCANNING_THREADS}. "
                                     f"Waiting any thread to finish...")
-                        while threads_count >= MAX_SCANNING_THREADS:
-                            time.sleep(0.1)
-                    logger.debug(f"Entry {entry.name} is Directory. Spawning new thread...")
-                    scan_thread = threading.Thread(target=dir_scanner, args=(files_queue, entry.path))
-                    scan_thread.start()
+                    with scan_threads_semaphore:
+                        logger.debug(f"Entry {entry.name} is Directory. Spawning new thread...")
+                        scan_thread = threading.Thread(target=dir_scanner, args=(files_queue, entry.path))
+                        scan_thread.start()
                 else:
                     files_queue.put(entry.path)
-                    with scan_lock:
+                    with files_cnt_lock:
                         total_scanned_files += 1
-            logger.debug(f"Scanner Worker {threading.get_ident()}: Done Scanning {root_dir}")
+            logger.debug(f"Scanner Worker {ident}: Done Scanning {root_dir}")
             with scan_lock:
                 threads_count -= 1
         if threads_count <= 0:
-            logger.info(f"Scanner Worker {threading.get_ident()}: Spawned threads {threads_count}. "
+            logger.info(f"Scanner Worker {ident}: Spawned threads {threads_count}. "
                         f"Done scanning, waiting for all worker threads to complete")
     except OSError as e:
         if e.errno == errno.EACCES:
-            logger.warn(f"Scanner Worker {threading.get_ident()} failed due to {e} and will be stopped")
+            logger.warn(f"Scanner Worker {ident} failed due to {e} and will be stopped")
         else:
-            logger.exception(f"Scanner Worker {threading.get_ident()} Error: {e}. Shutting down...")
+            logger.exception(f"Scanner Worker {ident} Error: {e}. Shutting down...")
             stop_event.set()
 
 
-def reader_worker(dirs_queue):
+def reader_worker(dirs_queue, skip_read):
     global stop_event, read_files
+    ident = threading.get_ident()
     full_path = ""
-    logger.info(f"Reader Worker {threading.get_ident()} started...")
+    logger.info(f"Reader Worker {ident} started...")
     while not stop_event.is_set():
         try:
             full_path = dirs_queue.get(timeout=10)
-            read_file(full_path)
+            if skip_read:
+                open_file(full_path)
+            else:
+                read_file(full_path)
+
             with read_lock:
                 read_files += 1
         except OSError as e:
-            logger.error(f"Reader Worker {threading.get_ident()} Error: {e}, Path: {full_path}")
+            logger.error(f"Reader Worker {ident} Error: {e}, Path: {full_path}")
         except queue.Empty:
-            logger.error(f"Empty queue: Reader Worker {threading.get_ident()} done and exits.")
+            logger.error(f"Empty queue: Reader Worker {ident} done and exits.")
             return
 
 
 def main():
-    global logger, stop_event
+    global logger, stop_event, wait_event
     logger = ConsoleLogger('mass_reader').logger
     stop_event = Event()
     dirs_queue = queue.Queue()
@@ -148,8 +165,8 @@ def main():
     logger.info("Workers ThreadPool started")
     with ThreadPoolExecutor() as executor:
         futures.append(executor.submit(dir_scanner, dirs_queue, test_dir))
-        for _ in range(100):
-            futures.append(executor.submit(reader_worker, dirs_queue))
+        for _ in range(64):
+            futures.append(executor.submit(reader_worker, dirs_queue, args.skipread))
     for future in futures:
         try:
             logger.info("{}".format("Job Done OK" if not future.result() else ""))
