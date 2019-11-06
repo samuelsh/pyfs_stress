@@ -17,7 +17,7 @@ from locking import FLock
 sys.path.append(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo'))
 from logger import pubsub_logger
 from config import CTRL_MSG_PORT
-from response_actions import response_action, DynamoException
+from client_actions import response_action, DynamoException
 from config import error_codes
 
 

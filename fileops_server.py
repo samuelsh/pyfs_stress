@@ -3,7 +3,6 @@
 Directory Tree integrity test runner
 2016 samuel (c)
 """
-import multiprocessing
 import time
 import argparse
 import atexit
@@ -11,7 +10,6 @@ import json
 import os
 import socket
 import sys
-import errno
 import redis
 import config
 from multiprocessing import Event
@@ -19,8 +17,6 @@ from multiprocessing import Process
 from config.redis_config import redis_config
 from logger.pubsub_logger import SUBLogger
 from logger.server_logger import ConsoleLogger
-from server.async_controller import Controller
-from tree import dirtree
 from utils import ssh_utils
 from utils.shell_utils import ShellUtils
 
@@ -88,13 +84,7 @@ def deploy_clients(clients, access):
         logger.info(f"Deploying to {client}")
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {}'.format(config.DYNAMO_PATH))
         ShellUtils.run_shell_command('rsync',
-                                     '-avz {} {}:{}'.format('client', client, config.DYNAMO_PATH))
-        ShellUtils.run_shell_command('rsync',
-                                     '-avz {} {}:{}'.format('config', client, config.DYNAMO_PATH))
-        ShellUtils.run_shell_command('rsync',
-                                     '-avz {} {}:{}'.format('logger', client, config.DYNAMO_PATH))
-        ShellUtils.run_shell_command('rsync',
-                                     '-avz {} {}:{}'.format('utils', client, config.DYNAMO_PATH))
+                                     '-avz {} {}:{}'.format('../vfs_stress/', client, config.DYNAMO_PATH))
         ShellUtils.run_shell_remote_command_no_exception(client, 'chmod +x {}'.format(config.DYNAMO_BIN_PATH))
 
 
@@ -107,10 +97,6 @@ def run_clients(cluster, clients, export, mtype, start_vip, end_vip, locking_typ
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client, dynamo_cmd_line)
     wait_clients_to_start(clients)
-
-
-def run_controller(event, dir_tree, test_config, clients_ready_event):
-    Controller(event, dir_tree, test_config, clients_ready_event).run()
 
 
 def run_sub_logger(ip):
@@ -137,16 +123,7 @@ def cleanup(clients=None):
 
 
 def main():
-    file_names = None
-    clients_ready_event = multiprocessing.Manager().Event()
     args = get_args()
-    try:
-        with open(config.FILE_NAMES_PATH, 'r') as f:  # If file with names isn't exists, we'll just create random files
-            file_names = f.readlines()
-    except IOError as io_error:
-        if io_error.errno == errno.ENOENT:
-            pass
-    dir_tree = dirtree.DirTree(file_names)
     logger.debug(f"{__name__} Logger initialised {logger}")
     atexit.register(cleanup, clients=args.clients)
     clients_list = args.clients
@@ -165,18 +142,12 @@ def main():
     sub_logger_process = Process(target=run_sub_logger,
                                  args=(socket.gethostbyname(socket.gethostname()),))
     sub_logger_process.start()
-    logger.info("Controller started")
-    time.sleep(10)
     deploy_clients(clients_list, test_config['access']['client'])
     logger.info(f"Done deploying clients: {clients_list}")
     run_clients(args.cluster, clients_list, args.export, args.mtype, args.start_vip, args.end_vip, args.locking)
-    clients_ready_event.set()
     logger.info("Dynamo started on all clients ....")
-    logger.info("Starting controller")
-    controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config, clients_ready_event))
-    controller_process.start()
-    controller_process.join()
-    logger.info('All done')
+    while True:
+        time.sleep(1)
 
 
 # Start program

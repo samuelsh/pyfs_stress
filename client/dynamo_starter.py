@@ -1,15 +1,23 @@
 #!/usr/bin/env python3.6
 
 import argparse
+import errno
+import json
+import multiprocessing
 import os
 import traceback
 import time
 import sys
 from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import Process
+from async_controller import Controller
 from generic_mounter import Mounter
 from dynamo import Dynamo
 from logger import pubsub_logger
-from config import MAX_WORKERS_PER_CLIENT
+from config import MAX_WORKERS_PER_CLIENT, FILE_NAMES_PATH, DYNAMO_PATH
+from tree import dirtree
+
+stop_event = multiprocessing.Event()
 
 
 def futures_validator(futures, logger):
@@ -25,6 +33,12 @@ def futures_validator(futures, logger):
         except Exception as e:
             logger.error(f"Future raised exception: {e}")
             raise e
+
+
+def load_config():
+    with open(os.path.join(os.path.expanduser(DYNAMO_PATH), "server", "config.json")) as f:
+        test_config = json.load(f)
+    return test_config
 
 
 def run_worker(mount_points, controller, server, nodes, domains, **kwargs):
@@ -54,9 +68,23 @@ def get_args():
     return args
 
 
+def run_controller(event, dir_tree, test_config, clients_ready_event):
+    Controller(event, dir_tree, test_config, clients_ready_event).run()
+
+
 def run():
+    file_names = None
     args = get_args()
     logger = pubsub_logger.PUBLogger(args.controller).logger
+    clients_ready_event = multiprocessing.Event()
+    dir_tree = dirtree.DirTree(file_names)
+    test_config = load_config()
+    try:
+        with open(FILE_NAMES_PATH, 'r') as f:  # If file with names isn't exists, we'll just create random files
+            file_names = f.readlines()
+    except IOError as io_error:
+        if io_error.errno == errno.ENOENT:
+            pass
     time.sleep(10)
     try:
         os.chdir(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo', 'client'))
@@ -72,13 +100,19 @@ def run():
         logger.error(str(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
         raise
     # Start a few worker processes
+    logger.info("Starting controller")
+    controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config, clients_ready_event))
+    controller_process.start()
     futures = []
     with ProcessPoolExecutor(MAX_WORKERS_PER_CLIENT) as executor:
         for i in range(MAX_WORKERS_PER_CLIENT):
             futures.append(executor.submit(run_worker, mounter.mount_points, args.controller, args.server, args.nodes,
                                            args.domains, **dict(locking_type=args.locking)))
+        time.sleep(10)
+        clients_ready_event.set()
     futures_validator(futures, logger)
     logger.info('all done')
+    controller_process.join()
 
 
 if __name__ == '__main__':

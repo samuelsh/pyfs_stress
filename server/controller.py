@@ -18,8 +18,8 @@ from config import CTRL_MSG_PORT
 from logger import server_logger
 from messages_queue import priority_queue
 from server import helpers
-from server.request_actions import request_action
-from server.response_actions import response_action
+from request_actions import request_action
+from response_actions import response_action
 
 MAX_DIR_SIZE = 128 * 1024
 

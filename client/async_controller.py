@@ -4,6 +4,7 @@ Asynchronous Server logic is here
 """
 import multiprocessing
 import queue
+import sys
 import timeit
 import json
 import random
@@ -13,13 +14,14 @@ import os
 import zmq
 from threading import Thread
 from bisect import bisect
-from config import CTRL_MSG_PORT
+
+sys.path.append(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo'))
+from config import CTRL_MSG_PORT, DYNAMO_PATH
 from logger import server_logger
 from server import helpers
-from server.CSVWriter import CSVWriter
-from server.collector import Collector
-from server.request_actions import request_action
-from server.response_actions import response_action
+from collector import Collector
+from request_actions import request_action
+from response_actions import response_action
 
 timer = timeit.default_timer
 
@@ -52,7 +54,7 @@ def weighted_choice(choices):
 
 
 def load_workload(name):
-    with open(os.path.join("workloads", name + ".json")) as f:
+    with open(os.path.join(os.path.expanduser(DYNAMO_PATH), "workloads", name + ".json")) as f:
         test_config = json.load(f)
     return test_config
 

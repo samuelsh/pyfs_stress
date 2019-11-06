@@ -1,5 +1,6 @@
 import gzip
 import logging
+import pathlib
 from logging import handlers
 import os
 import sys
@@ -14,6 +15,10 @@ class Logger:
         self._logger = logging.getLogger(__name__)
         self._logger.setLevel(logging.DEBUG)
 
+        try:
+            pathlib.Path('logs').mkdir()
+        except FileExistsError:
+            pass
         # create console handler and set level to info
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.INFO)
