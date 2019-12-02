@@ -42,14 +42,12 @@ def build_message(result, action, data, time_stamp, error_code=None, error_messa
 
 
 class Dynamo(object):
-    def __init__(self, mount_points, controller, server, nodes, domains, **kwargs):
+    def __init__(self, mount_points, controller, server, **kwargs):
         try:
             self.logger = pubsub_logger.PUBLogger(controller).logger
             self.logger.info(f"PUB Logger {self.logger} is started")
             self.mount_points = mount_points
             self._server = server  # Server Cluster hostname
-            self.nodes = nodes
-            self.domains = domains
             self._context = zmq.Context()
             self._controller_ip = socket.gethostbyname(controller)
             # Socket to send messages on by client

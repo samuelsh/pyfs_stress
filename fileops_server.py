@@ -57,7 +57,7 @@ def wait_clients_to_start(clients):
         total_processes = 0
         for client in clients:
             outp = ShellUtils.run_shell_remote_command(client, cmd_line)
-            logger.info(f"SSH command response with {int(outp)} processes on client {client}")
+            logger.info(f"Started {int(outp)} worker processes on client {client}")
             num_processes_per_client = int(outp)
             total_processes += num_processes_per_client
         if total_processes >= config.MAX_WORKERS_PER_CLIENT * len(clients):
@@ -99,17 +99,6 @@ def run_clients(cluster, clients, export, mtype, start_vip, end_vip, locking_typ
     wait_clients_to_start(clients)
 
 
-def run_sub_logger(ip):
-    sub_logger = SUBLogger(ip)
-    while not stop_event.is_set():
-        try:
-            topic, message = sub_logger.sub.recv_multipart()
-            log_msg = getattr(sub_logger.logger, topic.lower().decode())
-            log_msg(message)
-        except KeyboardInterrupt:
-            pass
-
-
 def cleanup(clients=None):
     logger.info("Cleaning up on exit....")
     if clients:
@@ -138,16 +127,12 @@ def main():
     logger.info("Flushing locking DB")
     locking_db = redis.StrictRedis(**redis_config)
     locking_db.flushdb()
-    logger.info("Starting SUB Logger process")
-    sub_logger_process = Process(target=run_sub_logger,
-                                 args=(socket.gethostbyname(socket.gethostname()),))
-    sub_logger_process.start()
     deploy_clients(clients_list, test_config['access']['client'])
     logger.info(f"Done deploying clients: {clients_list}")
     run_clients(args.cluster, clients_list, args.export, args.mtype, args.start_vip, args.end_vip, args.locking)
     logger.info("Dynamo started on all clients ....")
     while True:
-        time.sleep(1)
+        time.sleep(1)  # mock util Server is implemented
 
 
 # Start program

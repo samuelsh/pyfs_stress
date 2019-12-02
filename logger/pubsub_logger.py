@@ -1,4 +1,5 @@
 import logging
+import pathlib
 from logging import handlers
 import os
 
@@ -35,14 +36,6 @@ class PUBLogger:
         self._handler.formatters = formatters
         self._logger.addHandler(self._handler)
 
-        # create debug file handler and set level to debug, file will rotate each 100MB
-        # handler = handlers.RotatingFileHandler(os.path.join("/qa/dynamo", "client_local_debug.log"), "w",
-        #                                        100 * 1024 * 1024, 10)
-        # handler.setLevel(logging.DEBUG)
-        # formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
-        # handler.setFormatter(formatter)
-        # self._logger.addHandler(handler)
-
     @property
     def logger(self):
         return self._logger
@@ -58,12 +51,10 @@ class SUBLogger:
         self._sub = self.ctx.socket(zmq.SUB)
         self._sub.setsockopt(zmq.SUBSCRIBE, b"")
         self._sub.bind('tcp://*:{1}'.format(ip, port))
-        # create console handler and set level to info
-        # handler = logging.StreamHandler(sys.stdout)
-        # handler.setLevel(logging.INFO)
-        # formatter = logging.Formatter("%(asctime)s;%(levelname)s - %(message)s")
-        # handler.setFormatter(formatter)
-        # self._logger.addHandler(handler)
+        try:
+            pathlib.Path('logs').mkdir()
+        except FileExistsError:
+            pass
 
         # create debug file handler and set level to debug, file will rotate each 100MB
         handler = handlers.RotatingFileHandler(os.path.join(output_dir, "logs/client_debug.log"), "w",

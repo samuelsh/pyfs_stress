@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 import string
+from logger.server_logger import ConsoleLogger
 
 """
     Helper utils for io_tools - 2018 (c)
 """
 
+logger = ConsoleLogger(__name__).logger
 
-def futures_validator(futures, logger):
+
+def futures_validator(futures):
     """
 
     :param logger:

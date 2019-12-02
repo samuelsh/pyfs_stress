@@ -5,6 +5,7 @@ import errno
 import json
 import multiprocessing
 import os
+import socket
 import traceback
 import time
 import sys
@@ -41,9 +42,20 @@ def load_config():
     return test_config
 
 
-def run_worker(mount_points, controller, server, nodes, domains, **kwargs):
-    worker = Dynamo(mount_points, controller, server, nodes, domains, **kwargs)
+def run_worker(mount_points, controller, server, **kwargs):
+    worker = Dynamo(mount_points, controller, server, **kwargs)
     worker.run()
+
+
+def run_sub_logger(ip):
+    sub_logger = pubsub_logger.SUBLogger(ip)
+    while not stop_event.is_set():
+        try:
+            topic, message = sub_logger.sub.recv_multipart()
+            log_msg = getattr(sub_logger.logger, topic.lower().decode())
+            log_msg(message)
+        except KeyboardInterrupt:
+            pass
 
 
 def get_args():
@@ -56,8 +68,6 @@ def get_args():
     parser.add_argument('-c', '--controller', type=str, required=True, help='Controller host name')
     parser.add_argument('-s', '--server', type=str, required=True, help='Cluster Server hostname')
     parser.add_argument('-e', '--export', type=str, help='NFS Export Name', default="/")
-    parser.add_argument('-n', '--nodes', type=int, help='Number of active nodes', default=0)
-    parser.add_argument('-d', '--domains', type=int, help='Number of fs domains', default=0)
     parser.add_argument('-m', '--mtype', type=str, help='Mount Type', choices=['nfs3', 'nfs4', 'nfs4.1', 'smb1', 'smb2',
                                                                                'smb3'], default="nfs3")
     parser.add_argument('--start_vip', type=str, help="Start VIP address range")
@@ -77,7 +87,6 @@ def run():
     args = get_args()
     logger = pubsub_logger.PUBLogger(args.controller).logger
     clients_ready_event = multiprocessing.Event()
-    dir_tree = dirtree.DirTree(file_names)
     test_config = load_config()
     try:
         with open(FILE_NAMES_PATH, 'r') as f:  # If file with names isn't exists, we'll just create random files
@@ -85,12 +94,13 @@ def run():
     except IOError as io_error:
         if io_error.errno == errno.ENOENT:
             pass
+    dir_tree = dirtree.DirTree(file_names)
     time.sleep(10)
     try:
         os.chdir(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo', 'client'))
         logger.info("Mounting work path...")
-        mounter = Mounter(args.server, args.export, args.mtype, 'VFS_STRESS', logger=logger, nodes=args.nodes,
-                          domains=args.domains, sudo=True, start_vip=args.start_vip, end_vip=args.end_vip)
+        mounter = Mounter(args.server, args.export, args.mtype, 'VFS_STRESS', logger=logger,
+                          sudo=True, start_vip=args.start_vip, end_vip=args.end_vip)
         try:
             mounter.mount_all_vips()
         except AttributeError:
@@ -99,6 +109,10 @@ def run():
     except Exception as error_on_init:
         logger.error(str(error_on_init) + " WorkDir: {0}".format(os.getcwd()))
         raise
+    logger.info("Starting SUB Logger process")
+    sub_logger_process = Process(target=run_sub_logger,
+                                 args=(socket.gethostbyname(socket.gethostname()),))
+    sub_logger_process.start()
     # Start a few worker processes
     logger.info("Starting controller")
     controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config, clients_ready_event))
@@ -106,8 +120,8 @@ def run():
     futures = []
     with ProcessPoolExecutor(MAX_WORKERS_PER_CLIENT) as executor:
         for i in range(MAX_WORKERS_PER_CLIENT):
-            futures.append(executor.submit(run_worker, mounter.mount_points, args.controller, args.server, args.nodes,
-                                           args.domains, **dict(locking_type=args.locking)))
+            futures.append(executor.submit(run_worker, mounter.mount_points, args.controller, args.server
+                                           , **dict(locking_type=args.locking)))
         time.sleep(10)
         clients_ready_event.set()
     futures_validator(futures, logger)
