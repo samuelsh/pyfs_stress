@@ -57,7 +57,7 @@ def main():
 
     args = get_args()
     logger.info("Mounting work path...")
-    mounter = Mounter(args.cluster, args.export, 'nfs3', 'SIG_STRESS', logger=logger, nodes=0,
+    mounter = Mounter(args.cluster, args.export, 'nfs3', 'OPEN_CREATE_STRESS', logger=logger, nodes=0,
                       domains=0, sudo=True, start_vip=args.start_vip, end_vip=args.end_vip)
     try:
         mounter.mount_all_vips()
