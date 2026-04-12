@@ -3,6 +3,8 @@ import rpyc.utils
 
 import time
 
+from utils.shell_utils import ShellUtils
+
 
 __author__ = 'samuels'
 

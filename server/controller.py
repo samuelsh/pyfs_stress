@@ -63,8 +63,8 @@ class Controller(object):
         return self._dir_tree
 
     def rcv_messages_worker(self):
-        while not self.stop_event.is_set:
-            pass
+        while not self.stop_event.is_set():
+            time.sleep(0.1)
 
     @property
     def get_next_job(self):

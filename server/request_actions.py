@@ -25,7 +25,7 @@ def mkdir_request(logger, dir_tree, **kwargs):
     target = 'None'
     if len(dir_tree.synced_nodes) > 10 or len(dir_tree.nids) > 10:
         return None
-    logger.debug(f"DEBUG NIDS: dir_tree.nids")
+    logger.debug(f"DEBUG NIDS: {dir_tree.nids}")
     logger.debug(f"DEBUG SYNCED_DIRS: {dir_tree.synced_nodes}")
     dir_tree.append_node()
     logger.debug(

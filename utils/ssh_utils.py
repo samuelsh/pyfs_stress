@@ -186,7 +186,7 @@ def main():
 
     key = open(os.path.expanduser('~/.ssh/id_rsa.pub')).read()
     logger.info("Setting policy...")
-    if not set_key_policy(key, args.host, logger, args.username, args.password, args.port):
+    if not set_key_policy(key, args.host, args.username, args.password, args.port):
         logger.error("Paramiko failed to set ssh connection will try other methods...")
         set_ssh_pexpect(args.host, logger, args.username, args.password, args.port)
         logger.info("Connection is set via pexpect (due to paramiko bug). Exiting...")

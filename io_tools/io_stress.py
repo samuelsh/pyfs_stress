@@ -16,7 +16,7 @@ sys.path.append(os.path.join(os.path.join('../')))
 from client.generic_mounter import Mounter
 from data_operations import data_tools
 from data_operations.data_tools import DATA_PATTERNS
-from io_tools.uitls import futures_validator
+from io_tools.utils import futures_validator
 from logger.server_logger import ConsoleLogger
 from server.test_stats_collector import TestStatsCollector, MPCounters
 

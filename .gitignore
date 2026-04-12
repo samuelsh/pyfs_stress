@@ -1,4 +1,7 @@
 .idea/
+.venv/
+.pytest_cache/
 server/config.json
+client/smb_params.json
 hash_tool
 *.pyc

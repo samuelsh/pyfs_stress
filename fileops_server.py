@@ -4,6 +4,7 @@ Directory Tree integrity test runner
 2016 samuel (c)
 """
 import multiprocessing
+import random
 import time
 import argparse
 import atexit
@@ -45,6 +46,10 @@ def get_args():
                                                                             'smb3'], help='Mount type')
     parser.add_argument('-l', '--locking', type=str, help='Locking Type', choices=['native', 'application', 'off'],
                         default="native")
+    parser.add_argument('--seed', type=int, default=None,
+                        help="Random seed for reproducibility. Logged at startup.")
+    parser.add_argument('--strict', action='store_true',
+                        help="Fail fast on first unexpected filesystem error")
     args = parser.parse_args()
     return args
 
@@ -83,7 +88,7 @@ def deploy_clients(clients, access):
         rsa_pub_key = f.read()
     for client in clients:
         logger.info(f"Setting SSH connection to {client}")
-        ssh_utils.set_key_policy(rsa_pub_key, client, logger, access['user'],
+        ssh_utils.set_key_policy(rsa_pub_key, client, access['user'],
                                  access['password'])
         logger.info(f"Deploying to {client}")
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {}'.format(config.DYNAMO_PATH))
@@ -137,11 +142,18 @@ def cleanup(clients=None):
 
 
 def main():
+    from server.journal import OperationJournal
+
     file_names = None
     clients_ready_event = multiprocessing.Manager().Event()
     args = get_args()
+
+    seed = args.seed if args.seed is not None else int(time.time() * 1000) % (2**31)
+    random.seed(seed)
+    logger.info(f"Random seed: {seed} (use --seed {seed} to reproduce)")
+
     try:
-        with open(config.FILE_NAMES_PATH, 'r') as f:  # If file with names isn't exists, we'll just create random files
+        with open(config.FILE_NAMES_PATH, 'r') as f:
             file_names = f.readlines()
     except IOError as io_error:
         if io_error.errno == errno.ENOENT:
@@ -152,6 +164,9 @@ def main():
     clients_list = args.clients
     logger.info("Loading Test Configuration")
     test_config = load_config()
+    test_config['_journal'] = OperationJournal()
+    test_config['_strict'] = args.strict
+    logger.info(f"Operation journal: {test_config['_journal'].path}")
     logger.info("Setting passwordless SSH connection")
     with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
         rsa_pub_key = f.read()

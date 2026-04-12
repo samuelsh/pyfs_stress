@@ -12,7 +12,6 @@ import uuid
 import os
 import zmq
 from threading import Thread
-from bisect import bisect
 from config import CTRL_MSG_PORT
 from logger import server_logger
 from server import helpers
@@ -41,14 +40,7 @@ def timestamp(now=None):
 
 def weighted_choice(choices):
     values, weights = zip(*choices)
-    total = 0
-    cum_weights = []
-    for w in weights:
-        total += w
-        cum_weights.append(total)
-    x = random.random() * total
-    i = bisect(cum_weights, x)
-    return values[i]
+    return random.choices(values, weights=weights, k=1)[0]
 
 
 def load_workload(name):
@@ -80,6 +72,8 @@ class Controller(object):
             self.client_workers = {}
             self.file_operations = {}  # Contains pre-loaded file operations priorities for weighted choice method
             self.config = test_config
+            self._journal = test_config.get('_journal')
+            self._strict = test_config.get('_strict', False)
             self.test_stats = {'total': 0, 'success': {
                 'total': 0,
                 'mkdir': 0,
@@ -125,9 +119,7 @@ class Controller(object):
             if weights_total != 100:
                 raise ValueError(f"Bad total weight of file operations. Got {weights_total}, 100 is expected")
             self.io_types = [(k, v) for k, v in io_types.items()]
-            # We won't assign more than 100 jobs to a worker at a time; this ensures
-            # reasonable memory usage, and less shuffling when a worker dies.
-            self.max_jobs_per_worker = 100000
+            self.max_jobs_per_worker = 1000
             # When/if a client disconnects we'll put any unfinished work in here,
             # get_next_job() will return work from here as well.
             self._work_to_requeue = []
@@ -162,13 +154,15 @@ class Controller(object):
         while True:
             action = weighted_choice(self.file_operations)
             io_type = weighted_choice(self.io_types)
-            # if some client disconnected, messages assigned to him won't be lost
             if self._work_to_requeue:
                 yield self._work_to_requeue.pop()
             request_data = request_action(action, self.logger, self._dir_tree, io_type=io_type)
             if not request_data:
-                continue  # there is no data to send, retrying
-            yield Job({'action': action, 'data': request_data})
+                continue
+            job = Job({'action': action, 'data': request_data})
+            if self._journal:
+                self._journal.record(job.id, action, request_data)
+            yield job
 
     def collect_message_stats(self, incoming_message):
         self.test_stats['total'] += 1
@@ -225,7 +219,10 @@ class Controller(object):
         self.logger.debug(f'[{worker_id}]: finished {job.id}, result: {formatted_message}')
         self.collect_message_stats(incoming_message)
         self._csv_writer_queue.put((worker_id, incoming_message))
-        response_action(self.logger, incoming_message, self.dir_tree)
+        is_critical = response_action(self.logger, incoming_message, self.dir_tree)
+        if is_critical and self._strict:
+            self.logger.error("Strict mode: stopping on critical error")
+            self.stop_event.set()
 
     def run(self):
         while not self.clients_ready_event.is_set():
@@ -307,9 +304,11 @@ class AsyncControllerServer(Thread, object):
             self._stop_event.set()
             raise generic_error
         finally:
-            self._logger.info("Closing sockets...")
-            self._context.close()
+            self._logger.info("Shutting down workers and closing sockets...")
+            for w in workers:
+                w.join(timeout=5)
             self._backend.close()
+            self._frontend.close()
             self._context.term()
 
 
@@ -359,10 +358,8 @@ class IncomingAsyncControllerWorker(AsyncControllerWorker, object):
                 self.stop_event.set()
                 raise generic_error
 
-        self._logger.info("Closing sockets...")
-        self._context.close()
+        self._logger.info("Closing worker socket...")
         self._worker.close()
-        self._context.term()
 
 
 class OutgoingAsyncControllerWorker(AsyncControllerWorker, object):
@@ -397,7 +394,5 @@ class OutgoingAsyncControllerWorker(AsyncControllerWorker, object):
                 self.stop_event.set()
                 raise
 
-        self._logger.info("Closing sockets...")
-        self._context.close()
+        self._logger.info("Closing worker socket...")
         self._worker.close()
-        self._context.term()
