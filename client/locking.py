@@ -86,5 +86,7 @@ class FLock(object):
         pass
 
 
-def is_overlap(start1, end1, start2, end2):
-    return end1 >= start2 and end2 >= start1
+def is_overlap(start1, length1, start2, length2):
+    end1 = start1 + length1
+    end2 = start2 + length2
+    return end1 > start2 and end2 > start1

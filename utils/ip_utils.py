@@ -7,7 +7,7 @@ def dot_ipv4(addr):
 
 
 def range_ipv4(start, stop):
-    for address in range(undot_ipv4(start), undot_ipv4(stop)):
+    for address in range(undot_ipv4(start), undot_ipv4(stop) + 1):
         yield dot_ipv4(address)
 
 

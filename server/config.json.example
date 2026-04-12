@@ -1,0 +1,13 @@
+{
+  "workload": "workload1",
+  "access": {
+    "server": {
+      "user": "admin",
+      "password": "CHANGE_ME"
+    },
+    "client": {
+      "user": "admin",
+      "password": "CHANGE_ME"
+    }
+  }
+}

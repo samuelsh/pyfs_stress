@@ -66,11 +66,15 @@ def print_stats_worker():
         total_time_spent_in_random_read, total_time_spent_in_random_write, total_read_ops, total_write_ops
     logger.info("#### NLM LOCKING STRESS STATS ####")
     logger.info(f"Successful Locks: {successful_locks.value} Failed Locks: {failed_locks.value}")
-    logger.info(f"Average lock time: {total_time_spent_in_lock.value / (successful_locks.value + failed_locks.value)}")
+    lock_total = successful_locks.value + failed_locks.value
+    if lock_total > 0:
+        logger.info(f"Average lock time: {total_time_spent_in_lock.value / lock_total}")
     logger.info(f"Total random write ops: {total_write_ops.value}")
     logger.info(f"Total random read ops: {total_read_ops.value}")
-    logger.info(f"Average random write time: {total_time_spent_in_random_write.value / total_write_ops.value}")
-    logger.info(f"Average random read time: {total_time_spent_in_random_read.value / total_read_ops.value}")
+    if total_write_ops.value > 0:
+        logger.info(f"Average random write time: {total_time_spent_in_random_write.value / total_write_ops.value}")
+    if total_read_ops.value > 0:
+        logger.info(f"Average random read time: {total_time_spent_in_random_read.value / total_read_ops.value}")
 
 
 def write_profiler(f):
@@ -349,8 +353,9 @@ def main():
         for _ in range(locking_processes):
             futures.append(executor.submit(file_locker_worker, mounter.mount_points, test_dir, file_name))
     futures_validator(futures)
-    writer_worker.join()
-    reader_worker.join()
+    if args.withio:
+        writer_worker.join()
+        reader_worker.join()
     stats_collector.cancel()
     logger.info("### Workload is Done. Come back tomorrow.")
 
