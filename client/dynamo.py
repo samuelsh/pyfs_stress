@@ -14,7 +14,7 @@ from datetime import datetime
 from config.redis_config import redis_config
 from locking import FLock
 
-sys.path.append(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from logger import pubsub_logger
 from config import CTRL_MSG_PORT
 from response_actions import response_action, DynamoException

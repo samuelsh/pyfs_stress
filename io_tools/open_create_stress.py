@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 """
 author: samuels (c) 2018
 """

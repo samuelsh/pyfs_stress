@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 """
 author: samuels
 """
@@ -133,9 +133,10 @@ def main():
         logger.warn(f"{e}")
     logger.info(f"Test directory {test_dir} created on {mount_point}")
 
+    local_compare_dir = os.environ.get("LOCAL_COMPARE_DIR", "/vast")
     file_name = f"hhmi_tstfile-{uuid.uuid4()}"
     with open(os.path.join(mount_point, test_dir, file_name), "wb") as f, \
-            open(os.path.join('/vast', file_name), "wb") as f2:
+            open(os.path.join(local_compare_dir, file_name), "wb") as f2:
         for i in range(1024 * 128):
             if round(random.random() * 10) % 2:
                 buf_size = KB1 * 4 - 2
@@ -160,14 +161,14 @@ def main():
         for chunk in iter(lambda: f.read(MB1), b""):
             vast_checksum.update(chunk)
         vast_checksum = vast_checksum.hexdigest()
-    with open(os.path.join('/vast', file_name), "rb") as f:
+    with open(os.path.join(local_compare_dir, file_name), "rb") as f:
         local_checksum = hashlib.md5()
         for chunk in iter(lambda: f.read(MB1), b""):
             local_checksum.update(chunk)
         local_checksum = local_checksum.hexdigest()
     logger.info(f"Local checksum={local_checksum}, Vast checksum={vast_checksum}")
     assert vast_checksum == local_checksum
-    os.remove(os.path.join('/vast', file_name))
+    os.remove(os.path.join(local_compare_dir, file_name))
     logger.info("### Workload is Done. Come back tomorrow.")
 
 

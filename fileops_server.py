@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 """
 Directory Tree integrity test runner
 2016 samuel (c)
