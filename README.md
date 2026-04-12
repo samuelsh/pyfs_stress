@@ -1,76 +1,147 @@
-[![Build Status](https://travis-ci.org/samuelsh/pyFstress.svg?branch=master)](https://travis-ci.org/samuelsh/pyFstress)
+[![Tests](https://github.com/samuelsh/pyfs_stress/actions/workflows/tests.yml/badge.svg?branch=devel)](https://github.com/samuelsh/pyfs_stress/actions/workflows/tests.yml)
 
 # pyfs_stress
-Multi-client file system load and stress testing tool based on ZeroMQ.
 
-It could be useful for anyone, who is developing new file system or testing an existing one.
+Multi-client filesystem load and stress testing tool built on ZeroMQ.
 
-Use cases:
-1. Load & Stress - Imagine 60 clients, each one running 16 io processes vs your file server :)
-2. Race Conditions - Client x trying to access file which is removed by client y, while client z reading it
-3. Data corruptions detection - Controller always "knows" the current status of all files and directories
+Useful for anyone developing a new filesystem or testing an existing one.
 
-Features:
-* Multi-client load & stress - tested on 60 clients simultaneously ( and it's still not the limit :))
-* Data integrity & corruptions monitoring - able to detect lost files or file chunks, containing wrong data
-* NFS and SMB mounts are supported
-* Following file system operations supported: mkdir, list, remove, touch, stat, read, direct read, rename, move,
-  write, truncate
-* Random and sequential reads and writes supported
-* NFS advisory file locking
-* Centralised logging (PUB - SUB) for all clients
-* Configurable workloads (JSON)
-* Flexible configuration (JSON)
+## Use Cases
 
-Linux distributions tested: CentOS 6, CentOS 7, Debian Jessy, Ubuntu 14.04
+1. **Load & Stress** -- Run dozens of clients, each with multiple I/O processes, against your file server simultaneously.
+2. **Race Conditions** -- Client X tries to access a file that client Y is removing while client Z is reading it.
+3. **Data Corruption Detection** -- The controller tracks the expected state of every file and directory, catching lost files or bad data.
 
-System Requirements:
-* File Server under test should support nfs or smb protocol
-* At least 2 physical machines or VMs for Sever (controller) and one client
-* At least 8GB RAM for server (controller) machine
-* At least 4GB RAM for client machine
+## Features
 
-Required Python packages:
-* pyzmq
-* paramiko
-* treelib
-* argparse
-* xxHash
+- Multi-client load & stress (tested with 60+ clients)
+- Data integrity and corruption monitoring via in-memory state tracking and xxHash checksums
+- NFS (v3, v4, v4.1) and SMB (v1, v2, v3) mounts
+- Filesystem operations: `mkdir`, `list`, `delete`, `touch`, `stat`, `read`, `write`, `rename`, `move`, `truncate`
+- Random and sequential reads/writes
+- NFS advisory file locking (native `fcntl` and Redis-backed application locks)
+- Centralized PUB/SUB logging across all clients
+- Configurable workloads and weighted operation profiles (JSON)
+- Reproducible runs via `--seed` and operation journaling (JSONL)
+- Fail-fast mode via `--strict`
 
-Usage:
+## Architecture
+
+```
+┌──────────────────┐       ZMQ        ┌──────────────┐
+│  fileops_server   │◄────────────────►│   client N    │
+│  (controller)     │  PUSH/PULL +     │  (dynamo)     │
+│                   │  PUB/SUB logs    │               │
+│  - DirTree state  │                  │  - fs ops     │
+│  - job dispatch   │                  │  - locking    │
+│  - result verify  │                  │  - checksums  │
+└──────────────────┘                  └──────────────┘
+```
+
+| Directory          | Purpose                                             |
+|--------------------|-----------------------------------------------------|
+| `server/`          | Controller, async job dispatch, response validation |
+| `client/`          | Client worker (dynamo), mounter, file operations    |
+| `tree/`            | Thread-safe in-memory DirTree for expected state    |
+| `config/`          | Ports, paths, Redis settings (all env-configurable) |
+| `logger/`          | ZMQ PUB/SUB and console loggers                    |
+| `utils/`           | SSH, IP, shell, filesystem utilities                |
+| `io_tools/`        | Standalone I/O micro-benchmarks and stress scripts  |
+| `workloads/`       | JSON workload profiles                              |
+| `tests/`           | Pytest test suite                                   |
+
+## Requirements
+
+- Python 3.10+
+- Redis server (for application-level byte-range locking)
+- Passwordless SSH between controller and clients
+
+## Quick Start
+
 ```bash
-]# ./fileops_server.py --help
+# Clone and install dependencies
+git clone https://github.com/samuelsh/pyfs_stress.git
+cd pyfs_stress
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Copy and edit the config template
+cp server/config.json.example server/config.json
+# Edit server/config.json with your credentials and workload
+
+# Run the controller
+./fileops_server.py my-file-server \
+    -c client1 client2 client3 \
+    -e /export \
+    -m nfs3 \
+    --start_vip 10.0.0.1 --end_vip 10.0.0.10
+```
+
+## Usage
+
+```
 usage: fileops_server.py [-h] [-c CLIENTS [CLIENTS ...]] [-e EXPORT]
                          [--start_vip START_VIP] [--end_vip END_VIP]
-                         [--tenants] [-m {nfs3,nfs4,nfs4.1,smb1,smb2,smb3}]
+                         [--tenants]
+                         [-m {nfs3,nfs4,nfs4.1,smb1,smb2,smb3}]
+                         [-l {native,application,off}]
+                         [--seed SEED] [--strict]
                          cluster
-
-pyFstress Server runner
 
 positional arguments:
   cluster               File server name or IP
 
 optional arguments:
   -h, --help            show this help message and exit
-  -c CLIENTS [CLIENTS ...], --clients CLIENTS [CLIENTS ...]
-                        Space separated list of clients
-  -e EXPORT, --export EXPORT
-                        NFS export name
-  --start_vip START_VIP
-                        Start VIP address range
-  --end_vip END_VIP     End VIP address range
-  --tenants             Enable MultiTenancy
-  -m {nfs3,nfs4,nfs4.1,smb1,smb2,smb3}, --mtype {nfs3,nfs4,nfs4.1,smb1,smb2,smb3}
-                        Mount type
-
+  -c, --clients         Space separated list of clients
+  -e, --export          NFS export name (default: /)
+  --start_vip           Start VIP address range
+  --end_vip             End VIP address range
+  --tenants             Enable multi-tenancy
+  -m, --mtype           Mount type (default: nfs3)
+  -l, --locking         Locking type (default: native)
+  --seed                Random seed for reproducibility
+  --strict              Fail fast on first unexpected filesystem error
 ```
 
-Feature plans:
-* Implement windows clients support
-* Improve data integrity check
-* Performance stats
-* Additional workloads
-* Performance optimisation
+## Configuration
 
-### Notes: ###
-This project is still under active development so feel free to test it, open issues or make pull requests.
+All infrastructure paths and ports are configurable via environment variables.
+Default values match the original QA lab setup; override them for your environment.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CTRL_MSG_PORT` | `5557` | ZMQ controller message port |
+| `CLIENT_MSG_PORT` | `5558` | ZMQ client message port |
+| `PUBSUB_LOGGER_PORT` | `5559` | ZMQ PUB/SUB logger port |
+| `MAX_FILES_PER_DIR` | `10000` | Max files per directory |
+| `MAX_WORKERS_PER_CLIENT` | `32` | Worker processes per client |
+| `DYNAMO_PATH` | `~/qa/dynamo` | Remote deployment path |
+| `DYNAMO_BIN_PATH` | `~/qa/dynamo/client/dynamo_starter.py` | Remote client binary |
+| `CLIENT_MOUNT_POINT` | `/mnt/test_workdir` | Client mount point |
+| `REDIS_SERVER` | `10.27.50.31` | Redis host for app locking |
+| `REDIS_PORT` | `6379` | Redis port |
+| `SSH_PATH` | `ssh` | SSH binary path |
+
+See `config/__init__.py` and `config/redis_config.py` for the full list.
+
+## Running Tests
+
+```bash
+source .venv/bin/activate
+pytest tests/ -v
+```
+
+Tests run automatically on push/PR via GitHub Actions (Python 3.10, 3.11, 3.12).
+
+## System Requirements
+
+- **Controller**: 8 GB+ RAM recommended
+- **Clients**: 4 GB+ RAM each
+- File server must support NFS or SMB
+- At least 2 machines (1 controller + 1 client)
+
+## License
+
+This project is under active development. Feel free to test it, open issues, or submit pull requests.
