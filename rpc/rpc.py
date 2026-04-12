@@ -1,3 +1,5 @@
+import os
+
 import rpyc
 import rpyc.utils
 
@@ -8,8 +10,8 @@ from utils.shell_utils import ShellUtils
 
 __author__ = 'samuels'
 
-TESTING_PACKAGE_PATH = "/public/samuels/testing"
-DATASET_GENERATORS_PACKAGE_PATH = '/public/samuels/testing/datasets'
+TESTING_PACKAGE_PATH = os.environ.get("TESTING_PACKAGE_PATH", "/public/samuels/testing")
+DATASET_GENERATORS_PACKAGE_PATH = os.environ.get("DATASET_GENERATORS_PACKAGE_PATH", "/public/samuels/testing/datasets")
 
 
 class Rpc:

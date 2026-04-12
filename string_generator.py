@@ -9,11 +9,12 @@ import traceback
 import uuid
 from time import sleep
 
+import os
 import utils.shell_utils
 
 __author__ = 'samuels'
 
-PATH_TO_HASH_TOOL = "hash_tool"
+PATH_TO_HASH_TOOL = os.environ.get("HASH_TOOL_PATH", "hash_tool")
 
 stop_event = None
 
@@ -44,8 +45,8 @@ def hc_worker(hc_value, names_queue, level):
     print("Worker {0} started...".format(uuid.uuid4()))
     while not stop_event.is_set():
         generated_string = utils.shell_utils.StringUtils.get_random_string_nospec(64)
-        generated_hash = utils.shell_utils.ShellUtils.run_shell_command("/zebra/qa/samuels/misc/hash_tool",
-                                                                        '{0} 6'.format(generated_string, level))
+        generated_hash = utils.shell_utils.ShellUtils.run_shell_command(PATH_TO_HASH_TOOL,
+                                                                        '{0} {1}'.format(generated_string, level))
         generated_hash = int(generated_hash)
         if hc_value == generated_hash:
             names_queue.put(generated_string)

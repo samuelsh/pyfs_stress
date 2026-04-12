@@ -9,7 +9,7 @@ import sys
 import mmap
 from timeit import default_timer as timer
 
-sys.path.append('/qa/dynamo')
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from config import error_codes
 
 __author__ = "samuels"

@@ -9,7 +9,7 @@ import sys
 
 import time
 
-sys.path.append(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from logger import server_logger
 from utils import shell_utils
 from utils import ip_utils

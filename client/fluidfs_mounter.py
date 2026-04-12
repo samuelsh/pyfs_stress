@@ -6,7 +6,7 @@ import socket
 
 import sys
 
-sys.path.append('/qa/dynamo')
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from logger import server_logger
 from utils import shell_utils
 

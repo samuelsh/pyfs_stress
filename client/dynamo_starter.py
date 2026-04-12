@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -59,7 +59,7 @@ def run():
     logger = pubsub_logger.PUBLogger(args.controller).logger
     time.sleep(10)
     try:
-        os.chdir(os.path.join(os.path.expanduser('~'), 'qa', 'dynamo', 'client'))
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
         logger.info("Mounting work path...")
         mounter = Mounter(args.server, args.export, args.mtype, 'VFS_STRESS', logger=logger, nodes=args.nodes,
                           domains=args.domains, sudo=True, start_vip=args.start_vip, end_vip=args.end_vip)
