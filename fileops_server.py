@@ -98,17 +98,24 @@ def load_config():
     return test_config
 
 
-def wait_clients_to_start(clients):
+def wait_clients_to_start(clients, timeout=120):
     cmd_line = "ps aux | grep dynamo | grep -v grep | wc -l"
+    deadline = time.time() + timeout
     while True:
         total_processes = 0
         for client in clients:
             outp = ShellUtils.run_shell_remote_command(client, cmd_line)
-            logger.info(f"SSH command response with {int(outp)} processes on client {client}")
             num_processes_per_client = int(outp)
+            logger.info(f"SSH command response with {num_processes_per_client} processes on client {client}")
             total_processes += num_processes_per_client
         if total_processes >= config.MAX_WORKERS_PER_CLIENT * len(clients):
             break
+        if time.time() > deadline:
+            raise RuntimeError(
+                f"Timed out after {timeout}s waiting for client workers to start. "
+                f"Expected {config.MAX_WORKERS_PER_CLIENT * len(clients)} processes, "
+                f"got {total_processes}. Check client logs for errors."
+            )
         time.sleep(1)
     logger.info(f"All {len(clients)} clients started. {total_processes // len(clients)} processes per client")
 
@@ -130,23 +137,30 @@ def deploy_clients(clients, access):
                                  access['password'], key_filename=priv_key_path)
         logger.info(f"Deploying to {client}")
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {}'.format(config.DYNAMO_PATH))
+        for subdir in ('client', 'config', 'logger', 'utils'):
+            ShellUtils.run_shell_command('rsync',
+                                         '-avz {} {}:{}'.format(subdir, client, config.DYNAMO_PATH))
         ShellUtils.run_shell_command('rsync',
-                                     '-avz {} {}:{}'.format('client', client, config.DYNAMO_PATH))
-        ShellUtils.run_shell_command('rsync',
-                                     '-avz {} {}:{}'.format('config', client, config.DYNAMO_PATH))
-        ShellUtils.run_shell_command('rsync',
-                                     '-avz {} {}:{}'.format('logger', client, config.DYNAMO_PATH))
-        ShellUtils.run_shell_command('rsync',
-                                     '-avz {} {}:{}'.format('utils', client, config.DYNAMO_PATH))
+                                     '-avz requirements.txt {}:{}'.format(client, config.DYNAMO_PATH))
         ShellUtils.run_shell_remote_command_no_exception(client, 'chmod +x {}'.format(config.DYNAMO_BIN_PATH))
+        logger.info(f"Setting up venv on {client}")
+        venv_path = config.DYNAMO_PATH + '/.venv'
+        ShellUtils.run_shell_remote_command_no_exception(
+            client,
+            f'test -d {venv_path} || python3 -m venv {venv_path}'
+        )
+        ShellUtils.run_shell_remote_command_no_exception(
+            client,
+            f'{venv_path}/bin/pip install -q -r {config.DYNAMO_PATH}/requirements.txt'
+        )
 
 
 def run_clients(cluster, clients, export, mtype, start_vip, end_vip, locking_type):
-    #  Will explicitly pass public IP of the controller to clients since we won't rely on DNS existence
     controller = socket.gethostbyname(socket.gethostname())
-    dynamo_cmd_line = "{} --controller {} --server {} --export {} --mtype {} --start_vip {} --end_vip {} " \
-                      "--locking {}".format(config.DYNAMO_BIN_PATH, controller, cluster, export, mtype, start_vip,
-                                            end_vip, locking_type)
+    venv_python = config.DYNAMO_PATH + '/.venv/bin/python3'
+    dynamo_cmd_line = "{} {} --controller {} --server {} --export {} --mtype {} --start_vip {} --end_vip {} " \
+                      "--locking {}".format(venv_python, config.DYNAMO_BIN_PATH, controller, cluster, export, mtype,
+                                            start_vip, end_vip, locking_type)
     for client in clients:
         ShellUtils.run_shell_remote_command_background(client, dynamo_cmd_line)
     wait_clients_to_start(clients)
