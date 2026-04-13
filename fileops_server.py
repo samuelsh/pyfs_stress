@@ -166,6 +166,7 @@ def deploy_clients(clients, access):
         logger.info(f"Setting up venv on {client}")
         venv_path = config.DYNAMO_PATH + '/.venv'
         _run_remote_logged(client, f'test -d {venv_path} || python3 -m venv {venv_path}')
+        _run_remote_logged(client, f'{venv_path}/bin/pip install -q --upgrade pip setuptools wheel')
         _run_remote_logged(client, f'{venv_path}/bin/pip install -q -r {config.DYNAMO_PATH}/requirements.txt')
         _run_remote_logged(client, f'{venv_path}/bin/python3 -c "import zmq; print(zmq.__version__)"')
 
