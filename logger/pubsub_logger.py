@@ -57,6 +57,7 @@ class SUBLogger:
         self.ctx = zmq.Context()
         self._sub = self.ctx.socket(zmq.SUB)
         self._sub.setsockopt(zmq.SUBSCRIBE, b"")
+        self._sub.setsockopt(zmq.LINGER, 0)
         self._sub.bind('tcp://{0}:{1}'.format(ip, port))
         # create console handler and set level to info
         # handler = logging.StreamHandler(sys.stdout)
