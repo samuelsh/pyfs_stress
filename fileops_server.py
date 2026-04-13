@@ -5,6 +5,7 @@ Directory Tree integrity test runner
 """
 import multiprocessing
 import random
+import subprocess
 import time
 import argparse
 import atexit
@@ -27,6 +28,26 @@ from utils.shell_utils import ShellUtils
 
 stop_event = Event()
 logger = ConsoleLogger(__name__).logger
+
+SSH_PUB_KEY_PATH = os.environ.get(
+    "SSH_PUB_KEY_PATH",
+    os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub'))
+)
+
+
+def ensure_ssh_key(pub_key_path):
+    """Return the contents of the SSH public key, generating a keypair if needed."""
+    priv_key_path = pub_key_path.rsplit('.pub', 1)[0]
+    if not os.path.isfile(pub_key_path):
+        ssh_dir = os.path.dirname(pub_key_path)
+        os.makedirs(ssh_dir, mode=0o700, exist_ok=True)
+        logger.info(f"SSH key not found at {pub_key_path}, generating a new keypair")
+        subprocess.check_call(
+            ['ssh-keygen', '-t', 'rsa', '-b', '4096', '-N', '', '-f', priv_key_path],
+            stdout=subprocess.DEVNULL,
+        )
+    with open(pub_key_path, 'r') as f:
+        return f.read()
 
 
 def get_args():
@@ -84,8 +105,7 @@ def deploy_clients(clients, access):
     Returns: None
 
     """
-    with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
-        rsa_pub_key = f.read()
+    rsa_pub_key = ensure_ssh_key(SSH_PUB_KEY_PATH)
     for client in clients:
         logger.info(f"Setting SSH connection to {client}")
         ssh_utils.set_key_policy(rsa_pub_key, client, access['user'],
@@ -168,8 +188,7 @@ def main():
     test_config['_strict'] = args.strict
     logger.info(f"Operation journal: {test_config['_journal'].path}")
     logger.info("Setting passwordless SSH connection")
-    with open(os.path.expanduser(os.path.join('~', '.ssh', 'id_rsa.pub')), 'r') as f:
-        rsa_pub_key = f.read()
+    rsa_pub_key = ensure_ssh_key(SSH_PUB_KEY_PATH)
     ssh_utils.set_key_policy(rsa_pub_key, args.cluster, test_config['access']['server']['user'],
                              test_config['access']['server']['password'])
 
