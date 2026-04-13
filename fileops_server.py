@@ -36,10 +36,14 @@ SSH_PUB_KEY_PATH = os.environ.get(
 
 
 def ensure_ssh_key(pub_key_path):
-    """Return the contents of the SSH public key, generating a keypair if needed."""
+    """Return the contents of the SSH public key, generating a keypair if needed.
+
+    Also ensures the key is present in the local authorized_keys so that
+    localhost connections work without password authentication.
+    """
     priv_key_path = pub_key_path.rsplit('.pub', 1)[0]
+    ssh_dir = os.path.dirname(pub_key_path)
     if not os.path.isfile(pub_key_path):
-        ssh_dir = os.path.dirname(pub_key_path)
         os.makedirs(ssh_dir, mode=0o700, exist_ok=True)
         logger.info(f"SSH key not found at {pub_key_path}, generating a new keypair")
         subprocess.check_call(
@@ -47,7 +51,20 @@ def ensure_ssh_key(pub_key_path):
             stdout=subprocess.DEVNULL,
         )
     with open(pub_key_path, 'r') as f:
-        return f.read()
+        pub_key = f.read().strip()
+
+    auth_keys_path = os.path.join(ssh_dir, 'authorized_keys')
+    already_authorized = False
+    if os.path.isfile(auth_keys_path):
+        with open(auth_keys_path, 'r') as f:
+            already_authorized = pub_key in f.read()
+    if not already_authorized:
+        logger.info("Adding public key to local authorized_keys")
+        with open(auth_keys_path, 'a') as f:
+            f.write(pub_key + '\n')
+        os.chmod(auth_keys_path, 0o644)
+
+    return pub_key
 
 
 def get_args():
@@ -140,7 +157,13 @@ def run_controller(event, dir_tree, test_config, clients_ready_event):
 
 def run_sub_logger(ip):
     import zmq
-    sub_logger = SUBLogger(ip)
+    try:
+        sub_logger = SUBLogger(ip)
+    except zmq.error.ZMQError as e:
+        print(f"[sub_logger] Failed to bind: {e}. "
+              f"A previous process may still hold the port. "
+              f"Try: kill $(lsof -ti :{config.PUBSUB_LOGGER_PORT})")
+        return
     poller = zmq.Poller()
     poller.register(sub_logger.sub, zmq.POLLIN)
     while not stop_event.is_set():
