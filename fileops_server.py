@@ -120,6 +120,26 @@ def wait_clients_to_start(clients, timeout=120):
     logger.info(f"All {len(clients)} clients started. {total_processes // len(clients)} processes per client")
 
 
+def _run_remote_logged(host, cmd):
+    """Run a remote command via SSH, logging stdout/stderr on failure."""
+    import subprocess as sp
+    p = sp.Popen(
+        ['ssh', '-o', 'ConnectTimeout=30', '-o', 'BatchMode=yes',
+         '-o', 'StrictHostKeyChecking=no', host, cmd],
+        stdout=sp.PIPE, stderr=sp.PIPE,
+    )
+    stdout, stderr = p.communicate()
+    if p.returncode != 0:
+        logger.error(f"Remote command failed on {host}: {cmd}")
+        if stdout:
+            logger.error(f"  stdout: {stdout.decode().strip()}")
+        if stderr:
+            logger.error(f"  stderr: {stderr.decode().strip()}")
+        raise RuntimeError(f"Remote command failed (rc={p.returncode}): {cmd}")
+    elif stdout:
+        logger.info(f"  [{host}] {stdout.decode().strip()}")
+
+
 def deploy_clients(clients, access):
     """
     Args:
@@ -145,14 +165,9 @@ def deploy_clients(clients, access):
         ShellUtils.run_shell_remote_command_no_exception(client, 'chmod +x {}'.format(config.DYNAMO_BIN_PATH))
         logger.info(f"Setting up venv on {client}")
         venv_path = config.DYNAMO_PATH + '/.venv'
-        ShellUtils.run_shell_remote_command_no_exception(
-            client,
-            f'test -d {venv_path} || python3 -m venv {venv_path}'
-        )
-        ShellUtils.run_shell_remote_command_no_exception(
-            client,
-            f'{venv_path}/bin/pip install -q -r {config.DYNAMO_PATH}/requirements.txt'
-        )
+        _run_remote_logged(client, f'test -d {venv_path} || python3 -m venv {venv_path}')
+        _run_remote_logged(client, f'{venv_path}/bin/pip install -q -r {config.DYNAMO_PATH}/requirements.txt')
+        _run_remote_logged(client, f'{venv_path}/bin/python3 -c "import zmq; print(zmq.__version__)"')
 
 
 def run_clients(cluster, clients, export, mtype, start_vip, end_vip, locking_type):
