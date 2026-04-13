@@ -26,6 +26,7 @@ class LockException(OSError):
 class FLock(object):
     def __init__(self, locking_db, locking_type="native"):
         self.locking_db = locking_db
+        self.locking_type = locking_type
         self.pid = os.getpid()
         self.host = socket.gethostname()
 
@@ -79,6 +80,8 @@ class FLock(object):
         :param length: int
         :return:
         """
+        if self.locking_type != "application":
+            return
         lock_id = xxhash.xxh64("".join(map(str, [fid, self.host, self.pid, offset, length]))).intdigest()
         self.locking_db.hdel(os.fstat(fid).st_ino, lock_id)
 

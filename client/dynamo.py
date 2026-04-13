@@ -60,10 +60,13 @@ class Dynamo(object):
             self._socket.identity = "{0}:0x{1:x}".format(socket.gethostname(), os.getpid()).encode()
             self.logger.info("Setting up connection to Controller Server...")
             self._socket.connect("tcp://{0}:{1}".format(self._controller_ip, CTRL_MSG_PORT))
-            # Initialising connection to Redis (our byte-range locking DB)
-            self.logger.info("Setting up Redis connection...")
-            self.locking_db = redis.StrictRedis(**redis_config)
-            self.flock = FLock(self.locking_db, kwargs.get('locking_type'))
+            locking_type = kwargs.get('locking_type', 'native')
+            if locking_type == 'application':
+                self.logger.info("Setting up Redis connection for application locking...")
+                self.locking_db = redis.StrictRedis(**redis_config)
+            else:
+                self.locking_db = None
+            self.flock = FLock(self.locking_db, locking_type)
             self.logger.info(f"Dynamo {self._socket.identity} init done")
         except Exception as e:
             self.logger.error(f"Connection error: {e}")
