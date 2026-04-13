@@ -61,7 +61,23 @@ def is_hostname(hostname):
         return False
 
 
+def _can_pubkey_connect(host, username, port=22, timeout=10):
+    """Return True if we can already connect to host using public key auth."""
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(host, username=username, port=port, timeout=timeout,
+                    look_for_keys=True, allow_agent=True)
+        ssh.close()
+        return True
+    except (paramiko.AuthenticationException, paramiko.SSHException, socket_error):
+        return False
+
+
 def set_key_policy(key, host, username, password, port=22):
+    if _can_pubkey_connect(host, username, port):
+        return True
+
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
