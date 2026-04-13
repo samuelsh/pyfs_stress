@@ -192,9 +192,12 @@ def main():
     ssh_utils.set_key_policy(rsa_pub_key, args.cluster, test_config['access']['server']['user'],
                              test_config['access']['server']['password'])
 
-    logger.info("Flushing locking DB")
-    locking_db = redis.StrictRedis(**redis_config)
-    locking_db.flushdb()
+    if args.locking == 'application':
+        logger.info("Flushing locking DB")
+        locking_db = redis.StrictRedis(**redis_config)
+        locking_db.flushdb()
+    else:
+        logger.info(f"Locking mode is '{args.locking}', skipping Redis")
     logger.info("Starting SUB Logger process")
     sub_logger_process = Process(target=run_sub_logger,
                                  args=(socket.gethostbyname(socket.gethostname()),))
