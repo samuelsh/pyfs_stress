@@ -139,18 +139,33 @@ def run_controller(event, dir_tree, test_config, clients_ready_event):
 
 
 def run_sub_logger(ip):
+    import zmq
     sub_logger = SUBLogger(ip)
+    poller = zmq.Poller()
+    poller.register(sub_logger.sub, zmq.POLLIN)
     while not stop_event.is_set():
         try:
-            topic, message = sub_logger.sub.recv_multipart()
-            log_msg = getattr(sub_logger.logger, topic.lower().decode())
-            log_msg(message)
+            if poller.poll(timeout=1000):
+                topic, message = sub_logger.sub.recv_multipart()
+                log_msg = getattr(sub_logger.logger, topic.lower().decode())
+                log_msg(message)
         except KeyboardInterrupt:
-            pass
+            break
+
+
+_child_processes = []
 
 
 def cleanup(clients=None):
     logger.info("Cleaning up on exit....")
+    stop_event.set()
+    for proc in _child_processes:
+        if proc.is_alive():
+            logger.info(f"Terminating child process {proc.name} (pid {proc.pid})")
+            proc.terminate()
+            proc.join(timeout=5)
+            if proc.is_alive():
+                proc.kill()
     if clients:
         for client in clients:
             logger.info(f"{client}: Killing workers")
@@ -199,9 +214,11 @@ def main():
     else:
         logger.info(f"Locking mode is '{args.locking}', skipping Redis")
     logger.info("Starting SUB Logger process")
-    sub_logger_process = Process(target=run_sub_logger,
+    sub_logger_process = Process(target=run_sub_logger, name="sub_logger",
                                  args=(socket.gethostbyname(socket.gethostname()),))
+    sub_logger_process.daemon = True
     sub_logger_process.start()
+    _child_processes.append(sub_logger_process)
     logger.info("Controller started")
     time.sleep(10)
     deploy_clients(clients_list, test_config['access']['client'])
@@ -210,8 +227,10 @@ def main():
     clients_ready_event.set()
     logger.info("Dynamo started on all clients ....")
     logger.info("Starting controller")
-    controller_process = Process(target=run_controller, args=(stop_event, dir_tree, test_config, clients_ready_event))
+    controller_process = Process(target=run_controller, name="controller",
+                                 args=(stop_event, dir_tree, test_config, clients_ready_event))
     controller_process.start()
+    _child_processes.append(controller_process)
     controller_process.join()
     logger.info('All done')
 
