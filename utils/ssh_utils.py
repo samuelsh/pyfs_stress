@@ -61,21 +61,21 @@ def is_hostname(hostname):
         return False
 
 
-def _can_pubkey_connect(host, username, port=22, timeout=10):
+def _can_pubkey_connect(host, username, key_filename=None, port=22, timeout=10):
     """Return True if we can already connect to host using public key auth."""
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(host, username=username, port=port, timeout=timeout,
-                    look_for_keys=True, allow_agent=True)
+                    key_filename=key_filename, look_for_keys=True, allow_agent=True)
         ssh.close()
         return True
     except (paramiko.AuthenticationException, paramiko.SSHException, socket_error):
         return False
 
 
-def set_key_policy(key, host, username, password, port=22):
-    if _can_pubkey_connect(host, username, port):
+def set_key_policy(key, host, username, password, port=22, key_filename=None):
+    if _can_pubkey_connect(host, username, key_filename=key_filename, port=port):
         return True
 
     try:
@@ -91,7 +91,11 @@ def set_key_policy(key, host, username, password, port=22):
         if sock_err.errno == errno.ECONNREFUSED:
             raise sock_err
     except paramiko.BadAuthenticationType as authtype_err:
-        raise authtype_err
+        raise RuntimeError(
+            f"Cannot connect to {host} as '{username}': password auth is disabled "
+            f"and pubkey auth failed. Check that server/config.json has the correct "
+            f"username and that the SSH key is in ~{username}/.ssh/authorized_keys"
+        ) from authtype_err
     except Exception as general_paramiko_ex:
         raise general_paramiko_ex
 

@@ -123,10 +123,11 @@ def deploy_clients(clients, access):
 
     """
     rsa_pub_key = ensure_ssh_key(SSH_PUB_KEY_PATH)
+    priv_key_path = SSH_PUB_KEY_PATH.rsplit('.pub', 1)[0]
     for client in clients:
         logger.info(f"Setting SSH connection to {client}")
         ssh_utils.set_key_policy(rsa_pub_key, client, access['user'],
-                                 access['password'])
+                                 access['password'], key_filename=priv_key_path)
         logger.info(f"Deploying to {client}")
         ShellUtils.run_shell_remote_command_no_exception(client, 'mkdir -p {}'.format(config.DYNAMO_PATH))
         ShellUtils.run_shell_command('rsync',
@@ -227,8 +228,10 @@ def main():
     logger.info(f"Operation journal: {test_config['_journal'].path}")
     logger.info("Setting passwordless SSH connection")
     rsa_pub_key = ensure_ssh_key(SSH_PUB_KEY_PATH)
+    priv_key_path = SSH_PUB_KEY_PATH.rsplit('.pub', 1)[0]
     ssh_utils.set_key_policy(rsa_pub_key, args.cluster, test_config['access']['server']['user'],
-                             test_config['access']['server']['password'])
+                             test_config['access']['server']['password'],
+                             key_filename=priv_key_path)
 
     if args.locking == 'application':
         logger.info("Flushing locking DB")
